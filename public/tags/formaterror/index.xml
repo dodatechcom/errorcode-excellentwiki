@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>FormatError on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/formaterror/</link><description>Recent content in FormatError on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/formaterror/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] PowerShell FormatError Fix</title><link>https://errorcode.excellentwiki.com/languages/powershell/format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/powershell/format-error/</guid><description>&lt;h1 id="powershell-formaterror-fix"&gt;PowerShell FormatError Fix&lt;/h1&gt;
+&lt;p&gt;This error occurs when PowerShell encounters a malformed format string in cmdlets like &lt;code&gt;Write-Host&lt;/code&gt;, &lt;code&gt;-f&lt;/code&gt; operator, or format specifiers. The error message reads: &lt;code&gt;FormatException: Input string was not in a correct format.&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;PowerShell uses format strings (similar to C#&amp;rsquo;s &lt;code&gt;String.Format&lt;/code&gt;) with placeholder syntax like &lt;code&gt;{0}&lt;/code&gt;, &lt;code&gt;{1}&lt;/code&gt;, etc. When these placeholders are malformed, mismatched, or reference non-existent indexes, a &lt;code&gt;FormatException&lt;/code&gt; is thrown during string interpolation.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mismatched braces&lt;/strong&gt; — missing or extra &lt;code&gt;{&lt;/code&gt; or &lt;code&gt;}&lt;/code&gt; in the format string.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Invalid index reference&lt;/strong&gt; — referencing &lt;code&gt;{5}&lt;/code&gt; when only 3 arguments are provided.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Incorrect format specifier&lt;/strong&gt; — using invalid format codes like &lt;code&gt;{0:ZZZ}&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Nested brace issues&lt;/strong&gt; — literal braces must be escaped as &lt;code&gt;{{&lt;/code&gt; and &lt;code&gt;}}&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-validate-format-string-syntax"&gt;Fix 1: Validate format string syntax&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check for balanced braces&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$template = &lt;span style="color:#e6db74"&gt;&amp;#34;Hello {0}, you are {1} years old&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$matches = [&lt;span style="color:#66d9ef"&gt;regex&lt;/span&gt;]::Matches($template, &lt;span style="color:#e6db74"&gt;&amp;#39;\{(\d+)(?::\w+)?\}&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Write-Host &lt;span style="color:#e6db74"&gt;&amp;#34;Found &lt;/span&gt;$($matches.Count)&lt;span style="color:#e6db74"&gt; placeholders&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Test the format string&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $result = $template &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Alice&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Write-Host $result
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; [&lt;span style="color:#66d9ef"&gt;System.FormatException&lt;/span&gt;] {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Write-Warning &lt;span style="color:#e6db74"&gt;&amp;#34;Invalid format string&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-escape-literal-braces"&gt;Fix 2: Escape literal braces&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong — {0} is treated as a placeholder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$result = &lt;span style="color:#e6db74"&gt;&amp;#34;Price: {0}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;$100&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct — escape literal braces with double braces&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$result = &lt;span style="color:#e6db74"&gt;&amp;#34;Price: {{0}}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;$100&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Output: Price: {0}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Or use single quotes (no interpolation)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$result = &lt;span style="color:#e6db74"&gt;&amp;#39;Price: {0}&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-ensure-argument-count-matches-placeholders"&gt;Fix 3: Ensure argument count matches placeholders&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong — 2 placeholders but only 1 argument&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$result = &lt;span style="color:#e6db74"&gt;&amp;#34;Hello {0}, welcome to {1}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Alice&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct — provide all arguments&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$result = &lt;span style="color:#e6db74"&gt;&amp;#34;Hello {0}, welcome to {1}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Alice&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Wonderland&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-format-specifiers-correctly"&gt;Fix 4: Use format specifiers correctly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct format specifiers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;{0:N2}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1234.5678&lt;/span&gt; &lt;span style="color:#75715e"&gt;# 1,234.57 (number with 2 decimals)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;{0:P0}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0.856&lt;/span&gt; &lt;span style="color:#75715e"&gt;# 86% (percentage)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;{0:yyyy-MM-dd}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; (Get-Date) &lt;span style="color:#75715e"&gt;# 2026-07-16&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong — invalid format specifier&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;{0:ZZZ}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;42&lt;/span&gt; &lt;span style="color:#75715e"&gt;# FormatException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;PS&amp;gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Hello {0&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;World&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FormatException&lt;span style="color:#960050;background-color:#1e0010"&gt;:&lt;/span&gt; Input string was not &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; a correct format.
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;PS&amp;gt; &lt;span style="color:#e6db74"&gt;&amp;#34;{0} and {1}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;only_one_arg&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FormatException&lt;span style="color:#960050;background-color:#1e0010"&gt;:&lt;/span&gt; Index (zero based) must be greater than or equal to zero...
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;PS&amp;gt; &lt;span style="color:#e6db74"&gt;&amp;#34;{0:N2}&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;-f&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;not_a_number&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FormatException&lt;span style="color:#960050;background-color:#1e0010"&gt;:&lt;/span&gt; Input string was not &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; a correct format.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="script-syntax.md"&gt;ScriptSyntaxException&lt;/a&gt; — broader syntax parsing errors.&lt;/li&gt;
+&lt;li&gt;&lt;a href="parse-error.md"&gt;ParseException&lt;/a&gt; — script-level parse failures.&lt;/li&gt;
+&lt;li&gt;&lt;a href="parameter-binding.md"&gt;ParameterBindingException&lt;/a&gt; — parameter binding failure.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

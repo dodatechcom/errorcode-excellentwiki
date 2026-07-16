@@ -1,0 +1,129 @@
+---
+title: "[Solution] Rust Async/Await Error — Async Function Not Found"
+description: "Fix Rust async/await errors. Learn why async code fails to compile or run and how to properly use async functions and futures."
+languages: ["rust"]
+error_types: ["runtime-error"]
+severities: ["error"]
+tags: ["async", "await", "future", "tokio", "runtime"]
+weight: 5
+---
+
+# Async/Await Error — Async Function Not Found
+
+Errors related to async/await in Rust include "async function not found", "future is not Send", or "missing async runtime". These occur when async code is misused or the ecosystem is misconfigured.
+
+## Description
+
+Rust's async/await is zero-cost and requires a runtime (like tokio) to execute. The compiler generates state machines for async functions but doesn't include a runtime. Common issues:
+
+- **Missing runtime** — async code has no executor.
+- **Not Send/Sync** — future can't be sent across threads.
+- **Missing .await** — forgetting to await a future.
+- **Blocking in async** — sync operations blocking the runtime.
+
+## Common Causes
+
+```rust
+// Cause 1: Forgetting .await
+async fn get_data() -> String { "data".to_string() }
+
+#[tokio::main]
+async fn main() {
+    let data = get_data(); // future not polled!
+    println!("{}", data);
+}
+
+// Cause 2: Missing runtime
+async fn do_work() { println!("async work"); }
+fn main() { do_work(); } // does nothing
+
+// Cause 3: Non-Send future
+use std::rc::Rc;
+#[tokio::main]
+async fn main() {
+    let data = Rc::new(42); // Rc is not Send
+    tokio::task::spawn(async move {
+        println!("{}", data);
+    }).await.unwrap(); // ERROR: future !Send
+}
+
+// Cause 4: Blocking in async
+#[tokio::main]
+async fn main() {
+    std::thread::sleep(std::time::Duration::from_secs(5)); // blocks runtime
+}
+```
+
+## Solutions
+
+### Fix 1: Always .await futures
+
+```rust
+async fn get_data() -> String { "data".to_string() }
+
+#[tokio::main]
+async fn main() {
+    let data = get_data().await;
+    println!("{}", data);
+}
+```
+
+### Fix 2: Use a runtime for async code
+
+```rust
+async fn do_work() -> i32 { 42 }
+
+#[tokio::main]
+async fn main() {
+    let result = do_work().await;
+    println!("Result: {}", result);
+}
+```
+
+### Fix 3: Use Arc instead of Rc for async tasks
+
+```rust
+use std::sync::Arc;
+
+#[tokio::main]
+async fn main() {
+    let data = Arc::new(42);
+    tokio::task::spawn(async move {
+        println!("{}", data);
+    }).await.unwrap();
+}
+```
+
+### Fix 4: Use spawn_blocking for sync operations
+
+```rust
+#[tokio::main]
+async fn main() {
+    let data = tokio::task::spawn_blocking(|| {
+        std::fs::read_to_string("file.txt").unwrap()
+    }).await.unwrap();
+    println!("Read {} bytes", data.len());
+}
+```
+
+## Examples
+
+```rust
+async fn hello() { println!("Hello from async!"); }
+
+fn main() {
+    hello(); // Does nothing — future not polled
+    println!("This prints, but hello() doesn't");
+}
+```
+
+Output:
+```
+This prints, but hello() doesn't
+```
+
+## Related Errors
+
+- [Tokio]({{< relref "/languages/rust/tokio-2" >}}) — tokio runtime errors.
+- [Pin]({{< relref "/languages/rust/pin-2" >}}) — cannot move pinned value.
+- [Thread Panic]({{< relref "/languages/rust/thread-panic-2" >}}) — thread panics.

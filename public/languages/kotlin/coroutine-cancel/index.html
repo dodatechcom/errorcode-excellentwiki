@@ -1,0 +1,121 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] Kotlin Coroutine Was Cancelled — Cancellation Fix | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix Kotlin coroutine cancellation errors. Understand structured concurrency, handle CancellationException, and propagate cancellation correctly."><link rel=canonical href=https://errorcode.excellentwiki.com/languages/kotlin/coroutine-cancel/><meta property="og:title" content="[Solution] Kotlin Coroutine Was Cancelled — Cancellation Fix"><meta property="og:description" content="Fix Kotlin coroutine cancellation errors. Understand structured concurrency, handle CancellationException, and propagate cancellation correctly."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/languages/kotlin/coroutine-cancel/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] Kotlin Coroutine Was Cancelled — Cancellation Fix"><meta name=twitter:description content="Fix Kotlin coroutine cancellation errors. Understand structured concurrency, handle CancellationException, and propagate cancellation correctly."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/languages/>Languages</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] Kotlin Coroutine Was Cancelled — Cancellation Fix</span></nav><h1 id=coroutine-was-cancelled--cancellation-fix>Coroutine Was Cancelled — Cancellation Fix</h1><p>A &ldquo;Coroutine was cancelled&rdquo; error occurs when a coroutine is terminated by its parent scope or by an explicit cancel call. This is the standard mechanism for cooperative coroutine cancellation.</p><h2 id=description>Description</h2><p>Kotlin coroutines use structured concurrency where child coroutines are bound to their parent scope. When the parent is cancelled or an exception propagates, all children receive a <code>CancellationException</code>. The coroutine should clean up and terminate gracefully.</p><p>Common scenarios:</p><ul><li><strong>Parent scope cancelled</strong> — <code>scope.cancel()</code> cancels all children.</li><li><strong>Structured concurrency</strong> — parent job cancelled, children follow.</li><li><strong>Timeout exceeded</strong> — <code>withTimeout</code> cancels on timeout.</li><li><strong>Exception in sibling</strong> — unhandled exception cancels the scope.</li><li><strong>Explicit cancel</strong> — <code>job.cancel()</code> or <code>job.cancelAndJoin()</code>.</li></ul><h2 id=common-causes>Common Causes</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#75715e>// Cause 1: Parent scope cancelled
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> scope = CoroutineScope(<span style=color:#a6e22e>Dispatchers</span>.Default)
+</span></span><span style=display:flex><span>scope.launch {
+</span></span><span style=display:flex><span>    delay(<span style=color:#ae81ff>10000</span>)  <span style=color:#75715e>// Cancelled when scope is cancelled
+</span></span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>scope.cancel()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 2: Timeout
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    withTimeout(<span style=color:#ae81ff>1000</span>) {
+</span></span><span style=display:flex><span>        delay(<span style=color:#ae81ff>5000</span>)  <span style=color:#75715e>// Cancelled after 1 second
+</span></span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 3: Exception in sibling coroutine
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> scope = CoroutineScope(Job())
+</span></span><span style=display:flex><span>scope.launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>throw</span> RuntimeException(<span style=color:#e6db74>&#34;Error&#34;</span>)  <span style=color:#75715e>// Cancels entire scope
+</span></span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>scope.launch {
+</span></span><span style=display:flex><span>    delay(<span style=color:#ae81ff>1000</span>)  <span style=color:#75715e>// Also cancelled
+</span></span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 4: Not responding to cancellation
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>) {  <span style=color:#75715e>// Never checks isActive
+</span></span></span><span style=display:flex><span>        process()
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=solutions>Solutions</h2><h3 id=fix-1-use-isactive-for-long-running-coroutines>Fix 1: Use isActive for long-running coroutines</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#75715e>// Wrong — never checks for cancellation
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>) {
+</span></span><span style=display:flex><span>        process()  <span style=color:#75715e>// Can&#39;t be cancelled
+</span></span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Correct — check isActive
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (isActive) {
+</span></span><span style=display:flex><span>        process()  <span style=color:#75715e>// Responds to cancellation
+</span></span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-2-use-try-finally-for-cleanup>Fix 2: Use try-finally for cleanup</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#75715e>// Wrong — resource not released on cancel
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>val</span> resource = acquireResource()
+</span></span><span style=display:flex><span>    doWork()
+</span></span><span style=display:flex><span>    resource.close()  <span style=color:#75715e>// May not run
+</span></span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Correct — use finally
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>val</span> resource = acquireResource()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span> {
+</span></span><span style=display:flex><span>        doWork()
+</span></span><span style=display:flex><span>    } <span style=color:#66d9ef>finally</span> {
+</span></span><span style=display:flex><span>        resource.close()  <span style=color:#75715e>// Always runs
+</span></span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-3-re-throw-cancellationexception>Fix 3: Re-throw CancellationException</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#75715e>// Wrong — swallowing CancellationException
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span> {
+</span></span><span style=display:flex><span>        doWork()
+</span></span><span style=display:flex><span>    } <span style=color:#66d9ef>catch</span> (e: Exception) {
+</span></span><span style=display:flex><span>        println(<span style=color:#e6db74>&#34;Error: </span><span style=color:#e6db74>${e.message}</span><span style=color:#e6db74>&#34;</span>)  <span style=color:#75715e>// Catches CancellationException
+</span></span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Correct — rethrow CancellationException
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span> {
+</span></span><span style=display:flex><span>        doWork()
+</span></span><span style=display:flex><span>    } <span style=color:#66d9ef>catch</span> (e: CancellationException) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>throw</span> e  <span style=color:#75715e>// Proper cancellation propagation
+</span></span></span><span style=display:flex><span>    } <span style=color:#66d9ef>catch</span> (e: Exception) {
+</span></span><span style=display:flex><span>        println(<span style=color:#e6db74>&#34;Error: </span><span style=color:#e6db74>${e.message}</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-4-use-isolated-scopes-for-independent-work>Fix 4: Use isolated scopes for independent work</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#75715e>// Wrong — one failure cancels all
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> scope = CoroutineScope(Job())
+</span></span><span style=display:flex><span>scope.launch { <span style=color:#66d9ef>throw</span> RuntimeException(<span style=color:#e6db74>&#34;Error&#34;</span>) }
+</span></span><span style=display:flex><span>scope.launch { delay(<span style=color:#ae81ff>1000</span>) }  <span style=color:#75715e>// Also cancelled
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Correct — SupervisorJob makes children independent
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>val</span> scope = CoroutineScope(SupervisorJob())
+</span></span><span style=display:flex><span>scope.launch { <span style=color:#66d9ef>throw</span> RuntimeException(<span style=color:#e6db74>&#34;Error&#34;</span>) }
+</span></span><span style=display:flex><span>scope.launch { println(<span style=color:#e6db74>&#34;I still run&#34;</span>) }  <span style=color:#75715e>// Not affected
+</span></span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-kotlin data-lang=kotlin><span style=display:flex><span><span style=color:#66d9ef>import</span> kotlinx.coroutines.*
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fun</span> <span style=color:#a6e22e>main</span>() = runBlocking {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>val</span> job = launch {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> {
+</span></span><span style=display:flex><span>            repeat(<span style=color:#ae81ff>10</span>) { i <span style=color:#f92672>-&gt;</span>
+</span></span><span style=display:flex><span>                println(<span style=color:#e6db74>&#34;Working </span><span style=color:#e6db74>$i</span><span style=color:#e6db74>...&#34;</span>)
+</span></span><span style=display:flex><span>                delay(<span style=color:#ae81ff>500</span>)
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        } <span style=color:#66d9ef>catch</span> (e: CancellationException) {
+</span></span><span style=display:flex><span>            println(<span style=color:#e6db74>&#34;Coroutine cancelled, cleaning up...&#34;</span>)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>throw</span> e
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    delay(<span style=color:#ae81ff>1200</span>)
+</span></span><span style=display:flex><span>    println(<span style=color:#e6db74>&#34;Requesting cancellation...&#34;</span>)
+</span></span><span style=display:flex><span>    job.cancelAndJoin()
+</span></span><span style=display:flex><span>    println(<span style=color:#e6db74>&#34;Done&#34;</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/languages/kotlin/cancellation-exception/>CancellationException</a> — general coroutine cancellation.</li><li><a href=/languages/kotlin/job-cancellation/>JobCancellationException</a> — job-level cancellation.</li><li><a href=/languages/kotlin/timeout-exception/>TimeoutCancellationException</a> — timeout caused cancellation.</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

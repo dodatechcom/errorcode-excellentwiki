@@ -1,0 +1,87 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] Swift Error — POSIX Error: No Such File or Directory | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix Swift file not found errors. Learn why POSIX ENOENT occurs and how to handle missing files and directories gracefully."><link rel=canonical href=https://errorcode.excellentwiki.com/languages/swift/file-not-found/><meta property="og:title" content="[Solution] Swift Error — POSIX Error: No Such File or Directory"><meta property="og:description" content="Fix Swift file not found errors. Learn why POSIX ENOENT occurs and how to handle missing files and directories gracefully."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/languages/swift/file-not-found/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] Swift Error — POSIX Error: No Such File or Directory"><meta name=twitter:description content="Fix Swift file not found errors. Learn why POSIX ENOENT occurs and how to handle missing files and directories gracefully."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/languages/>Languages</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] Swift Error — POSIX Error: No Such File or Directory</span></nav><h1 id=posix-error-no-such-file-or-directory>POSIX Error: No Such File or Directory</h1><p>This error occurs when your code tries to access a file or directory that doesn&rsquo;t exist. The POSIX error code <code>ENOENT</code> (2) is returned by file system operations.</p><h2 id=description>Description</h2><p>Every file path reference in Swift can fail if the target doesn&rsquo;t exist. This is one of the most common file system errors, occurring with incorrect paths, deleted files, or uninitialized directories. Unlike permission denied, this error specifically means the path itself has no matching file system entry.</p><p>Common patterns:</p><ul><li><strong>Incorrect path</strong> — typo in file name or directory.</li><li><strong>File deleted</strong> — referencing a file that was removed.</li><li><strong>Missing directory</strong> — parent directory not created before file creation.</li><li><strong>Bundle resource missing</strong> — resource file not included in the app bundle.</li></ul><h2 id=common-causes>Common Causes</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#75715e>// Cause 1: Incorrect file path</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> url = URL(fileURLWithPath: <span style=color:#e6db74>&#34;/Documents/myfile.txt&#34;</span>) <span style=color:#75715e>// Wrong path</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> data = <span style=color:#66d9ef>try</span> Data(contentsOf: url)
+</span></span><span style=display:flex><span><span style=color:#75715e>// ENOENT: No such file or directory</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 2: Missing parent directory</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> fileManager = FileManager.<span style=color:#66d9ef>default</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> dir = documents.appendingPathComponent(<span style=color:#e6db74>&#34;subdir/deep/file.txt&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>try</span> <span style=color:#e6db74>&#34;data&#34;</span>.write(to: dir)
+</span></span><span style=display:flex><span><span style=color:#75715e>// ENOENT: subdirectory doesn&#39;t exist</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 3: Deleted file</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> tempFile = fileManager.temporaryDirectory.appendingPathComponent(<span style=color:#e6db74>&#34;cache.dat&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> data = <span style=color:#66d9ef>try</span> Data(contentsOf: tempFile)
+</span></span><span style=display:flex><span><span style=color:#75715e>// Fails if file was cleaned up</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 4: Missing bundle resource</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#66d9ef>let</span> url = Bundle.main.url(forResource: <span style=color:#e6db74>&#34;config&#34;</span>, withExtension: <span style=color:#e6db74>&#34;json&#34;</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> data = <span style=color:#66d9ef>try</span> Data(contentsOf: url)
+</span></span><span style=display:flex><span>} <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;config.json not found in bundle&#34;</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=how-to-fix>How to Fix</h2><h3 id=fix-1-verify-file-exists-before-accessing>Fix 1: Verify file exists before accessing</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>let</span> fileURL = documents.appendingPathComponent(<span style=color:#e6db74>&#34;data.txt&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> FileManager.<span style=color:#66d9ef>default</span>.fileExists(atPath: fileURL.path) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> data = <span style=color:#66d9ef>try</span> Data(contentsOf: fileURL)
+</span></span><span style=display:flex><span>} <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;File does not exist&#34;</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-2-create-directories-before-writing-files>Fix 2: Create directories before writing files</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>let</span> fileManager = FileManager.<span style=color:#66d9ef>default</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> dir = documents.appendingPathComponent(<span style=color:#e6db74>&#34;subdir&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> file = dir.appendingPathComponent(<span style=color:#e6db74>&#34;data.txt&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>!</span>fileManager.fileExists(atPath: dir.path) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span> fileManager.createDirectory(at: dir, withIntermediateDirectories: <span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>try</span> <span style=color:#e6db74>&#34;data&#34;</span>.write(to: file)
+</span></span></code></pre></div><h3 id=fix-3-handle-missing-bundle-resources>Fix 3: Handle missing bundle resources</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Config</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> settings: [String: String]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>init</span>?() {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> url = Bundle.main.url(forResource: <span style=color:#e6db74>&#34;config&#34;</span>, withExtension: <span style=color:#e6db74>&#34;json&#34;</span>) <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>            print(<span style=color:#e6db74>&#34;config.json not found — using defaults&#34;</span>)
+</span></span><span style=display:flex><span>            settings = [<span style=color:#e6db74>&#34;theme&#34;</span>: <span style=color:#e6db74>&#34;light&#34;</span>]
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> data = <span style=color:#66d9ef>try</span>? Data(contentsOf: url),
+</span></span><span style=display:flex><span>              <span style=color:#66d9ef>let</span> decoded = <span style=color:#66d9ef>try</span>? JSONDecoder().decode([String: String].<span style=color:#66d9ef>self</span>, from: data) <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        settings = decoded
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-4-use-temporary-files-with-cleanup>Fix 4: Use temporary files with cleanup</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>writeTemporarily</span>(<span style=color:#66d9ef>_</span> data: Data, named name: String) <span style=color:#66d9ef>throws</span> -&gt; URL {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> tempDir = FileManager.<span style=color:#66d9ef>default</span>.temporaryDirectory
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> fileURL = tempDir.appendingPathComponent(name)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>try</span> data.write(to: fileURL)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> fileURL
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// File will be cleaned up by the system eventually</span>
+</span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#75715e>// Example 1: Path typo</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> path = <span style=color:#e6db74>&#34;/var/mobile/Containers/Data/Application/.../Documents/myfile.txt&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Path may be wrong after app update</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Example 2: Resource not added to target</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#66d9ef>let</span> url = Bundle.main.url(forResource: <span style=color:#e6db74>&#34;data&#34;</span>, withExtension: <span style=color:#e6db74>&#34;csv&#34;</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> data = <span style=color:#66d9ef>try</span> Data(contentsOf: url)
+</span></span><span style=display:flex><span>} <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ENOENT — file exists on disk but not in app bundle</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Check Build Phases &gt; Copy Bundle Resources</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/languages/swift/file-permission/>File Permission Denied</a> — file exists but can&rsquo;t access.</li><li><a href=/languages/swift/disk-full/>Disk Full</a> — can&rsquo;t write due to no space.</li><li><a href=/languages/swift/coredata-error/>Core Data Error</a> — missing Core Data store file.</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

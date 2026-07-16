@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sigpipe on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/sigpipe/</link><description>Recent content in Sigpipe on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/sigpipe/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C errno 32 EPIPE — Broken pipe</title><link>https://errorcode.excellentwiki.com/languages/c/errno-32/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-32/</guid><description>&lt;h1 id="solution-c-errno-32-epipe--broken-pipe"&gt;[Solution] C errno 32 EPIPE — Broken pipe&lt;/h1&gt;
+&lt;p&gt;Broken pipe occurs when a system call fails and sets &lt;code&gt;errno&lt;/code&gt; to 32. This error indicates that the requested operation cannot be performed due to the specific condition described by EPIPE.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;A client disconnects mid-response on a socket or pipe.&lt;/li&gt;
+&lt;li&gt;A subprocess closes its stdin before the parent finishes writing.&lt;/li&gt;
+&lt;li&gt;Writing to a pipe whose read end was closed by the receiving process.&lt;/li&gt;
+&lt;li&gt;A reverse proxy or load balancer closes the connection before the backend responds.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;signal.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;unistd.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;errno.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;signal&lt;/span&gt;(SIGPIPE, SIG_IGN);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; pipefd[&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;pipe&lt;/span&gt;(pipefd);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(pipefd[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;char&lt;/span&gt; msg[] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Hello&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;ssize_t&lt;/span&gt; n &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;write&lt;/span&gt;(pipefd[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;], msg, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(msg));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (n &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;write&amp;#34;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// &amp;#34;write: Broken pipe&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;errno: %d&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, errno); &lt;span style="color:#75715e"&gt;// 32
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(pipefd[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;errno.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ssize_t&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;safe_send&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; sockfd, &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;buf, &lt;span style="color:#66d9ef"&gt;size_t&lt;/span&gt; len, &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; flags) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;send&lt;/span&gt;(sockfd, buf, len, flags &lt;span style="color:#f92672"&gt;|&lt;/span&gt; MSG_NOSIGNAL);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-110/"&gt;errno-110 ETIMEDOUT&lt;/a&gt; — connection timed out.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-115/"&gt;errno-115 EINPROGRESS&lt;/a&gt; — operation in progress.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-32/"&gt;errno-32 EPIPE&lt;/a&gt; — broken pipe (self).&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C errno EPIPE — Broken pipe Fix</title><link>https://errorcode.excellentwiki.com/languages/c/errno-epipe/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-epipe/</guid><description>&lt;h1 id="solution-c-errno-epipe--broken-pipe-fix"&gt;[Solution] C errno EPIPE — Broken pipe Fix&lt;/h1&gt;
+&lt;p&gt;When a process writes to a pipe or socket whose read end has been closed, the write fails and sets &lt;code&gt;errno&lt;/code&gt; to &lt;code&gt;EPIPE&lt;/code&gt;. By default, the kernel delivers a &lt;code&gt;SIGPIPE&lt;/code&gt; signal to the process, which typically terminates it. This is common when piping output to a command that exits early.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The read end of a pipe has been closed (e.g., the downstream process exited).&lt;/li&gt;
+&lt;li&gt;A socket connection has been closed by the peer before the write.&lt;/li&gt;
+&lt;li&gt;Writing to a FIFO where no process has the read end open.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;SIGPIPE&lt;/code&gt; signal is not being handled, causing unexpected termination.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Either handle &lt;code&gt;SIGPIPE&lt;/code&gt; or ignore it and check for &lt;code&gt;EPIPE&lt;/code&gt; on write. Use &lt;code&gt;MSG_NOSIGNAL&lt;/code&gt; for sockets.&lt;/p&gt;</description></item><item><title>[Solution] Rust Broken Pipe — Broken Pipe Error</title><link>https://errorcode.excellentwiki.com/languages/rust/broken-pipe/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/broken-pipe/</guid><description>&lt;h1 id="broken-pipe--broken-pipe-error"&gt;Broken Pipe — Broken Pipe Error&lt;/h1&gt;
+&lt;p&gt;An IO error with the message &amp;ldquo;Broken pipe (os error 32)&amp;rdquo; occurs when you try to write to a pipe or socket whose reading end has been closed. This commonly happens when piping Rust program output to another program that exits early.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;In Unix-like systems, pipes connect the stdout of one process to the stdin of another. When the reading process exits, the writing process receives a &lt;code&gt;SIGPIPE&lt;/code&gt; signal. If not handled, this signal terminates the process. In Rust, the default behavior is to ignore &lt;code&gt;SIGPIPE&lt;/code&gt; and return an &lt;code&gt;IO&lt;/code&gt; error instead.&lt;/p&gt;</description></item><item><title>[Solution] Rust Broken Pipe — Pipe Closed Error</title><link>https://errorcode.excellentwiki.com/languages/rust/broken-pipe-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/broken-pipe-2/</guid><description>&lt;h1 id="broken-pipe--pipe-closed-error"&gt;Broken Pipe — Pipe Closed Error&lt;/h1&gt;
+&lt;p&gt;An IO error with the message &amp;ldquo;Broken pipe (os error 32)&amp;rdquo; occurs when you write to a pipe or socket whose reading end has been closed.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;In Unix, pipes connect processes — stdout of one to stdin of another. When the reader exits, the writer gets a &lt;code&gt;SIGPIPE&lt;/code&gt; signal. Rust ignores &lt;code&gt;SIGPIPE&lt;/code&gt; by default and returns an IO error instead (error code 32, &lt;code&gt;EPIPE&lt;/code&gt;).&lt;/p&gt;</description></item></channel></rss>

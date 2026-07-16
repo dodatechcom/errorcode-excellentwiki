@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Nio on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/nio/</link><description>Recent content in Nio on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/nio/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Java ClosedChannelException — NIO Channel Fix</title><link>https://errorcode.excellentwiki.com/languages/java/closedchannelexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/closedchannelexception/</guid><description>&lt;h1 id="closedchannelexception--nio-channel-fix"&gt;ClosedChannelException — NIO Channel Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;ClosedChannelException&lt;/code&gt; is thrown when an I/O operation is attempted on a NIO channel that has already been closed. This is a subclass of &lt;code&gt;IOException&lt;/code&gt; and is specific to &lt;code&gt;java.nio.channels&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;NIO channels (&lt;code&gt;FileChannel&lt;/code&gt;, &lt;code&gt;SocketChannel&lt;/code&gt;, &lt;code&gt;ServerSocketChannel&lt;/code&gt;, &lt;code&gt;DatagramChannel&lt;/code&gt;) can only be used while open. Once &lt;code&gt;close()&lt;/code&gt; is called or the channel is closed by the OS, any further operation throws &lt;code&gt;ClosedChannelException&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;java.nio.channels.ClosedChannelException&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Channel already closed&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java.nio.channels.ClosedSelectorException&lt;/code&gt; — related: selector closed while registered channels exist&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Operating on a channel after closing it&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FileChannel channel &lt;span style="color:#f92672"&gt;=&lt;/span&gt; FileChannel.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(path, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;READ&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;channel.&lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ByteBuffer buffer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ByteBuffer.&lt;span style="color:#a6e22e"&gt;allocate&lt;/span&gt;(1024);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;channel.&lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(buffer); &lt;span style="color:#75715e"&gt;// ClosedChannelException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Shared channel used after one thread closes it&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;SocketChannel clientChannel &lt;span style="color:#f92672"&gt;=&lt;/span&gt; server.&lt;span style="color:#a6e22e"&gt;accept&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread A: clientChannel.close();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread B: clientChannel.read(buffer); // ClosedChannelException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Selector closed while channels are still registered&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Selector selector &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Selector.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;SocketChannel channel &lt;span style="color:#f92672"&gt;=&lt;/span&gt; SocketChannel.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;channel.&lt;span style="color:#a6e22e"&gt;configureBlocking&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;channel.&lt;span style="color:#a6e22e"&gt;register&lt;/span&gt;(selector, SelectionKey.&lt;span style="color:#a6e22e"&gt;OP_READ&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;selector.&lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;selector.&lt;span style="color:#a6e22e"&gt;select&lt;/span&gt;(); &lt;span style="color:#75715e"&gt;// ClosedSelectorException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Channel closed by remote peer during operation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;SocketChannel socketChannel &lt;span style="color:#f92672"&gt;=&lt;/span&gt; SocketChannel.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Remote server closes connection&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;socketChannel.&lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(buffer); &lt;span style="color:#75715e"&gt;// May throw ClosedChannelException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-use-try-with-resources-for-automatic-channel-closing"&gt;Fix 1: Use try-with-resources for automatic channel closing&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Wrong — channel may not be closed on exception&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FileChannel channel &lt;span style="color:#f92672"&gt;=&lt;/span&gt; FileChannel.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(path, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;READ&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ByteBuffer buffer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ByteBuffer.&lt;span style="color:#a6e22e"&gt;allocate&lt;/span&gt;(1024);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;channel.&lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(buffer);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;channel.&lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(); &lt;span style="color:#75715e"&gt;// May never execute&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Correct — auto-closed&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; (FileChannel channel &lt;span style="color:#f92672"&gt;=&lt;/span&gt; FileChannel.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(path, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;READ&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ByteBuffer buffer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ByteBuffer.&lt;span style="color:#a6e22e"&gt;allocate&lt;/span&gt;(1024);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; channel.&lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(buffer);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-check-channel-state-before-operations"&gt;Fix 2: Check channel state before operations&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;T&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; T &lt;span style="color:#a6e22e"&gt;readFromChannel&lt;/span&gt;(SocketChannel channel,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; java.&lt;span style="color:#a6e22e"&gt;util&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;function&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Function&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;SocketChannel, T&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; operation) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (channel &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt; &lt;span style="color:#f92672"&gt;||&lt;/span&gt; &lt;span style="color:#f92672"&gt;!&lt;/span&gt;channel.&lt;span style="color:#a6e22e"&gt;isOpen&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; IllegalStateException(&lt;span style="color:#e6db74"&gt;&amp;#34;Channel is closed&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; operation.&lt;span style="color:#a6e22e"&gt;apply&lt;/span&gt;(channel);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Usage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (channel.&lt;span style="color:#a6e22e"&gt;isOpen&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; channel.&lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(buffer);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-synchronize-access-to-shared-channels"&gt;Fix 3: Synchronize access to shared channels&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;SafeChannel&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;final&lt;/span&gt; SocketChannel channel;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;final&lt;/span&gt; Object lock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Object();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(ByteBuffer buffer) &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;synchronized&lt;/span&gt; (lock) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;channel.&lt;span style="color:#a6e22e"&gt;isOpen&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; IOException(&lt;span style="color:#e6db74"&gt;&amp;#34;Channel is closed&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; channel.&lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(buffer);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;synchronized&lt;/span&gt; (lock) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; channel.&lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-handle-closedselectorexception-when-using-selectors"&gt;Fix 4: Handle ClosedSelectorException when using selectors&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Selector selector &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Selector.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; SocketChannel channel &lt;span style="color:#f92672"&gt;=&lt;/span&gt; SocketChannel.&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; channel.&lt;span style="color:#a6e22e"&gt;configureBlocking&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; channel.&lt;span style="color:#a6e22e"&gt;register&lt;/span&gt;(selector, SelectionKey.&lt;span style="color:#a6e22e"&gt;OP_READ&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; (channel.&lt;span style="color:#a6e22e"&gt;isOpen&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; ready &lt;span style="color:#f92672"&gt;=&lt;/span&gt; selector.&lt;span style="color:#a6e22e"&gt;select&lt;/span&gt;(1000);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ready &lt;span style="color:#f92672"&gt;==&lt;/span&gt; 0) &lt;span style="color:#66d9ef"&gt;continue&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Iterator&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;SelectionKey&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; keys &lt;span style="color:#f92672"&gt;=&lt;/span&gt; selector.&lt;span style="color:#a6e22e"&gt;selectedKeys&lt;/span&gt;().&lt;span style="color:#a6e22e"&gt;iterator&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; (keys.&lt;span style="color:#a6e22e"&gt;hasNext&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; SelectionKey key &lt;span style="color:#f92672"&gt;=&lt;/span&gt; keys.&lt;span style="color:#a6e22e"&gt;next&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; keys.&lt;span style="color:#a6e22e"&gt;remove&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;key.&lt;span style="color:#a6e22e"&gt;isValid&lt;/span&gt;()) &lt;span style="color:#66d9ef"&gt;continue&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (key.&lt;span style="color:#a6e22e"&gt;isReadable&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; SocketChannel sc &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (SocketChannel) key.&lt;span style="color:#a6e22e"&gt;channel&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ByteBuffer buffer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ByteBuffer.&lt;span style="color:#a6e22e"&gt;allocate&lt;/span&gt;(1024);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sc.&lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(buffer);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (ClosedSelectorException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Selector was closed — clean up and exit&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="prevention-checklist"&gt;Prevention Checklist&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Always use try-with-resources for NIO channels to ensure proper closing.&lt;/li&gt;
+&lt;li&gt;Check &lt;code&gt;channel.isOpen()&lt;/code&gt; before performing operations on shared channels.&lt;/li&gt;
+&lt;li&gt;Synchronize access to channels that are used from multiple threads.&lt;/li&gt;
+&lt;li&gt;Handle &lt;code&gt;ClosedChannelException&lt;/code&gt; when performing asynchronous or non-blocking I/O.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="../ioexception"&gt;IOException&lt;/a&gt; — parent class for all I/O failures.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../closedchannelexception"&gt;AsynchronousCloseException&lt;/a&gt; — channel closed by another thread during blocking operation.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../interruptedexception"&gt;ClosedByInterruptException&lt;/a&gt; — channel closed by thread interrupt.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Java FileAlreadyExistsException — File Conflict Fix</title><link>https://errorcode.excellentwiki.com/languages/java/filealreadyexistsexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/filealreadyexistsexception/</guid><description>&lt;h1 id="filealreadyexistsexception--file-conflict-fix"&gt;FileAlreadyExistsException — File Conflict Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;FileAlreadyExistsException&lt;/code&gt; is thrown when an attempt is made to create a file that already exists. This is an NIO.2 exception (&lt;code&gt;java.nio.file.FileAlreadyExistsException&lt;/code&gt;) and is a subclass of &lt;code&gt;FileSystemException&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;The exception occurs when using &lt;code&gt;Files.createFile()&lt;/code&gt;, &lt;code&gt;Files.createDirectory()&lt;/code&gt;, or writing with &lt;code&gt;StandardOpenOption.CREATE_NEW&lt;/code&gt; on a path that already exists:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;java.nio.file.FileAlreadyExistsException: /path/to/file.txt&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java.nio.file.FileAlreadyExistsException: /path/to/directory&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Creating a file that already exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/output.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;createFile&lt;/span&gt;(path); &lt;span style="color:#75715e"&gt;// FileAlreadyExistsException if file exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Using CREATE_NEW option on existing file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE_NEW&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// Throws if exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Creating a directory that already exists as a file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path dir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/subdir&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;createDirectory&lt;/span&gt;(dir); &lt;span style="color:#75715e"&gt;// Throws if &amp;#34;subdir&amp;#34; is a file, not a directory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Race condition — two threads creating the same file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread A and Thread B both call Files.createFile(path)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-check-existence-before-creating"&gt;Fix 1: Check existence before creating&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/output.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;Files.&lt;span style="color:#a6e22e"&gt;exists&lt;/span&gt;(path)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;createFile&lt;/span&gt;(path);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Or use CREATE (creates if not exists, does nothing if exists)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-appropriate-open-options"&gt;Fix 2: Use appropriate open options&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/output.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CREATE: create if not exists, open if exists (no truncation)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;new data&amp;#34;&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CREATE_NEW: fail if exists (what createFile does)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Files.writeString(path, &amp;#34;data&amp;#34;, StandardOpenOption.CREATE_NEW);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// TRUNCATE_EXISTING: create if not exists, truncate if exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;new data&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;TRUNCATE_EXISTING&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-atomic-file-operations-to-avoid-race-conditions"&gt;Fix 3: Use atomic file operations to avoid race conditions&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path tempPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Files.&lt;span style="color:#a6e22e"&gt;createTempFile&lt;/span&gt;(dir, &lt;span style="color:#e6db74"&gt;&amp;#34;output&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;.tmp&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(tempPath, &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Atomically move into place&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;move&lt;/span&gt;(tempPath, targetPath, StandardCopyOption.&lt;span style="color:#a6e22e"&gt;REPLACE_EXISTING&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StandardCopyOption.&lt;span style="color:#a6e22e"&gt;ATOMIC_MOVE&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;deleteIfExists&lt;/span&gt;(tempPath);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; e;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-create-directories-safely"&gt;Fix 4: Create directories safely&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path dir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/subdir&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// createDirectories creates all missing parent directories too&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;createDirectories&lt;/span&gt;(dir); &lt;span style="color:#75715e"&gt;// No exception if dir already exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// createDirectory only creates the final component — throws if parents missing&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Files.createDirectory(dir); // Fails if /data doesn&amp;#39;t exist&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="prevention-checklist"&gt;Prevention Checklist&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Use &lt;code&gt;StandardOpenOption.CREATE&lt;/code&gt; instead of &lt;code&gt;CREATE_NEW&lt;/code&gt; when you want to overwrite silently.&lt;/li&gt;
+&lt;li&gt;Always call &lt;code&gt;Files.exists()&lt;/code&gt; before &lt;code&gt;Files.createFile()&lt;/code&gt; if the file may already exist.&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;Files.createDirectories()&lt;/code&gt; instead of &lt;code&gt;Files.createDirectory()&lt;/code&gt; for nested paths.&lt;/li&gt;
+&lt;li&gt;Use temp files and atomic moves to avoid race conditions in concurrent environments.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="../filenotfoundexception"&gt;FileNotFoundException&lt;/a&gt; — file not found when trying to read.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../ioexception"&gt;IOException&lt;/a&gt; — general I/O failure.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../invalidpathexception"&gt;InvalidPathException&lt;/a&gt; — malformed path string.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../filenotfoundexception"&gt;AccessDeniedException&lt;/a&gt; — permission denied (subclass of FileSystemException).&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Java InvalidPathException — Path Validation Fix</title><link>https://errorcode.excellentwiki.com/languages/java/invalidpathexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/invalidpathexception/</guid><description>&lt;h1 id="invalidpathexception--path-validation-fix"&gt;InvalidPathException — Path Validation Fix&lt;/h1&gt;
+&lt;p&gt;An &lt;code&gt;InvalidPathException&lt;/code&gt; is thrown when a path string cannot be converted to a &lt;code&gt;Path&lt;/code&gt; because it contains illegal characters, invalid syntax, or is otherwise malformed. This is an NIO.2 exception (&lt;code&gt;java.nio.file.InvalidPathException&lt;/code&gt;).&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;The exception occurs when calling &lt;code&gt;Paths.get()&lt;/code&gt;, &lt;code&gt;Path.of()&lt;/code&gt;, or &lt;code&gt;FileSystems.getDefault().getPath()&lt;/code&gt; with an invalid path string. Common message variants:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;InvalidPathException: Illegal char &amp;lt;:&amp;gt; at index 2: C:\path&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;InvalidPathException: Null byte in path&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;InvalidPathException: ... has an empty name element&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;InvalidPathException: Trailing file separator&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Null byte character in path&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/file\u0000.txt&amp;#34;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// InvalidPathException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Platform-specific illegal characters&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// On Windows: &amp;lt; &amp;gt; : &amp;#34; | ? *&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; WindowsFileSystem.&lt;span style="color:#a6e22e"&gt;getPath&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;file:name.txt&amp;#34;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// Invalid on Windows&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Empty path components&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data//file.txt&amp;#34;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// May cause issues depending on OS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Null path string&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;String userInput &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(userInput); &lt;span style="color:#75715e"&gt;// NullPointerException or InvalidPathException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-validate-path-before-converting-to-path"&gt;Fix 1: Validate path before converting to Path&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; Path &lt;span style="color:#a6e22e"&gt;safePath&lt;/span&gt;(String pathString) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (pathString &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt; &lt;span style="color:#f92672"&gt;||&lt;/span&gt; pathString.&lt;span style="color:#a6e22e"&gt;isBlank&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; IllegalArgumentException(&lt;span style="color:#e6db74"&gt;&amp;#34;Path must not be null or empty&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (pathString.&lt;span style="color:#a6e22e"&gt;contains&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;\u0000&amp;#34;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; InvalidPathException(pathString, &lt;span style="color:#e6db74"&gt;&amp;#34;Path contains null byte&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(pathString);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-sanitize-user-supplied-paths"&gt;Fix 2: Sanitize user-supplied paths&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; String &lt;span style="color:#a6e22e"&gt;sanitizePath&lt;/span&gt;(String userInput) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Remove null bytes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; String sanitized &lt;span style="color:#f92672"&gt;=&lt;/span&gt; userInput.&lt;span style="color:#a6e22e"&gt;replace&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;\0&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Normalize path separators&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sanitized &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sanitized.&lt;span style="color:#a6e22e"&gt;replace&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;\\&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;/&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Remove duplicate separators&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sanitized &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sanitized.&lt;span style="color:#a6e22e"&gt;replaceAll&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/+&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;/&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Remove leading/trailing whitespace and separators&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sanitized &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sanitized.&lt;span style="color:#a6e22e"&gt;strip&lt;/span&gt;().&lt;span style="color:#a6e22e"&gt;replaceAll&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;^/|/$&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; sanitized;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-pathof-with-proper-error-handling"&gt;Fix 3: Use &lt;code&gt;Path.of()&lt;/code&gt; with proper error handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Path.&lt;span style="color:#a6e22e"&gt;of&lt;/span&gt;(userInput);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Path created successfully&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (InvalidPathException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; System.&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;println&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Invalid path: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;+&lt;/span&gt; e.&lt;span style="color:#a6e22e"&gt;getReason&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Handle error — log, return default, etc.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-resolve-paths-safely-relative-to-a-base-directory"&gt;Fix 4: Resolve paths safely relative to a base directory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; java.nio.file.Path;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; java.nio.file.Paths;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path basePath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/uploads&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; Path &lt;span style="color:#a6e22e"&gt;resolveSafe&lt;/span&gt;(String userInput) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Path resolved &lt;span style="color:#f92672"&gt;=&lt;/span&gt; basePath.&lt;span style="color:#a6e22e"&gt;resolve&lt;/span&gt;(userInput).&lt;span style="color:#a6e22e"&gt;normalize&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Ensure resolved path is still within basePath (prevent path traversal)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;resolved.&lt;span style="color:#a6e22e"&gt;startsWith&lt;/span&gt;(basePath)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; SecurityException(&lt;span style="color:#e6db74"&gt;&amp;#34;Path traversal detected: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;+&lt;/span&gt; userInput);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; resolved;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="prevention-checklist"&gt;Prevention Checklist&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Always validate user-supplied path strings before converting to &lt;code&gt;Path&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;Path.normalize()&lt;/code&gt; to resolve &lt;code&gt;.&lt;/code&gt; and &lt;code&gt;..&lt;/code&gt; components safely.&lt;/li&gt;
+&lt;li&gt;Check for path traversal attacks when resolving user input relative to a base directory.&lt;/li&gt;
+&lt;li&gt;Handle &lt;code&gt;InvalidPathException&lt;/code&gt; when parsing paths from external sources.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="../filenotfoundexception"&gt;FileNotFoundException&lt;/a&gt; — valid path but file does not exist.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../ioexception"&gt;IOException&lt;/a&gt; — I/O error accessing the path.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../filealreadyexistsexception"&gt;FileAlreadyExistsException&lt;/a&gt; — file already exists at the path.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../illegalaccessexception"&gt;SecurityException&lt;/a&gt; — security manager denied path access.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

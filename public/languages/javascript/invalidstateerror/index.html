@@ -1,0 +1,126 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] JavaScript InvalidStateError — Invalid Object State Fix | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix JavaScript InvalidStateError when an object is not in the correct state for the requested operation. Check readiness, lifecycle, and initialization order."><link rel=canonical href=https://errorcode.excellentwiki.com/languages/javascript/invalidstateerror/><meta property="og:title" content="[Solution] JavaScript InvalidStateError — Invalid Object State Fix"><meta property="og:description" content="Fix JavaScript InvalidStateError when an object is not in the correct state for the requested operation. Check readiness, lifecycle, and initialization order."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/languages/javascript/invalidstateerror/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] JavaScript InvalidStateError — Invalid Object State Fix"><meta name=twitter:description content="Fix JavaScript InvalidStateError when an object is not in the correct state for the requested operation. Check readiness, lifecycle, and initialization order."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/languages/>Languages</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] JavaScript InvalidStateError — Invalid Object State Fix</span></nav><h1 id=invalidstateerror--invalid-object-state-fix>InvalidStateError — Invalid Object State Fix</h1><p>An <code>InvalidStateError</code> is thrown when an operation is attempted on an object that is not in the required state. This commonly occurs with DOM APIs (WebSocket, MediaSource, XMLHttpRequest) when operations are called before the object is ready or after it has been closed.</p><h2 id=description>Description</h2><p>Common InvalidStateError messages include:</p><ul><li><code>InvalidStateError: The object is in an invalid state</code> — generic state mismatch.</li><li><code>InvalidStateError: Failed to execute 'send' on 'WebSocket': readyState is not OPEN</code> — WebSocket not connected.</li><li><code>InvalidStateError: Cannot set the playbackRate when the media is not ready</code> — media element not loaded.</li><li><code>InvalidStateError: An attempt was made to use an object that is not, or is no longer, usable</code> — closed stream or connection.</li></ul><h2 id=common-causes>Common Causes</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#75715e>// Cause 1: Sending on a WebSocket before it&#39;s open
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ws</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WebSocket</span>(<span style=color:#e6db74>&#34;wss://example.com&#34;</span>);
+</span></span><span style=display:flex><span><span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>send</span>(<span style=color:#e6db74>&#34;hello&#34;</span>);  <span style=color:#75715e>// InvalidStateError: readyState is CONNECTING (0)
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 2: Calling methods on a closed connection
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ws2</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WebSocket</span>(<span style=color:#e6db74>&#34;wss://example.com&#34;</span>);
+</span></span><span style=display:flex><span><span style=color:#a6e22e>ws2</span>.<span style=color:#a6e22e>close</span>();
+</span></span><span style=display:flex><span><span style=color:#a6e22e>ws2</span>.<span style=color:#a6e22e>send</span>(<span style=color:#e6db74>&#34;hello&#34;</span>);  <span style=color:#75715e>// InvalidStateError: readyState is CLOSED (3)
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 3: Playing media before it has loaded enough data
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>video</span> <span style=color:#f92672>=</span> document.<span style=color:#a6e22e>getElementById</span>(<span style=color:#e6db74>&#34;video&#34;</span>);
+</span></span><span style=display:flex><span><span style=color:#a6e22e>video</span>.<span style=color:#a6e22e>play</span>();  <span style=color:#75715e>// InvalidStateError if no source is set or data hasn&#39;t loaded
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 4: Modifying a closed ReadableStream
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>stream</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ReadableStream</span>({ <span style=color:#a6e22e>start</span>(<span style=color:#a6e22e>c</span>) { <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>close</span>(); } });
+</span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>reader</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>stream</span>.<span style=color:#a6e22e>getReader</span>();
+</span></span><span style=display:flex><span><span style=color:#a6e22e>reader</span>.<span style=color:#a6e22e>read</span>();  <span style=color:#75715e>// InvalidStateError: stream is closed
+</span></span></span></code></pre></div><h2 id=solutions>Solutions</h2><h3 id=fix-1-wait-for-the-websocket-to-open-before-sending>Fix 1: Wait for the WebSocket to open before sending</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>createWebSocket</span>(<span style=color:#a6e22e>url</span>, <span style=color:#a6e22e>onMessage</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ws</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WebSocket</span>(<span style=color:#a6e22e>url</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>messageQueue</span> <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>addEventListener</span>(<span style=color:#e6db74>&#34;open&#34;</span>, () =&gt; {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;WebSocket connected&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Send any queued messages
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#a6e22e>messageQueue</span>.<span style=color:#a6e22e>length</span> <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>msg</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>messageQueue</span>.<span style=color:#a6e22e>shift</span>();
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>msg</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>addEventListener</span>(<span style=color:#e6db74>&#34;message&#34;</span>, (<span style=color:#a6e22e>event</span>) =&gt; {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>onMessage</span>(<span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>data</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>addEventListener</span>(<span style=color:#e6db74>&#34;error&#34;</span>, (<span style=color:#a6e22e>err</span>) =&gt; {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>error</span>(<span style=color:#e6db74>&#34;WebSocket error:&#34;</span>, <span style=color:#a6e22e>err</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Safe send: queues if not yet open
+</span></span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>readyState</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>WebSocket</span>.<span style=color:#a6e22e>OPEN</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>data</span>);
+</span></span><span style=display:flex><span>      } <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>messageQueue</span>.<span style=color:#a6e22e>push</span>(<span style=color:#a6e22e>data</span>);
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>close</span>() {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>close</span>();
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>  };
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>socket</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>createWebSocket</span>(<span style=color:#e6db74>&#34;wss://example.com&#34;</span>, (<span style=color:#a6e22e>msg</span>) =&gt; {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Received:&#34;</span>, <span style=color:#a6e22e>msg</span>);
+</span></span><span style=display:flex><span>});
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>socket</span>.<span style=color:#a6e22e>send</span>(<span style=color:#e6db74>&#34;hello&#34;</span>);  <span style=color:#75715e>// safe: queued if not connected
+</span></span></span></code></pre></div><h3 id=fix-2-check-readystate-before-websocket-operations>Fix 2: Check readyState before WebSocket operations</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>safeWsSend</span>(<span style=color:#a6e22e>ws</span>, <span style=color:#a6e22e>data</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>readyState</span> <span style=color:#f92672>!==</span> <span style=color:#a6e22e>WebSocket</span>.<span style=color:#a6e22e>OPEN</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>error</span>(<span style=color:#e6db74>&#34;WebSocket is not open. Current state:&#34;</span>, <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>readyState</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>ws</span>.<span style=color:#a6e22e>send</span>(<span style=color:#a6e22e>data</span>);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>true</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-3-wait-for-media-readiness-before-playback>Fix 3: Wait for media readiness before playback</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>video</span> <span style=color:#f92672>=</span> document.<span style=color:#a6e22e>getElementById</span>(<span style=color:#e6db74>&#34;my-video&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>video</span>.<span style=color:#a6e22e>addEventListener</span>(<span style=color:#e6db74>&#34;canplay&#34;</span>, () =&gt; {
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Now safe to call play()
+</span></span></span><span style=display:flex><span>  <span style=color:#a6e22e>video</span>.<span style=color:#a6e22e>play</span>().<span style=color:#66d9ef>catch</span>((<span style=color:#a6e22e>err</span>) =&gt; {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>error</span>(<span style=color:#e6db74>&#34;Playback failed:&#34;</span>, <span style=color:#a6e22e>err</span>.<span style=color:#a6e22e>message</span>);
+</span></span><span style=display:flex><span>  });
+</span></span><span style=display:flex><span>});
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Also check if source is set
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>video</span>.<span style=color:#a6e22e>src</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>error</span>(<span style=color:#e6db74>&#34;No media source set — add a &lt;source&gt; or set video.src&#34;</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-4-handle-readablestream-lifecycle-correctly>Fix 4: Handle ReadableStream lifecycle correctly</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>processStream</span>(<span style=color:#a6e22e>readableStream</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>reader</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>readableStream</span>.<span style=color:#a6e22e>getReader</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>try</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>done</span>, <span style=color:#a6e22e>value</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>reader</span>.<span style=color:#a6e22e>read</span>();
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>done</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#34;Stream finished&#34;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>processChunk</span>(<span style=color:#a6e22e>value</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  } <span style=color:#66d9ef>catch</span> (<span style=color:#a6e22e>err</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>err</span>.<span style=color:#a6e22e>name</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#34;InvalidStateError&#34;</span>) {
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>error</span>(<span style=color:#e6db74>&#34;Stream was closed or locked during read&#34;</span>);
+</span></span><span style=display:flex><span>    } <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>throw</span> <span style=color:#a6e22e>err</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  } <span style=color:#66d9ef>finally</span> {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>reader</span>.<span style=color:#a6e22e>releaseLock</span>();
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-javascript data-lang=javascript><span style=display:flex><span><span style=color:#75715e>// InvalidStateError when sending XHR after abort
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>xhr</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>XMLHttpRequest</span>();
+</span></span><span style=display:flex><span><span style=color:#a6e22e>xhr</span>.<span style=color:#a6e22e>open</span>(<span style=color:#e6db74>&#34;GET&#34;</span>, <span style=color:#e6db74>&#34;/api/data&#34;</span>);
+</span></span><span style=display:flex><span><span style=color:#a6e22e>xhr</span>.<span style=color:#a6e22e>abort</span>();  <span style=color:#75715e>// abort the request
+</span></span></span><span style=display:flex><span><span style=color:#a6e22e>xhr</span>.<span style=color:#a6e22e>send</span>();   <span style=color:#75715e>// InvalidStateError: request already aborted
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Fix: check readyState before sending
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>xhr</span>.<span style=color:#a6e22e>readyState</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>XMLHttpRequest</span>.<span style=color:#a6e22e>OPENED</span>) {
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>xhr</span>.<span style=color:#a6e22e>send</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/languages/javascript/aborterror/>AbortError</a> — operation was intentionally cancelled.</li><li><a href=/languages/javascript/notallowederror/>NotAllowedError</a> — operation was not permitted.</li><li><a href=/languages/javascript/err_stream_destroyed/>ERR_STREAM_DESTROYED</a> — stream has already been destroyed.</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

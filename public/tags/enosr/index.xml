@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Enosr on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/enosr/</link><description>Recent content in Enosr on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/enosr/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C errno 48 ENOSR — No STREAMS buffers</title><link>https://errorcode.excellentwiki.com/languages/c/errno-48/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-48/</guid><description>&lt;h1 id="solution-c-errno-48-enosr--no-streams-buffers"&gt;[Solution] C errno 48 ENOSR — No STREAMS buffers&lt;/h1&gt;
+&lt;p&gt;No STREAMS buffers occurs when a system call fails and sets &lt;code&gt;errno&lt;/code&gt; to 48. This error indicates that the requested operation cannot be performed due to the specific condition described by ENOSR.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Insufficient STREAMS memory buffers for message allocation.&lt;/li&gt;
+&lt;li&gt;Too many STREAMS messages queued.&lt;/li&gt;
+&lt;li&gt;STREAMS memory exhausted due to high throughput.&lt;/li&gt;
+&lt;li&gt;Flow control preventing buffer allocation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stropts.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;errno.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/dev/streams/pipe&amp;#34;&lt;/span&gt;, O_RDONLY);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (fd &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;open&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;char&lt;/span&gt; buf[&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;ssize_t&lt;/span&gt; n &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;read&lt;/span&gt;(fd, buf, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(buf));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (n &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; errno &lt;span style="color:#f92672"&gt;==&lt;/span&gt; ENOSR) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;No STREAMS buffers available&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(fd);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;errno.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; FILE &lt;span style="color:#f92672"&gt;*&lt;/span&gt;fp &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;popen&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;long_running_command&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;r&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (fp &lt;span style="color:#f92672"&gt;==&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;popen&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;char&lt;/span&gt; buf[&lt;span style="color:#ae81ff"&gt;256&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;fgets&lt;/span&gt;(buf, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(buf), fp) &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;printf&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;%s&amp;#34;&lt;/span&gt;, buf);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;pclose&lt;/span&gt;(fp);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-12/"&gt;errno-12 ENOMEM&lt;/a&gt; — cannot allocate memory.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-48/"&gt;errno-48 ENOSR&lt;/a&gt; — no STREAMS buffers (self).&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-11/"&gt;errno-11 EAGAIN&lt;/a&gt; — resource unavailable.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C errno ENOSR — No STREAMS buffers available Fix</title><link>https://errorcode.excellentwiki.com/languages/c/errno-enosr/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-enosr/</guid><description>&lt;h1 id="solution-c-errno-enosr--no-streams-buffers-available-fix"&gt;[Solution] C errno ENOSR — No STREAMS buffers available Fix&lt;/h1&gt;
+&lt;p&gt;When &lt;code&gt;putmsg()&lt;/code&gt; or &lt;code&gt;putpmsg()&lt;/code&gt; is called and the system cannot allocate a STREAMS data buffer because the buffer pool is exhausted, the call fails and sets &lt;code&gt;errno&lt;/code&gt; to &lt;code&gt;ENOSR&lt;/code&gt;. This error indicates the STREAMS data buffer pool is empty.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The STREAMS data buffer pool has been exhausted by high-volume I/O.&lt;/li&gt;
+&lt;li&gt;STREAMS buffers are leaked by modules that fail to free them.&lt;/li&gt;
+&lt;li&gt;The system-wide STREAMS buffer limit is too low for the workload.&lt;/li&gt;
+&lt;li&gt;Multiple STREAMS-based connections are consuming all available buffers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Reduce STREAMS buffer usage, increase buffer pool limits, or wait and retry.&lt;/p&gt;</description></item><item><title>[Solution] C errno ENOSR — No STREAMS resources (alternate) Fix</title><link>https://errorcode.excellentwiki.com/languages/c/errno-enosr-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-enosr-2/</guid><description>&lt;h1 id="solution-c-errno-enosr--no-streams-resources-alternate-fix"&gt;[Solution] C errno ENOSR — No STREAMS resources (alternate) Fix&lt;/h1&gt;
+&lt;p&gt;This is an alternate variant of &lt;code&gt;ENOSR&lt;/code&gt; indicating that STREAMS resources (message blocks, not data buffers) are exhausted. When &lt;code&gt;putmsg()&lt;/code&gt; or other STREAMS operations require a message block and none are available, &lt;code&gt;errno&lt;/code&gt; is set to &lt;code&gt;ENOSR&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The STREAMS message block pool is exhausted.&lt;/li&gt;
+&lt;li&gt;Multiple STREAMS connections are consuming all available message blocks.&lt;/li&gt;
+&lt;li&gt;STREAMS modules are not properly releasing message blocks.&lt;/li&gt;
+&lt;li&gt;System-wide STREAMS resource limits are too low.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Reduce STREAMS usage, increase resource limits, or implement backpressure mechanisms.&lt;/p&gt;</description></item><item><title>[Solution] Linux ENOSR (errno 48) — No STREAMS Buffers Available Fix</title><link>https://errorcode.excellentwiki.com/os/linux/errno-48/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/errno-48/</guid><description>&lt;h1 id="linux-enosr-errno-48--no-streams-buffers-available"&gt;Linux ENOSR (errno 48) — No STREAMS Buffers Available&lt;/h1&gt;
+&lt;p&gt;ENOSR (errno 48) means the system cannot allocate STREAMS message buffers. This error occurs when &lt;code&gt;getmsg()&lt;/code&gt; or &lt;code&gt;getpmsg()&lt;/code&gt; is called but the kernel has exhausted its pool of STREAMS message buffers. It is distinct from ENOMEM (errno 12) because ENOSR specifically refers to STREAMS buffer allocation.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The STREAMS buffer pool is exhausted due to high message volume&lt;/li&gt;
+&lt;li&gt;Memory pressure prevents allocation of new STREAMS buffers&lt;/li&gt;
+&lt;li&gt;A process is consuming STREAMS buffers without releasing them&lt;/li&gt;
+&lt;li&gt;The STREAMS buffer configuration is too low for the workload&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix-enosr"&gt;How to Fix ENOSR&lt;/h2&gt;
+&lt;h3 id="1-check-streams-buffer-usage"&gt;1. Check STREAMS Buffer Usage&lt;/h3&gt;
+&lt;p&gt;Monitor STREAMS buffer allocation:&lt;/p&gt;</description></item></channel></rss>

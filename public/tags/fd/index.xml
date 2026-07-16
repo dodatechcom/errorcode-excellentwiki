@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Fd on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/fd/</link><description>Recent content in Fd on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/fd/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Bash Process Substitution Failed Error</title><link>https://errorcode.excellentwiki.com/languages/bash/process-substitution/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/process-substitution/</guid><description>&lt;h1 id="bash-process-substitution-failed-error-fix"&gt;Bash Process Substitution Failed Error Fix&lt;/h1&gt;
+&lt;p&gt;This error occurs when Bash cannot create a file descriptor for process substitution using &lt;code&gt;&amp;lt;()&lt;/code&gt; or &lt;code&gt;&amp;gt;()&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Process substitution lets you treat a command&amp;rsquo;s output (or input) as a file. Bash creates a temporary file descriptor and runs the command asynchronously. When the system runs out of file descriptors or the command fails to start, this error occurs.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;File descriptor exhaustion&lt;/strong&gt; — too many open files or process substitutions.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Command doesn&amp;rsquo;t exist&lt;/strong&gt; — the process inside &lt;code&gt;&amp;lt;()&lt;/code&gt; can&amp;rsquo;t be executed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pipe or FIFO failure&lt;/strong&gt; — system can&amp;rsquo;t create the named pipe.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Running too many parallel substitutions&lt;/strong&gt; — resource limits hit.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-increase-file-descriptor-limits"&gt;Fix 1: Increase file descriptor limits&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check current limit&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ulimit -n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Increase temporarily&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ulimit -n &lt;span style="color:#ae81ff"&gt;4096&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-close-unused-file-descriptors"&gt;Fix 2: Close unused file descriptors&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Open and close within a function&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;run_process&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; exec 3&amp;lt; &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;some_command&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# Use fd 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cat &amp;lt;&amp;amp;&lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; exec 3&amp;lt;&amp;amp;- &lt;span style="color:#75715e"&gt;# Close fd 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-verify-the-command-inside-process-substitution-exists"&gt;Fix 3: Verify the command inside process substitution exists&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check before using&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; command -v mycommand &amp;amp;&amp;gt;/dev/null; &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; diff &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;mycommand file1&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;mycommand file2&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;mycommand not found&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-alternative-approaches-for-resource-constrained-environments"&gt;Fix 4: Use alternative approaches for resource-constrained environments&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Instead of&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;diff &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;cmd1&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;cmd2&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use temporary files&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cmd1 &amp;gt; /tmp/out1.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cmd2 &amp;gt; /tmp/out2.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;diff /tmp/out1.txt /tmp/out2.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rm -f /tmp/out1.txt /tmp/out2.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ diff &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;ls dir1&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;ls dir2&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Works if both directories exist&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ diff &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;nonexistent_command&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;ls /tmp&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;bash: process substitution failed: nonexistent_command
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ &lt;span style="color:#75715e"&gt;# Too many open file descriptors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; i in &lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;seq &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; 10000&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;test&amp;#34;&lt;/span&gt; | cat &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;$i&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;done&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="no-such-file"&gt;No Such File or Directory&lt;/a&gt; — command inside substitution doesn&amp;rsquo;t exist.&lt;/li&gt;
+&lt;li&gt;&lt;a href="pipe-failure"&gt;Pipe Failure&lt;/a&gt; — issues with pipes and file descriptors.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Linux EBADF (errno 9) — Bad File Descriptor Fix</title><link>https://errorcode.excellentwiki.com/os/linux/errno-9/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/errno-9/</guid><description>&lt;h1 id="linux-ebadf-errno-9--bad-file-descriptor"&gt;Linux EBADF (errno 9) — Bad File Descriptor&lt;/h1&gt;
+&lt;p&gt;EBADF (errno 9) means you passed a file descriptor to a system call that is not valid. The descriptor may have never been opened, already been closed, or never existed at all. This error appears with calls like &lt;code&gt;read()&lt;/code&gt;, &lt;code&gt;write()&lt;/code&gt;, &lt;code&gt;close()&lt;/code&gt;, &lt;code&gt;dup()&lt;/code&gt;, &lt;code&gt;fcntl()&lt;/code&gt;, &lt;code&gt;ioctl()&lt;/code&gt;, &lt;code&gt;mmap()&lt;/code&gt;, and &lt;code&gt;send()&lt;/code&gt;/&lt;code&gt;recv()&lt;/code&gt;. It often signals a bug in resource management within your code.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Closing a file descriptor twice (double-close bug)&lt;/li&gt;
+&lt;li&gt;Using a file descriptor after calling &lt;code&gt;close()&lt;/code&gt; on it&lt;/li&gt;
+&lt;li&gt;Passing -1 or an uninitialized variable as a file descriptor&lt;/li&gt;
+&lt;li&gt;Attempting to read/write on a descriptor that was never successfully opened&lt;/li&gt;
+&lt;li&gt;A failed &lt;code&gt;open()&lt;/code&gt;, &lt;code&gt;socket()&lt;/code&gt;, or &lt;code&gt;pipe()&lt;/code&gt; was not checked before use&lt;/li&gt;
+&lt;li&gt;File descriptor table overflow causing &lt;code&gt;open()&lt;/code&gt; to return -1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix-ebadf"&gt;How to Fix EBADF&lt;/h2&gt;
+&lt;h3 id="1-check-return-values-before-using-file-descriptors"&gt;1. Check Return Values Before Using File Descriptors&lt;/h3&gt;
+&lt;p&gt;Always verify that &lt;code&gt;open()&lt;/code&gt;, &lt;code&gt;socket()&lt;/code&gt;, &lt;code&gt;pipe()&lt;/code&gt;, or &lt;code&gt;dup()&lt;/code&gt; succeeded:&lt;/p&gt;</description></item></channel></rss>

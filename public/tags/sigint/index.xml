@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Sigint on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/sigint/</link><description>Recent content in Sigint on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/sigint/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Ruby SignalException — Signal Handling Fix</title><link>https://errorcode.excellentwiki.com/languages/ruby/signal-exception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/ruby/signal-exception/</guid><description>&lt;h1 id="signalexception--signal-handling-fix"&gt;SignalException — Signal Handling Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;SignalException&lt;/code&gt; is raised when a signal is received by the Ruby process. &lt;code&gt;Interrupt&lt;/code&gt; is a subclass raised by &lt;code&gt;SIGINT&lt;/code&gt; (Ctrl+C).&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;SignalException&lt;/code&gt; is the parent class for signal-related exceptions. When the process receives a signal (like &lt;code&gt;SIGTERM&lt;/code&gt;, &lt;code&gt;SIGINT&lt;/code&gt;, &lt;code&gt;SIGHUP&lt;/code&gt;), Ruby raises &lt;code&gt;SignalException&lt;/code&gt;. The &lt;code&gt;Interrupt&lt;/code&gt; class is a specific subclass for &lt;code&gt;SIGINT&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Common scenarios:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SIGTERM&lt;/strong&gt; — graceful shutdown signal from process managers.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SIGINT&lt;/strong&gt; — user interrupt (Ctrl+C).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SIGHUP&lt;/strong&gt; — terminal hangup, often used for config reload.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SIGUSR1/SIGUSR2&lt;/strong&gt; — user-defined signals for custom actions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 1: Default signal handling&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Most signals have default handlers that terminate the process&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 2: Custom signal handlers that raise&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;USR1&amp;#34;&lt;/span&gt;) { &lt;span style="color:#66d9ef"&gt;raise&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SignalException&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;USR1&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 3: Unhandled signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If no handler is set, default behavior applies&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 4: Signal during critical section&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Signal arrives while holding a lock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-handle-specific-signals"&gt;Fix 1: Handle specific signals&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;TERM&amp;#34;&lt;/span&gt;) { puts &lt;span style="color:#e6db74"&gt;&amp;#34;Received SIGTERM, shutting down...&amp;#34;&lt;/span&gt;; exit &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;INT&amp;#34;&lt;/span&gt;) { puts &lt;span style="color:#e6db74"&gt;&amp;#34;Received SIGINT, shutting down...&amp;#34;&lt;/span&gt;; exit &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;HUP&amp;#34;&lt;/span&gt;) { reload_config }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;USR1&amp;#34;&lt;/span&gt;) { rotate_logs }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-graceful-shutdown-pattern"&gt;Fix 2: Use graceful shutdown pattern&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;@running &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;TERM&amp;#34;&lt;/span&gt;) { @running &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;INT&amp;#34;&lt;/span&gt;) { @running &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; @running
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; process_next_item
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sleep &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;puts &lt;span style="color:#e6db74"&gt;&amp;#34;Shutting down gracefully...&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-block-signals-during-critical-sections"&gt;Fix 3: Block signals during critical sections&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;critical_operation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Mutex&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;USR1&amp;#34;&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize { perform_action }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; perform_sensitive_operation
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-handle-signals-with-cleanup"&gt;Fix 4: Handle signals with cleanup&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Signal&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;trap(&lt;span style="color:#e6db74"&gt;&amp;#34;INT&amp;#34;&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;begin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cleanup
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;rescue&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; e
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; puts &lt;span style="color:#e6db74"&gt;&amp;#34;Error during cleanup: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;#{&lt;/span&gt;e&lt;span style="color:#f92672"&gt;.&lt;/span&gt;message&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; exit &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="interrupt"&gt;Interrupt&lt;/a&gt; — SIGINT (Ctrl+C) specifically.&lt;/li&gt;
+&lt;li&gt;&lt;a href="systemexit"&gt;SystemExit&lt;/a&gt; — program exit via &lt;code&gt;exit&lt;/code&gt; method.&lt;/li&gt;
+&lt;li&gt;&lt;a href="broken-pipe"&gt;Errno::EPIPE&lt;/a&gt; — broken pipe (related to SIGPIPE).&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

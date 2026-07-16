@@ -1,0 +1,95 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] Linux iptables 'No chain/target/match' Error — Firewall Fix | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix Linux iptables 'No chain/target/match by that name' errors. Resolve firewall rule issues, missing modules, and iptables configuration problems."><link rel=canonical href=https://errorcode.excellentwiki.com/os/linux/iptables-error/><meta property="og:title" content="[Solution] Linux iptables 'No chain/target/match' Error — Firewall Fix"><meta property="og:description" content="Fix Linux iptables 'No chain/target/match by that name' errors. Resolve firewall rule issues, missing modules, and iptables configuration problems."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/os/linux/iptables-error/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] Linux iptables 'No chain/target/match' Error — Firewall Fix"><meta name=twitter:description content="Fix Linux iptables 'No chain/target/match by that name' errors. Resolve firewall rule issues, missing modules, and iptables configuration problems."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/os/>Os</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] Linux iptables 'No chain/target/match' Error — Firewall Fix</span></nav><h1 id=linux-iptables-no-chaintargetmatch-by-that-name>Linux: iptables: No chain/target/match by that name</h1><p>The <code>iptables: No chain/target/match by that name</code> error means iptables cannot find the specified chain, target, or match module. This happens when a required kernel module is not loaded, the iptables version doesn&rsquo;t support a feature, the syntax is wrong, or you&rsquo;re trying to use a match/target that isn&rsquo;t installed. It can also occur if the kernel was updated without matching iptables modules.</p><h2 id=common-causes>Common Causes</h2><ul><li>Required kernel module not loaded (e.g., <code>xt_state</code>, <code>xt_conntrack</code>)</li><li>iptables version mismatch with kernel modules</li><li>Incorrect iptables syntax or typo in chain/target name</li><li>Using a match or target from an uninstalled package (e.g., <code>iptables-persistent</code>)</li><li>Kernel updated without matching netfilter modules</li><li>Trying to use iptables on a system using nftables backend</li></ul><h2 id=how-to-fix>How to Fix</h2><h3 id=1-check-loaded-kernel-modules>1. Check Loaded Kernel Modules</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># List loaded netfilter modules</span>
+</span></span><span style=display:flex><span>lsmod | grep -E <span style=color:#e6db74>&#39;ip_|nf_|xt_|ipt_&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check if the specific module exists</span>
+</span></span><span style=display:flex><span>modprobe -n -v xt_conntrack
+</span></span></code></pre></div><h3 id=2-load-missing-modules>2. Load Missing Modules</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Load the state module (commonly needed)</span>
+</span></span><span style=display:flex><span>sudo modprobe xt_state
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Load connection tracking</span>
+</span></span><span style=display:flex><span>sudo modprobe xt_conntrack
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Load common match modules</span>
+</span></span><span style=display:flex><span>sudo modprobe xt_tcpudp
+</span></span><span style=display:flex><span>sudo modprobe xt_LOG
+</span></span><span style=display:flex><span>sudo modprobe xt_REJECT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Load NAT modules</span>
+</span></span><span style=display:flex><span>sudo modprobe ipt_MASQUERADE
+</span></span><span style=display:flex><span>sudo modprobe iptable_nat
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Make modules load on boot</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;xt_state&#34;</span> | sudo tee -a /etc/modules
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;xt_conntrack&#34;</span> | sudo tee -a /etc/modules
+</span></span></code></pre></div><h3 id=3-check-iptables-version>3. Check iptables Version</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Check iptables version</span>
+</span></span><span style=display:flex><span>iptables --version
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># List available targets</span>
+</span></span><span style=display:flex><span>iptables -j | head -20
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># List available matches</span>
+</span></span><span style=display:flex><span>iptables -m help 2&gt;&amp;<span style=color:#ae81ff>1</span> | head -20
+</span></span></code></pre></div><h3 id=4-fix-syntax-errors>4. Fix Syntax Errors</h3><p>Common iptables syntax mistakes:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Wrong: misspelled chain</span>
+</span></span><span style=display:flex><span>iptables -A INPUF -p tcp --dport <span style=color:#ae81ff>80</span> -j ACCEPT
+</span></span><span style=display:flex><span><span style=color:#75715e># Correct:</span>
+</span></span><span style=display:flex><span>iptables -A INPUT -p tcp --dport <span style=color:#ae81ff>80</span> -j ACCEPT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Wrong: missing dash before option</span>
+</span></span><span style=display:flex><span>iptables -A INPUT ptcp --dport <span style=color:#ae81ff>80</span> -j ACCEPT
+</span></span><span style=display:flex><span><span style=color:#75715e># Correct:</span>
+</span></span><span style=display:flex><span>iptables -A INPUT -p tcp --dport <span style=color:#ae81ff>80</span> -j ACCEPT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check existing rules to see correct syntax</span>
+</span></span><span style=display:flex><span>iptables -L -n -v
+</span></span></code></pre></div><h3 id=5-handle-iptablesnftables-conflict>5. Handle iptables/nftables Conflict</h3><p>Modern systems may use nftables as the backend:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Check if nftables is the backend</span>
+</span></span><span style=display:flex><span>iptables --version
+</span></span><span style=display:flex><span><span style=color:#75715e># If it says &#34;nf_tables&#34; backend, nftables is being used</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check nftables rules</span>
+</span></span><span style=display:flex><span>sudo nft list ruleset
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Switch to iptables-legacy if needed</span>
+</span></span><span style=display:flex><span>sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+</span></span><span style=display:flex><span>sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+</span></span></code></pre></div><h3 id=6-install-required-packages>6. Install Required Packages</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Debian/Ubuntu</span>
+</span></span><span style=display:flex><span>sudo apt install iptables iptables-persistent
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># RHEL/CentOS/Fedora</span>
+</span></span><span style=display:flex><span>sudo dnf install iptables iptables-services
+</span></span></code></pre></div><h3 id=7-reset-iptables-rules>7. Reset iptables Rules</h3><p>If rules are corrupted:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Flush all rules</span>
+</span></span><span style=display:flex><span>sudo iptables -F
+</span></span><span style=display:flex><span>sudo iptables -X
+</span></span><span style=display:flex><span>sudo iptables -t nat -F
+</span></span><span style=display:flex><span>sudo iptables -t nat -X
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Set default policies</span>
+</span></span><span style=display:flex><span>sudo iptables -P INPUT ACCEPT
+</span></span><span style=display:flex><span>sudo iptables -P FORWARD ACCEPT
+</span></span><span style=display:flex><span>sudo iptables -P OUTPUT ACCEPT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Save clean rules</span>
+</span></span><span style=display:flex><span>sudo iptables-save &gt; /etc/iptables/rules.v4
+</span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>$ sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+</span></span><span style=display:flex><span>iptables: No chain/target/match by that name.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ lsmod | grep xt_state
+</span></span><span style=display:flex><span><span style=color:#75715e># No output — module not loaded</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ sudo modprobe xt_state
+</span></span><span style=display:flex><span>$ sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+</span></span><span style=display:flex><span><span style=color:#75715e># Works now</span>
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/os/linux/connection-refused7/>Connection refused</a> — Firewall blocking connections</li><li><a href=/os/linux/selinux-denied/>SELinux denied</a> — Security policy blocking access</li><li><a href=/os/linux/nfs-error/>NFS not responding</a> — NFS firewall issues</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

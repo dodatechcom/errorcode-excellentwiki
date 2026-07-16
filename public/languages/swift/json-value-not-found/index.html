@@ -1,0 +1,107 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] Swift Error — JSON Value Not Found | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix Swift JSON value not found errors during decoding. Learn why null values and missing optional fields cause DecodingError.valueNotFound."><link rel=canonical href=https://errorcode.excellentwiki.com/languages/swift/json-value-not-found/><meta property="og:title" content="[Solution] Swift Error — JSON Value Not Found"><meta property="og:description" content="Fix Swift JSON value not found errors during decoding. Learn why null values and missing optional fields cause DecodingError.valueNotFound."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/languages/swift/json-value-not-found/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] Swift Error — JSON Value Not Found"><meta name=twitter:description content="Fix Swift JSON value not found errors during decoding. Learn why null values and missing optional fields cause DecodingError.valueNotFound."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/languages/>Languages</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] Swift Error — JSON Value Not Found</span></nav><h1 id=json-value-not-found>JSON Value Not Found</h1><p>This error occurs when <code>JSONDecoder</code> encounters a <code>null</code> JSON value for a non-optional Swift property. The key exists but its value is <code>null</code>, which cannot be assigned to a non-optional type.</p><h2 id=description>Description</h2><p>Unlike &ldquo;key not found&rdquo; (the key is absent entirely), &ldquo;value not found&rdquo; means the key exists but has a <code>null</code> value. In JSON, <code>{"name": null}</code> is different from <code>{}</code>. Swift&rsquo;s <code>DecodingError.valueNotFound</code> is thrown when a non-optional property receives <code>null</code>.</p><p>Common patterns:</p><ul><li><strong>Nullable API fields</strong> — API returns <code>null</code> for optional fields in Swift.</li><li><strong>Incomplete data</strong> — partial responses with null placeholders.</li><li><strong>Conditional nullability</strong> — same field is sometimes present, sometimes null.</li><li><strong>Nested null objects</strong> — parent key present but value is <code>null</code>.</li></ul><h2 id=common-causes>Common Causes</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#75715e>// Cause 1: Null value for non-optional</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>User</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> email: String
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> json = #<span style=color:#e6db74>&#34;{&#34;</span>name<span style=color:#e6db74>&#34;: &#34;</span>Alice<span style=color:#e6db74>&#34;, &#34;</span>email<span style=color:#e6db74>&#34;: null}&#34;</span>#.data(using: .utf8)<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> user = <span style=color:#66d9ef>try</span> JSONDecoder().decode(User.<span style=color:#66d9ef>self</span>, from: json)
+</span></span><span style=display:flex><span><span style=color:#75715e>// DecodingError.valueNotFound(String.self, ...)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 2: Null in nested object</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Address</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> city: String
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Profile</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> address: Address?
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> json = #<span style=color:#e6db74>&#34;{&#34;</span>address<span style=color:#e6db74>&#34;: null}&#34;</span>#.data(using: .utf8)<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// This actually works — Address? is optional</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// But if Address itself had non-optional fields...</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 3: Null in array elements</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Response</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> items: [String]
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> json = #<span style=color:#e6db74>&#34;{&#34;</span>items<span style=color:#e6db74>&#34;: [null, &#34;</span>hello<span style=color:#e6db74>&#34;]}&#34;</span>#.data(using: .utf8)<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// DecodingError.valueNotFound(String.self, ...)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 4: Server returning null for deleted fields</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Record</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> id: Int
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> deletedAt: Date
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> json = #<span style=color:#e6db74>&#34;{&#34;</span>id<span style=color:#e6db74>&#34;: 1, &#34;</span>deletedAt<span style=color:#e6db74>&#34;: null}&#34;</span>#
+</span></span><span style=display:flex><span><span style=color:#75715e>// DecodingError.valueNotFound(Date.self, ...)</span>
+</span></span></code></pre></div><h2 id=how-to-fix>How to Fix</h2><h3 id=fix-1-make-nullable-properties-optional>Fix 1: Make nullable properties optional</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>User</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> email: String? <span style=color:#75715e>// Can handle null</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-2-use-custom-init-with-null-handling>Fix 2: Use custom init with null handling</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>User</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> email: String
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>init</span>(from decoder: Decoder) <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> container = <span style=color:#66d9ef>try</span> decoder.container(keyedBy: CodingKeys.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>        name = <span style=color:#66d9ef>try</span> container.decode(String.<span style=color:#66d9ef>self</span>, forKey: .name)
+</span></span><span style=display:flex><span>        email = <span style=color:#66d9ef>try</span> container.decodeIfPresent(String.<span style=color:#66d9ef>self</span>, forKey: .email) ?? <span style=color:#e6db74>&#34;&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-3-use-a-null-safe-wrapper>Fix 3: Use a null-safe wrapper</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>NullSafe</span>&lt;T: Codable&gt;: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> value: T?
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>init</span>(from decoder: Decoder) <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> container = <span style=color:#66d9ef>try</span> decoder.singleValueContainer()
+</span></span><span style=display:flex><span>        value = <span style=color:#66d9ef>try</span>? container.decode(T.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>encode</span>(to encoder: Encoder) <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>var</span> container = encoder.singleValueContainer()
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> container.encode(value)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>User</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> email: NullSafe&lt;String&gt;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-4-handle-null-in-arrays>Fix 4: Handle null in arrays</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Response</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> items: [String]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>init</span>(from decoder: Decoder) <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> container = <span style=color:#66d9ef>try</span> decoder.container(keyedBy: CodingKeys.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> rawItems = <span style=color:#66d9ef>try</span> container.decode([String?].<span style=color:#66d9ef>self</span>, forKey: .items)
+</span></span><span style=display:flex><span>        items = rawItems.compactMap { $0 }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#75715e>// Example 1: API returns null for optional timestamp</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Event</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> startTime: Date
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> json = #<span style=color:#e6db74>&#34;{&#34;</span>name<span style=color:#e6db74>&#34;: &#34;</span>Meeting<span style=color:#e6db74>&#34;, &#34;</span>startTime<span style=color:#e6db74>&#34;: null}&#34;</span>#
+</span></span><span style=display:flex><span><span style=color:#75715e>// DecodingError.valueNotFound — Date can&#39;t be null</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Example 2: Null in deeply nested JSON</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Config</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> database: Database
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Database</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> host: String
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> json = #<span style=color:#e6db74>&#34;{&#34;</span>database<span style=color:#e6db74>&#34;: {&#34;</span>host<span style=color:#e6db74>&#34;: null}}&#34;</span>#
+</span></span><span style=display:flex><span><span style=color:#75715e>// DecodingError.valueNotFound inside database.host</span>
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/languages/swift/json-key-not-found/>Key Not Found</a> — key entirely absent from JSON.</li><li><a href=/languages/swift/json-decoding/>DecodingError</a> — general JSON decoding error.</li><li><a href=/languages/swift/unexpected-nil/>Unexpectedly Found Nil</a> — nil in unexpected context.</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

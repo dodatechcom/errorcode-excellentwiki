@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Concurrency on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/concurrency/</link><description>Recent content in Concurrency on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/concurrency/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C++ std::atomic load — Atomic Operation Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/atomic-load/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/atomic-load/</guid><description>&lt;h1 id="solution-c-stdatomic-load--atomic-operation-fix"&gt;[Solution] C++ std::atomic load — Atomic Operation Fix&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;std::atomic::load()&lt;/code&gt; reads a value atomically from an atomic variable. While atomic operations themselves do not throw exceptions, incorrect usage — such as using non-atomic operations on shared data, using wrong memory ordering, or forgetting to initialize atomics — leads to data races and undefined behavior.&lt;/p&gt;
+&lt;h2 id="why-atomic-issues-occur"&gt;Why Atomic Issues Occur&lt;/h2&gt;
+&lt;p&gt;Common causes include using non-atomic operations on shared variables (data race), using &lt;code&gt;memory_order_relaxed&lt;/code&gt; when synchronization is needed, forgetting that &lt;code&gt;store&lt;/code&gt; and &lt;code&gt;load&lt;/code&gt; on non-lock-free atomics may involve locks, and using atomics when higher-level synchronization is simpler and safer.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::condition_variable — Condition Variable Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/condition-variable/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/condition-variable/</guid><description>&lt;h1 id="solution-c-stdcondition_variable--condition-variable-fix"&gt;[Solution] C++ std::condition_variable — Condition Variable Fix&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;std::condition_variable&lt;/code&gt; is used for thread synchronization — one thread waits for a condition while another signals it. Common bugs include spurious wakeups (waking without the condition being true), missed notifications (signaling before anyone is waiting), and deadlocks from holding the mutex during &lt;code&gt;wait&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="why-condition-variable-issues-occur"&gt;Why Condition Variable Issues Occur&lt;/h2&gt;
+&lt;p&gt;Common causes include not using a predicate with &lt;code&gt;wait()&lt;/code&gt; (causing spurious wakeup bugs), signaling without holding the associated mutex, holding the mutex while notifying (reducing concurrency), and using &lt;code&gt;notify_one&lt;/code&gt; when multiple threads may need to wake.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::future Already Retrieved — Double Get Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/future-already-retrieved/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/future-already-retrieved/</guid><description>&lt;h1 id="solution-c-stdfuture-already-retrieved--double-get-fix"&gt;[Solution] C++ std::future Already Retrieved — Double Get Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;std::future_error&lt;/code&gt; with &lt;code&gt;std::errc::future_already_retrieved&lt;/code&gt; is thrown when you call &lt;code&gt;get()&lt;/code&gt; on a &lt;code&gt;std::future&lt;/code&gt; that has already had &lt;code&gt;get()&lt;/code&gt; called on it. A &lt;code&gt;std::future&lt;/code&gt; can only have its value retrieved once — after that, the shared state is invalidated.&lt;/p&gt;
+&lt;h2 id="why-future-already-retrieved-occurs"&gt;Why Future Already Retrieved Occurs&lt;/h2&gt;
+&lt;p&gt;Common causes include calling &lt;code&gt;get()&lt;/code&gt; twice on the same future, attempting to retrieve the result in multiple code paths, and misunderstanding that &lt;code&gt;std::future&lt;/code&gt; is a one-shot value retrieval mechanism.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::future_error — Promise/Future Error Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/future-error-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/future-error-2/</guid><description>&lt;h1 id="solution-c-stdfuture_error--promisefuture-error-fix"&gt;[Solution] C++ std::future_error — Promise/Future Error Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;std::future_error&lt;/code&gt; is thrown when an operation on a &lt;code&gt;std::promise&lt;/code&gt;, &lt;code&gt;std::future&lt;/code&gt;, or &lt;code&gt;std::shared_future&lt;/code&gt; fails. Common conditions include calling &lt;code&gt;set_value&lt;/code&gt; on a promise that already has a value, calling &lt;code&gt;get()&lt;/code&gt; on a future with no shared state, and breaking a promise (destroying it without setting a value).&lt;/p&gt;
+&lt;h2 id="why-stdfuture_error-occurs"&gt;Why std::future_error Occurs&lt;/h2&gt;
+&lt;p&gt;Common causes include calling &lt;code&gt;set_value()&lt;/code&gt; twice on a &lt;code&gt;std::promise&lt;/code&gt;, calling &lt;code&gt;get()&lt;/code&gt; on a default-constructed future, destroying a promise without setting a value or exception, and calling &lt;code&gt;set_exception&lt;/code&gt; after &lt;code&gt;set_value&lt;/code&gt; has already been called.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::mutex try_lock — Mutex Lock Failure Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/mutex-try-lock/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/mutex-try-lock/</guid><description>&lt;h1 id="solution-c-stdmutex-try_lock--mutex-lock-failure-fix"&gt;[Solution] C++ std::mutex try_lock — Mutex Lock Failure Fix&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;std::mutex::try_lock()&lt;/code&gt; attempts to lock the mutex without blocking — it returns &lt;code&gt;false&lt;/code&gt; if the mutex is already locked. While &lt;code&gt;try_lock&lt;/code&gt; itself does not throw, &lt;code&gt;std::mutex::lock()&lt;/code&gt; throws &lt;code&gt;std::system_error&lt;/code&gt; with &lt;code&gt;resource_deadlock_would_occur&lt;/code&gt; if deadlock is detected, and improper use of try_lock can lead to missed critical sections or livelock.&lt;/p&gt;
+&lt;h2 id="why-mutex-lock-failures-occur"&gt;Why Mutex Lock Failures Occur&lt;/h2&gt;
+&lt;p&gt;Common causes include recursive locking without &lt;code&gt;std::recursive_mutex&lt;/code&gt;, deadlock from inconsistent lock ordering across threads, using &lt;code&gt;try_lock&lt;/code&gt; in a busy-wait loop without backoff, and calling &lt;code&gt;lock()&lt;/code&gt; on a mutex that the current thread already holds.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::packaged_task — Packaged Task Error Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/packaged-task/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/packaged-task/</guid><description>&lt;h1 id="solution-c-stdpackaged_task--packaged-task-error-fix"&gt;[Solution] C++ std::packaged_task — Packaged Task Error Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;std::packaged_task&lt;/code&gt; wraps a callable and associates it with a &lt;code&gt;std::future&lt;/code&gt;. Errors occur when you call the task twice (it can only be invoked once), call it without a stored function, or when the stored callable throws an exception. The exception is propagated through the associated future.&lt;/p&gt;
+&lt;h2 id="why-packaged-task-errors-occurs"&gt;Why Packaged Task Errors Occurs&lt;/h2&gt;
+&lt;p&gt;Common causes include calling &lt;code&gt;operator()&lt;/code&gt; on a task that has already been invoked, constructing a task with a move-only callable and moving it, task destruction without invocation (breaks the promise), and the stored callable throwing an exception.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::promise Already Satisfied — Double Set Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/promise-already-satisfied/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/promise-already-satisfied/</guid><description>&lt;h1 id="solution-c-stdpromise-already-satisfied--double-set-fix"&gt;[Solution] C++ std::promise Already Satisfied — Double Set Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;std::future_error&lt;/code&gt; with &lt;code&gt;std::errc::promise_already_satisfied&lt;/code&gt; is thrown when you call &lt;code&gt;set_value()&lt;/code&gt;, &lt;code&gt;set_exception()&lt;/code&gt;, or &lt;code&gt;set_value_at_thread_exit()&lt;/code&gt; on a &lt;code&gt;std::promise&lt;/code&gt; that has already been satisfied. A promise can only be fulfilled once.&lt;/p&gt;
+&lt;h2 id="why-promise-already-satisfied-occurs"&gt;Why Promise Already Satisfied Occurs&lt;/h2&gt;
+&lt;p&gt;Common causes include calling &lt;code&gt;set_value()&lt;/code&gt; twice on the same promise, calling &lt;code&gt;set_exception()&lt;/code&gt; after &lt;code&gt;set_value()&lt;/code&gt; has been called, and multiple code paths attempting to fulfill the same promise.&lt;/p&gt;
+&lt;h2 id="wrong-setting-value-twice"&gt;Wrong: Setting Value Twice&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG — throws future_error: promise_already_satisfied
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;future&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;promise&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; prom;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; fut &lt;span style="color:#f92672"&gt;=&lt;/span&gt; prom.get_future();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; prom.set_value(&lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; prom.set_value(&lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// throws — already satisfied
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; fut.get() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="correct-set-value-exactly-once"&gt;Correct: Set Value Exactly Once&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT — set value exactly once
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;future&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;promise&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; prom;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; fut &lt;span style="color:#f92672"&gt;=&lt;/span&gt; prom.get_future();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; prom.set_value(&lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Value: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; fut.get() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="use-a-flag-to-prevent-double-satisfaction"&gt;Use a Flag to Prevent Double Satisfaction&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT — guard against double satisfaction
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;future&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;atomic&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;OncePromise&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;promise&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; prom_;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;atomic&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; satisfied_{false};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;future&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; get_future() { &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; prom_.get_future(); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;try_set_value&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; value) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt; expected &lt;span style="color:#f92672"&gt;=&lt;/span&gt; false;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (satisfied_.compare_exchange_strong(expected, true)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; prom_.set_value(value);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; true;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; false;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; OncePromise op;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; fut &lt;span style="color:#f92672"&gt;=&lt;/span&gt; op.get_future();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (op.try_set_value(&lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Set to 42&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;op.try_set_value(&lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Already satisfied&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Value: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; fut.get() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="handle-promise-in-exception-path"&gt;Handle Promise in Exception Path&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT — ensure promise is satisfied exactly once
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;future&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdexcept&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;compute&lt;/span&gt;(std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;promise&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; prom) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; prom.set_value(result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (...) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; prom.set_exception(std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;current_exception());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;future_error&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// promise already satisfied — ignore
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;promise&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; prom;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; fut &lt;span style="color:#f92672"&gt;=&lt;/span&gt; prom.get_future();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;thread&lt;/span&gt; t(compute, std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;move(prom));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; t.join();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Result: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; fut.get() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;Fix&lt;/th&gt;
+					&lt;th&gt;When to Use&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Set value/exception exactly once&lt;/td&gt;
+					&lt;td&gt;Always with &lt;code&gt;std::promise&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Use atomic flag to guard satisfaction&lt;/td&gt;
+					&lt;td&gt;When multiple paths may set the value&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Catch &lt;code&gt;future_error&lt;/code&gt; in cleanup&lt;/td&gt;
+					&lt;td&gt;When exception handling may race with set_value&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;Use &lt;code&gt;std::async&lt;/code&gt; instead&lt;/td&gt;
+					&lt;td&gt;When promise/future pattern is not needed&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/future-already-retrieved/"&gt;std::future already retrieved&lt;/a&gt; — calling get() twice on future.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/future-error/"&gt;std::future_error&lt;/a&gt; — general future errors.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/thread-system-error/"&gt;std::system_error from thread&lt;/a&gt; — thread creation failures.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C++ std::system_error from Thread — Thread Creation Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/thread-system-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/thread-system-error/</guid><description>&lt;h1 id="solution-c-stdsystem_error-from-thread--thread-creation-fix"&gt;[Solution] C++ std::system_error from Thread — Thread Creation Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;std::system_error&lt;/code&gt; thrown from thread operations indicates an OS-level failure — typically when creating, joining, or detaching a thread. The most common cause is exceeding the system&amp;rsquo;s thread resource limits. The error code provides specific details about what failed.&lt;/p&gt;
+&lt;h2 id="why-thread-system-errors-occur"&gt;Why Thread System Errors Occur&lt;/h2&gt;
+&lt;p&gt;Common causes include exceeding OS thread limits (too many threads), system resource exhaustion (memory, kernel objects), trying to join a thread that has already been joined or detached, calling &lt;code&gt;join()&lt;/code&gt; or &lt;code&gt;detach()&lt;/code&gt; on a thread that is not joinable, and thread creation failing due to permission issues.&lt;/p&gt;</description></item><item><title>[Solution] Go Deadlock — All Goroutines Asleep Fix</title><link>https://errorcode.excellentwiki.com/languages/go/deadlock-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/deadlock-2/</guid><description>&lt;h1 id="all-goroutines-asleep--deadlock-fix"&gt;All Goroutines Asleep — Deadlock Fix&lt;/h1&gt;
+&lt;p&gt;A deadlock occurs when all goroutines in a program are blocked and none can make progress. The Go runtime detects this and panics.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Go&amp;rsquo;s runtime has a built-in deadlock detector. When every goroutine is blocked (on channel operations, locks, or system calls), the runtime assumes this is unintended and panics with &lt;code&gt;fatal error: all goroutines are asleep - deadlock!&lt;/code&gt;. This is a development aid — production programs should avoid reaching this state.&lt;/p&gt;</description></item><item><title>[Solution] Go Deadlock — All Goroutines Asleep Fix</title><link>https://errorcode.excellentwiki.com/languages/go/deadlock/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/deadlock/</guid><description>&lt;h1 id="all-goroutines-asleep--deadlock-fix"&gt;All Goroutines Asleep — Deadlock Fix&lt;/h1&gt;
+&lt;p&gt;A deadlock occurs when all goroutines in a program are blocked and none can make progress. The Go runtime detects this and panics with &lt;code&gt;fatal error: all goroutines are asleep - deadlock!&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Go&amp;rsquo;s runtime has a built-in deadlock detector. When every goroutine is blocked (on channel operations, locks, or system calls), the runtime assumes this is unintended and panics. This is a development aid — production programs should avoid reaching this state.&lt;/p&gt;</description></item><item><title>[Solution] Go Goroutine Leak — Runtime Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/goroutine-leak-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/goroutine-leak-2/</guid><description>&lt;h1 id="goroutine-leak--runtime-error-fix"&gt;Goroutine Leak — Runtime Error Fix&lt;/h1&gt;
+&lt;p&gt;A goroutine leak occurs when goroutines are spawned but never terminate, consuming memory and potentially other resources indefinitely.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Goroutines are lightweight, but leaked goroutines accumulate over time, increasing memory usage and potentially causing application slowdowns or crashes. Unlike deadlocks (which panic immediately), goroutine leaks silently grow until resources are exhausted.&lt;/p&gt;
+&lt;p&gt;Common scenarios:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Blocked channel operation&lt;/strong&gt; — goroutine waiting to send/receive on a channel that has no partner.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Missing context cancellation&lt;/strong&gt; — goroutine watching a context that is never canceled.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Infinite loop without exit&lt;/strong&gt; — goroutine looping forever with no break condition.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Forgotten goroutine&lt;/strong&gt; — fire-and-forget &lt;code&gt;go&lt;/code&gt; without tracking completion.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Blocked on channel with no receiver&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;leak&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; make(&lt;span style="color:#66d9ef"&gt;chan&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#75715e"&gt;// blocks forever — no one reads&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Missing context cancellation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;fetch&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Context&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;select&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Done&lt;/span&gt;():
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// work&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Context never canceled&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Infinite loop without exit&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;monitor&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Sleep&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Second&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// no way to stop&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Goroutine waiting on unbuffered channel&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;process&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; make(&lt;span style="color:#66d9ef"&gt;chan&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt;{})
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;done&lt;/span&gt; &lt;span style="color:#75715e"&gt;// waits forever if nobody signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-use-context-with-cancel"&gt;Fix 1: Use context with cancel&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;worker&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Context&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;select&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Done&lt;/span&gt;():
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fmt&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Println&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;worker stopped:&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Err&lt;/span&gt;())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;doWork&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;cancel&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;WithCancel&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Background&lt;/span&gt;())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;worker&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Sleep&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Second&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;cancel&lt;/span&gt;() &lt;span style="color:#75715e"&gt;// stops the goroutine&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-always-have-matching-sendersreceivers"&gt;Fix 2: Always have matching senders/receivers&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Wrong&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;leak&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; make(&lt;span style="color:#66d9ef"&gt;chan&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;() { &lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Correct — buffered channel or matching receiver&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;noLeak&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; make(&lt;span style="color:#66d9ef"&gt;chan&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;() { &lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-waitgroup-to-track-goroutines"&gt;Fix 3: Use WaitGroup to track goroutines&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;wg&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;sync&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;WaitGroup&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;i&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;; &lt;span style="color:#a6e22e"&gt;i&lt;/span&gt; &amp;lt; &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;; &lt;span style="color:#a6e22e"&gt;i&lt;/span&gt;&lt;span style="color:#f92672"&gt;++&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;wg&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Add&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;defer&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;wg&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Done&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;process&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }(&lt;span style="color:#a6e22e"&gt;i&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;wg&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Wait&lt;/span&gt;() &lt;span style="color:#75715e"&gt;// wait for all goroutines&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-done-channel-for-goroutine-control"&gt;Fix 4: Use done channel for goroutine control&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;worker&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;done&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;chan&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt;{}) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;select&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;doWork&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; make(&lt;span style="color:#66d9ef"&gt;chan&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt;{})
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;worker&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Sleep&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Second&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; close(&lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// This creates a goroutine leak (blocks forever)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;package&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;time&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; make(&lt;span style="color:#66d9ef"&gt;chan&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;go&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;val&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;ch&lt;/span&gt; &lt;span style="color:#75715e"&gt;// blocks if nothing sent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;_&lt;/span&gt; = &lt;span style="color:#a6e22e"&gt;val&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Sleep&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Second&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/deadlock/"&gt;deadlock&lt;/a&gt; — all goroutines blocked (panics immediately).&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/channel-closed/"&gt;channel-closed&lt;/a&gt; — sending on a closed channel.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/out-of-memory/"&gt;out-of-memory&lt;/a&gt; — memory exhausted from accumulated leaked goroutines.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Go Goroutine Leak — Runtime Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/goroutine-leak/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/goroutine-leak/</guid><description>&lt;h1 id="goroutine-leak--runtime-error-fix"&gt;Goroutine Leak — Runtime Error Fix&lt;/h1&gt;
+&lt;p&gt;A goroutine leak occurs when goroutines are started but never exit, consuming memory and potentially other resources indefinitely.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Goroutines are lightweight, but they are not free. Each goroutine uses at least 2-8 KB of stack memory. When goroutines are leaked — blocked on a channel that will never receive or send, or stuck in an infinite loop — they accumulate and consume increasing amounts of memory.&lt;/p&gt;</description></item><item><title>[Solution] Go RWMutex Not Locked Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/sync-mutex-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/sync-mutex-2/</guid><description>&lt;h1 id="rwmutex-not-locked-error-fix"&gt;RWMutex Not Locked Error Fix&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;sync: RWMutex is not locked&lt;/code&gt; error occurs when trying to unlock a mutex that isn&amp;rsquo;t currently locked, or when calling &lt;code&gt;RUnlock&lt;/code&gt; without a matching &lt;code&gt;RLock&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Go&amp;rsquo;s &lt;code&gt;sync.RWMutex&lt;/code&gt; allows multiple concurrent readers OR a single writer. The runtime panics if you call &lt;code&gt;Unlock&lt;/code&gt; on a mutex that isn&amp;rsquo;t locked, or &lt;code&gt;RUnlock&lt;/code&gt; without a corresponding &lt;code&gt;RLock&lt;/code&gt;. This is a programming error that indicates incorrect synchronization logic.&lt;/p&gt;</description></item><item><title>[Solution] Go Send on Closed Channel — Runtime Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/channel-closed-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/channel-closed-2/</guid><description>&lt;h1 id="send-on-closed-channel--runtime-error-fix"&gt;Send on Closed Channel — Runtime Error Fix&lt;/h1&gt;
+&lt;p&gt;Sending on a closed channel causes an immediate panic. This is a common concurrency bug in Go programs.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Once a channel is closed, any attempt to send a value on it panics with &lt;code&gt;panic: send on closed channel&lt;/code&gt;. Receiving from a closed channel is safe and returns zero values, but sending is not. This typically happens when multiple goroutines try to use a channel after one of them has closed it.&lt;/p&gt;</description></item><item><title>[Solution] Go Send on Closed Channel — Runtime Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/channel-closed/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/channel-closed/</guid><description>&lt;h1 id="send-on-closed-channel--runtime-error"&gt;Send on Closed Channel — Runtime Error&lt;/h1&gt;
+&lt;p&gt;The error &lt;code&gt;panic: send on closed channel&lt;/code&gt; occurs when you attempt to send a value to a channel that has already been closed. In Go, sending to a closed channel is a fatal runtime error that cannot be recovered in the same goroutine.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Channels in Go are typed conduits for communicating between goroutines. Once a channel is closed, it cannot accept new values. Attempting to send to a closed channel panics immediately. Unlike receiving from a closed channel (which returns the zero value), sending has no graceful fallback.&lt;/p&gt;</description></item><item><title>[Solution] Go Sync RWMutex Not Locked Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/sync-mutex/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/sync-mutex/</guid><description>&lt;h1 id="sync-rwmutex-is-not-locked--fix"&gt;Sync: RWMutex Is Not Locked — Fix&lt;/h1&gt;
+&lt;p&gt;A &amp;ldquo;sync: RWMutex is not locked&amp;rdquo; error occurs when you call &lt;code&gt;RUnlock()&lt;/code&gt; on an &lt;code&gt;RWMutex&lt;/code&gt; that isn&amp;rsquo;t currently held for reading, or &lt;code&gt;Unlock()&lt;/code&gt; on a mutex that isn&amp;rsquo;t locked.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Go&amp;rsquo;s &lt;code&gt;sync.RWMutex&lt;/code&gt; enforces locking discipline. Calling &lt;code&gt;RUnlock()&lt;/code&gt; when no read lock is held, or &lt;code&gt;Unlock()&lt;/code&gt; when no write lock is held, causes a runtime panic. This is a safeguard against misusing the mutex.&lt;/p&gt;</description></item><item><title>[Solution] Java ConcurrentModificationException — Iterator Fix</title><link>https://errorcode.excellentwiki.com/languages/java/concurrentmodificationexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/concurrentmodificationexception/</guid><description>&lt;h1 id="concurrentmodificationexception--iterator-fix"&gt;ConcurrentModificationException — Iterator Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;ConcurrentModificationException&lt;/code&gt; is thrown when a collection is modified while being iterated over, outside of the iterator&amp;rsquo;s own &lt;code&gt;remove()&lt;/code&gt; method. This is a checked exception that signals a structural modification to a collection during iteration.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;The exception is part of Java&amp;rsquo;s fail-fast iterator mechanism. When an iterator detects that the collection has been structurally modified (adding or removing elements) since iteration began, it throws this exception to prevent unpredictable behavior.&lt;/p&gt;</description></item><item><title>[Solution] Java IllegalThreadStateException — Thread Lifecycle Fix</title><link>https://errorcode.excellentwiki.com/languages/java/illegalthreadstateexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/illegalthreadstateexception/</guid><description>&lt;h1 id="illegalthreadstateexception--thread-lifecycle-fix"&gt;IllegalThreadStateException — Thread Lifecycle Fix&lt;/h1&gt;
+&lt;p&gt;An &lt;code&gt;IllegalThreadStateException&lt;/code&gt; is thrown when a thread operation is attempted that is not valid for the thread&amp;rsquo;s current state. The most common case is attempting to start a thread that has already been started and completed (or is still running).&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;Thread&lt;/code&gt; can only be started once. Once a thread has completed execution (either by returning from &lt;code&gt;run()&lt;/code&gt; or due to an exception), it cannot be restarted. Calling &lt;code&gt;start()&lt;/code&gt; on a thread that is already alive (running, waiting, or terminated) throws this exception.&lt;/p&gt;</description></item><item><title>[Solution] Java InterruptedException — Thread Interrupt Fix</title><link>https://errorcode.excellentwiki.com/languages/java/interruptedexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/interruptedexception/</guid><description>&lt;h1 id="interruptedexception--thread-interrupt-fix"&gt;InterruptedException — Thread Interrupt Fix&lt;/h1&gt;
+&lt;p&gt;An &lt;code&gt;InterruptedException&lt;/code&gt; is thrown when a thread is interrupted while it is sleeping, waiting, or otherwise blocked in an interruptible operation. It is a checked exception and signals that another thread has requested the current thread to stop.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;This exception is part of Java&amp;rsquo;s concurrency API. It fires when &lt;code&gt;Thread.interrupt()&lt;/code&gt; is called on a thread that is in one of these states:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Thread.sleep()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Object.wait()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Thread.join()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Blocking &lt;code&gt;I/O&lt;/code&gt; (e.g., &lt;code&gt;InputStream.read()&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Lock.lockInterruptibly()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Future.get()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The critical detail: &lt;strong&gt;catching and swallowing &lt;code&gt;InterruptedException&lt;/code&gt; clears the interrupt flag&lt;/strong&gt;, silently preventing higher-level code from detecting the interrupt.&lt;/p&gt;</description></item><item><title>[Solution] SQL Deadlock Error Fix</title><link>https://errorcode.excellentwiki.com/languages/sql/deadlock/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/sql/deadlock/</guid><description>&lt;h1 id="sql-deadlock-error-fix"&gt;SQL Deadlock Error Fix&lt;/h1&gt;
+&lt;p&gt;This error occurs when two or more transactions are waiting for each other to release locks, creating a circular dependency. The message reads: &lt;code&gt;Deadlock found when trying to get lock; try restarting transaction&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;A deadlock happens when Transaction A locks Row 1 and waits for Row 2, while Transaction B locks Row 2 and waits for Row 1. Neither can proceed. The database detects this and rolls back one transaction (the victim) to allow the other to complete.&lt;/p&gt;</description></item><item><title>[Solution] SQL Lock Wait Timeout Error Fix</title><link>https://errorcode.excellentwiki.com/languages/sql/lock-timeout/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/sql/lock-timeout/</guid><description>&lt;h1 id="sql-lock-wait-timeout-error-fix"&gt;SQL Lock Wait Timeout Error Fix&lt;/h1&gt;
+&lt;p&gt;This error occurs when a transaction waits longer than the configured timeout to acquire a lock on a row or table. The message reads: &lt;code&gt;Lock wait timeout exceeded; try restarting transaction&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;When a transaction modifies a row, it acquires a lock that prevents other transactions from modifying the same row until the first transaction commits or rolls back. If another transaction tries to modify that row and waits too long, this error is raised.&lt;/p&gt;</description></item><item><title>[Solution] Swift Thread Sanitizer — Data Race Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/thread-sanitizer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/thread-sanitizer/</guid><description>&lt;h1 id="thread-sanitizer--data-race-detected"&gt;Thread Sanitizer — Data Race Detected&lt;/h1&gt;
+&lt;p&gt;A data race occurs when two or more threads access shared data concurrently, and at least one access is a write.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Thread Sanitizer (TSan) is a runtime tool that detects data races. A data race is undefined behavior in Swift and can cause crashes, corrupted data, and unpredictable results. This error appears when TSan is enabled and detects concurrent access violations.&lt;/p&gt;
+&lt;p&gt;Common causes:&lt;/p&gt;</description></item><item><title>** (Task) error in async task</title><link>https://errorcode.excellentwiki.com/languages/elixir/task-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/elixir/task-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A Task error occurs when an asynchronous task crashes or encounters an error during execution. When using &lt;code&gt;Task.async/1&lt;/code&gt;, if the task process crashes, calling &lt;code&gt;Task.await/1&lt;/code&gt; will raise an error, typically wrapping the original crash reason.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Task function throws an exception&lt;/li&gt;
+&lt;li&gt;Task process receives an unexpected message&lt;/li&gt;
+&lt;li&gt;Task exceeds timeout limit&lt;/li&gt;
+&lt;li&gt;Task function calls &lt;code&gt;raise&lt;/code&gt; or &lt;code&gt;throw&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Not handling task errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;task &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;async(&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;raise&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;oops&amp;#34;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;await(task)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (RuntimeError) oops&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Use Task.yield/2 or try-catch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;task &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;async(&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;raise&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;oops&amp;#34;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;yield(task, &lt;span style="color:#ae81ff"&gt;5000&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {&lt;span style="color:#e6db74"&gt;:ok&lt;/span&gt;, result} &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; result
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shutdown(task, &lt;span style="color:#e6db74"&gt;:brutal_kill&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {&lt;span style="color:#e6db74"&gt;:error&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;:timeout&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Not supervising tasks&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;async(&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; risky_operation() &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Use Task.Supervisor for fault tolerance&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Task.Supervisor&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;start_child(&lt;span style="color:#a6e22e"&gt;MySupervisor&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; risky_operation()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;rescue&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; e &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Logger&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;error(&lt;span style="color:#e6db74"&gt;&amp;#34;Task failed: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;#{&lt;/span&gt;inspect(e)&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: Task with raise&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;task &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;async(&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;raise&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;boom&amp;#34;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;await(task)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (RuntimeError) boom&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Task timeout&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;task &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;async(&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;:timer&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;sleep(&lt;span style="color:#ae81ff"&gt;10000&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;:ok&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;await(task, &lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (ArgumentError) task timed out&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 3: Task with exit&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;task &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;async(&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; exit(&lt;span style="color:#e6db74"&gt;:killed&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Task&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;await(task)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (exit) :killed&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/elixir/function-clause"&gt;FunctionClauseError: no function clause matching&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/elixir/argument-error4"&gt;ArgumentError: wrong number of arguments&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Record locked</title><link>https://errorcode.excellentwiki.com/languages/cobol/locked-record/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cobol/locked-record/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A record locked error (FILE-STATUS 42) occurs when a program tries to access a record that has been locked by another process. This is common in multi-user environments where multiple programs access the same file.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Another process has locked the record&lt;/li&gt;
+&lt;li&gt;Missing unlock operation&lt;/li&gt;
+&lt;li&gt;Transaction not completed&lt;/li&gt;
+&lt;li&gt;Deadlock between processes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROCEDURE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; MAIN-PROCEDURE.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;OPEN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;I-O&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;RECORD&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IS&lt;/span&gt; LOCKED&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DISPLAY &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Record locked by another user&amp;#34;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CLOSE&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;STOP&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;RUN
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-READ
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt;...&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WRITE&lt;/span&gt; EMPLOYEE-RECORD&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;UNLOCK&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROCEDURE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * Retry with delay
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;MOVE&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0 &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;TO&lt;/span&gt; WS-RETRY-COUNT&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PERFORM&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;UNTIL&lt;/span&gt; WS-RETRY-COUNT &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#ae81ff"&gt; &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;RECORD&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IS&lt;/span&gt; LOCKED&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;ADD&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1 &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;TO&lt;/span&gt; WS-RETRY-COUNT&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CALL &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;C$SLEEP&amp;#34;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;USING&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#ae81ff"&gt; &lt;/span&gt;&lt;span style="color:#f92672"&gt;NOT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;RECORD&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IS&lt;/span&gt; LOCKED&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;EXIT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PERFORM
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-READ
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-PERFORM
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * Example 1: Lock conflict
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;OPEN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;I-O&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * FILE-STATUS = 42 (locked)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * Example 2: Missing unlock
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;OPEN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;I-O&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; EMPLOYEE-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WRITE&lt;/span&gt; EMPLOYEE-RECORD&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * Record still locked
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * Example 3: Deadlock
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * Program A locks record 1, waits for record 2
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; * Program B locks record 2, waits for record 1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cobol/file-status"&gt;File status error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cobol/end-of-file"&gt;End of file&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQLITE_BUSY: database is locked</title><link>https://errorcode.excellentwiki.com/tools/sqlite/database-locked/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/sqlite/database-locked/</guid><description>&lt;p&gt;The &lt;code&gt;SQLITE_BUSY&lt;/code&gt; error occurs when SQLite cannot acquire a lock on the database because another connection or process already holds a conflicting lock. SQLite uses file-level locking, so only one writer can modify the database at a time.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Another process or thread is holding a write lock on the database&lt;/li&gt;
+&lt;li&gt;A long-running transaction is blocking other connections&lt;/li&gt;
+&lt;li&gt;The WAL (Write-Ahead Logging) file is locked by another process&lt;/li&gt;
+&lt;li&gt;Concurrent write attempts exceed SQLite&amp;rsquo;s locking capabilities&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Increase the busy timeout so SQLite waits longer before failing:&lt;/p&gt;</description></item><item><title>[Solution] Java Thread.stop() Deprecated — Use Thread.interrupt()</title><link>https://errorcode.excellentwiki.com/deprecated/java/thread-stop/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/deprecated/java/thread-stop/</guid><description>&lt;h1 id="solution-java-threadstop-deprecated--use-threadinterrupt"&gt;[Solution] Java Thread.stop() Deprecated — Use Thread.interrupt()&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;Thread.stop()&lt;/code&gt; method was deprecated in JDK 1.2 because it is inherently unsafe — it throws a &lt;code&gt;ThreadDeath&lt;/code&gt; exception that can leave shared data in an inconsistent state. The correct approach is to use &lt;code&gt;Thread.interrupt()&lt;/code&gt; combined with cooperative cancellation using a volatile flag or &lt;code&gt;AtomicBoolean&lt;/code&gt;. The modern alternative is to use the &lt;code&gt;ExecutorService&lt;/code&gt; framework from &lt;code&gt;java.util.concurrent&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="what-youll-see"&gt;What You&amp;rsquo;ll See&lt;/h2&gt;
+&lt;p&gt;Using &lt;code&gt;Thread.stop()&lt;/code&gt; triggers a compiler deprecation warning:&lt;/p&gt;</description></item><item><title>[Solution] Ruby FiberError — Fiber Error Fix</title><link>https://errorcode.excellentwiki.com/languages/ruby/fiber-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/ruby/fiber-error/</guid><description>&lt;h1 id="fibererror--fiber-error-fix"&gt;FiberError — Fiber Error Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;FiberError&lt;/code&gt; is raised when there&amp;rsquo;s an error with a Fiber, such as resuming a dead fiber or yielding from a fiber that wasn&amp;rsquo;t called with &lt;code&gt;Fiber.yield&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Fibers are lightweight concurrency primitives in Ruby. &lt;code&gt;FiberError&lt;/code&gt; occurs when fiber state is inconsistent — trying to resume a dead fiber, yielding from the wrong context, or other fiber misuse.&lt;/p&gt;
+&lt;p&gt;Common scenarios:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Resume dead fiber&lt;/strong&gt; — calling &lt;code&gt;resume&lt;/code&gt; on a fiber that has terminated.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Yield from non-fiber&lt;/strong&gt; — &lt;code&gt;Fiber.yield&lt;/code&gt; called outside a fiber.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Double resume&lt;/strong&gt; — resuming a fiber that&amp;rsquo;s already running.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fiber not started&lt;/strong&gt; — resuming a fiber that hasn&amp;rsquo;t been created.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 1: Resume dead fiber&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new { &lt;span style="color:#e6db74"&gt;&amp;#34;done&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume &lt;span style="color:#75715e"&gt;# &amp;#34;done&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume &lt;span style="color:#75715e"&gt;# FiberError: dead fiber called&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 2: Yield from main thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;yield &lt;span style="color:#75715e"&gt;# FiberError: can not yield from main fiber&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 3: Resume already running fiber&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new { &lt;span style="color:#66d9ef"&gt;loop&lt;/span&gt; { &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;yield } }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume &lt;span style="color:#75715e"&gt;# Suspends&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume &lt;span style="color:#75715e"&gt;# Works&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If another fiber tries to resume this one, error occurs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 4: Creating fiber without block&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new &lt;span style="color:#75715e"&gt;# ArgumentError (not FiberError, but related)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-check-fiber-status-before-resuming"&gt;Fix 1: Check fiber status before resuming&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new { &lt;span style="color:#e6db74"&gt;&amp;#34;done&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume &lt;span style="color:#75715e"&gt;# FiberError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;alive?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; puts &lt;span style="color:#e6db74"&gt;&amp;#34;Fiber has already terminated&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-fiberyield-correctly"&gt;Fix 2: Use Fiber.yield correctly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong — yield from main thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;yield &lt;span style="color:#75715e"&gt;# FiberError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct — yield from within a fiber&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;yield &lt;span style="color:#75715e"&gt;# Suspends the fiber&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;resumed&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume &lt;span style="color:#75715e"&gt;# nil (first yield)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume &lt;span style="color:#75715e"&gt;# &amp;#34;resumed&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-fiber-scheduler-for-io"&gt;Fix 3: Use Fiber scheduler for I/O&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;require &lt;span style="color:#e6db74"&gt;&amp;#39;fiber/scheduler&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use Fiber.schedule for concurrent I/O&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scheduler &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;Scheduler&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;set_scheduler&lt;span style="color:#f92672"&gt;.&lt;/span&gt;scheduler
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;schedule &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# Concurrent I/O operations&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-handle-fiber-lifecycle-properly"&gt;Fix 4: Handle fiber lifecycle properly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;process_with_fiber&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fiber &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;begin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;yield&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;yield(result)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;rescue&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; e
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;Fiber&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;yield(&lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; fiber&lt;span style="color:#f92672"&gt;.&lt;/span&gt;resume
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; result
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="thread-error"&gt;ThreadError&lt;/a&gt; — thread-related errors.&lt;/li&gt;
+&lt;li&gt;&lt;a href="local-jump-error"&gt;LocalJumpError&lt;/a&gt; — block-related errors.&lt;/li&gt;
+&lt;li&gt;&lt;a href="fiber-error"&gt;FiberError&lt;/a&gt; — fiber-specific errors.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Ruby ThreadError — Thread Error Fix</title><link>https://errorcode.excellentwiki.com/languages/ruby/thread-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/ruby/thread-error/</guid><description>&lt;h1 id="threaderror--thread-error-fix"&gt;ThreadError — Thread Error Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;ThreadError&lt;/code&gt; is raised when there&amp;rsquo;s an error with a Thread, such as joining a dead thread, deadlock detection, or mutex issues.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;ThreadError&lt;/code&gt; covers various thread-related errors in Ruby. This includes deadlock detection, trying to join a thread that&amp;rsquo;s already been joined, and mutex-related issues.&lt;/p&gt;
+&lt;p&gt;Common scenarios:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Deadlock detected&lt;/strong&gt; — threads waiting on each other.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Join dead thread&lt;/strong&gt; — trying to join a thread that has finished.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mutex not locked&lt;/strong&gt; — trying to unlock a mutex that isn&amp;rsquo;t locked.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Thread already joined&lt;/strong&gt; — joining a thread twice.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 1: Deadlock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex1 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Mutex&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Mutex&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;t1 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Thread&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex1&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sleep &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize { } &lt;span style="color:#75715e"&gt;# Waits for mutex2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;t2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Thread&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sleep &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex1&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize { } &lt;span style="color:#75715e"&gt;# Waits for mutex1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;t1&lt;span style="color:#f92672"&gt;.&lt;/span&gt;join &lt;span style="color:#75715e"&gt;# ThreadError: deadlock detected&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 2: Join dead thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;thread &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Thread&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new { &lt;span style="color:#e6db74"&gt;&amp;#34;done&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;thread&lt;span style="color:#f92672"&gt;.&lt;/span&gt;join
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;thread&lt;span style="color:#f92672"&gt;.&lt;/span&gt;join &lt;span style="color:#75715e"&gt;# ThreadError: dead thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 3: Unlock without lock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Mutex&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;unlock &lt;span style="color:#75715e"&gt;# ThreadError: unlocked from non-owner thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 4: Double lock (not reentrant)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Mutex&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; &lt;span style="color:#75715e"&gt;# ThreadError: deadlock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-avoid-deadlock-with-lock-ordering"&gt;Fix 1: Avoid deadlock with lock ordering&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong — inconsistent lock order&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex1&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize { }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct — consistent lock order&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex1&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex2&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize { }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Always lock in the same order everywhere&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-check-thread-status-before-joining"&gt;Fix 2: Check thread status before joining&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;thread &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Thread&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new { &lt;span style="color:#e6db74"&gt;&amp;#34;done&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;thread&lt;span style="color:#f92672"&gt;.&lt;/span&gt;join
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;thread&lt;span style="color:#f92672"&gt;.&lt;/span&gt;join &lt;span style="color:#75715e"&gt;# ThreadError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; thread&lt;span style="color:#f92672"&gt;.&lt;/span&gt;status &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt; &lt;span style="color:#f92672"&gt;||&lt;/span&gt; thread&lt;span style="color:#f92672"&gt;.&lt;/span&gt;status&lt;span style="color:#f92672"&gt;.&lt;/span&gt;nil?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; puts &lt;span style="color:#e6db74"&gt;&amp;#34;Thread has already finished&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; thread&lt;span style="color:#f92672"&gt;.&lt;/span&gt;join
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-mutextry_lock-for-non-blocking"&gt;Fix 3: Use Mutex#try_lock for non-blocking&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Mutex&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong — may deadlock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# Long operation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct — try lock with timeout&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;try_lock
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;begin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# Operation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;ensure&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mutex&lt;span style="color:#f92672"&gt;.&lt;/span&gt;unlock
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; puts &lt;span style="color:#e6db74"&gt;&amp;#34;Could not acquire lock&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-monitor-for-reentrant-locking"&gt;Fix 4: Use Monitor for reentrant locking&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;require &lt;span style="color:#e6db74"&gt;&amp;#39;monitor&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;monitor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Monitor&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;new
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# This works (Monitor is reentrant)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;monitor&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; monitor&lt;span style="color:#f92672"&gt;.&lt;/span&gt;synchronize &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# Works fine&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="deadlock-lock"&gt;ThreadError: deadlock&lt;/a&gt; — deadlock specifically.&lt;/li&gt;
+&lt;li&gt;&lt;a href="fiber-error"&gt;FiberError&lt;/a&gt; — fiber-related errors.&lt;/li&gt;
+&lt;li&gt;&lt;a href="memory-error"&gt;NoMemoryError&lt;/a&gt; — memory issues from threads.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Ruby ThreadError: deadlock; recursive locking Fix</title><link>https://errorcode.excellentwiki.com/languages/ruby/deadlock-lock/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/ruby/deadlock-lock/</guid><description>&lt;h1 id="threaderror-deadlock-recursive-locking-fix"&gt;ThreadError: deadlock; recursive locking Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;ThreadError: deadlock; recursive locking&lt;/code&gt; is raised when a thread tries to lock a mutex that it already holds, or when multiple threads are waiting on each other&amp;rsquo;s locks.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Deadlock occurs when two or more threads are blocked forever, each waiting for the other to release a lock. Ruby detects this and raises &lt;code&gt;ThreadError&lt;/code&gt;. Recursive locking happens when a non-reentrant mutex is locked twice by the same thread.&lt;/p&gt;</description></item></channel></rss>

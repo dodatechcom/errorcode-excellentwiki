@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Signal-Handling on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/signal-handling/</link><description>Recent content in Signal-Handling on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/signal-handling/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Bash Signal Handling Error</title><link>https://errorcode.excellentwiki.com/languages/bash/signal-trap/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/signal-trap/</guid><description>&lt;h1 id="bash-signal-handling-error-fix"&gt;Bash Signal Handling Error Fix&lt;/h1&gt;
+&lt;p&gt;This error occurs when signal handling via &lt;code&gt;trap&lt;/code&gt; is misconfigured or signals aren&amp;rsquo;t properly caught during script execution.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Bash uses signals (like SIGINT, SIGTERM, EXIT) to communicate with running processes. The &lt;code&gt;trap&lt;/code&gt; command lets you intercept these signals to perform cleanup or custom behavior. Misconfigured traps or unhandled signals can leave resources in inconsistent states.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Missing EXIT trap for cleanup&lt;/strong&gt; — temp files and locks left behind on exit.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Signal number vs name confusion&lt;/strong&gt; — using numeric signals incorrectly.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Trap in subshell doesn&amp;rsquo;t propagate&lt;/strong&gt; — traps set in subshells don&amp;rsquo;t affect the parent.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overwriting previous traps&lt;/strong&gt; — setting a new trap replaces the old one silently.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-always-set-an-exit-trap-for-cleanup"&gt;Fix 1: Always set an EXIT trap for cleanup&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; rm -f /tmp/myapp.lock
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap cleanup EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-signal-names-instead-of-numbers"&gt;Fix 2: Use signal names instead of numbers&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong — fragile, platform-dependent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#34;echo caught&amp;#34;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;15&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Right — use names&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#34;echo caught&amp;#34;&lt;/span&gt; HUP INT TERM
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-chain-multiple-signals-with-braces"&gt;Fix 3: Chain multiple signals with braces&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;Caught signal&amp;#34;; cleanup&amp;#39;&lt;/span&gt; EXIT INT TERM HUP
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-preserve-previous-traps-while-adding-new-behavior"&gt;Fix 4: Preserve previous traps while adding new behavior&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Save and chain existing trap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;eval &lt;span style="color:#e6db74"&gt;&amp;#34;old_cleanup() { &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;trap -p EXIT | sed &lt;span style="color:#e6db74"&gt;&amp;#34;s/trap -- &amp;#39;//;s/&amp;#39; EXIT//&amp;#34;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt; }&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;new_cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; old_cleanup
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; my_cleanup
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap new_cleanup EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;Goodbye&amp;#34;&amp;#39;&lt;/span&gt; EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ exit
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Goodbye
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ trap -l &lt;span style="color:#75715e"&gt;# List all signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 1&lt;span style="color:#f92672"&gt;)&lt;/span&gt; SIGHUP 2&lt;span style="color:#f92672"&gt;)&lt;/span&gt; SIGINT 3&lt;span style="color:#f92672"&gt;)&lt;/span&gt; SIGQUIT 4&lt;span style="color:#f92672"&gt;)&lt;/span&gt; SIGILL
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;Ctrl+C caught&amp;#34;&amp;#39;&lt;/span&gt; INT
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ &lt;span style="color:#75715e"&gt;# Ctrl+C&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Ctrl+C caught
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="exit-status"&gt;Exit Status&lt;/a&gt; — understanding exit codes when signals terminate scripts.&lt;/li&gt;
+&lt;li&gt;&lt;a href="pipe-failure"&gt;Pipe Failure&lt;/a&gt; — signal-related issues in pipelines.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

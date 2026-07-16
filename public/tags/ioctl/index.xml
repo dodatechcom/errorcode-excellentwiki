@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ioctl on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/ioctl/</link><description>Recent content in Ioctl on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/ioctl/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C errno 47 ETIME — Stream ioctl timeout</title><link>https://errorcode.excellentwiki.com/languages/c/errno-47/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-47/</guid><description>&lt;h1 id="solution-c-errno-47-etime--stream-ioctl-timeout"&gt;[Solution] C errno 47 ETIME — Stream ioctl timeout&lt;/h1&gt;
+&lt;p&gt;Stream ioctl timeout occurs when a system call fails and sets &lt;code&gt;errno&lt;/code&gt; to 47. This error indicates that the requested operation cannot be performed due to the specific condition described by ETIME.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;STREAMS ioctl operation timed out waiting for acknowledgment.&lt;/li&gt;
+&lt;li&gt;Downstream module didn&amp;rsquo;t respond within timeout period.&lt;/li&gt;
+&lt;li&gt;Using I_STR ioctl with insufficient timeout.&lt;/li&gt;
+&lt;li&gt;Network STREAMS experiencing delays.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stropts.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;errno.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/dev/streams/pipe&amp;#34;&lt;/span&gt;, O_RDONLY);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (fd &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;open&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; strioctl ctl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ctl.ic_cmd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ctl.ic_timout &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;; &lt;span style="color:#75715e"&gt;// 5 second timeout
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ctl.ic_len &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ctl.ic_dp &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; ret &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ioctl&lt;/span&gt;(fd, I_STR, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;ctl);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ret &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; errno &lt;span style="color:#f92672"&gt;==&lt;/span&gt; ETIME) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;STREAMS ioctl timed out&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(fd);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stropts.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;errno.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/dev/streams/pipe&amp;#34;&lt;/span&gt;, O_RDONLY);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (fd &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;open&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Set a longer timeout
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; timeout &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;; &lt;span style="color:#75715e"&gt;// seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;ioctl&lt;/span&gt;(fd, I_SETSIG, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;ioctl&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(fd);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-110/"&gt;errno-110 ETIMEDOUT&lt;/a&gt; — connection timed out.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-47/"&gt;errno-47 ETIME&lt;/a&gt; — stream ioctl timeout (self).&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-99/"&gt;EIO&lt;/a&gt; — input/output error.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C errno ENODATA — No data available Fix</title><link>https://errorcode.excellentwiki.com/languages/c/errno-enodata/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-enodata/</guid><description>&lt;h1 id="solution-c-errno-enodata--no-data-available-fix"&gt;[Solution] C errno ENODATA — No data available Fix&lt;/h1&gt;
+&lt;p&gt;When &lt;code&gt;getmsg()&lt;/code&gt; or a STREAMS read operation is called but no data (neither data messages nor expedited data) is available on the stream, the call sets &lt;code&gt;errno&lt;/code&gt; to &lt;code&gt;ENODATA&lt;/code&gt;. This error indicates the STREAMS read queue is empty.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Calling &lt;code&gt;getmsg()&lt;/code&gt; when no messages are available on the stream.&lt;/li&gt;
+&lt;li&gt;The STREAMS module has not yet delivered any data.&lt;/li&gt;
+&lt;li&gt;The read queue was drained by a previous read operation.&lt;/li&gt;
+&lt;li&gt;The peer process has not yet sent any data on the STREAMS pipe.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Check data availability using &lt;code&gt;poll()&lt;/code&gt; or &lt;code&gt;ioctl(I_RXSQ_LEN)&lt;/code&gt; before reading. Use blocking mode to wait for data.&lt;/p&gt;</description></item><item><title>[Solution] C errno ENOSTR — No stream head associated Fix</title><link>https://errorcode.excellentwiki.com/languages/c/errno-enostr/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-enostr/</guid><description>&lt;h1 id="solution-c-errno-enostr--no-stream-head-associated-fix"&gt;[Solution] C errno ENOSTR — No stream head associated Fix&lt;/h1&gt;
+&lt;p&gt;When a STREAMS ioctl operation (such as &lt;code&gt;I_FIND&lt;/code&gt;, &lt;code&gt;I_PUSH&lt;/code&gt;, or &lt;code&gt;I_POP&lt;/code&gt;) is called on a file descriptor that is not associated with a STREAMS device, the call fails and sets &lt;code&gt;errno&lt;/code&gt; to &lt;code&gt;ENOSTR&lt;/code&gt;. This indicates the file descriptor has no stream head.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Calling a STREAMS ioctl on a regular file descriptor (not a STREAMS device).&lt;/li&gt;
+&lt;li&gt;The stream head was previously removed by closing the last reference.&lt;/li&gt;
+&lt;li&gt;The file descriptor refers to a pipe, socket, or non-STREAMS device.&lt;/li&gt;
+&lt;li&gt;The STREAMS module was pushed but the stream head is not properly initialized.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Verify the file descriptor is connected to a STREAMS device before performing STREAMS operations.&lt;/p&gt;</description></item><item><title>[Solution] C errno ETIME — Stream ioctl timeout Fix</title><link>https://errorcode.excellentwiki.com/languages/c/errno-etime/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/errno-etime/</guid><description>&lt;h1 id="solution-c-errno-etime--stream-ioctl-timeout-fix"&gt;[Solution] C errno ETIME — Stream ioctl timeout Fix&lt;/h1&gt;
+&lt;p&gt;When a timed STREAMS ioctl operation (such as &lt;code&gt;I_SETSIG&lt;/code&gt; with a timeout or a polling operation) expires before the requested condition is met, the call sets &lt;code&gt;errno&lt;/code&gt; to &lt;code&gt;ETIME&lt;/code&gt;. This error indicates a timeout waiting for a STREAMS event.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The timeout for a STREAMS ioctl operation has expired.&lt;/li&gt;
+&lt;li&gt;A polling operation on the stream head did not complete within the specified time.&lt;/li&gt;
+&lt;li&gt;The STREAMS module did not respond within the expected time frame.&lt;/li&gt;
+&lt;li&gt;Network STREAMS experienced delays exceeding the configured timeout.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Increase timeout values or implement retry logic. On modern Linux, STREAMS support is limited.&lt;/p&gt;</description></item><item><title>[Solution] Linux ENOTTY (errno 25) — Inappropriate ioctl for Device Fix</title><link>https://errorcode.excellentwiki.com/os/linux/errno-25/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/errno-25/</guid><description>&lt;h1 id="linux-enotty-errno-25--inappropriate-ioctl-for-device"&gt;Linux ENOTTY (errno 25) — Inappropriate ioctl for Device&lt;/h1&gt;
+&lt;p&gt;ENOTTY (errno 25) means the &lt;code&gt;ioctl()&lt;/code&gt; system call is not appropriate for the type of file descriptor. This error occurs when you attempt a terminal-related operation on a non-terminal device, such as a pipe, socket, or regular file. It is distinct from ENOTTY (errno 25) being reused for &amp;ldquo;Inappropriate ioctl&amp;rdquo; because the original meaning was &amp;ldquo;Not a typewriter.&amp;rdquo;&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Calling &lt;code&gt;tcgetattr()&lt;/code&gt; or &lt;code&gt;tcsetattr()&lt;/code&gt; on a non-terminal file descriptor&lt;/li&gt;
+&lt;li&gt;Using terminal-specific ioctls on pipes or sockets&lt;/li&gt;
+&lt;li&gt;Redirecting stdin/stdout to a file and then using terminal operations&lt;/li&gt;
+&lt;li&gt;A pseudo-terminal (PTY) is not properly set up&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix-enotty"&gt;How to Fix ENOTTY&lt;/h2&gt;
+&lt;h3 id="1-verify-file-descriptor-is-a-terminal"&gt;1. Verify File Descriptor is a Terminal&lt;/h3&gt;
+&lt;p&gt;Check if the file descriptor refers to a terminal:&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,116 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] C++ std::bad_weak_ptr — Expired Weak Pointer Fix | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix C++ std::bad_weak_ptr when constructing shared_ptr from an expired weak_ptr. Handle weak pointer lifecycle safely."><link rel=canonical href=https://errorcode.excellentwiki.com/languages/cpp/bad-weak-ptr-2/><meta property="og:title" content="[Solution] C++ std::bad_weak_ptr — Expired Weak Pointer Fix"><meta property="og:description" content="Fix C++ std::bad_weak_ptr when constructing shared_ptr from an expired weak_ptr. Handle weak pointer lifecycle safely."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/languages/cpp/bad-weak-ptr-2/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] C++ std::bad_weak_ptr — Expired Weak Pointer Fix"><meta name=twitter:description content="Fix C++ std::bad_weak_ptr when constructing shared_ptr from an expired weak_ptr. Handle weak pointer lifecycle safely."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/languages/>Languages</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] C++ std::bad_weak_ptr — Expired Weak Pointer Fix</span></nav><h1 id=solution-c-stdbad_weak_ptr--expired-weak-pointer-fix>[Solution] C++ std::bad_weak_ptr — Expired Weak Pointer Fix</h1><p>A <code>std::bad_weak_ptr</code> is thrown when you try to construct a <code>std::shared_ptr</code> from a <code>std::weak_ptr</code> using the <code>weak_ptr::lock()</code> or <code>shared_ptr(weak_ptr)</code> constructor, and the referenced object has already been destroyed. This exception was introduced in C++11.</p><h2 id=why-stdbad_weak_ptr-occurs>Why std::bad_weak_ptr Occurs</h2><p>Common causes include creating a <code>shared_ptr</code> from a <code>weak_ptr</code> after the last <code>shared_ptr</code> to the object has been destroyed, holding a <code>weak_ptr</code> beyond the lifetime of the managed object, and race conditions in multithreaded code where one thread destroys the last <code>shared_ptr</code> while another tries to lock a <code>weak_ptr</code>.</p><h2 id=wrong-constructing-shared_ptr-from-expired-weak_ptr>Wrong: Constructing shared_ptr from Expired weak_ptr</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// WRONG — throws std::bad_weak_ptr
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;memory&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>weak_ptr<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> weak;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>auto</span> shared <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>make_shared<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span>(<span style=color:#ae81ff>42</span>);
+</span></span><span style=display:flex><span>        weak <span style=color:#f92672>=</span> shared;
+</span></span><span style=display:flex><span>    }  <span style=color:#75715e>// shared destroyed here
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>auto</span> locked <span style=color:#f92672>=</span> weak.lock();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>locked) {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Weak pointer expired&#34;</span> <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// This throws std::bad_weak_ptr
+</span></span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>shared_ptr<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> ptr(weak);
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#f92672>*</span>ptr <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=correct-check-expired-or-use-lock-before-constructing>Correct: Check expired() or Use lock() Before Constructing</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// CORRECT — check before constructing shared_ptr
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;memory&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>weak_ptr<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> weak;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>auto</span> shared <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>make_shared<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span>(<span style=color:#ae81ff>42</span>);
+</span></span><span style=display:flex><span>        weak <span style=color:#f92672>=</span> shared;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#66d9ef>auto</span> locked <span style=color:#f92672>=</span> weak.lock()) {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Value: &#34;</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#f92672>*</span>locked <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>    } <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Object has been destroyed&#34;</span> <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=use-weak_ptr-to-break-circular-references>Use weak_ptr to Break Circular References</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// CORRECT — use weak_ptr to avoid prevent reference cycles
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;memory&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Node</span> {
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>string name;
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>shared_ptr<span style=color:#f92672>&lt;</span>Node<span style=color:#f92672>&gt;</span> next;
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>weak_ptr<span style=color:#f92672>&lt;</span>Node<span style=color:#f92672>&gt;</span> parent;  <span style=color:#75715e>// weak to avoid cycle
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    Node(<span style=color:#66d9ef>const</span> std<span style=color:#f92672>::</span>string<span style=color:#f92672>&amp;</span> n) <span style=color:#f92672>:</span> name(n) {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Created: &#34;</span> <span style=color:#f92672>&lt;&lt;</span> name <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>~</span>Node() {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Destroyed: &#34;</span> <span style=color:#f92672>&lt;&lt;</span> name <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>auto</span> root <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>make_shared<span style=color:#f92672>&lt;</span>Node<span style=color:#f92672>&gt;</span>(<span style=color:#e6db74>&#34;root&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>auto</span> child <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>make_shared<span style=color:#f92672>&lt;</span>Node<span style=color:#f92672>&gt;</span>(<span style=color:#e6db74>&#34;child&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    child<span style=color:#f92672>-&gt;</span>next <span style=color:#f92672>=</span> root;
+</span></span><span style=display:flex><span>    root<span style=color:#f92672>-&gt;</span>parent <span style=color:#f92672>=</span> child;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#66d9ef>auto</span> p <span style=color:#f92672>=</span> root<span style=color:#f92672>-&gt;</span>parent.lock()) {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Parent: &#34;</span> <span style=color:#f92672>&lt;&lt;</span> p<span style=color:#f92672>-&gt;</span>name <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=safe-weak_ptr-usage-pattern>Safe weak_ptr Usage Pattern</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// CORRECT — always check before using weak_ptr
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;memory&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Widget</span> {
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>weak_ptr<span style=color:#f92672>&lt;</span>Widget<span style=color:#f92672>&gt;</span> sibling_;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>void</span> set_sibling(std<span style=color:#f92672>::</span>weak_ptr<span style=color:#f92672>&lt;</span>Widget<span style=color:#f92672>&gt;</span> s) { sibling_ <span style=color:#f92672>=</span> s; }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>do_work</span>() {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#66d9ef>auto</span> s <span style=color:#f92672>=</span> sibling_.lock()) {
+</span></span><span style=display:flex><span>            std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Sibling is alive&#34;</span> <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>        } <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>            std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;Sibling is gone&#34;</span> <span style=color:#f92672>&lt;&lt;</span> std<span style=color:#f92672>::</span>endl;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>auto</span> w1 <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>make_shared<span style=color:#f92672>&lt;</span>Widget<span style=color:#f92672>&gt;</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>auto</span> w2 <span style=color:#f92672>=</span> std<span style=color:#f92672>::</span>make_shared<span style=color:#f92672>&lt;</span>Widget<span style=color:#f92672>&gt;</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    w1<span style=color:#f92672>-&gt;</span>set_sibling(w2);
+</span></span><span style=display:flex><span>    w2<span style=color:#f92672>-&gt;</span>set_sibling(w1);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    w1<span style=color:#f92672>-&gt;</span>do_work();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=summary>Summary</h2><table><thead><tr><th>Fix</th><th>When to Use</th></tr></thead><tbody><tr><td>Always use <code>lock()</code> before constructing <code>shared_ptr</code></td><td>When the object might be destroyed</td></tr><tr><td>Use <code>weak_ptr</code> for back-references</td><td>To avoid circular reference cycles</td></tr><tr><td>Check <code>expired()</code> or use <code>if(auto p = wp.lock())</code></td><td>Before accessing the managed object</td></tr><tr><td>Store <code>shared_ptr</code> for ownership, <code>weak_ptr</code> for observation</td><td>As a design pattern</td></tr></tbody></table><h2 id=related-errors>Related Errors</h2><ul><li><a href=/languages/cpp/shared-ptr/>std::shared_ptr errors</a> — shared pointer issues.</li><li><a href=/languages/cpp/std-bad-alloc/>std::bad_alloc</a> — memory allocation failure.</li><li><a href=/languages/cpp/bad-variant-access/>std::bad_variant_access</a> — wrong type on variant.</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

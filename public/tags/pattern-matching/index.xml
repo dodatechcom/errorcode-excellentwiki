@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pattern-Matching on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/pattern-matching/</link><description>Recent content in Pattern-Matching on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/pattern-matching/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Bash No Matches Found Error</title><link>https://errorcode.excellentwiki.com/languages/bash/no-matching/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/no-matching/</guid><description>&lt;h1 id="bash-no-matches-found-error-fix"&gt;Bash No Matches Found Error Fix&lt;/h1&gt;
+&lt;p&gt;This error occurs when a glob pattern (wildcard) doesn&amp;rsquo;t match any files or directories, and &lt;code&gt;failglob&lt;/code&gt; is set.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Bash expands glob patterns like &lt;code&gt;*.txt&lt;/code&gt; into matching filenames. By default, if no match exists, the pattern is passed as a literal string. With &lt;code&gt;shopt -s failglob&lt;/code&gt;, Bash errors instead. This can also appear in zsh (where it&amp;rsquo;s the default behavior).&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pattern doesn&amp;rsquo;t match anything&lt;/strong&gt; — &lt;code&gt;*.xyz&lt;/code&gt; when no &lt;code&gt;.xyz&lt;/code&gt; files exist.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Wrong directory&lt;/strong&gt; — globbing in a directory that doesn&amp;rsquo;t contain the expected files.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zsh default behavior&lt;/strong&gt; — zsh errors on unmatched globs by default.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Case sensitivity&lt;/strong&gt; — &lt;code&gt;*.TXT&lt;/code&gt; won&amp;rsquo;t match &lt;code&gt;file.txt&lt;/code&gt; on case-sensitive systems.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-check-if-files-exist-before-globbing"&gt;Fix 1: Check if files exist before globbing&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;shopt -s nullglob
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;files&lt;span style="color:#f92672"&gt;=(&lt;/span&gt;*.txt&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;[[&lt;/span&gt; &lt;span style="color:#e6db74"&gt;${#&lt;/span&gt;files[@]&lt;span style="color:#e6db74"&gt;}&lt;/span&gt; -gt &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#f92672"&gt;]]&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; f in &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;files[@]&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;$f&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;done&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-disable-failglob-if-you-want-the-pattern-as-literal"&gt;Fix 2: Disable failglob if you want the pattern as literal&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;shopt -u failglob
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo *.txt &lt;span style="color:#75715e"&gt;# outputs &amp;#34;*.txt&amp;#34; if no match&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-verify-the-current-directory"&gt;Fix 3: Verify the current directory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pwd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ls -la
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Confirm you&amp;#39;re where you expect to be&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-a-conditional-check-in-zsh"&gt;Fix 4: Use a conditional check in zsh&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# In zsh, use (N) glob qualifier for nullglob behavior&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;files&lt;span style="color:#f92672"&gt;=(&lt;/span&gt;*.txt&lt;span style="color:#f92672"&gt;(&lt;/span&gt;N&lt;span style="color:#f92672"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;((&lt;/span&gt; &lt;span style="color:#e6db74"&gt;${#&lt;/span&gt;files&lt;span style="color:#e6db74"&gt;}&lt;/span&gt; &lt;span style="color:#f92672"&gt;))&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;files[@]&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ shopt -s failglob
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ echo *.xyz
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;bash: no matches found: *.xyz
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ ls *.log
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;zsh: no matches found: *.log
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ echo *.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;*.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# (without failglob, pattern is passed literally)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="glob-expand"&gt;Glob Expansion Error&lt;/a&gt; — unexpected glob behavior.&lt;/li&gt;
+&lt;li&gt;&lt;a href="no-such-file"&gt;No Such File or Directory&lt;/a&gt; — specific file reference doesn&amp;rsquo;t exist.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C++ std::regex_error — Regular Expression Compilation Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/regex-error-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/regex-error-2/</guid><description>&lt;h1 id="solution-c-stdregex_error--regular-expression-compilation-fix"&gt;[Solution] C++ std::regex_error — Regular Expression Compilation Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;std::regex_error&lt;/code&gt; is thrown when a regular expression pattern is malformed and cannot be compiled by the &lt;code&gt;std::regex&lt;/code&gt; constructor. This exception includes an error code that indicates the type of syntax error in the pattern. It inherits from &lt;code&gt;std::runtime_error&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="why-stdregex_error-occurs"&gt;Why std::regex_error Occurs&lt;/h2&gt;
+&lt;p&gt;Common causes include unbalanced parentheses or brackets in the pattern, invalid escape sequences (e.g., &lt;code&gt;\q&lt;/code&gt;), quantifiers without a preceding element (e.g., &lt;code&gt;*hello&lt;/code&gt;), and unsupported regex syntax for the selected grammar flag.&lt;/p&gt;</description></item><item><title>[Solution] Rust No Variant Associated — Enum Variant Error</title><link>https://errorcode.excellentwiki.com/languages/rust/variant-not-found/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/variant-not-found/</guid><description>&lt;h1 id="no-variant-associated--enum-variant-error"&gt;No Variant Associated — Enum Variant Error&lt;/h1&gt;
+&lt;p&gt;A compiler error with the message &amp;ldquo;no variant associated&amp;rdquo; occurs when you try to access an enum variant that doesn&amp;rsquo;t exist or use incorrect syntax to reference a variant.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Enums in Rust define a type by enumerating its possible variants. Each variant can hold data or be a unit variant. The error occurs when:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;You reference a variant name that doesn&amp;rsquo;t exist on the enum.&lt;/li&gt;
+&lt;li&gt;You use incorrect syntax to construct or pattern match a variant.&lt;/li&gt;
+&lt;li&gt;You try to access an associated function or method on a variant that doesn&amp;rsquo;t have one.&lt;/li&gt;
+&lt;li&gt;You confuse associated types with enum variants.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Common scenarios:&lt;/p&gt;</description></item><item><title>[Solution] Rust No Variant Associated — Enum Variant Not Found</title><link>https://errorcode.excellentwiki.com/languages/rust/variant-not-found-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/variant-not-found-2/</guid><description>&lt;h1 id="no-variant-associated--enum-variant-not-found"&gt;No Variant Associated — Enum Variant Not Found&lt;/h1&gt;
+&lt;p&gt;A compiler error with the message &amp;ldquo;no variant associated&amp;rdquo; occurs when you reference an enum variant that doesn&amp;rsquo;t exist or use incorrect syntax.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Enums in Rust define types by listing their variants. Each variant is accessed using &lt;code&gt;EnumName::VariantName&lt;/code&gt;. The error occurs when the variant name is wrong (typo), doesn&amp;rsquo;t exist on the enum, or the syntax is incorrect (e.g., using &lt;code&gt;{}&lt;/code&gt; on a unit variant).&lt;/p&gt;</description></item><item><title>[Solution] Scala MatchError — No Match for Value in Pattern Matching</title><link>https://errorcode.excellentwiki.com/languages/scala/match-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/scala/match-error/</guid><description>&lt;h1 id="matcherror--no-match-for-value-in-pattern-matching"&gt;MatchError — No Match for Value in Pattern Matching&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;MatchError&lt;/code&gt; occurs when a &lt;code&gt;match&lt;/code&gt; expression encounters a value that none of the cases handle. The runtime throws &lt;code&gt;scala.MatchError&lt;/code&gt; with the message &amp;ldquo;a value of type X was not matched&amp;rdquo;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Scala&amp;rsquo;s &lt;code&gt;match&lt;/code&gt; expression is similar to a switch statement but far more powerful. However, if no case matches the input value, a &lt;code&gt;MatchError&lt;/code&gt; is thrown at runtime. This typically happens when a match is not exhaustive — meaning not all possible values of a type are covered.&lt;/p&gt;</description></item><item><title>** (FunctionClauseError) no function clause matching</title><link>https://errorcode.excellentwiki.com/languages/elixir/function-clause/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/elixir/function-clause/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;FunctionClauseError&lt;/code&gt; is raised when a function is called with arguments that don&amp;rsquo;t match any of its defined clauses. Elixir functions are defined with pattern matching on their arguments, and if none of the patterns match the provided arguments, this error occurs.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing a function clause for a specific argument type&lt;/li&gt;
+&lt;li&gt;Function clauses ordered incorrectly (specific clauses after general ones)&lt;/li&gt;
+&lt;li&gt;Passing unexpected types or values to a function&lt;/li&gt;
+&lt;li&gt;Forgetting to handle nil or edge cases&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Missing clause for nil&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Divide&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; divide(a, b) &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; a &lt;span style="color:#f92672"&gt;/&lt;/span&gt; b
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Divide&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;divide(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (FunctionClauseError) no function clause matching in Divide.divide/2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Add clause for nil or guard clauses&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Divide&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; divide(_a, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:error&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;:division_by_zero&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; divide(_a, &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt;), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:error&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;:nil_divisor&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; divide(a, b), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:ok&lt;/span&gt;, a &lt;span style="color:#f92672"&gt;/&lt;/span&gt; b}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Clause ordering issue&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Parser&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; parse(x) &lt;span style="color:#f92672"&gt;when&lt;/span&gt; is_binary(x), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:string&lt;/span&gt;, x}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; parse(x) &lt;span style="color:#f92672"&gt;when&lt;/span&gt; is_list(x), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:list&lt;/span&gt;, x}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; parse(x), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:other&lt;/span&gt;, x} &lt;span style="color:#75715e"&gt;# catches everything first!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: More specific clauses first&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Parser&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; parse(x) &lt;span style="color:#f92672"&gt;when&lt;/span&gt; is_binary(x), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:string&lt;/span&gt;, x}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; parse(x) &lt;span style="color:#f92672"&gt;when&lt;/span&gt; is_list(x), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:list&lt;/span&gt;, x}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; parse(x), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: {&lt;span style="color:#e6db74"&gt;:other&lt;/span&gt;, x}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: No clause for empty list&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Head&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; head([h &lt;span style="color:#f92672"&gt;|&lt;/span&gt; _]), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: h
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Head&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;head([])
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (FunctionClauseError) no function clause matching in Head.head/1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Wrong argument types&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Adder&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; add(a, b) &lt;span style="color:#f92672"&gt;when&lt;/span&gt; is_number(a) &lt;span style="color:#f92672"&gt;and&lt;/span&gt; is_number(b), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: a &lt;span style="color:#f92672"&gt;+&lt;/span&gt; b
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Adder&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;add(&lt;span style="color:#e6db74"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (FunctionClauseError) no function clause matching in Adder.add/2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 3: Missing guard for float&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Double&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; double(x) &lt;span style="color:#f92672"&gt;when&lt;/span&gt; is_integer(x), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: x &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Double&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;double(&lt;span style="color:#ae81ff"&gt;3.14&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (FunctionClauseError) no function clause matching in Double.double/1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/elixir/badmatch"&gt;MatchError: no match of right hand side value&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>** (MatchError) no match of right hand side value</title><link>https://errorcode.excellentwiki.com/languages/elixir/badmatch/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/elixir/badmatch/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Elixir uses the &lt;code&gt;=&lt;/code&gt; operator as a match operator, not just assignment. A &lt;code&gt;MatchError&lt;/code&gt; is raised when the right-hand side value does not match the pattern specified on the left-hand side. This is a fundamental part of Elixir&amp;rsquo;s pattern matching system and can occur in function heads, case statements, and direct matches.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Expecting a specific pattern that doesn&amp;rsquo;t match the actual value&lt;/li&gt;
+&lt;li&gt;Using a variable on the left-hand side when you meant to match a specific value&lt;/li&gt;
+&lt;li&gt;Incorrect function clause ordering (more specific clauses should come first)&lt;/li&gt;
+&lt;li&gt;Trying to match a struct with the wrong type&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Pattern doesn&amp;#39;t match&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{a, b, c} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value: {1, 2}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Ensure pattern matches the structure&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{a, b} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# a=1, b=2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Variable on left side always matches (pins for specific values)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt; &lt;span style="color:#75715e"&gt;# This actually works (rebind), but:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# For matching against specific values, use pin operator&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;^&lt;/span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt; &lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Use pin when you need exact match&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;^&lt;/span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; &lt;span style="color:#75715e"&gt;# matches&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: Function pattern mismatch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defmodule&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Greeter&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; greet(&lt;span style="color:#e6db74"&gt;:hello&lt;/span&gt;), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Hi!&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; greet(&lt;span style="color:#e6db74"&gt;:goodbye&lt;/span&gt;), &lt;span style="color:#e6db74"&gt;do&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Bye!&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Greeter&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;greet(&lt;span style="color:#e6db74"&gt;:unknown&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value: :unknown&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Destructuring mismatch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;%{&lt;span style="color:#e6db74"&gt;name&lt;/span&gt;: name, &lt;span style="color:#e6db74"&gt;age&lt;/span&gt;: age} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; %{&lt;span style="color:#e6db74"&gt;name&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Alice&amp;#34;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value: %{name: &amp;#34;Alice&amp;#34;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 3: Numeric match&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#ae81ff"&gt;42&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value: &amp;#34;hello&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/elixir/function-clause"&gt;FunctionClauseError: no function clause matching&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>** (MatchError) no match of right hand side value</title><link>https://errorcode.excellentwiki.com/languages/elixir/match-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/elixir/match-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;MatchError&lt;/code&gt; is raised when a pattern match operation fails because the value on the right-hand side doesn&amp;rsquo;t match the pattern on the left-hand side. In Elixir, the &lt;code&gt;=&lt;/code&gt; operator performs pattern matching, not just assignment.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Pattern doesn&amp;rsquo;t match the actual structure of the data&lt;/li&gt;
+&lt;li&gt;Trying to match on wrong types&lt;/li&gt;
+&lt;li&gt;Using variables in patterns that bind instead of match&lt;/li&gt;
+&lt;li&gt;Incorrect tuple or list structure in pattern&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Pattern doesn&amp;#39;t match&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{a, b} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;] &lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value: [1, 2]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Match with correct structure&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{a, b} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# a=1, b=2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Variable binding instead of matching&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{x, y} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# works (binds x=1, y=2)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{x, y} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# ** (MatchError) - x already bound to 1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Use pin operator for matching&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{&lt;span style="color:#f92672"&gt;^&lt;/span&gt;x, y} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# works (x must be 1)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{&lt;span style="color:#f92672"&gt;^&lt;/span&gt;x, y} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# ** (MatchError)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-elixir" data-lang="elixir"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: Wrong tuple size&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{a, b, c} &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;} &lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Wrong list pattern&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[h &lt;span style="color:#f92672"&gt;|&lt;/span&gt; t] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [] &lt;span style="color:#75715e"&gt;# ** (MatchError) no match of right hand side value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 3: Guard clause mismatch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; x &lt;span style="color:#f92672"&gt;when&lt;/span&gt; x &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;big&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# no match for x=10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ** (MatchError)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/elixir/function-clause"&gt;FunctionClauseError: no function clause matching&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/elixir/bad-match"&gt;BadMapError: expected a map&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

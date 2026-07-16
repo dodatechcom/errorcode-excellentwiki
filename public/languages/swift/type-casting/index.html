@@ -1,0 +1,81 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] Swift Error — Could Not Cast Value of Type | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix Swift type casting errors. Learn why unsafe type casts fail at runtime and how to use conditional casting safely."><link rel=canonical href=https://errorcode.excellentwiki.com/languages/swift/type-casting/><meta property="og:title" content="[Solution] Swift Error — Could Not Cast Value of Type"><meta property="og:description" content="Fix Swift type casting errors. Learn why unsafe type casts fail at runtime and how to use conditional casting safely."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/languages/swift/type-casting/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] Swift Error — Could Not Cast Value of Type"><meta name=twitter:description content="Fix Swift type casting errors. Learn why unsafe type casts fail at runtime and how to use conditional casting safely."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/languages/>Languages</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] Swift Error — Could Not Cast Value of Type</span></nav><h1 id=could-not-cast-value-of-type>Could Not Cast Value of Type</h1><p>This error occurs when you force-cast (<code>as!</code>) an object to a type it doesn&rsquo;t actually conform to. The runtime detects the mismatch and crashes.</p><h2 id=description>Description</h2><p>Swift provides <code>as?</code> (conditional cast) and <code>as!</code> (forced cast) for type casting. The forced cast <code>as!</code> will crash if the object isn&rsquo;t of the target type. This commonly happens with heterogeneous collections, <code>Any</code> typed values, and decoded JSON data.</p><p>Common patterns:</p><ul><li><strong>Force-casting <code>Any</code></strong> — casting <code>Any</code> to a specific type without checking.</li><li><strong>Wrong generic type</strong> — expecting one type but getting another from an API.</li><li><strong>Core Data type mismatch</strong> — entity attributes not matching expected types.</li><li><strong>JSON deserialization</strong> — array elements or dictionary values of unexpected types.</li></ul><h2 id=common-causes>Common Causes</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#75715e>// Cause 1: Force-casting Any</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> value: Any = <span style=color:#e6db74>&#34;hello&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> number = value <span style=color:#66d9ef>as</span>! Int <span style=color:#75715e>// Fatal error: Could not cast String to Int</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 2: Wrong type from collection</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> mixed: [Any] = [<span style=color:#ae81ff>1</span>, <span style=color:#e6db74>&#34;two&#34;</span>, <span style=color:#ae81ff>3.0</span>]
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> str = mixed[<span style=color:#ae81ff>1</span>] <span style=color:#66d9ef>as</span>! Int <span style=color:#75715e>// Fatal error: &#34;two&#34; is not Int</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 3: Protocol conformance mismatch</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> view: Any = UILabel()
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> button = view <span style=color:#66d9ef>as</span>! UIButton <span style=color:#75715e>// Fatal error</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Cause 4: Enum raw value cast</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> num: Int = <span style=color:#ae81ff>256</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> color = num <span style=color:#66d9ef>as</span>! UInt8 <span style=color:#75715e>// Fatal error: overflow</span>
+</span></span></code></pre></div><h2 id=how-to-fix>How to Fix</h2><h3 id=fix-1-use-conditional-cast>Fix 1: Use conditional cast</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>let</span> value: Any = <span style=color:#e6db74>&#34;hello&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Wrong</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> number = value <span style=color:#66d9ef>as</span>! Int
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Correct</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#66d9ef>let</span> number = value <span style=color:#66d9ef>as</span>? Int {
+</span></span><span style=display:flex><span>    print(number)
+</span></span><span style=display:flex><span>} <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;Not an Int&#34;</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-2-use-guard-for-early-exit>Fix 2: Use guard for early exit</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>process</span>(view: Any) {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Wrong</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> button = view <span style=color:#66d9ef>as</span>! UIButton
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Correct</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> button = view <span style=color:#66d9ef>as</span>? UIButton <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> }
+</span></span><span style=display:flex><span>    button.isEnabled = <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-3-use-switch-for-multiple-types>Fix 3: Use switch for multiple types</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>let</span> value: Any = <span style=color:#ae81ff>42</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Wrong</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> str = value <span style=color:#66d9ef>as</span>! String
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Correct</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>switch</span> value {
+</span></span><span style=display:flex><span><span style=color:#66d9ef>case</span> <span style=color:#66d9ef>let</span> str <span style=color:#66d9ef>as</span> String:
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;String: </span><span style=color:#e6db74>\(</span>str<span style=color:#e6db74>)</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>case</span> <span style=color:#66d9ef>let</span> num <span style=color:#66d9ef>as</span> Int:
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;Int: </span><span style=color:#e6db74>\(</span>num<span style=color:#e6db74>)</span><span style=color:#e6db74>&#34;</span>)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>default</span>:
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;Unknown type&#34;</span>)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=fix-4-use-typed-dictionaries-instead-of-any>Fix 4: Use typed dictionaries instead of <code>Any</code></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#75715e>// Wrong</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> dict: [String: Any] = [<span style=color:#e6db74>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Alice&#34;</span>, <span style=color:#e6db74>&#34;age&#34;</span>: <span style=color:#ae81ff>30</span>]
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> name = dict[<span style=color:#e6db74>&#34;name&#34;</span>]<span style=color:#f92672>!</span> <span style=color:#66d9ef>as</span>! String
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Correct — use Codable for structured data</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>User</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> age: Int
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#75715e>// Example 1: Force-casting wrong type</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> items: [Any] = [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>]
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> str = items[<span style=color:#ae81ff>0</span>] <span style=color:#66d9ef>as</span>! String <span style=color:#75715e>// Fatal error</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Example 2: Protocol casting</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Animal</span> {}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Dog</span>: Animal {}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> animal: Animal = Animal()
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> dog = animal <span style=color:#66d9ef>as</span>! Dog <span style=color:#75715e>// Fatal error: Animal is not a Dog</span>
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/languages/swift/nil-unwrapping/>Unexpectedly Found Nil While Unwrapping</a> — nil unwrap crash.</li><li><a href=/languages/swift/json-decoding/>DecodingError</a> — JSON type casting failures.</li><li><a href=/languages/swift/json-type-mismatch/>Type Mismatch</a> — JSON type mismatch during decoding.</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

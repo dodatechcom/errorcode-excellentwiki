@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Invalid_byte_sequence on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/invalid_byte_sequence/</link><description>Recent content in Invalid_byte_sequence on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/invalid_byte_sequence/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Ruby Encoding::InvalidByteSequenceError — Encoding Fix</title><link>https://errorcode.excellentwiki.com/languages/ruby/encoding-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/ruby/encoding-error/</guid><description>&lt;h1 id="encodinginvalidbytesequenceerror--encoding-fix"&gt;Encoding::InvalidByteSequenceError — Encoding Fix&lt;/h1&gt;
+&lt;p&gt;An &lt;code&gt;Encoding::InvalidByteSequenceError&lt;/code&gt; is raised when a string contains byte sequences that are invalid for its declared encoding.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;Ruby strings have associated encodings. When you operate on strings with incompatible encodings or when a string contains invalid bytes for its encoding, this error is raised.&lt;/p&gt;
+&lt;p&gt;Common scenarios:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mixed encoding data&lt;/strong&gt; — reading a file with mixed encodings.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Binary data as UTF-8&lt;/strong&gt; — binary data containing invalid UTF-8 bytes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Transcoding failures&lt;/strong&gt; — converting between incompatible encodings.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Invalid bytes from external sources&lt;/strong&gt; — network data, file I/O.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 1: Invalid bytes in UTF-8 string&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;str &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;hello&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\xFF\xFE&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;force_encoding(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;str&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;) &lt;span style="color:#75715e"&gt;# InvalidByteSequenceError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 2: Reading binary file as UTF-8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;File&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read(&lt;span style="color:#e6db74"&gt;&amp;#39;image.png&amp;#39;&lt;/span&gt;) &lt;span style="color:#75715e"&gt;# Binary data&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;) &lt;span style="color:#75715e"&gt;# InvalidByteSequenceError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 3: Incompatible encoding conversion&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;str &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;héllo&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;ASCII&amp;#39;&lt;/span&gt;) &lt;span style="color:#75715e"&gt;# InvalidByteSequenceError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 4: String concatenation with different encodings&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ascii_str &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;ASCII&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;utf8_str &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;héllo&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ascii_str &lt;span style="color:#f92672"&gt;+&lt;/span&gt; utf8_str &lt;span style="color:#75715e"&gt;# May raise error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-set-proper-encoding-when-reading-files"&gt;Fix 1: Set proper encoding when reading files&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;File&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read(&lt;span style="color:#e6db74"&gt;&amp;#39;file.txt&amp;#39;&lt;/span&gt;) &lt;span style="color:#75715e"&gt;# Assumes default encoding&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;File&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read(&lt;span style="color:#e6db74"&gt;&amp;#39;file.txt&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;encoding&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Or force encoding&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;File&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read(&lt;span style="color:#e6db74"&gt;&amp;#39;file.txt&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data&lt;span style="color:#f92672"&gt;.&lt;/span&gt;force_encoding(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-handle-encoding-errors-during-transcoding"&gt;Fix 2: Handle encoding errors during transcoding&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;str&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct — use replace or ignore for invalid bytes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;str&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;invalid&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;:replace&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;undef&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;:replace&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;replace&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#39;?&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-detect-encoding-before-processing"&gt;Fix 3: Detect encoding before processing&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check encoding of a string&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;str&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encoding &lt;span style="color:#75715e"&gt;# =&amp;gt; #&amp;lt;Encoding:UTF-8&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check if encoding is valid&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;str&lt;span style="color:#f92672"&gt;.&lt;/span&gt;valid_encoding? &lt;span style="color:#75715e"&gt;# true or false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix invalid encoding&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;unless&lt;/span&gt; str&lt;span style="color:#f92672"&gt;.&lt;/span&gt;valid_encoding?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; str &lt;span style="color:#f92672"&gt;=&lt;/span&gt; str&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;invalid&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;:replace&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;replace&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#39;?&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-binary-encoding-for-raw-data"&gt;Fix 4: Use binary encoding for raw data&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# For binary data, use binary encoding&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;File&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read(&lt;span style="color:#e6db74"&gt;&amp;#39;image.png&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;mode&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#39;rb&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;data&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encoding &lt;span style="color:#75715e"&gt;# =&amp;gt; #&amp;lt;Encoding:ASCII-8BIT&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Only encode to UTF-8 if the data is actually text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; data&lt;span style="color:#f92672"&gt;.&lt;/span&gt;valid_encoding?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; text &lt;span style="color:#f92672"&gt;=&lt;/span&gt; data&lt;span style="color:#f92672"&gt;.&lt;/span&gt;encode(&lt;span style="color:#e6db74"&gt;&amp;#39;UTF-8&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; puts &lt;span style="color:#e6db74"&gt;&amp;#34;File contains binary data&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="compatibility-error"&gt;Encoding::CompatibilityError&lt;/a&gt; — incompatible encodings in operations.&lt;/li&gt;
+&lt;li&gt;&lt;a href="io-error"&gt;IOError&lt;/a&gt; — stream closed or invalid I/O operation.&lt;/li&gt;
+&lt;li&gt;&lt;a href="argument-error"&gt;ArgumentError&lt;/a&gt; — wrong encoding argument.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

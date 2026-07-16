@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Filealreadyexistsexception on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/filealreadyexistsexception/</link><description>Recent content in Filealreadyexistsexception on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/filealreadyexistsexception/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Java FileAlreadyExistsException — File Conflict Fix</title><link>https://errorcode.excellentwiki.com/languages/java/filealreadyexistsexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/filealreadyexistsexception/</guid><description>&lt;h1 id="filealreadyexistsexception--file-conflict-fix"&gt;FileAlreadyExistsException — File Conflict Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;FileAlreadyExistsException&lt;/code&gt; is thrown when an attempt is made to create a file that already exists. This is an NIO.2 exception (&lt;code&gt;java.nio.file.FileAlreadyExistsException&lt;/code&gt;) and is a subclass of &lt;code&gt;FileSystemException&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="description"&gt;Description&lt;/h2&gt;
+&lt;p&gt;The exception occurs when using &lt;code&gt;Files.createFile()&lt;/code&gt;, &lt;code&gt;Files.createDirectory()&lt;/code&gt;, or writing with &lt;code&gt;StandardOpenOption.CREATE_NEW&lt;/code&gt; on a path that already exists:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;java.nio.file.FileAlreadyExistsException: /path/to/file.txt&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java.nio.file.FileAlreadyExistsException: /path/to/directory&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Creating a file that already exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/output.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;createFile&lt;/span&gt;(path); &lt;span style="color:#75715e"&gt;// FileAlreadyExistsException if file exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Using CREATE_NEW option on existing file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE_NEW&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// Throws if exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Creating a directory that already exists as a file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path dir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/subdir&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;createDirectory&lt;/span&gt;(dir); &lt;span style="color:#75715e"&gt;// Throws if &amp;#34;subdir&amp;#34; is a file, not a directory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Race condition — two threads creating the same file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread A and Thread B both call Files.createFile(path)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="solutions"&gt;Solutions&lt;/h2&gt;
+&lt;h3 id="fix-1-check-existence-before-creating"&gt;Fix 1: Check existence before creating&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/output.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;Files.&lt;span style="color:#a6e22e"&gt;exists&lt;/span&gt;(path)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;createFile&lt;/span&gt;(path);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Or use CREATE (creates if not exists, does nothing if exists)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-appropriate-open-options"&gt;Fix 2: Use appropriate open options&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/output.txt&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CREATE: create if not exists, open if exists (no truncation)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;new data&amp;#34;&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CREATE_NEW: fail if exists (what createFile does)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Files.writeString(path, &amp;#34;data&amp;#34;, StandardOpenOption.CREATE_NEW);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// TRUNCATE_EXISTING: create if not exists, truncate if exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(path, &lt;span style="color:#e6db74"&gt;&amp;#34;new data&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StandardOpenOption.&lt;span style="color:#a6e22e"&gt;CREATE&lt;/span&gt;, StandardOpenOption.&lt;span style="color:#a6e22e"&gt;TRUNCATE_EXISTING&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-atomic-file-operations-to-avoid-race-conditions"&gt;Fix 3: Use atomic file operations to avoid race conditions&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path tempPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Files.&lt;span style="color:#a6e22e"&gt;createTempFile&lt;/span&gt;(dir, &lt;span style="color:#e6db74"&gt;&amp;#34;output&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;.tmp&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;writeString&lt;/span&gt;(tempPath, &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Atomically move into place&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;move&lt;/span&gt;(tempPath, targetPath, StandardCopyOption.&lt;span style="color:#a6e22e"&gt;REPLACE_EXISTING&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StandardCopyOption.&lt;span style="color:#a6e22e"&gt;ATOMIC_MOVE&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (IOException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Files.&lt;span style="color:#a6e22e"&gt;deleteIfExists&lt;/span&gt;(tempPath);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; e;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-create-directories-safely"&gt;Fix 4: Create directories safely&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Path dir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Paths.&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/data/subdir&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// createDirectories creates all missing parent directories too&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Files.&lt;span style="color:#a6e22e"&gt;createDirectories&lt;/span&gt;(dir); &lt;span style="color:#75715e"&gt;// No exception if dir already exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// createDirectory only creates the final component — throws if parents missing&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Files.createDirectory(dir); // Fails if /data doesn&amp;#39;t exist&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="prevention-checklist"&gt;Prevention Checklist&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Use &lt;code&gt;StandardOpenOption.CREATE&lt;/code&gt; instead of &lt;code&gt;CREATE_NEW&lt;/code&gt; when you want to overwrite silently.&lt;/li&gt;
+&lt;li&gt;Always call &lt;code&gt;Files.exists()&lt;/code&gt; before &lt;code&gt;Files.createFile()&lt;/code&gt; if the file may already exist.&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;Files.createDirectories()&lt;/code&gt; instead of &lt;code&gt;Files.createDirectory()&lt;/code&gt; for nested paths.&lt;/li&gt;
+&lt;li&gt;Use temp files and atomic moves to avoid race conditions in concurrent environments.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="../filenotfoundexception"&gt;FileNotFoundException&lt;/a&gt; — file not found when trying to read.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../ioexception"&gt;IOException&lt;/a&gt; — general I/O failure.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../invalidpathexception"&gt;InvalidPathException&lt;/a&gt; — malformed path string.&lt;/li&gt;
+&lt;li&gt;&lt;a href="../filenotfoundexception"&gt;AccessDeniedException&lt;/a&gt; — permission denied (subclass of FileSystemException).&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

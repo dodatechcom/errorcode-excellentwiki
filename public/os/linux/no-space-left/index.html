@@ -1,0 +1,69 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] Linux 'No Space Left on Device' — ENOSPC Fix | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix Linux 'No space left on device' (ENOSPC) error. Find and remove large files, clear logs, and free disk space with these solutions."><link rel=canonical href=https://errorcode.excellentwiki.com/os/linux/no-space-left/><meta property="og:title" content="[Solution] Linux 'No Space Left on Device' — ENOSPC Fix"><meta property="og:description" content="Fix Linux 'No space left on device' (ENOSPC) error. Find and remove large files, clear logs, and free disk space with these solutions."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/os/linux/no-space-left/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] Linux 'No Space Left on Device' — ENOSPC Fix"><meta name=twitter:description content="Fix Linux 'No space left on device' (ENOSPC) error. Find and remove large files, clear logs, and free disk space with these solutions."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/os/>Os</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] Linux 'No Space Left on Device' — ENOSPC Fix</span></nav><h1 id=linux-no-space-left-on-device-enospc>Linux: No Space Left on Device (ENOSPC)</h1><p>The error <code>No space left on device</code> (errno 28, ENOSPC) means the filesystem has run out of available space. This can be either disk blocks or inodes. When a filesystem fills up, you cannot write new files, and many system services will fail. This is a critical error that requires immediate attention.</p><h2 id=common-causes>Common Causes</h2><ul><li>Disk partition has reached 100% usage</li><li>Inode exhaustion (too many small files even if disk space is available)</li><li>Log files growing unbounded</li><li>Large files in /var/log, /tmp, or /home</li><li>Docker images or containers accumulating disk usage</li></ul><h2 id=how-to-fix>How to Fix</h2><h3 id=1-check-disk-usage>1. Check Disk Usage</h3><p>First, identify which filesystem is full:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>df -h
+</span></span></code></pre></div><p>Example output:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-fallback data-lang=fallback><span style=display:flex><span>Filesystem      Size  Used Avail Use% Mounted on
+</span></span><span style=display:flex><span>/dev/sda1        50G   50G     0 100% /
+</span></span><span style=display:flex><span>tmpfs           3.9G     0  3.9G   0% /dev/shm
+</span></span></code></pre></div><h3 id=2-find-large-files-and-directories>2. Find Large Files and Directories</h3><p>Locate what&rsquo;s consuming the most space:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Find the largest directories under root</span>
+</span></span><span style=display:flex><span>sudo du -sh /* 2&gt;/dev/null | sort -rh | head -20
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Find files larger than 100MB</span>
+</span></span><span style=display:flex><span>sudo find / -type f -size +100M -exec ls -lh <span style=color:#f92672>{}</span> <span style=color:#ae81ff>\;</span> 2&gt;/dev/null
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Find files larger than 1GB</span>
+</span></span><span style=display:flex><span>sudo find / -type f -size +1G -exec ls -lh <span style=color:#f92672>{}</span> <span style=color:#ae81ff>\;</span> 2&gt;/dev/null
+</span></span></code></pre></div><h3 id=3-clean-up-common-offenders>3. Clean Up Common Offenders</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Clear package manager cache (Debian/Ubuntu)</span>
+</span></span><span style=display:flex><span>sudo apt clean
+</span></span><span style=display:flex><span>sudo apt autoclean
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Clear package manager cache (RHEL/CentOS/Fedora)</span>
+</span></span><span style=display:flex><span>sudo dnf clean all
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Clear old journal logs</span>
+</span></span><span style=display:flex><span>sudo journalctl --vacuum-size<span style=color:#f92672>=</span>100M
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Remove old log files</span>
+</span></span><span style=display:flex><span>sudo truncate -s <span style=color:#ae81ff>0</span> /var/log/syslog
+</span></span><span style=display:flex><span>sudo find /var/log -name <span style=color:#e6db74>&#34;*.gz&#34;</span> -delete
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Clear /tmp</span>
+</span></span><span style=display:flex><span>sudo find /tmp -type f -atime +7 -delete
+</span></span></code></pre></div><h3 id=4-check-inode-usage>4. Check Inode Usage</h3><p>If disk space is available but you still get ENOSPC, you may have inode exhaustion:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>df -i
+</span></span></code></pre></div><p>Fix inode exhaustion by removing large numbers of small files:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Find directories with many files</span>
+</span></span><span style=display:flex><span>sudo find /var/spool -type f | wc -l
+</span></span><span style=display:flex><span>sudo find /var/mail -type f | wc -l
+</span></span></code></pre></div><h3 id=5-remove-old-kernels-ubuntudebian>5. Remove Old Kernels (Ubuntu/Debian)</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># List installed kernels</span>
+</span></span><span style=display:flex><span>dpkg --list <span style=color:#e6db74>&#39;linux-image*&#39;</span> | grep ^ii
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Remove old kernels (keep the current one)</span>
+</span></span><span style=display:flex><span>sudo apt autoremove --purge
+</span></span></code></pre></div><h3 id=6-expand-the-filesystem>6. Expand the Filesystem</h3><p>If you have available space on the disk but the partition is full:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># For LVM partitions</span>
+</span></span><span style=display:flex><span>sudo lvextend -l +100%FREE /dev/mapper/vg-root
+</span></span><span style=display:flex><span>sudo resize2fs /dev/mapper/vg-root   <span style=color:#75715e># ext4</span>
+</span></span><span style=display:flex><span>sudo xfs_growfs /                     <span style=color:#75715e># xfs</span>
+</span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>$ df -h
+</span></span><span style=display:flex><span>Filesystem      Size  Used Avail Use% Mounted on
+</span></span><span style=display:flex><span>/dev/sda1        20G   20G     <span style=color:#ae81ff>0</span> 100% /
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ sudo du -sh /var/log
+</span></span><span style=display:flex><span>12G     /var/log
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ sudo journalctl --vacuum-size<span style=color:#f92672>=</span>100M
+</span></span><span style=display:flex><span>Vacuuming <span style=color:#66d9ef>done</span>, freed 11.5G of archived journals from /var/log/journal.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ df -h /dev/sda1
+</span></span><span style=display:flex><span>Filesystem      Size  Used Avail Use% Mounted on
+</span></span><span style=display:flex><span>/dev/sda1        20G  8.5G   11G  44% /
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/os/linux/disk-full2/>Disk I/O error</a> — Physical disk failure or corruption</li><li><a href=/os/linux/readonly-filesystem/>Read-only file system</a> — Filesystem remounted read-only</li><li><a href=/os/linux/cannot-allocate-memory/>Cannot allocate memory</a> — System out of memory</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>

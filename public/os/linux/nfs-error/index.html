@@ -1,0 +1,90 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>[Solution] Linux NFS 'server not responding' — NFS Timeout Fix | ErrorCode — Error Code Reference & Solutions</title><meta name=description content="Fix Linux NFS 'server not responding' errors. Resolve NFS timeouts, connection issues, and mount failures with these solutions."><link rel=canonical href=https://errorcode.excellentwiki.com/os/linux/nfs-error/><meta property="og:title" content="[Solution] Linux NFS 'server not responding' — NFS Timeout Fix"><meta property="og:description" content="Fix Linux NFS 'server not responding' errors. Resolve NFS timeouts, connection issues, and mount failures with these solutions."><meta property="og:type" content="article"><meta property="og:url" content="https://errorcode.excellentwiki.com/os/linux/nfs-error/"><meta name=twitter:card content="summary"><meta name=twitter:title content="[Solution] Linux NFS 'server not responding' — NFS Timeout Fix"><meta name=twitter:description content="Fix Linux NFS 'server not responding' errors. Resolve NFS timeouts, connection issues, and mount failures with these solutions."><link rel=alternate type=application/rss+xml href=https://errorcode.excellentwiki.com/index.xml><link rel=stylesheet href="/css/style.css?v=2"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css></head><body><nav class=navbar><div class=container><a href=/ class=brand>ErrorCode — Error Code Reference & Solutions</a>
+<button class=menu-toggle onclick='document.querySelector(".nav-links").classList.toggle("open")' aria-label=Menu>&#9776;</button><div class=nav-links><a href=/os/>OS Errors</a>
+<a href=/languages/>Languages</a>
+<a href=/deprecated/>Deprecated</a>
+<a href=/quick-reference/>Quick Reference</a>
+<a href=/comparison/>Compare</a>
+<a href=/search/>Search</a>
+<button class=theme-toggle onclick=toggleTheme() aria-label="Toggle dark mode">
+<span class=theme-icon-light>&#9788;</span>
+<span class=theme-icon-dark>&#9790;</span></button></div></div></nav><main class=container><article class=content-with-sidebar><aside class=sidebar-toc id=sidebar-toc><div class=sidebar-inner><h4>On this page</h4><nav class=toc-list id=toc-list></nav></div></aside><div class="content-main content"><nav class=breadcrumbs aria-label=Breadcrumb><a href=/>Home</a>
+<span class=breadcrumb-sep>/</span>
+<a href=/os/>Os</a>
+<span class=breadcrumb-sep>/</span>
+<span class=breadcrumb-current>[Solution] Linux NFS 'server not responding' — NFS Timeout Fix</span></nav><h1 id=linux-nfs---server-not-responding>Linux: NFS - server not responding</h1><p>The <code>NFS: server not responding</code> error means the NFS client cannot communicate with the NFS server. This can be caused by network issues, the NFS server being down, firewall blocking NFS ports, or the NFS export being unavailable. The client will typically keep retrying, which can cause long hangs in terminal sessions.</p><h2 id=common-causes>Common Causes</h2><ul><li>NFS server is down or unreachable</li><li>Network connectivity issues between client and server</li><li>Firewall blocking NFS ports (2049, 111)</li><li>NFS server export not configured for the client&rsquo;s IP</li><li>DNS resolution failure for the NFS server hostname</li><li>NFS server overloaded or experiencing disk issues</li></ul><h2 id=how-to-fix>How to Fix</h2><h3 id=1-check-network-connectivity>1. Check Network Connectivity</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Ping the NFS server</span>
+</span></span><span style=display:flex><span>ping -c <span style=color:#ae81ff>4</span> nfsserver
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check if the NFS port is accessible</span>
+</span></span><span style=display:flex><span>nc -zv nfsserver <span style=color:#ae81ff>2049</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check RPC portmapper</span>
+</span></span><span style=display:flex><span>rpcinfo -p nfsserver
+</span></span></code></pre></div><h3 id=2-check-nfs-server-status>2. Check NFS Server Status</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Check if NFS server is running (on the server)</span>
+</span></span><span style=display:flex><span>sudo systemctl status nfs-server
+</span></span><span style=display:flex><span>sudo systemctl status rpcbind
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># On the client, check if you can see exports</span>
+</span></span><span style=display:flex><span>showmount -e nfsserver
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check NFS server logs</span>
+</span></span><span style=display:flex><span>sudo journalctl -u nfs-server -f
+</span></span></code></pre></div><h3 id=3-check-and-fix-firewall-rules>3. Check and Fix Firewall Rules</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Check if NFS ports are open</span>
+</span></span><span style=display:flex><span>sudo iptables -L -n | grep -E <span style=color:#e6db74>&#39;2049|111&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Allow NFS traffic through firewall</span>
+</span></span><span style=display:flex><span>sudo iptables -A INPUT -p tcp --dport <span style=color:#ae81ff>2049</span> -j ACCEPT
+</span></span><span style=display:flex><span>sudo iptables -A INPUT -p udp --dport <span style=color:#ae81ff>2049</span> -j ACCEPT
+</span></span><span style=display:flex><span>sudo iptables -A INPUT -p tcp --dport <span style=color:#ae81ff>111</span> -j ACCEPT
+</span></span><span style=display:flex><span>sudo iptables -A INPUT -p udp --dport <span style=color:#ae81ff>111</span> -j ACCEPT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># With firewalld</span>
+</span></span><span style=display:flex><span>sudo firewall-cmd --add-service<span style=color:#f92672>=</span>nfs --permanent
+</span></span><span style=display:flex><span>sudo firewall-cmd --reload
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># With ufw</span>
+</span></span><span style=display:flex><span>sudo ufw allow 2049/tcp
+</span></span><span style=display:flex><span>sudo ufw allow 2049/udp
+</span></span><span style=display:flex><span>sudo ufw allow 111/tcp
+</span></span></code></pre></div><h3 id=4-check-nfs-mount-configuration>4. Check NFS Mount Configuration</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># View current NFS mounts</span>
+</span></span><span style=display:flex><span>mount | grep nfs
+</span></span><span style=display:flex><span>cat /etc/fstab | grep nfs
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check mount options</span>
+</span></span><span style=display:flex><span>nfsstat -m
+</span></span></code></pre></div><h3 id=5-remount-nfs-share>5. Remount NFS Share</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Force remount</span>
+</span></span><span style=display:flex><span>sudo umount -f /mnt/nfs
+</span></span><span style=display:flex><span>sudo mount -t nfs nfsserver:/exported/path /mnt/nfs
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># With specific options for better reliability</span>
+</span></span><span style=display:flex><span>sudo mount -t nfs -o hard,intr,timeo<span style=color:#f92672>=</span>600,retrans<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span> nfsserver:/exported/path /mnt/nfs
+</span></span></code></pre></div><h3 id=6-use-nfsv4-instead-of-nfsv3>6. Use NFSv4 Instead of NFSv3</h3><p>NFSv4 has better timeout handling and uses a single port:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Mount with NFSv4</span>
+</span></span><span style=display:flex><span>sudo mount -t nfs4 nfsserver:/exported/path /mnt/nfs
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Check NFS version</span>
+</span></span><span style=display:flex><span>nfsstat -c
+</span></span></code></pre></div><h3 id=7-fix-dns-resolution>7. Fix DNS Resolution</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Add the server to /etc/hosts if DNS is unreliable</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;192.168.1.100 nfsserver&#34;</span> | sudo tee -a /etc/hosts
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Test name resolution</span>
+</span></span><span style=display:flex><span>getent hosts nfsserver
+</span></span></code></pre></div><h3 id=8-set-nfs-client-timeout>8. Set NFS Client Timeout</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Set shorter timeout values</span>
+</span></span><span style=display:flex><span>sudo mount -o timeo<span style=color:#f92672>=</span>5,retrans<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> nfsserver:/export /mnt/nfs
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># For soft mount (returns error instead of hanging — use with caution)</span>
+</span></span><span style=display:flex><span>sudo mount -o soft,timeo<span style=color:#f92672>=</span><span style=color:#ae81ff>5</span> nfsserver:/export /mnt/nfs
+</span></span></code></pre></div><h2 id=examples>Examples</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>$ ls /mnt/nfs
+</span></span><span style=display:flex><span>ls: cannot access <span style=color:#e6db74>&#39;/mnt/nfs&#39;</span>: Connection timed out
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ dmesg | grep nfs
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>  123.456<span style=color:#f92672>]</span> nfs: server nfsserver not responding, still trying
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ showmount -e nfsserver
+</span></span><span style=display:flex><span>clnt_create: RPC: Port mapper failure - Unable to receive: errno <span style=color:#ae81ff>113</span> <span style=color:#f92672>(</span>No route to host<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ sudo iptables -A INPUT -p tcp --dport <span style=color:#ae81ff>2049</span> -j ACCEPT
+</span></span><span style=display:flex><span>$ sudo iptables -A INPUT -p tcp --dport <span style=color:#ae81ff>111</span> -j ACCEPT
+</span></span><span style=display:flex><span>$ showmount -e nfsserver
+</span></span><span style=display:flex><span>Exports list on nfsserver:
+</span></span><span style=display:flex><span>/exported/path          192.168.1.0/24
+</span></span></code></pre></div><h2 id=related-errors>Related Errors</h2><ul><li><a href=/os/linux/connection-refused7/>Connection refused</a> — Service not listening</li><li><a href=/os/linux/readonly-filesystem/>Read-only file system</a> — NFS remounted read-only</li><li><a href=/os/linux/iptables-error/>iptables errors</a> — Firewall configuration issues</li></ul><div class=comments-section><h2>Comments</h2><div id=giscus-container></div></div></div></article><script>(function(){var e,s,n=document.querySelector(".content-main"),t=document.getElementById("toc-list");if(!n||!t)return;if(e=n.querySelectorAll("h2, h3"),e.length<2){document.getElementById("sidebar-toc").style.display="none";return}e.forEach(function(e,n){e.id||(e.id="section-"+n);var s,o=document.createElement("li");o.className=e.tagName==="H3"?"toc-h3":"toc-h2",s=document.createElement("a"),s.href="#"+e.id,s.textContent=e.textContent,s.addEventListener("click",function(t){t.preventDefault(),e.scrollIntoView({behavior:"smooth",block:"start"}),history.pushState(null,null,"#"+e.id)}),o.appendChild(s),t.appendChild(o)}),s=t.querySelectorAll("a"),window.addEventListener("scroll",function(){var n=window.scrollY+100,t=null;e.forEach(function(e,s){e.offsetTop<=n&&(t=s)}),s.forEach(function(e,n){e.classList.toggle("active",n===t)})})})()</script></main><footer class=footer><div class=container><p>&copy; 2026 ErrorCode — Error Code Reference & Solutions. All Rights Reserved.</p></div></footer><button class=back-to-top onclick='window.scrollTo({top:0,behavior:"smooth"})' aria-label="Back to top">&#8593;</button>
+<script src=/js/copy.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js></script><script>hljs.highlightAll()</script><script>function getTheme(){return localStorage.getItem("theme")||"auto"}function setTheme(e){localStorage.setItem("theme",e),document.documentElement.setAttribute("data-theme",e)}function toggleTheme(){const e=getTheme(),t=e==="dark"?"light":e==="light"?"dark":"auto";setTheme(t)}setTheme(getTheme()),window.addEventListener("scroll",function(){const e=document.querySelector(".back-to-top");window.scrollY>300?e.classList.add("visible"):e.classList.remove("visible")});function searchPageFind(e){if(e.length<2)return;window.location.href="/search/?q="+encodeURIComponent(e)}</script><script src=https://giscus.app/client.js data-repo=YOUR_GITHUB_REPO data-repo-id=YOUR_REPO_ID data-category=Announcements data-category-id=YOUR_CATEGORY_ID data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async></script></body></html>
