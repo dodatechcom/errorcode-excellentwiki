@@ -50,4 +50,111 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/io-error2/"&gt;I/O Error&lt;/a&gt; — disk I/O failure&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/database-locked/"&gt;Database Locked&lt;/a&gt; — write lock contention&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQLite - out of memory (SQLITE_NOMEM)</title><link>https://errorcode.excellentwiki.com/tools/sqlite/sqlite-memory-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/sqlite/sqlite-memory-error-v2/</guid><description>&lt;p&gt;SQLite &amp;ldquo;out of memory&amp;rdquo; (SQLITE_NOMEM) error occurs when the database engine cannot allocate sufficient memory for an operation. This typically happens with very large result sets, complex queries, or when the system is under memory pressure.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Query returning extremely large result sets&lt;/li&gt;
+&lt;li&gt;Complex JOIN operations requiring excessive memory&lt;/li&gt;
+&lt;li&gt;System running low on available memory&lt;/li&gt;
+&lt;li&gt;Large BLOB values stored in the database&lt;/li&gt;
+&lt;li&gt;Memory leak in application code holding many open connections&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Use pagination for large result sets:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;fetch_paginated&lt;/span&gt;(conn, table, page_size&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;, offset&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cursor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;f&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT * FROM &lt;/span&gt;&lt;span style="color:#e6db74"&gt;{&lt;/span&gt;table&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt; LIMIT ? OFFSET ?&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (page_size, offset)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; )
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; cursor&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fetchall()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Use streaming cursors for large results:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sqlite3&lt;span style="color:#f92672"&gt;.&lt;/span&gt;connect(&lt;span style="color:#e6db74"&gt;&amp;#39;mydb.sqlite&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cursor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT * FROM large_table&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; row &lt;span style="color:#f92672"&gt;in&lt;/span&gt; cursor: &lt;span style="color:#75715e"&gt;# iterates one row at a time&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; process_row(row)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Optimize queries to reduce memory:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Instead of loading all data, aggregate in SQL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; category, &lt;span style="color:#66d9ef"&gt;COUNT&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;), &lt;span style="color:#66d9ef"&gt;SUM&lt;/span&gt;(amount)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; orders
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;GROUP&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;BY&lt;/span&gt; category;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="4"&gt;
+&lt;li&gt;Check available system memory:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;free -h
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cat /proc/meminfo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="5"&gt;
+&lt;li&gt;Limit concurrent connections:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; sqlite3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use a single connection per thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sqlite3&lt;span style="color:#f92672"&gt;.&lt;/span&gt;connect(&lt;span style="color:#e6db74"&gt;&amp;#39;mydb.sqlite&amp;#39;&lt;/span&gt;, check_same_thread&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;False&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="6"&gt;
+&lt;li&gt;Increase system memory or swap:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Add swap file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo fallocate -l 2G /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo chmod &lt;span style="color:#ae81ff"&gt;600&lt;/span&gt; /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo mkswap /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo swapon /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; sqlite3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sqlite3&lt;span style="color:#f92672"&gt;.&lt;/span&gt;connect(&lt;span style="color:#e6db74"&gt;&amp;#39;mydb.sqlite&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Error: out of memory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rows &lt;span style="color:#f92672"&gt;=&lt;/span&gt; conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT * FROM huge_table&amp;#34;&lt;/span&gt;)&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fetchall() &lt;span style="color:#75715e"&gt;# loads everything&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: use iteration or pagination&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cursor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT * FROM huge_table&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; row &lt;span style="color:#f92672"&gt;in&lt;/span&gt; cursor:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; process(row) &lt;span style="color:#75715e"&gt;# memory efficient&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/sqlite-io-error/"&gt;I/O error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/sqlite-corruption-error-v2/"&gt;Corruption error&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQLite Out of Memory</title><link>https://errorcode.excellentwiki.com/tools/sqlite/sqlite-memory-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/sqlite/sqlite-memory-error/</guid><description>&lt;h1 id="sqlite-out-of-memory"&gt;SQLite Out of Memory&lt;/h1&gt;
+&lt;p&gt;A SQLite out of memory error occurs when the database engine cannot allocate sufficient memory for an operation. This typically happens with large result sets or complex queries.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Very large result sets&lt;/li&gt;
+&lt;li&gt;Complex JOIN operations on large tables&lt;/li&gt;
+&lt;li&gt;Large BLOB data&lt;/li&gt;
+&lt;li&gt;Insufficient system memory&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="limit-query-results"&gt;Limit Query Results&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; large_table &lt;span style="color:#66d9ef"&gt;LIMIT&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-pagination"&gt;Use Pagination&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;ORDER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;BY&lt;/span&gt; id &lt;span style="color:#66d9ef"&gt;LIMIT&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;OFFSET&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;ORDER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;BY&lt;/span&gt; id &lt;span style="color:#66d9ef"&gt;LIMIT&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;OFFSET&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="optimize-queries"&gt;Optimize Queries&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Add indexes for WHERE clauses
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;INDEX&lt;/span&gt; idx_email &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; users(email);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Use EXPLAIN to check query plan
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;EXPLAIN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; email &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;test@example.com&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="close-unused-connections"&gt;Close Unused Connections&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; sqlite3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sqlite3&lt;span style="color:#f92672"&gt;.&lt;/span&gt;connect(&lt;span style="color:#e6db74"&gt;&amp;#39;mydb.sqlite&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use and close&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;close()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-memory-usage"&gt;Check Memory Usage&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Monitor SQLite memory usage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sqlite3 mydb.sqlite &lt;span style="color:#e6db74"&gt;&amp;#34;PRAGMA memory_used;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; sqlite3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sqlite3&lt;span style="color:#f92672"&gt;.&lt;/span&gt;connect(&lt;span style="color:#e6db74"&gt;&amp;#39;mydb.sqlite&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cursor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#39;SELECT * FROM huge_table&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# sqlite3.MemoryError: out of memory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: use pagination&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cursor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#39;SELECT * FROM huge_table LIMIT 1000&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/sqlite-connection-error/"&gt;Connection Error&lt;/a&gt; — connection failure&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/constraint-error/"&gt;Constraint Error&lt;/a&gt; — constraint violation&lt;/li&gt;
 &lt;/ul&gt;</description></item></channel></rss>

@@ -16,4 +16,95 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo journalctl -u sshd -f
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo tail -f /var/log/auth.log &lt;span style="color:#75715e"&gt;# Debian/Ubuntu&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo tail -f /var/log/secure &lt;span style="color:#75715e"&gt;# RHEL/CentOS&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Look for messages like &lt;code&gt;Failed password&lt;/code&gt;, &lt;code&gt;Invalid user&lt;/code&gt;, or &lt;code&gt;Connection closed&lt;/code&gt;.&lt;/p&gt;</description></item></channel></rss>
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Look for messages like &lt;code&gt;Failed password&lt;/code&gt;, &lt;code&gt;Invalid user&lt;/code&gt;, or &lt;code&gt;Connection closed&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>[Solution] Linux SSH Connection Refused — Fix</title><link>https://errorcode.excellentwiki.com/os/linux/linux-ssh-connection-refused/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/linux-ssh-connection-refused/</guid><description>&lt;h1 id="linux-ssh-connection-refused"&gt;Linux: ssh: Connection refused&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;ssh: connect to host &amp;lt;host&amp;gt; port 22: Connection refused&lt;/code&gt; error means the SSH client reached the host but no service is listening on the specified port. This is different from a timeout — the TCP handshake completed but was immediately rejected because nothing is listening on port 22.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;SSH server (sshd) not installed or not running&lt;/li&gt;
+&lt;li&gt;SSH service not started after installation&lt;/li&gt;
+&lt;li&gt;SSH daemon crashed or failed to start&lt;/li&gt;
+&lt;li&gt;Firewall blocking port 22&lt;/li&gt;
+&lt;li&gt;SSH configured to listen on a non-default port&lt;/li&gt;
+&lt;li&gt;Host is not the intended target (wrong IP)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-check-if-ssh-server-is-running"&gt;1. Check If SSH Server Is Running&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# On the server, check sshd status&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl status sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# or&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl status ssh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Try connecting locally&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ssh localhost
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-start-or-enable-the-ssh-server"&gt;2. Start or Enable the SSH Server&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Debian/Ubuntu&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl start ssh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl enable ssh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RHEL/CentOS/Fedora&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl start sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl enable sshd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-install-ssh-server-if-missing"&gt;3. Install SSH Server If Missing&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Debian/Ubuntu&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt update &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; sudo apt install openssh-server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RHEL/CentOS/Fedora&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo dnf install openssh-server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# or&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo yum install openssh-server
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-check-which-port-ssh-is-listening-on"&gt;4. Check Which Port SSH Is Listening On&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check if sshd is listening&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo ss -tlnp | grep ssh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check the configured port&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo grep Port /etc/ssh/sshd_config
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If using a non-default port, connect with -p&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ssh -p &lt;span style="color:#ae81ff"&gt;2222&lt;/span&gt; user@host
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="5-check-firewall-rules"&gt;5. Check Firewall Rules&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check iptables&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo iptables -L -n | grep &lt;span style="color:#ae81ff"&gt;22&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check firewalld&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo firewall-cmd --list-all | grep ssh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check ufw&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo ufw status | grep &lt;span style="color:#ae81ff"&gt;22&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Allow SSH through the firewall&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo ufw allow ssh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo firewall-cmd --add-service&lt;span style="color:#f92672"&gt;=&lt;/span&gt;ssh --permanent
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo firewall-cmd --reload
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="6-check-if-another-service-is-on-port-22"&gt;6. Check if Another Service Is on Port 22&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check what&amp;#39;s using port 22&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo ss -tlnp | grep :22
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If something else is using port 22, resolve the conflict&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ ssh user@server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ssh: connect to host server port 22: Connection refused
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ sudo systemctl status sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;● sshd.service - OpenSSH server daemon
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Loaded: loaded &lt;span style="color:#f92672"&gt;(&lt;/span&gt;/usr/lib/systemd/system/sshd.service; disabled&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Active: inactive &lt;span style="color:#f92672"&gt;(&lt;/span&gt;dead&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ sudo systemctl start sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ sudo systemctl enable sshd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ ssh user@server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Welcome to Ubuntu 22.04!
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ ssh -p &lt;span style="color:#ae81ff"&gt;2222&lt;/span&gt; user@server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ssh: connect to host server port 2222: Connection refused
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ sudo grep Port /etc/ssh/sshd_config
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Port 22&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Port 2222 (if uncommented, this is the port being used)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/linux/ssh-error/"&gt;SSH permission denied&lt;/a&gt; — Authentication failures&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/linux/linux-ssh-host-key/"&gt;SSH host key verification failed&lt;/a&gt; — Host key mismatch&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/linux/linux-ssh-timeout/"&gt;SSH connection timed out&lt;/a&gt; — Network unreachable&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Linux SSH Connection Refused — Port Fix v2</title><link>https://errorcode.excellentwiki.com/os/linux/linux-ssh-connection-refused-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/linux-ssh-connection-refused-v2/</guid><description>&lt;h1 id="linux-ssh-connection-refused"&gt;Linux: ssh: Connection refused&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;ssh: Connection refused&lt;/code&gt; error means the SSH client attempted to connect to the server but the server actively rejected the connection. Unlike a timeout (which means nothing responded), &amp;ldquo;refused&amp;rdquo; means something answered but the port is not accepting connections. This typically means the SSH daemon is not running, is listening on a different port, or a firewall is blocking the connection.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;When you run &lt;code&gt;ssh user@host&lt;/code&gt;, the client sends a TCP SYN to port 22 on the target. If no service is listening on that port, the kernel responds with a TCP RST (reset), which your client interprets as &amp;ldquo;Connection refused.&amp;rdquo; This is different from &lt;code&gt;Connection timed out&lt;/code&gt; (no response at all) or &lt;code&gt;No route to host&lt;/code&gt; (network unreachable).&lt;/p&gt;</description></item></channel></rss>

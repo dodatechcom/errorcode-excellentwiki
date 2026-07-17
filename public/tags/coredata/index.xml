@@ -1,80 +1,362 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Coredata on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/coredata/</link><description>Recent content in Coredata on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/coredata/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Swift Error — Core Data Error</title><link>https://errorcode.excellentwiki.com/languages/swift/coredata-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/coredata-error/</guid><description>&lt;h1 id="core-data-error"&gt;Core Data Error&lt;/h1&gt;
-&lt;p&gt;Core Data errors occur during fetch, save, delete, or migration operations on the persistence stack. These errors are typically wrapped in &lt;code&gt;NSManagedObjectContext&lt;/code&gt; or &lt;code&gt;NSPersistentContainer&lt;/code&gt; methods.&lt;/p&gt;
-&lt;h2 id="description"&gt;Description&lt;/h2&gt;
-&lt;p&gt;Core Data is Apple&amp;rsquo;s object-graph and persistence framework. Errors can occur at any level: model loading, context save, migration, or store access. Most Core Data errors are &lt;code&gt;NSError&lt;/code&gt; instances with domain &lt;code&gt;NSCocoaErrorDomain&lt;/code&gt; and specific error codes.&lt;/p&gt;
-&lt;p&gt;Common patterns:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Save conflicts&lt;/strong&gt; — multiple contexts modifying the same object.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Migration failures&lt;/strong&gt; — model changes without proper migration.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Validation failures&lt;/strong&gt; — violating constraints (unique, non-nil, min/max).&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Store corruption&lt;/strong&gt; — SQLite database file becomes invalid.&lt;/li&gt;
-&lt;/ul&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoreData on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/coredata/</link><description>Recent content in CoreData on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/coredata/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] CoreData Persistent Store Error Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/coredata-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/coredata-error-v2/</guid><description>&lt;h1 id="coredata-persistent-store-error-fix"&gt;CoreData: Persistent Store Error Fix&lt;/h1&gt;
+&lt;p&gt;A CoreData persistent store error occurs when the persistent store coordinator fails to load, migrate, or access the underlying SQLite store.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;CoreData uses a persistent store (usually SQLite) to persist objects. Errors occur when the store file is corrupted, schema migration is needed, or the store type is incompatible.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Unhandled save error&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context = persistentContainer.viewContext
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; context.save() &lt;span style="color:#75715e"&gt;// May throw with no catch&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Validation failure&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; entity = User(context: context)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;entity.name = &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt; &lt;span style="color:#75715e"&gt;// May violate non-empty constraint&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; context.save() &lt;span style="color:#75715e"&gt;// ValidationError&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Concurrency violation&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Accessing context from wrong thread&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;context.perform {
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; fetchRequest = User.fetchRequest()
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; users = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;? context.fetch(fetchRequest) &lt;span style="color:#75715e"&gt;// Must be on context queue&lt;/span&gt;
+&lt;ul&gt;
+&lt;li&gt;Schema changed without migration&lt;/li&gt;
+&lt;li&gt;Store file corrupted&lt;/li&gt;
+&lt;li&gt;Lightweight migration not configured&lt;/li&gt;
+&lt;li&gt;Store type mismatch&lt;/li&gt;
+&lt;li&gt;File permissions issue&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-enable-automatic-lightweight-migration"&gt;1. Enable automatic lightweight migration&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Configure migration options&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; description = NSPersistentStoreDescription()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;description.type = NSSQLiteStoreType
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;description.setOption(&lt;span style="color:#66d9ef"&gt;true&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;description.setOption(&lt;span style="color:#66d9ef"&gt;true&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;container.persistentStoreDescriptions = [description]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-handle-store-loading-errors"&gt;2. Handle store loading errors&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle persistent store errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;container.loadPersistentStores { description, error &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; error = error {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;CoreData store error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Optionally: delete and recreate store&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;.deleteStoreAndRetry(container: &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;.container)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-add-mapping-models-for-complex-migrations"&gt;3. Add mapping models for complex migrations&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Create .xcmappingmodel for non-lightweight migrations&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// In Xcode: File &amp;gt; New &amp;gt; Mapping Model&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Then reference it:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; model = NSManagedObjectModel.mergedModel(from: [Bundle.main])&lt;span style="color:#f92672"&gt;!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; mapping = NSMappingModel(named: &lt;span style="color:#e6db74"&gt;&amp;#34;MyModelMapping&amp;#34;&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;: Bundle.main, forSourceModel: model, destinationModel: model)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-reset-store-as-last-resort"&gt;4. Reset store as last resort&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Delete corrupted store&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;deleteStoreAndRetry&lt;/span&gt;(container: NSPersistentContainer) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; store = container.persistentStoreCoordinator.persistentStores.first
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; storeURL = store?.url {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;? FileManager.&lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;.removeItem(at: storeURL)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; container.loadPersistentStores { &lt;span style="color:#66d9ef"&gt;_&lt;/span&gt;, error &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; error = error {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fatalError(&lt;span style="color:#e6db74"&gt;&amp;#34;Failed to load store: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="coredata-fetch-error"&gt;CoreData Fetch Error&lt;/a&gt; — fetch request issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-save-error"&gt;CoreData Save Error&lt;/a&gt; — save failures&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-validation-error"&gt;CoreData Validation Error&lt;/a&gt; — validation issues&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift CoreData Fetch Error Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/coredata-fetch-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/coredata-fetch-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A CoreData fetch error occurs when a fetch request fails. This can happen due to incorrect predicates, missing entities, or fetch request configuration issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Invalid predicate format&lt;/li&gt;
+&lt;li&gt;Entity name mismatch&lt;/li&gt;
+&lt;li&gt;Missing sort descriptors for batch faulting&lt;/li&gt;
+&lt;li&gt;Fetch limit exceeded&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Invalid predicate&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request = NSFetchRequest&amp;lt;User&amp;gt;(entityName: &lt;span style="color:#e6db74"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;request.predicate = NSPredicate(format: &lt;span style="color:#e6db74"&gt;&amp;#34;name == %@&amp;#34;&lt;/span&gt;, argumentArray: &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt;) &lt;span style="color:#75715e"&gt;// Wrong format&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Migration not configured&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Model changed but no mapping model or lightweight migration enabled&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
-&lt;h3 id="fix-1-always-wrap-saves-in-docatch"&gt;Fix 1: Always wrap saves in do/catch&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context = persistentContainer.viewContext
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Valid predicate&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request = NSFetchRequest&amp;lt;User&amp;gt;(entityName: &lt;span style="color:#e6db74"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;request.predicate = NSPredicate(format: &lt;span style="color:#e6db74"&gt;&amp;#34;name == %@&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Alice&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Entity name typo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request = NSFetchRequest&amp;lt;User&amp;gt;(entityName: &lt;span style="color:#e6db74"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;) &lt;span style="color:#75715e"&gt;// Entity is &amp;#34;Users&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Match entity name exactly&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request = NSFetchRequest&amp;lt;User&amp;gt;(entityName: &lt;span style="color:#e6db74"&gt;&amp;#34;Users&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling fetch errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; users = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.fetch(request) &lt;span style="color:#75715e"&gt;// May throw&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle fetch errors&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; context.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; users = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.fetch(request)
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; context.rollback()
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Save failed: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error.localizedDescription&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Fetch failed: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-configure-automatic-migration"&gt;Fix 2: Configure automatic migration&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; description = NSPersistentStoreDescription()
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;description.shouldMigrateStoreAutomatically = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;description.shouldInferMappingModelAutomatically = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;persistentContainer.persistentStoreDescriptions = [description]
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-handle-merge-conflicts"&gt;Fix 3: Handle merge conflicts&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// This merges changes, preferring in-memory values for conflicts&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-validate-before-saving"&gt;Fix 4: Validate before saving&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;saveContext&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; context: NSManagedObjectContext) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;guard&lt;/span&gt; context.hasChanges &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; { &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Basic fetch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request: NSFetchRequest&amp;lt;User&amp;gt; = User.fetchRequest()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; users = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.fetch(request)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Fetch with predicate&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request: NSFetchRequest&amp;lt;User&amp;gt; = User.fetchRequest()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;request.predicate = NSPredicate(format: &lt;span style="color:#e6db74"&gt;&amp;#34;age &amp;gt; %d&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; adults = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.fetch(request)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Fetch with sort&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request: NSFetchRequest&amp;lt;User&amp;gt; = User.fetchRequest()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;request.sortDescriptors = [NSSortDescriptor(key: &lt;span style="color:#e6db74"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;, ascending: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;)]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; sortedUsers = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.fetch(request)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="coredata-error"&gt;CoreData persistence error&lt;/a&gt; — persistence issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-save-error"&gt;CoreData save error&lt;/a&gt; — save failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-validation-error"&gt;CoreData validation error&lt;/a&gt; — validation failed&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift CoreData Persistence Error Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/coredata-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/coredata-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A CoreData persistence error occurs when CoreData fails to save, fetch, or manage persistent data. This can happen due to validation failures, concurrency issues, or model configuration problems.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Validation rule violations&lt;/li&gt;
+&lt;li&gt;Concurrency context access issues&lt;/li&gt;
+&lt;li&gt;Model migration required&lt;/li&gt;
+&lt;li&gt;Missing persistent store&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling save errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save() &lt;span style="color:#75715e"&gt;// May throw ValidationError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle save errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; viewContext.rollback()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Save failed: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Accessing context from wrong thread&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context = persistentContainer.viewContext
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DispatchQueue.global().async {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; objects = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;? context.fetch(request) &lt;span style="color:#75715e"&gt;// Wrong thread!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use perform block&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context = persistentContainer.viewContext
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;context.perform {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; objects = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;? context.fetch(request)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Ignoring validation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: NSManagedObject {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; email: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Add validation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: NSManagedObject {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; email: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;validateForInsert&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;super&lt;/span&gt;.validateForInsert()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; name.isEmpty { &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ValidationError.nameEmpty }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;!&lt;/span&gt;email.contains(&lt;span style="color:#e6db74"&gt;&amp;#34;@&amp;#34;&lt;/span&gt;) { &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ValidationError.invalidEmail }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Basic CoreData stack&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;lazy&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; persistentContainer: NSPersistentContainer = {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; container = NSPersistentContainer(name: &lt;span style="color:#e6db74"&gt;&amp;#34;Model&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; container.loadPersistentStores { &lt;span style="color:#66d9ef"&gt;_&lt;/span&gt;, error &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; error = error {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fatalError(&lt;span style="color:#e6db74"&gt;&amp;#34;CoreData error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; container
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Save with rollback&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;saveContext&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;guard&lt;/span&gt; viewContext.hasChanges &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; { &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; }
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; context.save()
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; error &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; NSError {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; viewContext.rollback()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Batch delete&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; fetchRequest = NSFetchRequest&amp;lt;NSFetchRequestResult&amp;gt;(entityName: &lt;span style="color:#e6db74"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; batchDelete = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; persistentContainer.viewContext.execute(batchDelete)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="coredata-fetch-error"&gt;CoreData fetch error&lt;/a&gt; — fetch request failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-save-error"&gt;CoreData save error&lt;/a&gt; — save operation failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-validation-error"&gt;CoreData validation error&lt;/a&gt; — validation failed&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift CoreData Save Error Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/coredata-save-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/coredata-save-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A CoreData save error occurs when &lt;code&gt;viewContext.save()&lt;/code&gt; fails. This typically happens due to validation failures, constraint violations, or concurrency issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Validation rule violations&lt;/li&gt;
+&lt;li&gt;Unique constraint violations&lt;/li&gt;
+&lt;li&gt;Missing required fields&lt;/li&gt;
+&lt;li&gt;Concurrency conflicts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling save errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save() &lt;span style="color:#75715e"&gt;// May throw validation error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle all error types&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; error &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; NSError {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; error.domain == NSCocoaErrorDomain {
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;switch&lt;/span&gt; error.code {
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; NSValidationErrorNumberTooLargeError:
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Number too large&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; NSValidationMultipleErrorsError:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; errors = error.userInfo[NSDetailedErrorsKey] &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt;? [NSError]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; errors?.forEach { print($0.localizedDescription) }
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; NSValidationMissingMandatoryPropertyError:
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Missing required property&amp;#34;&lt;/span&gt;)
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;:
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Core Data error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;, &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error.userInfo&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;CoreData save error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; viewContext.rollback()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Ignoring constraint violations&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: NSManagedObject {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; email: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Unique constraint on email, but not handling duplicate&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Check before saving&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;saveUser&lt;/span&gt;(email: String) &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request: NSFetchRequest&amp;lt;User&amp;gt; = User.fetchRequest()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; request.predicate = NSPredicate(format: &lt;span style="color:#e6db74"&gt;&amp;#34;email == %@&amp;#34;&lt;/span&gt;, email)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; existing = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.fetch(request)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;!&lt;/span&gt;existing.isEmpty {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; SaveError.duplicateEmail
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; user = User(context: viewContext)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; user.email = email
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Save with rollback&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;saveContext&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;guard&lt;/span&gt; viewContext.hasChanges &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; { &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; viewContext.rollback()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Save failed: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Batch save&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;saveAll&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; objects: [NSManagedObject]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; objects.forEach { viewContext.insert($0) }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; viewContext.rollback()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Save with merge policy&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="coredata-error"&gt;CoreData persistence error&lt;/a&gt; — persistence issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-fetch-error"&gt;CoreData fetch error&lt;/a&gt; — fetch failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-validation-error"&gt;CoreData validation error&lt;/a&gt; — validation failed&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift CoreData Validation Error Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/coredata-validation-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/coredata-validation-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A CoreData validation error occurs when an object fails validation rules before saving. CoreData validates objects automatically, and errors include details about which validation failed.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Required fields are nil&lt;/li&gt;
+&lt;li&gt;Values outside allowed range&lt;/li&gt;
+&lt;li&gt;Unique constraint violations&lt;/li&gt;
+&lt;li&gt;Relationship integrity issues&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not implementing validation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: NSManagedObject {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; email: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; age: Int16
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Add validation methods&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: NSManagedObject {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; email: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; age: Int16
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;validateForInsert&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;super&lt;/span&gt;.validateForInsert()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; validateName()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; validateEmail()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;validateName&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; name.trimmingCharacters(&lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;: .whitespaces).isEmpty {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ValidationError.emptyName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;validateEmail&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;!&lt;/span&gt;email.contains(&lt;span style="color:#e6db74"&gt;&amp;#34;@&amp;#34;&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ValidationError.invalidEmail
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling validation errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save() &lt;span style="color:#75715e"&gt;// Throws with multiple errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle validation errors specifically&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; viewContext.save()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; error &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; NSError {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; validationErrors = error.userInfo[NSDetailedErrorsKey] &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt;? [NSError]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; validationErrors?.forEach { validationError &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;switch&lt;/span&gt; validationError.code {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; NSValidationMissingMandatoryPropertyError:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; property = validationError.userInfo[NSValidationKeyErrorKey] &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt;? String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Missing property: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;property ?? &lt;span style="color:#e6db74"&gt;&amp;#34;unknown&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; NSValidationNumberTooLargeError:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Number too large&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Validation error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;validationError&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Fetch without context queue&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context = persistentContainer.viewContext
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; request = User.fetchRequest()
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; users = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; context.fetch(request) &lt;span style="color:#75715e"&gt;// May crash if not on context queue&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Range validation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Product&lt;/span&gt;: NSManagedObject {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; price: Double
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Save after delete without proper handling&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;context.delete(user)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; context.save() &lt;span style="color:#75715e"&gt;// Fails if user has required relationships&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;validateForInsert&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;super&lt;/span&gt;.validateForInsert()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;guard&lt;/span&gt; price &lt;span style="color:#f92672"&gt;&amp;gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ValidationError.negativePrice
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Relationship validation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Order&lt;/span&gt;: NSManagedObject {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;@NSManaged&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; items: NSSet?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;validateForInsert&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;super&lt;/span&gt;.validateForInsert()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;guard&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; items = items, items.count &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ValidationError.emptyOrder
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Check validation without saving&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; user = User(context: viewContext)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;user.name = &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; user.validateForInsert()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Validation failed: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/swift/coredata-store/"&gt;NSPersistentStore Error&lt;/a&gt; — persistent store issues.&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/swift/file-permission/"&gt;File Permission Denied&lt;/a&gt; — file access issues.&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/swift/file-not-found/"&gt;File Not Found&lt;/a&gt; — missing files.&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-error"&gt;CoreData persistence error&lt;/a&gt; — persistence issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-save-error"&gt;CoreData save error&lt;/a&gt; — save failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="coredata-fetch-error"&gt;CoreData fetch error&lt;/a&gt; — fetch failed&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>[Solution] Swift Error — NSPersistentStore Error</title><link>https://errorcode.excellentwiki.com/languages/swift/coredata-store/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/coredata-store/</guid><description>&lt;h1 id="nspersistentstore-error"&gt;NSPersistentStore Error&lt;/h1&gt;
 &lt;p&gt;NSPersistentStore errors occur when the persistent store cannot be loaded, opened, or migrated. This includes SQLite database corruption, incompatible store types, and migration failures.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;

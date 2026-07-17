@@ -1,96 +1,155 @@
 ---
 title: "[Solution] BSOD SYSTEM_THREAD_EXCEPTION_NOT_HANDLED Windows 11/10 — Fixed"
-description: "Fix Blue Screen SYSTEM_THREAD_EXCEPTION_NOT_HANDLED error on Windows 10 and 11. Update drivers, check RAM, and repair system files to resolve this stop code."
+description: "Fix Blue Screen SYSTEM_THREAD_EXCEPTION_NOT_HANDLED error on Windows 10 and 11. Resolve stop code 0x1000007E with driver updates, SFC scans, and memory diagnostics."
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "system-thread", "driver-error", "stop-code"]
+tags: ["bsod", "blue-screen", "system-thread", "driver", "kernel"]
 weight: 5
 ---
 
 # [Solution] BSOD SYSTEM_THREAD_EXCEPTION_NOT_HANDLED Windows 11/10 — Fixed
 
-SYSTEM_THREAD_EXCEPTION_NOT_HANDLED is a critical Blue Screen of Death error with stop code `0x0000007E`. It occurs when a system thread generates an exception that the error handler cannot catch, most commonly due to a faulty or incompatible kernel-mode driver.
+SYSTEM_THREAD_EXCEPTION_NOT_HANDLED is a critical Blue Screen of Death error with stop code `0x1000007E`. It indicates that a system thread running in kernel mode generated an exception that the kernel's error handler did not catch, forcing Windows to crash to prevent system corruption.
 
-This BSOD affects both Windows 10 and 11. The blue screen typically names the specific driver file that caused the crash, making it one of the easier BSODs to diagnose.
+This BSOD typically appears after a driver update, Windows update, or when a newly installed driver conflicts with an existing system component. The offending driver is usually identified in the blue screen's "What failed" field.
+
+## Description
+
+The full blue screen message reads:
+
+> **Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.**
+>
+> Stop code: SYSTEM_THREAD_EXCEPTION_NOT_HANDLED
+> What failed: [driver name, e.g., nvlddmkm.sys, igdkmd64.sys, dxgkrnl.sys]
+
+A system thread is a core execution thread managed by the Windows kernel. When such a thread generates an unhandled exception, it signals a severe problem — either a bug in a driver, memory corruption, or an incompatible software component. Windows cannot safely continue execution and must halt the system.
+
+Common scenarios for this BSOD:
+
+- **After installing GPU drivers** — NVIDIA, AMD, or Intel graphics drivers are frequent offenders
+- **Following a Windows feature update** — Updated kernel components conflict with existing drivers
+- **After adding new hardware** — A device driver generates exceptions under load
+- **During sleep/wake transitions** — Power management drivers fail to handle state changes correctly
 
 ## Common Causes
 
-- **Outdated or corrupted device drivers** — GPU, network, or storage drivers that are incompatible with the current Windows version.
-- **Faulty RAM** — Memory errors cause unpredictable system thread behavior and unhandled exceptions.
-- **Corrupted system files** — Damaged Windows kernel or HAL files that system threads depend on.
-- **Incompatible third-party software** — Kernel-mode software such as antivirus or virtualization tools conflicting with Windows.
+1. **Faulty or incompatible device drivers** — Especially GPU, network, or storage drivers that execute in kernel mode.
+2. **Corrupted Windows system files** — Damaged kernel files from disk errors or interrupted updates.
+3. **Faulty RAM or hardware** — Memory corruption causes system threads to execute invalid instructions.
+4. **Malware or rootkit infection** — Kernel-mode malware can hijack system threads.
 
-## How to Fix
+## Solutions
 
-### Boot into Safe Mode
+### Solution 1: Update or Roll Back GPU Drivers
 
-Safe Mode loads Windows with minimal drivers and helps identify if a third-party driver is causing the crash.
+GPU drivers are the most common culprit for this BSOD. If it started after a driver update, roll back to the previous version.
 
-1. Restart your PC and press `F8` or hold `Shift` while clicking Restart.
-2. Go to **Troubleshoot > Advanced options > Startup Settings > Restart**.
-3. Press `4` or `F4` for Safe Mode.
+**Check the "What failed" field on the blue screen** to identify the exact driver, then:
 
-If the system boots in Safe Mode, the issue is a third-party driver or software.
+**Roll back a driver in Device Manager:**
 
-### Update or Roll Back Drivers
+1. Right-click the **Start** button and select **Device Manager**.
+2. Expand **Display adapters**.
+3. Right-click your GPU and select **Properties**.
+4. Go to the **Driver** tab and click **Roll Back Driver**.
+5. Follow the prompts and restart your computer.
 
-GPU drivers are the most frequent cause of this error.
-
-**Roll back the driver:**
-
-1. Open **Device Manager** (press `Win + X`).
-2. Expand **Display adapters**, right-click your GPU, and select **Properties**.
-3. Go to the **Driver** tab and click **Roll Back Driver**.
-
-**Check for device errors:**
+**Check installed GPU driver version:**
 
 ```powershell
-Get-WmiObject Win32_PnPEntity | Where-Object { $_.ConfigManagerErrorCode -ne 0 } | Select-Object Name, DeviceID, ConfigManagerErrorCode | Format-Table -AutoSize
+Get-WmiObject Win32_VideoController | Select-Object Name, DriverVersion, DriverDate | Format-Table -AutoSize
 ```
 
-### Run System File Checker
+**Download the latest stable driver directly from the manufacturer:**
+- **NVIDIA**: [nvidia.com/drivers](https://www.nvidia.com/Download/index.aspx)
+- **AMD**: [amd.com/support](https://www.amd.com/en/support)
+- **Intel**: [intel.com/support](https://www.intel.com/content/www/us/en/support.html)
+
+Perform a clean installation during setup by checking the **Perform a clean install** option.
+
+### Solution 2: Run System File Checker and DISM
+
+Corrupted kernel files can cause system threads to generate exceptions. Repair the Windows image:
 
 ```cmd
 sfc /scannow
 ```
 
-If SFC reports unfixable corruption:
+If SFC reports errors it cannot fix:
 
 ```cmd
+DISM /Online /Cleanup-Image /ScanHealth
 DISM /Online /Cleanup-Image /RestoreHealth
+```
+
+Run SFC again after DISM completes:
+
+```cmd
 sfc /scannow
 ```
 
-### Check RAM for Errors
+Restart your computer after all scans complete successfully.
+
+### Solution 3: Check for Faulty RAM
+
+Memory corruption is a common cause of unpredictable system thread exceptions.
+
+**Run Windows Memory Diagnostic:**
 
 ```cmd
 mdsched.exe
 ```
 
-Select **Restart now and check for problems**. For more thorough testing, use MemTest86 from a bootable USB and run at least 4 passes.
+Select **Restart now and check for problems**. After logging back in, check results in Event Viewer under **Windows Logs > System** with source `MemoryDiagnostics-Results`.
 
-### Analyze the Minidump
+**Extended test with MemTest86:**
+
+1. Download MemTest86 from [memtest86.com](https://www.memtest86.com/).
+2. Create a bootable USB using the MemTest86 image writer.
+3. Boot your computer from the USB drive.
+4. Let the test run for at least **4 full passes**.
+5. Any single error confirms faulty RAM.
+
+### Solution 4: Analyze the Minidump File
+
+Identify exactly which driver is causing the exception by analyzing the crash dump.
+
+**Find the latest minidump:**
 
 ```powershell
 Get-ChildItem "C:\Windows\Minidump" | Sort-Object LastWriteTime -Descending | Select-Object -First 5 Name, LastWriteTime, Length
 ```
 
-Open the most recent `.dmp` file in WinDbg and run `!analyze -v` to identify the faulting module.
+**Install WinDbg and analyze the dump:**
 
-## Examples
+1. Install **WinDbg** from the Microsoft Store.
+2. Open WinDbg and select **File > Open dump file**.
+3. Navigate to `C:\Windows\Minidump\` and open the most recent `.dmp` file.
+4. Type `!analyze -v` in the command window and press Enter.
+5. Look for the **MODULE_NAME** and **IMAGE_NAME** lines to identify the problematic driver.
 
-This error commonly occurs in these scenarios:
+### Solution 5: Check for Malware
 
-- **After a driver update** — A new GPU or network driver version contains a bug or is incompatible with your hardware.
-- **During gaming or GPU-intensive tasks** — Graphics driver instability under sustained load triggers the exception.
-- **After a Windows Update** — A cumulative update modifies driver behavior and causes conflicts.
-- **After connecting new hardware** — The system driver for the new device conflicts with existing components.
+Kernel-mode malware can hijack system threads and trigger this BSOD.
+
+**Run a full system scan:**
+
+```powershell
+Start-MpScan -ScanType FullScan
+```
+
+**Run an offline scan for rootkits:**
+
+```powershell
+Start-MpScan -ScanType OfflineScan
+```
+
+This restarts your computer and scans before Windows loads, catching rootkits that hide from regular scans.
 
 ## Related Errors
 
-- [BSOD DPC Watchdog Violation]({{< relref "/os/windows/bsod-dpc-watchdog-violation" >}}) — Storage and driver-related BSOD with similar root causes
-- [BSOD SYSTEM_SERVICE_EXCEPTION]({{< relref "/os/windows/bsod-system-service-exception" >}}) — Service-related system thread crash
-- [BSOD CRITICAL_PROCESS_DIED]({{< relref "/os/windows/bsod-critical-process-died" >}}) — Critical process termination
-- [Error 0xc000021a]({{< relref "/os/windows/0xc000021a" >}}) — BSOD STOP error from winlogon/csrss failure
-- [Error 0xc0000005]({{< relref "/os/windows/0xc0000005" >}}) — Access Violation, memory access errors
+- **[BSOD IRQL_NOT_LESS_OR_EQUAL]({{< relref "/windows/bsod-irql-not-less-or-equal" >}})** — Driver-related memory access violations
+- **[BSOD KMODE_EXCEPTION_NOT_HANDLED]({{< relref "/windows/bsod-kmode-exception" >}})** — Another kernel-mode exception error with similar driver-related causes
+- **[BSOD PAGE_FAULT_IN_NONPAGED_AREA]({{< relref "/windows/bsod-page-fault" >}})** — Memory management error often caused by faulty RAM or drivers
+- **[BSOD SYSTEM_SERVICE_EXCEPTION]({{< relref "/windows/bsod-system-service-exception" >}})** — System service failure typically caused by win32kfull.sys or similar components

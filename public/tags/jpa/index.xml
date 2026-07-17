@@ -1,4 +1,420 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jpa on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/jpa/</link><description>Recent content in Jpa on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/jpa/index.xml" rel="self" type="application/rss+xml"/><item><title>Transaction error</title><link>https://errorcode.excellentwiki.com/frameworks/spring/transaction-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/frameworks/spring/transaction-error/</guid><description>&lt;p&gt;This error occurs when a Spring-managed transaction fails to commit, rolls back unexpectedly, or encounters a constraint violation during the commit phase. Transactions annotated with &lt;code&gt;@Transactional&lt;/code&gt; automatically roll back on unchecked exceptions.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jpa on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/jpa/</link><description>Recent content in Jpa on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/jpa/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] ConstraintViolationException Duplicate Entry — JPA Fix</title><link>https://errorcode.excellentwiki.com/languages/java/jpa-constraint/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/jpa-constraint/</guid><description>&lt;h1 id="constraintviolationexception-duplicate-entry--jpa-fix"&gt;ConstraintViolationException Duplicate Entry — JPA Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;ConstraintViolationException&lt;/code&gt; is thrown when a database constraint is violated, most commonly a unique constraint when inserting or updating duplicate values.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common message:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Duplicate entry 'value' for key 'idx_unique_email'&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Unique index or primary key violation&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Duplicate unique value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Table&lt;/span&gt;(name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;users&amp;#34;&lt;/span&gt;, uniqueConstraints &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@UniqueConstraint&lt;/span&gt;(columnNames &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;email&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Column&lt;/span&gt;(unique &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; String email;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Inserting two users with same email&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Race condition&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread A checks: email not exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread B checks: email not exists&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread A inserts: success&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Thread B inserts: ConstraintViolationException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-catch-and-handle-the-exception"&gt;Fix 1: Catch and handle the exception&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; userRepository.&lt;span style="color:#a6e22e"&gt;save&lt;/span&gt;(user);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (DataIntegrityViolationException ex) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ex.&lt;span style="color:#a6e22e"&gt;getMessage&lt;/span&gt;().&lt;span style="color:#a6e22e"&gt;contains&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Duplicate entry&amp;#34;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; DuplicateEmailException(&lt;span style="color:#e6db74"&gt;&amp;#34;Email already exists: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;+&lt;/span&gt; user.&lt;span style="color:#a6e22e"&gt;getEmail&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ex;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-upsert--merge-pattern"&gt;Fix 2: Use upsert / merge pattern&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Modifying&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Query&lt;/span&gt;(value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;INSERT INTO users (email, name) VALUES (:email, :name) &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;+&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;ON DUPLICATE KEY UPDATE name = :name&amp;#34;&lt;/span&gt;, nativeQuery &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;upsertUser&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;@Param&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;email&amp;#34;&lt;/span&gt;) String email, &lt;span style="color:#a6e22e"&gt;@Param&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;) String name);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-check-existence-before-insert"&gt;Fix 3: Check existence before insert&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;boolean&lt;/span&gt; exists &lt;span style="color:#f92672"&gt;=&lt;/span&gt; userRepository.&lt;span style="color:#a6e22e"&gt;existsByEmail&lt;/span&gt;(user.&lt;span style="color:#a6e22e"&gt;getEmail&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (exists) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; DuplicateEmailException(&lt;span style="color:#e6db74"&gt;&amp;#34;Email already exists&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;/languages/java/jpa-entity/ — EntityNotFoundException&lt;/li&gt;
+&lt;li&gt;/languages/java/jpa-transaction/ — UnexpectedRollbackException&lt;/li&gt;
+&lt;li&gt;/languages/java/sql-exception/ — SQL exception&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] DetachedEntityPassivationException — Hibernate Detached Entity Fix</title><link>https://errorcode.excellentwiki.com/languages/java/hibernate-detached/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/hibernate-detached/</guid><description>&lt;h1 id="detachedentitypassivationexception--hibernate-detached-entity-fix"&gt;DetachedEntityPassivationException — Hibernate Detached Entity Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;DetachedEntityPassivationException&lt;/code&gt; is thrown when Hibernate encounters a detached entity that cannot be serialized or passed across persistence contexts. This is common in web applications with session-per-request patterns.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common messages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;DetachedEntityPassivationException: detached entity passed to persist&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;org.hibernate.TransientPropertyValueException&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Detached entity passed to persist instead of merge&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Id&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@GeneratedValue&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Long id;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;User user &lt;span style="color:#f92672"&gt;=&lt;/span&gt; entityManager.&lt;span style="color:#a6e22e"&gt;find&lt;/span&gt;(User.&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;, 1L);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Session closes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;entityManager.&lt;span style="color:#a6e22e"&gt;persist&lt;/span&gt;(user); &lt;span style="color:#75715e"&gt;// DetachedEntityPassivationException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Cascade persist on detached entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Order&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@ManyToOne&lt;/span&gt;(cascade &lt;span style="color:#f92672"&gt;=&lt;/span&gt; CascadeType.&lt;span style="color:#a6e22e"&gt;PERSIST&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; User user; &lt;span style="color:#75715e"&gt;// User is detached&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-use-merge-instead-of-persist"&gt;Fix 1: Use merge instead of persist&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; User &lt;span style="color:#a6e22e"&gt;updateUser&lt;/span&gt;(User detachedUser) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; entityManager.&lt;span style="color:#a6e22e"&gt;merge&lt;/span&gt;(detachedUser);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-cascadetypemerge"&gt;Fix 2: Use CascadeType.MERGE&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Order&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@ManyToOne&lt;/span&gt;(cascade &lt;span style="color:#f92672"&gt;=&lt;/span&gt; CascadeType.&lt;span style="color:#a6e22e"&gt;MERGE&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; User user;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-reattach-entity"&gt;Fix 3: Reattach entity&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; User &lt;span style="color:#a6e22e"&gt;reattachUser&lt;/span&gt;(Long id) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; User user &lt;span style="color:#f92672"&gt;=&lt;/span&gt; entityManager.&lt;span style="color:#a6e22e"&gt;find&lt;/span&gt;(User.&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;, id);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; user;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-dto-pattern"&gt;Fix 4: Use DTO pattern&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;UserDTO&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Long id;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; String name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; UserDTO &lt;span style="color:#a6e22e"&gt;fromEntity&lt;/span&gt;(User user) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; UserDTO dto &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; UserDTO();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dto.&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; user.&lt;span style="color:#a6e22e"&gt;getId&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dto.&lt;span style="color:#a6e22e"&gt;name&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; user.&lt;span style="color:#a6e22e"&gt;getName&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; dto;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;/languages/java/hibernate-lazy/ — LazyInitializationException&lt;/li&gt;
+&lt;li&gt;/languages/java/hibernate-mapping/ — MappingException&lt;/li&gt;
+&lt;li&gt;/languages/java/jpa-entity/ — EntityNotFoundException&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] EntityNotFoundException — JPA Entity Not Found Fix</title><link>https://errorcode.excellentwiki.com/languages/java/jpa-entity/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/jpa-entity/</guid><description>&lt;h1 id="entitynotfoundexception--jpa-entity-not-found-fix"&gt;EntityNotFoundException — JPA Entity Not Found Fix&lt;/h1&gt;
+&lt;p&gt;An &lt;code&gt;EntityNotFoundException&lt;/code&gt; is thrown when JPA cannot find an entity with the given identifier. This is an unchecked exception introduced in JPA 2.1.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common message:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;No entity found for [User] with id [42]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Entity does not exist&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;User user &lt;span style="color:#f92672"&gt;=&lt;/span&gt; entityManager.&lt;span style="color:#a6e22e"&gt;find&lt;/span&gt;(User.&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;, 999L);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Returns null, not EntityNotFoundException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: getReferenceById with deleted entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;User user &lt;span style="color:#f92672"&gt;=&lt;/span&gt; entityManager.&lt;span style="color:#a6e22e"&gt;getReferenceById&lt;/span&gt;(User.&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;, 999L);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// EntityNotFoundException if ID doesn&amp;#39;t exist&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Entity was deleted by another transaction&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Between check and access, entity was deleted&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-use-optional-return-type"&gt;Fix 1: Use Optional return type&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Optional&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;User&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; user &lt;span style="color:#f92672"&gt;=&lt;/span&gt; userRepository.&lt;span style="color:#a6e22e"&gt;findById&lt;/span&gt;(id);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (user.&lt;span style="color:#a6e22e"&gt;isPresent&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Process user&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Handle not found&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-throw-custom-exception"&gt;Fix 2: Throw custom exception&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;User user &lt;span style="color:#f92672"&gt;=&lt;/span&gt; userRepository.&lt;span style="color:#a6e22e"&gt;findById&lt;/span&gt;(id)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .&lt;span style="color:#a6e22e"&gt;orElseThrow&lt;/span&gt;(() &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; ResourceNotFoundException(&lt;span style="color:#e6db74"&gt;&amp;#34;User not found: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;+&lt;/span&gt; id));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-handle-in-global-exception-handler"&gt;Fix 3: Handle in global exception handler&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@RestControllerAdvice&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;GlobalExceptionHandler&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@ExceptionHandler&lt;/span&gt;(EntityNotFoundException.&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; ResponseEntity&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;Map&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;String, String&lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;handleNotFound&lt;/span&gt;(EntityNotFoundException ex) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; ResponseEntity.&lt;span style="color:#a6e22e"&gt;status&lt;/span&gt;(HttpStatus.&lt;span style="color:#a6e22e"&gt;NOT_FOUND&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .&lt;span style="color:#a6e22e"&gt;body&lt;/span&gt;(Map.&lt;span style="color:#a6e22e"&gt;of&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;error&amp;#34;&lt;/span&gt;, ex.&lt;span style="color:#a6e22e"&gt;getMessage&lt;/span&gt;()));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;/languages/java/jpa-constraint/ — ConstraintViolationException&lt;/li&gt;
+&lt;li&gt;/languages/java/jpa-transaction/ — UnexpectedRollbackException&lt;/li&gt;
+&lt;li&gt;/languages/java/hibernate-mapping/ — MappingException&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Hibernate LazyInitializationException Fix</title><link>https://errorcode.excellentwiki.com/languages/java/hibernate-lazy-init-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/hibernate-lazy-init-error/</guid><description>&lt;h1 id="hibernate-lazyinitializationexception-fix"&gt;Hibernate LazyInitializationException Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;LazyInitializationException&lt;/code&gt; is thrown when Hibernate attempts to initialize a lazy-loaded proxy or collection outside the bounds of an active session.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common messages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;LazyInitializationException: could not initialize proxy - no Session&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LazyInitializationException: failed to lazily initialize a collection&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Hibernate proxies and collections are only loaded within an open Session. Once the Session closes (typically at the end of a transaction), accessing unloaded properties throws this exception.&lt;/p&gt;</description></item><item><title>[Solution] Hibernate MappingException — Entity Mapping Fix</title><link>https://errorcode.excellentwiki.com/languages/java/hibernate-mapping/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/hibernate-mapping/</guid><description>&lt;h1 id="mappingexception--hibernate-entity-mapping-fix"&gt;MappingException — Hibernate Entity Mapping Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;MappingException&lt;/code&gt; is thrown when Hibernate detects an invalid mapping configuration. This can happen during startup (schema generation) or at runtime when persisting entities.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common messages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;could not determine type of parameter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Repeated column in mapping for entity&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Unable to find column with logical name&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Repeated column mapping&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Column&lt;/span&gt;(name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;email&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; String email;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Column&lt;/span&gt;(name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;email&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; String secondaryEmail; &lt;span style="color:#75715e"&gt;// MappingException: Repeated column&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Missing @JoinColumn on @ManyToOne&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Order&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@ManyToOne&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; User user; &lt;span style="color:#75715e"&gt;// Missing @JoinColumn&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Type mismatch between Java type and database column&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Product&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Column&lt;/span&gt;(columnDefinition &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;VARCHAR(255)&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Integer price; &lt;span style="color:#75715e"&gt;// Type mismatch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-ensure-unique-column-names"&gt;Fix 1: Ensure unique column names&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Column&lt;/span&gt;(name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;email&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; String email;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Column&lt;/span&gt;(name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;secondary_email&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; String secondaryEmail;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-add-joincolumn-for-relationships"&gt;Fix 2: Add @JoinColumn for relationships&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Order&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@ManyToOne&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@JoinColumn&lt;/span&gt;(name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;user_id&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; User user;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-match-java-types-to-database-types"&gt;Fix 3: Match Java types to database types&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Product&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Column&lt;/span&gt;(columnDefinition &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;DECIMAL(10,2)&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; BigDecimal price;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-schema-validation"&gt;Fix 4: Use schema validation&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.hibernate.ddl-auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;validate&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.show-sql&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;/languages/java/hibernate-lazy/ — LazyInitializationException&lt;/li&gt;
+&lt;li&gt;/languages/java/hibernate-dialect/ — SQLDialect not found&lt;/li&gt;
+&lt;li&gt;/languages/java/jpa-entity/ — EntityNotFoundException&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Hibernate Type Mapping Error Fix</title><link>https://errorcode.excellentwiki.com/languages/java/hibernate-type-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/hibernate-type-error/</guid><description>&lt;h1 id="hibernate-type-mapping-error-fix"&gt;Hibernate Type Mapping Error Fix&lt;/h1&gt;
+&lt;p&gt;A Hibernate type mapping error occurs when the Java entity attribute type cannot be mapped to the corresponding database column type, causing persistence failures or incorrect data.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common messages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MappingException: No type discriminator value found for [entity]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HibernateException: Wrong column type encountered&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SchemaValidationException: Wrong column type found&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Hibernate expects a specific database column type for a Java field but encounters a different type. This can happen with enums, JSON columns, date types, or custom converters.&lt;/p&gt;</description></item><item><title>[Solution] LazyInitializationException — Hibernate Lazy Loading Fix</title><link>https://errorcode.excellentwiki.com/languages/java/hibernate-lazy/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/hibernate-lazy/</guid><description>&lt;h1 id="lazyinitializationexception--hibernate-lazy-loading-fix"&gt;LazyInitializationException — Hibernate Lazy Loading Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;LazyInitializationException&lt;/code&gt; is thrown when you try to access a lazily loaded collection or proxy outside of an active Hibernate Session. Hibernate uses proxies for lazy loading, and once the session is closed, the proxy cannot fetch data from the database.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;The exception occurs when code attempts to access a lazy property after the persistence context has ended. Common message:&lt;/p&gt;</description></item><item><title>[Solution] SQLDialect Not Found — Hibernate Dialect Fix</title><link>https://errorcode.excellentwiki.com/languages/java/hibernate-dialect/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/hibernate-dialect/</guid><description>&lt;h1 id="sqldialect-not-found--hibernate-dialect-fix"&gt;SQLDialect Not Found — Hibernate Dialect Fix&lt;/h1&gt;
+&lt;p&gt;This error occurs when Hibernate cannot determine the correct SQL dialect for your database. The dialect tells Hibernate how to generate SQL statements specific to your database engine.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common message:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;No Dialect configured&lt;/code&gt; or missing dialect class&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 1: Missing dialect configuration&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.database-platform&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 2: Wrong dialect for database version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.database-platform&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;org.hibernate.dialect.MySQL5Dialect # Using MySQL 8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-let-hibernate-auto-detect-recommended"&gt;Fix 1: Let Hibernate auto-detect (recommended)&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.datasource.url&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;jdbc:postgresql://localhost:5432/mydb&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.datasource.driver-class-name&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;org.postgresql.Driver&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Hibernate will auto-select the correct dialect&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-specify-the-correct-dialect"&gt;Fix 2: Specify the correct dialect&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# MySQL 8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.database-platform&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;org.hibernate.dialect.MySQLDialect&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# PostgreSQL 15&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.database-platform&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;org.hibernate.dialect.PostgreSQLDialect&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Oracle 21c&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.database-platform&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;org.hibernate.dialect.OracleDialect&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# SQL Server 2022&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.database-platform&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;org.hibernate.dialect.SQLServerDialect&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-hibernate-6-auto-detection"&gt;Fix 3: Use Hibernate 6+ auto-detection&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Hibernate 6+ (Spring Boot 3.x) auto-detects dialect from JDBC connection&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;spring.jpa.properties.hibernate.dialect&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;/languages/java/hibernate-lazy/ — LazyInitializationException&lt;/li&gt;
+&lt;li&gt;/languages/java/hibernate-mapping/ — MappingException&lt;/li&gt;
+&lt;li&gt;/languages/java/sql-exception/ — General SQL exception&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] UnexpectedRollbackException — JPA Transaction Fix</title><link>https://errorcode.excellentwiki.com/languages/java/jpa-transaction/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/java/jpa-transaction/</guid><description>&lt;h1 id="unexpectedrollbackexception--jpa-transaction-fix"&gt;UnexpectedRollbackException — JPA Transaction Fix&lt;/h1&gt;
+&lt;p&gt;An &lt;code&gt;UnexpectedRollbackException&lt;/code&gt; is thrown when a transaction is rolled back but the caller did not expect it. This typically happens with nested transactions where an inner transaction causes a rollback that affects the outer transaction.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common message:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;UnexpectedRollbackException: Transaction rolled back because it has been marked as rollback-only&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Inner transaction marks outer as rollback-only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;OrderService&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;processOrder&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; paymentService.&lt;span style="color:#a6e22e"&gt;charge&lt;/span&gt;(order); &lt;span style="color:#75715e"&gt;// Throws exception&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (Exception e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; log.&lt;span style="color:#a6e22e"&gt;error&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Payment failed&amp;#34;&lt;/span&gt;, e);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// When outer transaction commits, it finds rollback-only flag&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// and throws UnexpectedRollbackException&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Exception in @Transactional method&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;updateStock&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Database error occurs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Spring marks transaction as rollback-only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-use-propagationnested"&gt;Fix 1: Use Propagation.NESTED&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;OrderService&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;processOrder&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; paymentService.&lt;span style="color:#a6e22e"&gt;charge&lt;/span&gt;(order);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (Exception e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; log.&lt;span style="color:#a6e22e"&gt;error&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Payment failed&amp;#34;&lt;/span&gt;, e);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;PaymentService&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;(propagation &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Propagation.&lt;span style="color:#a6e22e"&gt;NESTED&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;charge&lt;/span&gt;(Order order) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Nested transaction — rollback doesn&amp;#39;t affect outer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-rethrow-the-exception"&gt;Fix 2: Rethrow the exception&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;processOrder&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; paymentService.&lt;span style="color:#a6e22e"&gt;charge&lt;/span&gt;(order);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (Exception e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; OrderProcessingException(&lt;span style="color:#e6db74"&gt;&amp;#34;Payment failed&amp;#34;&lt;/span&gt;, e);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-set-norollbackfor"&gt;Fix 3: Set noRollbackFor&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;(noRollbackFor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; PaymentException.&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;processOrder&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; paymentService.&lt;span style="color:#a6e22e"&gt;charge&lt;/span&gt;(order);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (PaymentException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; log.&lt;span style="color:#a6e22e"&gt;warn&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Payment failed, continuing&amp;#34;&lt;/span&gt;, e);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;/languages/java/jpa-constraint/ — ConstraintViolationException&lt;/li&gt;
+&lt;li&gt;/languages/java/jpa-entity/ — EntityNotFoundException&lt;/li&gt;
+&lt;li&gt;/languages/java/sql-exception/ — SQL exception&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>DataAccessException - JPA query failed</title><link>https://errorcode.excellentwiki.com/frameworks/spring/spring-data-jpa-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/frameworks/spring/spring-data-jpa-error/</guid><description>&lt;p&gt;This error occurs when a JPA operation (query, persist, merge, delete) fails at the database level. Spring wraps the JPA exception in &lt;code&gt;DataAccessException&lt;/code&gt; as part of its data access exception hierarchy.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;JPQL or native SQL query has syntax errors&lt;/li&gt;
+&lt;li&gt;Entity mapping does not match database schema&lt;/li&gt;
+&lt;li&gt;Connection pool exhausted&lt;/li&gt;
+&lt;li&gt;Transaction isolation level conflict&lt;/li&gt;
+&lt;li&gt;Entity not in managed state during merge&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Use repository methods with proper error handling:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;interface&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;UserRepository&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;extends&lt;/span&gt; JpaRepository&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;User, Long&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Query&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT u FROM User u WHERE u.email = :email&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Optional&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;User&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findByEmail&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;@Param&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;email&amp;#34;&lt;/span&gt;) String email);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Enable SQL logging for debugging:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;spring&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;jpa&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;show-sql&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;properties&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;hibernate&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;format_sql&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;logging&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;level&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;org.hibernate.SQL&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;DEBUG&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;org.hibernate.type.descriptor.sql.BasicBinder&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;TRACE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Handle data access exceptions in the service layer:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Transactional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;UserService&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; User &lt;span style="color:#a6e22e"&gt;createUser&lt;/span&gt;(CreateUserRequest request) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; User user &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; User(request.&lt;span style="color:#a6e22e"&gt;email&lt;/span&gt;(), request.&lt;span style="color:#a6e22e"&gt;name&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; userRepository.&lt;span style="color:#a6e22e"&gt;save&lt;/span&gt;(user);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (DataAccessException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (e.&lt;span style="color:#a6e22e"&gt;getRootCause&lt;/span&gt;() &lt;span style="color:#66d9ef"&gt;instanceof&lt;/span&gt; SQLIntegrityConstraintViolationException) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; DuplicateEmailException(request.&lt;span style="color:#a6e22e"&gt;email&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; e;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="4"&gt;
+&lt;li&gt;Use &lt;code&gt;@Query&lt;/code&gt; with named parameters:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Query&lt;/span&gt;(value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;SELECT * FROM users WHERE status = :status&amp;#34;&lt;/span&gt;, nativeQuery &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;List&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;User&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findActiveUsers&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;@Param&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;) String status);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// JPQL references non-existent field&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Query&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT u FROM User u WHERE u.username = :email&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Optional&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;User&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findByEmail&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;@Param&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;email&amp;#34;&lt;/span&gt;) String email);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// DataAccessException: Named parameter &amp;#39;username&amp;#39; not found in query&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/frameworks/spring/spring-data-elasticsearch-error/"&gt;Elasticsearch error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/frameworks/spring/spring-data-r2dbc-error/"&gt;R2DBC error&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Transaction error</title><link>https://errorcode.excellentwiki.com/frameworks/spring/transaction-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/frameworks/spring/transaction-error/</guid><description>&lt;p&gt;This error occurs when a Spring-managed transaction fails to commit, rolls back unexpectedly, or encounters a constraint violation during the commit phase. Transactions annotated with &lt;code&gt;@Transactional&lt;/code&gt; automatically roll back on unchecked exceptions.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Database constraint violation during commit (e.g. unique constraint)&lt;/li&gt;

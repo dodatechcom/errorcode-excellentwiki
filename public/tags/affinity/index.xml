@@ -42,4 +42,75 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/constraint-error/"&gt;Unique Constraint&lt;/a&gt; — duplicate value error&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/no-such-table/"&gt;No Such Table&lt;/a&gt; — table does not exist&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQLite - type mismatch (INTEGER/TEXT)</title><link>https://errorcode.excellentwiki.com/tools/sqlite/sqlite-type-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/sqlite/sqlite-type-error-v2/</guid><description>&lt;p&gt;SQLite type mismatch error occurs when an operation encounters values of incompatible types. SQLite uses dynamic typing and type affinity, but certain operations still require compatible types, especially comparisons and CAST operations.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Comparing INTEGER column with TEXT value&lt;/li&gt;
+&lt;li&gt;INSERTING string into INTEGER column without explicit cast&lt;/li&gt;
+&lt;li&gt;CAST operation failing on incompatible types&lt;/li&gt;
+&lt;li&gt;CHECK constraint failing due to type mismatch&lt;/li&gt;
+&lt;li&gt;Aggregate functions receiving mixed types&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Use explicit CAST for type conversion:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Cast TEXT to INTEGER
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CAST&lt;/span&gt;(age &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; INTEGER) &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Cast INTEGER to TEXT
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; logs &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CAST&lt;/span&gt;(id &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; TEXT) &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;123&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Use typeof() to check types before operations:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; typeof(age) &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;integer&amp;#39;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;AND&lt;/span&gt; age &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Insert with proper types:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; sqlite3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sqlite3&lt;span style="color:#f92672"&gt;.&lt;/span&gt;connect(&lt;span style="color:#e6db74"&gt;&amp;#39;mydb.sqlite&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Bad: inserting string for integer column&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;INSERT INTO users (age) VALUES (?)&amp;#34;&lt;/span&gt;, (&lt;span style="color:#e6db74"&gt;&amp;#34;25&amp;#34;&lt;/span&gt;,))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Good: proper type&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;INSERT INTO users (age) VALUES (?)&amp;#34;&lt;/span&gt;, (&lt;span style="color:#ae81ff"&gt;25&lt;/span&gt;,))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="4"&gt;
+&lt;li&gt;Use COALESCE for nullable mixed-type columns:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; COALESCE(&lt;span style="color:#66d9ef"&gt;CAST&lt;/span&gt;(mixed_column &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; INTEGER), &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;table_name&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="5"&gt;
+&lt;li&gt;Define column types explicitly in table creation:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TABLE&lt;/span&gt; users (
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; id INTEGER &lt;span style="color:#66d9ef"&gt;PRIMARY&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;KEY&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; name TEXT &lt;span style="color:#66d9ef"&gt;NOT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;NULL&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; age INTEGER,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; email TEXT &lt;span style="color:#66d9ef"&gt;UNIQUE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="6"&gt;
+&lt;li&gt;Use try-except in application code:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cursor&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT * FROM users WHERE age &amp;gt; ?&amp;#34;&lt;/span&gt;, (input_value,))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;except&lt;/span&gt; sqlite3&lt;span style="color:#f92672"&gt;.&lt;/span&gt;OperationalError &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; e:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;type mismatch&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;in&lt;/span&gt; str(e):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cursor&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;SELECT * FROM users WHERE CAST(age AS TEXT) = ?&amp;#34;&lt;/span&gt;, (input_value,))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Error: type mismatch (INTEGER/TEXT comparison)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; age &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;twenty-five&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- SQLite attempts type coercion but may fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Fix: provide correct type
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; age &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;25&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Error: type mismatch on insert&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;INSERT INTO products (price) VALUES (?)&amp;#34;&lt;/span&gt;, (&lt;span style="color:#e6db74"&gt;&amp;#34;19.99&amp;#34;&lt;/span&gt;,))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If price column is INTEGER affinity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: insert correct type&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;conn&lt;span style="color:#f92672"&gt;.&lt;/span&gt;execute(&lt;span style="color:#e6db74"&gt;&amp;#34;INSERT INTO products (price) VALUES (?)&amp;#34;&lt;/span&gt;, (&lt;span style="color:#ae81ff"&gt;19.99&lt;/span&gt;,))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/sqlite-syntax-error/"&gt;Syntax error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/sqlite-migration-error/"&gt;Index error&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description></item></channel></rss>

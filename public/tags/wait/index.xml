@@ -12,4 +12,220 @@
 &lt;/ul&gt;
 &lt;h2 id="how-to-fix-echild"&gt;How to Fix ECHILD&lt;/h2&gt;
 &lt;h3 id="1-check-for-existing-child-processes"&gt;1. Check for Existing Child Processes&lt;/h3&gt;
-&lt;p&gt;Verify whether the process actually has children:&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Verify whether the process actually has children:&lt;/p&gt;</description></item><item><title>[Solution] SQL Lock Wait Timeout Fix</title><link>https://errorcode.excellentwiki.com/languages/sql/sql-lock-timeout/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/sql/sql-lock-timeout/</guid><description>&lt;p&gt;This error occurs when a transaction waits longer than &lt;code&gt;innodb_lock_wait_timeout&lt;/code&gt; seconds to acquire a row lock. The message reads: &lt;code&gt;Lock wait timeout exceeded; try restarting transaction&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;InnoDB uses row-level locking. When one transaction holds a lock on a row, other transactions must wait. If the wait exceeds the configured timeout, the waiting transaction is rolled back.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Long-running transaction holds locks too long&lt;/li&gt;
+&lt;li&gt;Missing index causes InnoDB to lock more rows than necessary&lt;/li&gt;
+&lt;li&gt;Another transaction has an exclusive lock on the target row&lt;/li&gt;
+&lt;li&gt;Gap locking in REPEATABLE READ isolation level&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-find-and-kill-blocking-transactions"&gt;Fix 1: Find and kill blocking transactions&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Find blocking threads
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; information_schema.innodb_lock_waits;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; sys.innodb_lock_waits;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Kill the blocking thread
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;KILL &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;blocking_thread_id&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-increase-lock-wait-timeout"&gt;Fix 2: Increase lock wait timeout&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; innodb_lock_wait_timeout &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;; &lt;span style="color:#75715e"&gt;-- default is 50 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-shorter-transactions"&gt;Fix 3: Use shorter transactions&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Bad: holds lock for a long time
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;START&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TRANSACTION&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt; accounts &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; balance &lt;span style="color:#f92672"&gt;=&lt;/span&gt; balance &lt;span style="color:#f92672"&gt;-&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- ... long processing ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;COMMIT&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Good: minimize lock duration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;START&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TRANSACTION&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt; accounts &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; balance &lt;span style="color:#f92672"&gt;=&lt;/span&gt; balance &lt;span style="color:#f92672"&gt;-&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;COMMIT&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Then process separately
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-add-indexes-to-reduce-lock-scope"&gt;Fix 4: Add indexes to reduce lock scope&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;INDEX&lt;/span&gt; idx_orders_status &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; orders(status);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Transaction A holds a lock
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;START&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TRANSACTION&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt; products &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; stock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; stock &lt;span style="color:#f92672"&gt;-&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- ... slow processing ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Transaction B waits
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt; products &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; stock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; stock &lt;span style="color:#f92672"&gt;+&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- ERROR 1205: Lock wait timeout exceeded
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="deadlock.md"&gt;Deadlock&lt;/a&gt; — circular lock wait&lt;/li&gt;
+&lt;li&gt;&lt;a href="sql-connection-refused.md"&gt;Connection Refused&lt;/a&gt; — cannot reach the server&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>ERROR_TIMEOUT (1460) - How to Fix</title><link>https://errorcode.excellentwiki.com/os/windows/win32-timeout-win32/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/win32-timeout-win32/</guid><description>&lt;h1 id="error_timeout-win32-error-1460"&gt;ERROR_TIMEOUT (Win32 Error 1460)&lt;/h1&gt;
+&lt;p&gt;This Win32 API error occurs when an operation exceeds its allotted time limit. The error code is &lt;code&gt;ERROR_TIMEOUT&lt;/code&gt; (value 1460). The full message reads:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;This operation returned because the timeout period expired.&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This commonly appears in network operations, service starts, COM calls, and system operations that take too long to complete.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Slow network response&lt;/strong&gt; — Remote server took too long to respond.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Service startup timeout&lt;/strong&gt; — Service didn&amp;rsquo;t start within the default timeout.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resource contention&lt;/strong&gt; — Resource locked by another process for too long.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;System overload&lt;/strong&gt; — System too busy to complete operation in time.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Firewall blocking&lt;/strong&gt; — Network requests blocked, causing timeout waiting for response.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="increase-timeout-value"&gt;Increase Timeout Value&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Increase web request timeout&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$response = Invoke-WebRequest -Uri &lt;span style="color:#e6db74"&gt;&amp;#34;https://example.com&amp;#34;&lt;/span&gt; -TimeoutSec &lt;span style="color:#ae81ff"&gt;300&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="increase-service-startup-timeout"&gt;Increase Service Startup Timeout&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$service = Get-WmiObject Win32_Service -Filter &lt;span style="color:#e6db74"&gt;&amp;#34;Name=&amp;#39;ServiceName&amp;#39;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$service.StartService()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Start-Sleep -Seconds &lt;span style="color:#ae81ff"&gt;60&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-network-connectivity"&gt;Check Network Connectivity&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Test-NetConnection -ComputerName &lt;span style="color:#e6db74"&gt;&amp;#34;ServerName&amp;#34;&lt;/span&gt; -Port &lt;span style="color:#ae81ff"&gt;443&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Test-Connection -ComputerName &lt;span style="color:#e6db74"&gt;&amp;#34;ServerName&amp;#34;&lt;/span&gt; -Count &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="retry-with-exponential-backoff"&gt;Retry with Exponential Backoff&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; Invoke-WithRetry {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;param&lt;/span&gt;([&lt;span style="color:#66d9ef"&gt;scriptblock&lt;/span&gt;]$Action, [&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;]$MaxRetries = &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; ($i = &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;; $i &lt;span style="color:#f92672"&gt;-lt&lt;/span&gt; $MaxRetries; $i++) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &amp;amp; $Action
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $wait = [&lt;span style="color:#66d9ef"&gt;math&lt;/span&gt;]::Pow(&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, $i) * &lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Start-Sleep -Milliseconds $wait
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Max retries exceeded&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="increase-registry-timeout"&gt;Increase Registry Timeout&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;reg add &lt;span style="color:#e6db74"&gt;&amp;#34;HKLM\SYSTEM\CurrentControlSet\Control&amp;#34;&lt;/span&gt; /v &lt;span style="color:#e6db74"&gt;&amp;#34;ServicesPipeTimeout&amp;#34;&lt;/span&gt; /t REG_DWORD /d 120000 /f
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-system-performance"&gt;Check System Performance&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-Counter &lt;span style="color:#e6db74"&gt;&amp;#34;\Processor(_Total)\% Processor Time&amp;#34;&lt;/span&gt; -SampleInterval &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt; -MaxSamples &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-Counter &lt;span style="color:#e6db74"&gt;&amp;#34;\Memory\Available MBytes&amp;#34;&lt;/span&gt; -SampleInterval &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt; -MaxSamples &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="disable-timeout-for-debugging"&gt;Disable Timeout for Debugging&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$job = Start-Job -ScriptBlock { Start-Sleep -Seconds &lt;span style="color:#ae81ff"&gt;300&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$job | Wait-Job -Timeout &lt;span style="color:#ae81ff"&gt;600&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-busy/"&gt;ERROR_BUSY (170)&lt;/a&gt; — Resource busy causing delays&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-not-enough-memory/"&gt;ERROR_NOT_ENOUGH_MEMORY (8)&lt;/a&gt; — Memory issues causing slow operations&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-windows-update-timeout/"&gt;Windows Update Timeout&lt;/a&gt; — Update-specific timeout&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQL Server - lock request timeout exceeded</title><link>https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-lock-timeout-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-lock-timeout-v2/</guid><description>&lt;p&gt;A lock request timeout error occurs when a SQL Server session waits longer than the configured timeout to acquire a lock held by another session. Unlike deadlocks, this is a simple lock contention issue where one session blocks another.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Long-running transaction holding exclusive locks&lt;/li&gt;
+&lt;li&gt;Missing indexes causing lock escalation&lt;/li&gt;
+&lt;li&gt;UPDATE or DELETE operations on large tables without proper isolation&lt;/li&gt;
+&lt;li&gt;Lock timeout too short for the workload&lt;/li&gt;
+&lt;li&gt;Blocking chains involving multiple sessions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Increase the lock timeout:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Set lock timeout to 60 seconds (default is -1 = wait forever)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; LOCK_TIMEOUT &lt;span style="color:#ae81ff"&gt;60000&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Find blocking sessions:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; blocking.session_id &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; blocking_session,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; blocked.session_id &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; blocked_session,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; blocked.wait_type,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; blocked.wait_time,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; t.text &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; blocking_sql
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; sys.dm_exec_requests blocked
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;JOIN&lt;/span&gt; sys.dm_exec_sessions blocking
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; blocked.blocking_session_id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; blocking.session_id
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CROSS&lt;/span&gt; APPLY sys.dm_exec_sql_text(blocking.most_recent_sql_handle) t
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; blocked.blocking_session_id &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Kill the blocking session:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;KILL blocking_session_id;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="4"&gt;
+&lt;li&gt;Use snapshot isolation to reduce blocking:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATABASE&lt;/span&gt; mydb &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; READ_COMMITTED_SNAPSHOT &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Then use snapshot isolation level
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TRANSACTION&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;ISOLATION&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;LEVEL&lt;/span&gt; SNAPSHOT;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="5"&gt;
+&lt;li&gt;Optimize queries to reduce lock scope:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Instead of updating all rows
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt; orders &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; status &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;processed&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Update in batches
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;WHILE &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;BEGIN&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt; TOP (&lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;) orders
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; status &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;processed&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; status &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;pending&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;IF&lt;/span&gt; &lt;span style="color:#f92672"&gt;@@&lt;/span&gt;ROWCOUNT &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; BREAK;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;END&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="6"&gt;
+&lt;li&gt;Check lock escalation settings:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Prevent lock escalation on a table
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TABLE&lt;/span&gt; orders &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; (LOCK_ESCALATION &lt;span style="color:#f92672"&gt;=&lt;/span&gt; DISABLE);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Error: Lock request time out period exceeded.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; LOCK_TIMEOUT &lt;span style="color:#ae81ff"&gt;5000&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; orders &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FOR&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Lock request time out period exceeded.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Fix: increase timeout or find blocker
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; LOCK_TIMEOUT &lt;span style="color:#ae81ff"&gt;60000&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Or check who is blocking
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; sys.dm_exec_requests &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; blocking_session_id &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-deadlock-error/"&gt;Deadlock error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-transaction-error/"&gt;Transaction error&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQL Server Lock Timeout Error</title><link>https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-lock-timeout-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-lock-timeout-error/</guid><description>&lt;h1 id="sql-server-lock-timeout-error"&gt;SQL Server Lock Timeout Error&lt;/h1&gt;
+&lt;p&gt;A SQL Server lock timeout error occurs when a transaction waits longer than the configured timeout to acquire a lock. This is different from deadlocks — here one transaction is blocking another.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Long-running query holding locks&lt;/li&gt;
+&lt;li&gt;Uncommitted transactions blocking others&lt;/li&gt;
+&lt;li&gt;Missing indexes causing large lock ranges&lt;/li&gt;
+&lt;li&gt;Inappropriate isolation level&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="set-lock-timeout"&gt;Set Lock Timeout&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; LOCK_TIMEOUT &lt;span style="color:#ae81ff"&gt;5000&lt;/span&gt;; &lt;span style="color:#75715e"&gt;-- 5 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-blocking-processes"&gt;Check Blocking Processes&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; blocking_session_id, session_id, wait_type, wait_time
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; sys.dm_exec_requests
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; blocking_session_id &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="kill-blocking-process"&gt;Kill Blocking Process&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;KILL &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;blocking_session_id&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="find-long-running-queries"&gt;Find Long-Running Queries&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; session_id, start_time, status, command
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; sys.dm_exec_requests
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; DATEDIFF(&lt;span style="color:#66d9ef"&gt;MINUTE&lt;/span&gt;, start_time, GETDATE()) &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-nolock-hint-careful"&gt;Use NOLOCK Hint (Careful)&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;WITH&lt;/span&gt; (NOLOCK) &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Reads uncommitted data, may be inaccurate
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="optimize-queries"&gt;Optimize Queries&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Add appropriate indexes
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;INDEX&lt;/span&gt; idx_users_email &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; users(email);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-isolation-level"&gt;Check Isolation Level&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Use READ COMMITTED SNAPSHOT
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATABASE&lt;/span&gt; mydb &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; READ_COMMITTED_SNAPSHOT &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Transaction 1 holds lock
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;BEGIN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TRANSACTION&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;UPDATE&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;Alice&amp;#39;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Takes 30 seconds...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Transaction 2 times out
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SET&lt;/span&gt; LOCK_TIMEOUT &lt;span style="color:#ae81ff"&gt;5000&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; users &lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; id &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Lock request time out period exceeded.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-deadlock-error/"&gt;Deadlock Error&lt;/a&gt; — deadlock detected&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlserver/sqlserver-transaction-error/"&gt;Transaction Error&lt;/a&gt; — transaction error&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

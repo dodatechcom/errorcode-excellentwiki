@@ -1,160 +1,99 @@
 ---
-title: "[Solution] Swift Error — MKError"
-description: "Fix Swift MapKit errors. Learn about MKError codes, map loading failures, and how to handle geocoding and routing errors."
+title: "[Solution] Swift MapKit Error Fix"
+description: "Fix Swift MapKit errors. Learn why MapKit operations fail and how to handle map-related issues."
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["mapkit", "map", "geocoding", "routing", "annotation"]
+tags: ["mapkit", "map", "location", "swift"]
 weight: 5
 ---
 
-# MKError
+## What This Error Means
 
-`MKError` is thrown by MapKit operations when map loading fails, geocoding encounters issues, or routing requests fail. Common codes include `.loadingThrottled`, `.placemarkNotFound`, and `.directionsNotFound`.
-
-## Description
-
-MapKit provides mapping, geocoding, and routing services. `MKError` indicates failures in these operations. Unlike many framework errors, MapKit sometimes degrades gracefully rather than throwing, but errors still occur in completion handlers.
-
-Common patterns:
-
-- **Geocoding failure** — invalid or ambiguous address.
-- **No route found** — impossible route between two points.
-- **Rate limiting** — too many requests in quick succession.
-- **Missing entitlement** — MapKit requires specific capabilities.
+A MapKit error occurs when MapKit operations fail. This can happen due to missing location permissions, invalid coordinates, or geocoding failures.
 
 ## Common Causes
 
-```swift
-// Cause 1: Geocoding invalid address
-let geocoder = CLGeocoder()
-geocoder.geocodeAddressString("") { placemarks, error in
-    // error may be CLError or MKError
-}
-
-// Cause 2: Route not found
-let request = MKDirections.Request()
-request.source = MKMapItem(placemark: MKPlacemark(coordinate: start))
-request.destination = MKMapItem(placemark: MKPlacemark(coordinate: end))
-let directions = MKDirections(request: request)
-directions.calculateDirectionsWithCompletion { response, error in
-    // error may be MKError(.noMatches) or MKError(.loadingThrottled)
-}
-
-// Cause 3: Too many requests
-for i in 0..<100 {
-    let request = MKLocalSearch.Request()
-    request.naturalLanguageQuery = "coffee \(i)"
-    let search = MKLocalSearch(request: request)
-    search.start { _, error in
-        // MKError.loadingThrottled after too many requests
-    }
-}
-
-// Cause 4: MKMapView without proper setup
-let mapView = MKMapView()
-mapView.delegate = self
-// Not setting region or visible map rect
-```
+- Missing location permission
+- Invalid coordinate values
+- Geocoding service unavailable
+- Network issues with map tiles
 
 ## How to Fix
 
-### Fix 1: Handle MKError in completion handlers
+```swift
+// WRONG: Not requesting location permission
+let locationManager = CLLocationManager()
+locationManager.requestWhenInUseAuthorization()  // Required for maps
+
+// CORRECT: Request proper authorization
+import CoreLocation
+
+let locationManager = CLLocationManager()
+locationManager.requestWhenInUseAuthorization()
+locationManager.requestAlwaysAuthorization()  // If needed
+```
 
 ```swift
-let directions = MKDirections(request: request)
-directions.calculateDirectionsWithCompletion { response, error in
-    if let error = error as? MKError {
-        switch error.code {
-        case .loadingThrottled:
-            print("Too many requests - try again later")
-        case .placemarkNotFound:
-            print("Could not find location")
-        case .directionsNotFound:
-            print("No route found")
-        default:
-            print("MapKit error: \(error.localizedDescription)")
-        }
+// WRONG: Invalid coordinates
+let coordinate = CLLocationCoordinate2D(latitude: 999, longitude: 999)  // Invalid
+
+// CORRECT: Validate coordinates
+func validCoordinate(_ coordinate: CLLocationCoordinate2D) -> Bool {
+    return coordinate.latitude >= -90 && coordinate.latitude <= 90 &&
+           coordinate.longitude >= -180 && coordinate.longitude <= 180
+}
+```
+
+```swift
+// WRONG: Not handling geocoding errors
+let geocoder = CLGeocoder()
+geocoder.geocodeAddressString("Invalid Address") { placemarks, error in
+    // Ignoring error
+}
+
+// CORRECT: Handle geocoding errors
+geocoder.geocodeAddressString("1 Infinite Loop, Cupertino, CA") { placemarks, error in
+    if let error = error {
+        print("Geocoding failed: \(error)")
         return
     }
-    // Process response
+    guard let placemark = placemarks?.first else { return }
+    print("Location: \(placemark.location?.coordinate ?? CLLocationCoordinate2D())")
 }
-```
-
-### Fix 2: Validate inputs before geocoding
-
-```swift
-func geocode(address: String) {
-    guard !address.trimmingCharacters(in: .whitespaces).isEmpty else {
-        print("Empty address")
-        return
-    }
-    let geocoder = CLGeocoder()
-    geocoder.geocodeAddressString(address) { placemarks, error in
-        if let error = error {
-            print("Geocoding failed: \(error.localizedDescription)")
-            return
-        }
-        // Process placemarks
-    }
-}
-```
-
-### Fix 3: Rate-limit MapKit requests
-
-```swift
-class MapKitThrottler {
-    private var lastRequestTime: Date?
-    private let minimumInterval: TimeInterval = 1.0
-
-    func throttle(_ action: @escaping () -> Void) {
-        let now = Date()
-        if let last = lastRequestTime, now.timeIntervalSince(last) < minimumInterval {
-            let delay = minimumInterval - now.timeIntervalSince(last)
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: action)
-        } else {
-            action()
-        }
-        lastRequestTime = Date()
-    }
-}
-```
-
-### Fix 4: Set up MKMapView properly
-
-```swift
-let mapView = MKMapView()
-mapView.showsUserLocation = true
-mapView.delegate = self
-let region = MKCoordinateRegion(center: coordinate,
-                                 latitudinalMeters: 1000,
-                                 longitudinalMeters: 1000)
-mapView.setRegion(region, animated: true)
 ```
 
 ## Examples
 
 ```swift
-// Example 1: Empty search query
-let request = MKLocalSearch.Request()
-request.naturalLanguageQuery = ""
-let search = MKLocalSearch(request: request)
-search.start { _, error in
-    // May return MKError.placemarkNotFound
-}
+// Example 1: Basic MapKit usage
+import MapKit
 
-// Example 2: Route with same source and destination
+let mapView = MKMapView()
+let coordinate = CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194)
+let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+mapView.setRegion(region, animated: true)
+
+// Example 2: Add annotation
+let annotation = MKPointAnnotation()
+annotation.coordinate = coordinate
+annotation.title = "San Francisco"
+mapView.addAnnotation(annotation)
+
+// Example 3: Direction request
 let request = MKDirections.Request()
-request.source = MKMapItem(placemark: MKPlacemark(coordinate: coord))
-request.destination = MKMapItem(placemark: MKPlacemark(coordinate: coord))
+request.source = MKMapItem(placemark: MKPlacemark(coordinate: sourceCoord))
+request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destCoord))
 let directions = MKDirections(request: request)
-directions.calculateDirectionsWithCompletion { _, error in
-    // MKError.directionsNotFound
+directions.calculate { response, error in
+    if let route = response?.routes.first {
+        self.mapView.add(route.polyline)
+    }
 }
 ```
 
 ## Related Errors
 
-- [Core Location Error]({{< relref "/languages/swift/corelocation-error" >}}) — underlying location errors.
-- [URLError]({{< relref "/languages/swift/url-session-error" >}}) — network errors affecting map loading.
-- [URLError:notConnectedToInternet]({{< relref "/languages/swift/network-connection" >}}) — offline map issues.
+- [CoreLocation error] — location services error
+- [URLError network error](url-error-swift) — network error
+- [CloudKit operation error](cloudkit-error-swift) — CloudKit error

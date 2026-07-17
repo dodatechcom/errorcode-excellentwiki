@@ -1,4 +1,54 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Functional on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/functional/</link><description>Recent content in Functional on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/functional/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C++ binary_function Deprecated — Replace with std::function</title><link>https://errorcode.excellentwiki.com/deprecated/cpp/binary_function/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/deprecated/cpp/binary_function/</guid><description>&lt;h1 id="solution-c-binary_function-deprecated--replace-with-stdfunction"&gt;[Solution] C++ binary_function Deprecated — Replace with std::function&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Functional on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/functional/</link><description>Recent content in Functional on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/functional/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Arrow.kt Monad Error Fix</title><link>https://errorcode.excellentwiki.com/languages/kotlin/arrow-kt-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/kotlin/arrow-kt-error-v2/</guid><description>&lt;h1 id="arrowkt-monad-error-fix"&gt;Arrow.kt: Monad Error Fix&lt;/h1&gt;
+&lt;p&gt;An Arrow.kt monad error occurs when functional types like &lt;code&gt;Either&lt;/code&gt;, &lt;code&gt;Option&lt;/code&gt;, or &lt;code&gt;Validated&lt;/code&gt; are used incorrectly, such as unsafe unwrapping or improper composition.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Arrow.kt provides functional programming types. Errors occur when you unsafely extract values, misuse &lt;code&gt;bind()&lt;/code&gt;, or compose monads incorrectly in for-comprehensions.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Calling &lt;code&gt;getOrNull()&lt;/code&gt; or &lt;code&gt;left()&lt;/code&gt; without checking&lt;/li&gt;
+&lt;li&gt;Using &lt;code&gt;bind()&lt;/code&gt; outside arrow context&lt;/li&gt;
+&lt;li&gt;Mixing monad types in composition&lt;/li&gt;
+&lt;li&gt;Not handling Left/failure cases&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-handle-either-properly"&gt;1. Handle Either properly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Unsafe unwrapping
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result: Either&amp;lt;Error, Data&amp;gt; = fetchData()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; data = result.getOrNull()&lt;span style="color:#f92672"&gt;!!&lt;/span&gt; &lt;span style="color:#75715e"&gt;// NPE if Left
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Pattern match
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;when&lt;/span&gt; (result) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Either&lt;/span&gt;.Left &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; println(&lt;span style="color:#e6db74"&gt;&amp;#34;Error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${result.value}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Either&lt;/span&gt;.Right &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; println(&lt;span style="color:#e6db74"&gt;&amp;#34;Data: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${result.value}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-use-for-comprehension"&gt;2. Use for-comprehension&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use bind() in arrow context
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result = arrow.core.&lt;span style="color:#a6e22e"&gt;Either&lt;/span&gt;.&lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; riskyOperation()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}.flatMap { &lt;span style="color:#66d9ef"&gt;data&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; processData(&lt;span style="color:#66d9ef"&gt;data&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Result is Either&amp;lt;Throwable, ProcessedData&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-use-option-for-nullable-values"&gt;3. Use Option for nullable values&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use Option instead of nullable
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; maybeUser: Option&amp;lt;User&amp;gt; = findUser(id)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; greeting = maybeUser.map { &lt;span style="color:#e6db74"&gt;&amp;#34;Hello, &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${it.name}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt; }.getOrElse { &lt;span style="color:#e6db74"&gt;&amp;#34;Unknown user&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-validate-with-validated"&gt;4. Validate with Validated&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Accumulate errors
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; validated = &lt;span style="color:#a6e22e"&gt;Validated&lt;/span&gt;.zip(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; validateName(name),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; validateEmail(email)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;) { n, e &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; CreateUserRequest(n, e) }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;when&lt;/span&gt; (validated) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Validated&lt;/span&gt;.Valid &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; createUser(validated.&lt;span style="color:#66d9ef"&gt;value&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; Invalid &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; respondErrors(validated.error)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/kotlin/arrow-kt-error/"&gt;Arrow.kt Error&lt;/a&gt; — Arrow general errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="exposed-error-v2"&gt;Exposed Error&lt;/a&gt; — database errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="kotlinx-coroutines-error-v2"&gt;Kotlinx Coroutines Error&lt;/a&gt; — coroutine issues&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C++ binary_function Deprecated — Replace with std::function</title><link>https://errorcode.excellentwiki.com/deprecated/cpp/binary_function/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/deprecated/cpp/binary_function/</guid><description>&lt;h1 id="solution-c-binary_function-deprecated--replace-with-stdfunction"&gt;[Solution] C++ binary_function Deprecated — Replace with std::function&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;std::binary_function&lt;/code&gt; was deprecated in C++11 and removed in C++17 because it was an unnecessary base class for binary function objects. It provided &lt;code&gt;first_argument_type&lt;/code&gt;, &lt;code&gt;second_argument_type&lt;/code&gt;, and &lt;code&gt;result_type&lt;/code&gt; typedefs that are no longer needed with modern C++.&lt;/p&gt;
 &lt;h2 id="what-youll-see"&gt;What You&amp;rsquo;ll See&lt;/h2&gt;
 &lt;p&gt;In C++11/14:&lt;/p&gt;
@@ -353,7 +403,65 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In C++17:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;error: &amp;#39;unary_function&amp;#39; is not a member of &amp;#39;std&amp;#39;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="why-deprecated"&gt;Why Deprecated&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;std::unary_function&lt;/code&gt; was deprecated because:&lt;/p&gt;</description></item><item><title>[Solution] R Error — Error in Purrr Fix</title><link>https://errorcode.excellentwiki.com/languages/r/error-in-purrr/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/r/error-in-purrr/</guid><description>&lt;h1 id="error-in-purrr--fix"&gt;Error in Purrr — Fix&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;std::unary_function&lt;/code&gt; was deprecated because:&lt;/p&gt;</description></item><item><title>[Solution] Kotlin Arrow.kt Monadic Error Fix</title><link>https://errorcode.excellentwiki.com/languages/kotlin/arrow-kt-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/kotlin/arrow-kt-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;An Arrow.kt monadic error occurs when functional programming constructs like Either, Option, or Validated fail. These types provide explicit error handling without exceptions.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing Arrow dependency&lt;/li&gt;
+&lt;li&gt;Wrong Either projection&lt;/li&gt;
+&lt;li&gt;Unhandled Left case&lt;/li&gt;
+&lt;li&gt;Option None not checked&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling Left case
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result: Either&amp;lt;Error, String&amp;gt; = validate(&lt;span style="color:#e6db74"&gt;&amp;#34;input&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; value = result.&lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;() &lt;span style="color:#75715e"&gt;// Throws if Left
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle both cases
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;when&lt;/span&gt; (result) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Either&lt;/span&gt;.Left &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; println(&lt;span style="color:#e6db74"&gt;&amp;#34;Error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${result.value}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Either&lt;/span&gt;.Right &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; println(&lt;span style="color:#e6db74"&gt;&amp;#34;Success: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${result.value}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Ignoring Option
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; option: Option&amp;lt;Int&amp;gt; = findValue(&lt;span style="color:#e6db74"&gt;&amp;#34;key&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; value = option.&lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;() &lt;span style="color:#75715e"&gt;// Throws if None
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle None
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;option.fold(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ifEmpty = { println(&lt;span style="color:#e6db74"&gt;&amp;#34;No value&amp;#34;&lt;/span&gt;) },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ifSome = { println(&lt;span style="color:#e6db74"&gt;&amp;#34;Value: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;$it&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;) }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not using Arrow types
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;divide&lt;/span&gt;(a: Int, b: Int): Int {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (b &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; ArithmeticException() &lt;span style="color:#75715e"&gt;// Exception
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; a / b
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Return Either
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;divide&lt;/span&gt;(a: Int, b: Int): Either&amp;lt;String, Int&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (b &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Left(&lt;span style="color:#e6db74"&gt;&amp;#34;Division by zero&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Right(a / b)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Either usage
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;parseAge&lt;/span&gt;(input: String): Either&amp;lt;String, Int&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; age = input.toIntOrNull() &lt;span style="color:#f92672"&gt;?:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Left(&lt;span style="color:#e6db74"&gt;&amp;#34;Not a number&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (age &amp;lt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Left(&lt;span style="color:#e6db74"&gt;&amp;#34;Age must be positive&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; Right(age)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Option usage
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; config: Option&amp;lt;Config&amp;gt; = loadConfig()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;config.map { &lt;span style="color:#66d9ef"&gt;it&lt;/span&gt;.host }.getOrElse { &lt;span style="color:#e6db74"&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Validated for multiple errors
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result = validate(user).combine(validate(address))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="exposed-error"&gt;Exposed ORM error&lt;/a&gt; — database error&lt;/li&gt;
+&lt;li&gt;&lt;a href="kotlinx-coroutines-error"&gt;kotlinx.coroutines error&lt;/a&gt; — coroutine error&lt;/li&gt;
+&lt;li&gt;&lt;a href="koin-error"&gt;Koin dependency injection error&lt;/a&gt; — DI error&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] R Error — Error in Purrr Fix</title><link>https://errorcode.excellentwiki.com/languages/r/error-in-purrr/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/r/error-in-purrr/</guid><description>&lt;h1 id="error-in-purrr--fix"&gt;Error in Purrr — Fix&lt;/h1&gt;
 &lt;p&gt;The error &lt;code&gt;Error in map() : object 'X' not found&lt;/code&gt; or &lt;code&gt;argument is not interpretable as logical&lt;/code&gt; occurs when purrr functions fail due to missing package, wrong function arguments, or input issues.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-r" data-lang="r"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Cause 1: purrr not loaded&lt;/span&gt;

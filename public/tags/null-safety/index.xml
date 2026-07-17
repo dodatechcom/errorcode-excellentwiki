@@ -90,6 +90,73 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/kotlin/class-cast/"&gt;ClassCastException&lt;/a&gt; — wrong type cast at runtime&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/kotlin/illegal-argument/"&gt;IllegalArgumentException&lt;/a&gt; — invalid argument passed&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/kotlin/index-out-of-bounds/"&gt;IndexOutOfBoundsException&lt;/a&gt; — index beyond collection size&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Spring Boot Kotlin Null Safety Error Fix</title><link>https://errorcode.excellentwiki.com/languages/kotlin/spring-boot-kotlin-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/kotlin/spring-boot-kotlin-error/</guid><description>&lt;h1 id="spring-boot-kotlin-null-safety-error-fix"&gt;Spring Boot: Kotlin Null Safety Error Fix&lt;/h1&gt;
+&lt;p&gt;A Spring Boot Kotlin null safety error occurs when Kotlin&amp;rsquo;s null safety is bypassed by Java interop, framework annotations, or uninitialized properties.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Kotlin enforces null safety at compile time, but Spring Boot (written in Java) can return null from annotated methods. This causes &lt;code&gt;NullPointerException&lt;/code&gt; at runtime when Kotlin code expects non-null values.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Java methods returning null where Kotlin expects non-null&lt;/li&gt;
+&lt;li&gt;Spring Data repositories returning null&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@Autowired&lt;/code&gt; properties not injected&lt;/li&gt;
+&lt;li&gt;Request parameters not validated&lt;/li&gt;
+&lt;li&gt;Jackson deserialization producing nulls&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-use-nullable-types-for-spring-interop"&gt;1. Use nullable types for Spring interop&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Java interop may return null
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;UserService&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@Autowired&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;lateinit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; repository: UserRepository &lt;span style="color:#75715e"&gt;// NPE if not injected
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findById&lt;/span&gt;(id: Long): User = repository.findById(id).&lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;() &lt;span style="color:#75715e"&gt;// May be null!
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use nullable types
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;UserService&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; repository: UserRepository
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findById&lt;/span&gt;(id: Long): User? = repository.findById(id).orElse(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-use-kotlin-first-spring-features"&gt;2. Use Kotlin-first Spring features&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Constructor injection (recommended)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;UserService&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; repository: UserRepository) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findAll&lt;/span&gt;(): List&amp;lt;User&amp;gt; = repository.findAll()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use Spring&amp;#39;s null-safe annotations
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findUser&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;@RequestParam&lt;/span&gt; id: Long): ResponseEntity&amp;lt;User&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; repository.findById(id)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .map { &lt;span style="color:#a6e22e"&gt;ResponseEntity&lt;/span&gt;.ok(&lt;span style="color:#66d9ef"&gt;it&lt;/span&gt;) }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .orElse(&lt;span style="color:#a6e22e"&gt;ResponseEntity&lt;/span&gt;.notFound().build())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-validate-request-bodies"&gt;3. Validate request bodies&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use validation annotations
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;data&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;CreateUserRequest&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@field&lt;/span&gt;:NotBlank &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; name: String,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;@field&lt;/span&gt;:Email &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; email: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@PostMapping&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/users&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;createUser&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;@Valid&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;@RequestBody&lt;/span&gt; request: CreateUserRequest): User {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; userService.create(request)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-handle-optional-results"&gt;4. Handle optional results&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use Kotlin&amp;#39;s null safety with Spring
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@GetMapping&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/users/{id}&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;getUser&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;@PathVariable&lt;/span&gt; id: Long): ResponseEntity&amp;lt;User&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; userService.findById(id)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;?.&lt;/span&gt;let { &lt;span style="color:#a6e22e"&gt;ResponseEntity&lt;/span&gt;.ok(&lt;span style="color:#66d9ef"&gt;it&lt;/span&gt;) }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;?:&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ResponseEntity&lt;/span&gt;.notFound().build()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="ktor-request-error-v2"&gt;Ktor Request Error&lt;/a&gt; — Ktor pipeline issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="exposed-error-v2"&gt;Exposed Error&lt;/a&gt; — database errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="kotlinx-coroutines-error-v2"&gt;Kotlinx Coroutines Error&lt;/a&gt; — coroutine issues&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>Null Check Operator Used on a Null Value</title><link>https://errorcode.excellentwiki.com/frameworks/flutter/null-check-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/frameworks/flutter/null-check-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
 &lt;p&gt;The &amp;ldquo;Null check operator used on a null value&amp;rdquo; error occurs when you use the &lt;code&gt;!&lt;/code&gt; (null check) operator on a variable that is actually null. This is a common issue in Dart&amp;rsquo;s null safety system when assumptions about non-null values are wrong.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;

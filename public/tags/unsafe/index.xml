@@ -174,4 +174,53 @@
 &lt;li&gt;&lt;strong&gt;Async futures&lt;/strong&gt; — generated state machines that are self-referential.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Generators&lt;/strong&gt; — stackless coroutines that hold across yield points.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Once a value is pinned, it cannot be moved without unsafe code. The compiler enforces this to prevent creating dangling references within the struct.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Once a value is pinned, it cannot be moved without unsafe code. The compiler enforces this to prevent creating dangling references within the struct.&lt;/p&gt;</description></item><item><title>[Solution] Swift Memory Access Error Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/memory-access-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/memory-access-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;An EXC_BAD_ACCESS memory error occurs when your program tries to access memory that it does not have permission to access. This is one of the most severe runtime errors in Swift.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Use-after-free (accessing deallocated object)&lt;/li&gt;
+&lt;li&gt;Double-free (freeing memory twice)&lt;/li&gt;
+&lt;li&gt;Uninitialized pointer access&lt;/li&gt;
+&lt;li&gt;Unsafe pointer misuse&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Use after free&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; pointer: UnsafeMutableRawPointer?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer = UnsafeMutableRawPointer.allocate(byteCount: &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;, alignment: &lt;span style="color:#ae81ff"&gt;8&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer?.deallocate()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer?.storeBytes(of: &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt;: UInt8.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;) &lt;span style="color:#75715e"&gt;// EXC_BAD_ACCESS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Set to nil after deallocation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer?.deallocate()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer = &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Uninitialized pointer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; pointer = UnsafeMutablePointer&amp;lt;Int&amp;gt;.allocate(capacity: &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer.pointee &lt;span style="color:#75715e"&gt;// EXC_BAD_ACCESS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Initialize before use&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; pointer = UnsafeMutablePointer&amp;lt;Int&amp;gt;.allocate(capacity: &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer.initialize(to: &lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; value = pointer.pointee
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer.deinitialize(count: &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pointer.deallocate()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Safe pointer usage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; buffer = UnsafeMutableBufferPointer&amp;lt;Int&amp;gt;.allocate(capacity: &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defer&lt;/span&gt; { buffer.deallocate() }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; i &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0.&lt;/span&gt;.&amp;lt;&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; buffer[i] = i
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: withUnsafeMutablePointer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;withUnsafeMutablePointer(to: &amp;amp;value) { pointer &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; pointer.pointee = &lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Enable Address Sanitizer in Xcode&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Edit Scheme &amp;gt; Diagnostics &amp;gt; Enable Address Sanitizer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="stack-overflow-swift"&gt;Stack overflow&lt;/a&gt; — recursion limit&lt;/li&gt;
+&lt;li&gt;&lt;a href="integer-overflow-swift"&gt;Integer overflow&lt;/a&gt; — arithmetic overflow&lt;/li&gt;
+&lt;li&gt;&lt;a href="out-of-memory-swift"&gt;Out of memory&lt;/a&gt; — memory exhaustion&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

@@ -1,136 +1,93 @@
 ---
-title: "[Solution] Swift Error — HKError"
-description: "Fix Swift HealthKit errors. Learn about HKError codes, authorization failures, and how to handle HealthKit data access issues."
+title: "[Solution] Swift HealthKit Error Fix"
+description: "Fix Swift HealthKit errors. Learn why HealthKit operations fail and how to handle health data issues."
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["healthkit", "health", "fitness", "authorization", "hysical-health"]
+tags: ["healthkit", "health", "fitness", "swift"]
 weight: 5
 ---
 
-# HKError
+## What This Error Means
 
-`HKError` is thrown by HealthKit operations when authorization is denied, data types are unavailable, or the health store encounters issues.
-
-## Description
-
-HealthKit manages health and fitness data on Apple platforms. Accessing this data requires user authorization and specific entitlements. `HKError` provides codes like `.authorizationDenied`, `.invalidArgument`, and `.dataUnavailable` to indicate what went wrong.
-
-Common patterns:
-
-- **Authorization not requested** — querying data before requesting permission.
-- **Authorization denied** — user declined health data access.
-- **Invalid quantity type** — requesting a health type not available on device.
-- **Background delivery not set up** — expecting updates without configuration.
+A HealthKit error occurs when HealthKit operations fail. This can happen due to missing permissions, unavailable health data types, or authorization issues.
 
 ## Common Causes
 
-```swift
-// Cause 1: Querying without authorization
-let store = HKHealthStore()
-let type = HKQuantityType.quantityType(forIdentifier: .stepCount)!
-let query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: nil,
-                               options: .cumulativeSum) { _, result, _ in
-    // Fails if authorization not granted
-}
-store.execute(query)
-
-// Cause 2: Authorization not requested first
-store.requestAuthorization(toShare: [], read: [type]) { success, error in
-    // Must check success before querying
-}
-
-// Cause 3: Health type not available on device
-let type = HKQuantityType.quantityType(forIdentifier: .oxygenSaturation)
-// May not be available on all devices
-
-// Cause 4: Querying health store from background
-// HealthKit has restrictions on background access
-```
+- HealthKit not available on device
+- Missing health permission
+- Health data type not supported
+- Authorization not requested
 
 ## How to Fix
 
-### Fix 1: Always request authorization first
-
 ```swift
-let store = HKHealthStore()
-let types: Set<HKSampleType> = [
-    HKQuantityType.quantityType(forIdentifier: .stepCount)!,
-    HKQuantityType.quantityType(forIdentifier: .heartRate)!
-]
-store.requestAuthorization(toShare: [], read: types) { success, error in
-    if success {
-        // Now safe to query
-    } else {
-        print("Authorization failed: \(error?.localizedDescription ?? "")")
-    }
+// WRONG: Not checking HealthKit availability
+let healthStore = HKHealthStore()
+healthStore.requestAuthorization(toShare: [], read: []) { success, error in
+    // Ignoring error
+}
+
+// CORRECT: Check availability first
+guard HKHealthStore.isHealthDataAvailable() else {
+    print("HealthKit not available")
+    return
 }
 ```
 
-### Fix 2: Check device capabilities
-
 ```swift
-if HKHealthStore.isHealthDataAvailable() {
-    // HealthKit available
-    let store = HKHealthStore()
-    // Request authorization and query
-} else {
-    print("HealthKit not available on this device")
+// WRONG: Not requesting authorization
+func readHeartRate() {
+    let type = HKQuantityType.quantityType(forIdentifier: .heartRate)!
+    // May fail without authorization
 }
-```
 
-### Fix 3: Handle HKError in queries
-
-```swift
-let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 100,
-                           sortDescriptors: nil) { query, results, error in
-    if let error = error as? HKError {
-        switch error.code {
-        case .authorizationDenied:
-            print("User denied access")
-        case .dataUnavailable:
-            print("Data not available")
-        default:
-            print("HealthKit error: \(error)")
-        }
-        return
-    }
-    // Process results
-}
-store.execute(query)
-```
-
-### Fix 4: Set up background delivery properly
-
-```swift
-store.enableBackgroundDelivery(for: type, frequency: .hourly) { success, error in
-    if !success {
-        print("Background delivery failed: \(error?.localizedDescription ?? "")")
-    }
+// CORRECT: Request authorization first
+func requestAuthorization(completion: @escaping (Bool, Error?) -> Void) {
+    let typesToRead: Set<HKObjectType> = [
+        HKQuantityType.quantityType(forIdentifier: .heartRate)!,
+        HKQuantityType.quantityType(forIdentifier: .stepCount)!
+    ]
+    healthStore.requestAuthorization(toShare: [], read: typesToRead, completion: completion)
 }
 ```
 
 ## Examples
 
 ```swift
-// Example 1: Querying without checking authorization status
-let store = HKHealthStore()
+// Example 1: Read health data
+import HealthKit
+
+let healthStore = HKHealthStore()
 let type = HKQuantityType.quantityType(forIdentifier: .heartRate)!
-let query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: nil,
-                               options: .discreteAverage) { _, result, _ in
-    if let result = result {
-        print(result)
+
+let query = HKSampleQuery(sampleType: type, predicate: nil, limit: 10, sortDescriptors: nil) { query, results, error in
+    guard let samples = results as? [HKQuantitySample] else { return }
+    for sample in samples {
+        print("Heart rate: \(sample.quantity)")
     }
 }
-store.execute(query) // May fail without authorization
+healthStore.execute(query)
 
-// Example 2: Requesting unavailable health type
-let type = HKQuantityType.quantityType(forIdentifier: .environmentalAudioExposure)
-// Only available on certain devices with specific iOS versions
+// Example 2: Write health data
+let type = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+let quantity = HKQuantity(unit: .count(), doubleValue: 1000)
+let sample = HKQuantitySample(type: type, quantity: quantity, start: Date(), end: Date())
+healthStore.save(sample) { success, error in
+    // Handle result
+}
+
+// Example 3: Observer query
+let type = HKQuantityType.quantityType(forIdentifier: .heartRate)!
+let query = HKObserverQuery(sampleType: type, predicate: nil) { query, completionHandler, error in
+    // New data available
+    completionHandler()
+}
+healthStore.execute(query)
 ```
 
 ## Related Errors
 
-- [Core Location Error]({{< relref "/languages/swift/corelocation-error" >}}) — similar permission/access pattern.
-- [Keychain Error]({{< relref "/languages/swift/keychain-error" >}}) — security-related access error.
-- [Security Error]({{< relref "/languages/swift/security-error" >}}) — OS-level security error.
+- [HomeKit error](homekit-error) — HomeKit error
+- [CloudKit operation error](cloudkit-error-swift) — CloudKit error
+- [MapKit error](mapkit-error) — MapKit error

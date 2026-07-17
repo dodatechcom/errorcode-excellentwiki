@@ -1,121 +1,65 @@
 ---
-title: "[Solution] C++ std::filesystem::filesystem_error — Filesystem Operation Failed Fix"
-description: "Fix C++ std::filesystem::filesystem_error when filesystem operations fail. Handle file access errors, missing paths, and permission issues."
+title: "[Solution] C++ std::filesystem::filesystem_error"
+description: "Fix C++ std::filesystem::filesystem_error. Handle filesystem operation failures."
 languages: ["cpp"]
 severities: ["error"]
-error_types: ["runtime"]
-tags: ["filesystem-error", "std-filesystem", "file-io", "exception"]
-weight: 50
+error-types: ["runtime-error"]
+tags: ["filesystem", "filesystem_error", "error-code", "path", "filesystem-library"]
+weight: 5
 ---
 
-# [Solution] C++ std::filesystem::filesystem_error — Filesystem Operation Failed Fix
+# std::filesystem::filesystem_error
 
-A `std::filesystem::filesystem_error` is thrown when a filesystem operation fails due to an OS-level error. This includes file not found, permission denied, path too long, or disk full conditions. The exception provides both the error code and the path(s) involved in the failed operation.
+`std::filesystem::filesystem_error` is thrown when a filesystem operation fails. The error includes the path and error code.
 
-## Why std::filesystem::filesystem_error Occurs
-
-Common causes include accessing files that do not exist, insufficient permissions to read or write files, invalid file paths, files or directories locked by other processes, and disk full conditions.
-
-## Wrong: Not Catching filesystem_error
+## Common Causes
 
 ```cpp
-// WRONG — program crashes on filesystem errors
-#include <filesystem>
-#include <iostream>
+// Cause 1: File not found
+std::filesystem::path p = "/nonexistent/file.txt";
+auto size = std::filesystem::file_size(p); // throws
 
-namespace fs = std::filesystem;
+// Cause 2: Permission denied
+std::filesystem::remove("/root/protected.txt"); // throws
 
-int main() {
-    fs::remove("/nonexistent/file.txt");  // throws filesystem_error
-    return 0;
+// Cause 3: Path too long
+std::string long_path(10000, 'a');
+std::filesystem::create_directories(long_path); // throws
+```
+
+## How to Fix
+
+### Fix 1: Use error_code overload
+
+```cpp
+std::error_code ec;
+auto size = std::filesystem::file_size(p, ec);
+if (ec) {
+    std::cerr << "Error: " << ec.message() << std::endl;
 }
 ```
 
-## Correct: Catch filesystem_error and Inspect the Error Code
+### Fix 2: Check existence first
 
 ```cpp
-// CORRECT — catch and inspect the error code
-#include <filesystem>
-#include <iostream>
-
-namespace fs = std::filesystem;
-
-int main() {
-    try {
-        fs::remove("/nonexistent/file.txt");
-    } catch (const fs::filesystem_error& e) {
-        std::cerr << "Filesystem error: " << e.what() << std::endl;
-        std::cerr << "Error code: " << e.code() << std::endl;
-        std::cerr << "Path: " << e.path1() << std::endl;
-        return 1;
-    }
-    return 0;
+if (std::filesystem::exists(p)) {
+    std::filesystem::remove(p);
 }
 ```
 
-## Using Error Code Overload to Avoid Exceptions
+### Fix 3: Catch and handle
 
 ```cpp
-// CORRECT — use error_code overload instead of throwing
-#include <filesystem>
-#include <iostream>
-
-namespace fs = std::filesystem;
-
-int main() {
-    std::error_code ec;
-    fs::remove("/nonexistent/file.txt", ec);
-
-    if (ec) {
-        std::cerr << "Failed to remove: " << ec.message() << std::endl;
-        return 1;
-    }
-
-    std::cout << "File removed successfully" << std::endl;
-    return 0;
+try {
+    std::filesystem::copy_file(src, dst);
+} catch (const std::filesystem::filesystem_error& e) {
+    std::cerr << e.what() << std::endl;
+    std::cerr << "Path: " << e.path1() << std::endl;
 }
 ```
-
-## Checking File Existence Before Operations
-
-```cpp
-// CORRECT — check existence before performing operations
-#include <filesystem>
-#include <iostream>
-
-namespace fs = std::filesystem;
-
-int main() {
-    fs::path file_path = "/tmp/test.txt";
-
-    if (!fs::exists(file_path)) {
-        std::cerr << "File does not exist: " << file_path << std::endl;
-        return 1;
-    }
-
-    try {
-        auto file_size = fs::file_size(file_path);
-        std::cout << "File size: " << file_size << " bytes" << std::endl;
-    } catch (const fs::filesystem_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
-    }
-
-    return 0;
-}
-```
-
-## Summary
-
-| Fix | When to Use |
-|---|---|
-| Use `error_code` overload | When you want to avoid exceptions |
-| Check `fs::exists()` before operations | When paths may be invalid |
-| Catch `filesystem_error` | When you need the full error context |
-| Use `create_directories()` | When intermediate directories may not exist |
 
 ## Related Errors
 
-- [std::runtime_error]({{< relref "/languages/cpp/runtimeerror" >}}) — general runtime failures.
-- [std::system_error]({{< relref "/languages/cpp/systemerror" >}}) — OS-level error codes wrapped in exceptions.
-- [std::ios_base::failure]({{< relref "/languages/cpp/ios-failure" >}}) — stream I/O errors.
+- [std::filesystem::filesystem_error (detailed)]({{< relref "/languages/cpp/filesystem-error" >}}) — detailed analysis.
+- [C: No such file]({{< relref "/languages/c/no-such-file" >}}) — ENOENT.
+- [C: Permission denied]({{< relref "/languages/c/permission-denied-file" >}}) — EACCES.

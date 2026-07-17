@@ -58,4 +58,218 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/github-actions/env-error3/"&gt;Env Error&lt;/a&gt; — environment variable not set&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/github-actions/cache-error4/"&gt;Cache Error&lt;/a&gt; — cache restore failure&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Passport Authentication Failed Error Fix</title><link>https://errorcode.excellentwiki.com/languages/javascript/passport-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/javascript/passport-error/</guid><description>&lt;h1 id="passport-authentication-failed"&gt;Passport Authentication Failed&lt;/h1&gt;
+&lt;p&gt;This error occurs when Passport.js fails to authenticate a user due to invalid credentials, strategy misconfiguration, or callback errors.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common error messages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;AuthenticationError: Unauthorized&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Error: Failed to authenticate&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;PassportError: Invalid credentials&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Passport uses strategies (local, OAuth, JWT) to authenticate users. Failures in any strategy produce authentication errors.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Strategy not configured
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;app&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;use&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;initialize&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;app&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;post&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/login&amp;#39;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;authenticate&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;local&amp;#39;&lt;/span&gt;)); &lt;span style="color:#75715e"&gt;// strategy not registered
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Verify callback returns false
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;use&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;LocalStrategy&lt;/span&gt;((&lt;span style="color:#a6e22e"&gt;username&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;password&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findUser&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;username&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt; &lt;span style="color:#f92672"&gt;||&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;password&lt;/span&gt; &lt;span style="color:#f92672"&gt;!==&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;password&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// auth failed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Missing session serialization
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;serializeUser&lt;/span&gt;((&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;) =&amp;gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;deserializeUser&lt;/span&gt;((&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;findUserById&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// user not found = error
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Wrong callback signature
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;app&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;post&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/login&amp;#39;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;authenticate&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;local&amp;#39;&lt;/span&gt;, (&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// wrong: should use redirect or custom callback
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-configure-strategy-properly"&gt;Fix 1: Configure strategy properly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;LocalStrategy&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;require&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;passport-local&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;Strategy&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;use&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;LocalStrategy&lt;/span&gt;({
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;usernameField&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;passwordField&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;password&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}, &lt;span style="color:#66d9ef"&gt;async&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;email&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;password&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;findOne&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;email&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;, { &lt;span style="color:#a6e22e"&gt;message&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;User not found&amp;#39;&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;comparePassword&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;password&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;, { &lt;span style="color:#a6e22e"&gt;message&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;Invalid password&amp;#39;&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-add-authentication-failure-handler"&gt;Fix 2: Add authentication failure handler&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;app&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;post&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/login&amp;#39;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;authenticate&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;local&amp;#39;&lt;/span&gt;, {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;successRedirect&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;/dashboard&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;failureRedirect&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;/login&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;failureFlash&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-handle-custom-callback"&gt;Fix 3: Handle custom callback&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;app&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;post&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/login&amp;#39;&lt;/span&gt;, (&lt;span style="color:#a6e22e"&gt;req&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;next&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;authenticate&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;local&amp;#39;&lt;/span&gt;, (&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;info&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;next&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;status&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;401&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;json&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;error&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;info&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;message&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;req&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;logIn&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;, (&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;next&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;json&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;success&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; })(&lt;span style="color:#a6e22e"&gt;req&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;next&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-implement-proper-serialization"&gt;Fix 4: Implement proper serialization&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;serializeUser&lt;/span&gt;((&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;deserializeUser&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;async&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;findById&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;done&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// This triggers auth failure
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;app&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;post&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/login&amp;#39;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;passport&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;authenticate&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;local&amp;#39;&lt;/span&gt;), (&lt;span style="color:#a6e22e"&gt;req&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;json&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;req&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// If credentials wrong, redirects to /login
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/javascript/jsonwebtoken-error/"&gt;JWT Error&lt;/a&gt; — token invalid&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/javascript/express-session/"&gt;Express Session&lt;/a&gt; — session error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/javascript/cors-error/"&gt;CORS Error&lt;/a&gt; — CORS policy&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>GitHub Actions Matrix Strategy Configuration Error</title><link>https://errorcode.excellentwiki.com/tools/github-actions/github-actions-matrix-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/github-actions/github-actions-matrix-error-v2/</guid><description>&lt;h1 id="github-actions--matrix-strategy-configuration-error"&gt;GitHub Actions — Matrix Strategy Configuration Error&lt;/h1&gt;
+&lt;p&gt;This error occurs when the GitHub Actions matrix strategy is configured incorrectly. Invalid matrix values, missing properties, or conflicting options cause the workflow to fail.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Invalid matrix values or types&lt;/li&gt;
+&lt;li&gt;Missing matrix dimensions&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fail-fast&lt;/code&gt; combined with required matrix entries&lt;/li&gt;
+&lt;li&gt;Matrix produces too many combinations&lt;/li&gt;
+&lt;li&gt;Expression syntax errors in matrix values&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="define-valid-matrix"&gt;Define Valid Matrix&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;jobs&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;build&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;runs-on&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;ubuntu-latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;ubuntu-latest, windows-latest]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="configure-fail-fast"&gt;Configure Fail-Fast&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;fail-fast&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="include-additional-combinations"&gt;Include Additional Combinations&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;include&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;experimental&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="exclude-specific-combinations"&gt;Exclude Specific Combinations&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;ubuntu-latest, windows-latest]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;exclude&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;windows-latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-matrix-in-steps"&gt;Use Matrix in Steps&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;steps&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;uses&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;actions/setup-node@v4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;with&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;${{ matrix.node-version }}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Error: The matrix configuration is invalid.
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#34;node-version&amp;#34; must be a string, number, or array of strings/numbers.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/github-actions/github-actions-yaml-error/"&gt;GitHub Actions YAML Error&lt;/a&gt; — YAML syntax error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/github-actions/github-actions-runner-error/"&gt;GitHub Actions Runner Error&lt;/a&gt; — runner issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/github-actions/github-actions-timeout-error/"&gt;GitHub Actions Timeout Error&lt;/a&gt; — job timeout&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>GitHub Actions Matrix Strategy Error</title><link>https://errorcode.excellentwiki.com/tools/github-actions/github-actions-matrix-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/github-actions/github-actions-matrix-error/</guid><description>&lt;h1 id="github-actions-matrix-strategy-error"&gt;GitHub Actions Matrix Strategy Error&lt;/h1&gt;
+&lt;p&gt;A matrix strategy error occurs when the GitHub Actions matrix configuration is invalid, causing the workflow to fail during job creation. The matrix defines combinations of inputs for parallel job execution.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Invalid matrix values (null, empty array)&lt;/li&gt;
+&lt;li&gt;Matrix variable not properly referenced&lt;/li&gt;
+&lt;li&gt;Too many combinations exceeding rate limits&lt;/li&gt;
+&lt;li&gt;Matrix values contain invalid characters&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="define-valid-matrix"&gt;Define Valid Matrix&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;jobs&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;test&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;runs-on&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;${{ matrix.os }}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;ubuntu-latest, windows-latest, macos-latest]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node-version&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;fail-fast&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-matrix-variable-references"&gt;Fix Matrix Variable References&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Correct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;node --version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;env&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;NODE_VERSION&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;${{ matrix.node-version }}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Wrong&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;node --version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;env&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;NODE_VERSION&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;${{ matrix.nodeversion }} &lt;/span&gt; &lt;span style="color:#75715e"&gt;# Missing hyphen&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-matrix-includeexclude"&gt;Use Matrix Include/Exclude&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;ubuntu-latest, windows-latest]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;include&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;ubuntu-latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;experimental&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;exclude&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;windows-latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="set-maximum-concurrency"&gt;Set Maximum Concurrency&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;os&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;ubuntu-latest, windows-latest]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;max-parallel&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-matrix-output-in-subsequent-jobs"&gt;Use Matrix Output in Subsequent Jobs&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;jobs&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;build&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;target&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;app1, app2]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;outputs&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;version&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;${{ steps.build.outputs.version }}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Error: matrix contains null value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;] &lt;span style="color:#75715e"&gt;# Invalid&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: remove null&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;strategy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;matrix&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;node&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/github-actions/github-actions-yaml-error/"&gt;YAML Error&lt;/a&gt; — YAML syntax error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/github-actions/github-actions-env-error/"&gt;Environment Error&lt;/a&gt; — environment variable error&lt;/li&gt;
 &lt;/ul&gt;</description></item></channel></rss>

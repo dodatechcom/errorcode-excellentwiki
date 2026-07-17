@@ -88,6 +88,40 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-13/"&gt;errno-13 EACCES&lt;/a&gt; — permission denied.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-20/"&gt;errno-20 ENOTDIR&lt;/a&gt; — not a directory.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-21/"&gt;errno-21 EISDIR&lt;/a&gt; — is a directory (self).&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C Is a directory: EISDIR</title><link>https://errorcode.excellentwiki.com/languages/c/is-a-directory/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/is-a-directory/</guid><description>&lt;h1 id="is-a-directory-eisdir"&gt;Is a directory: EISDIR&lt;/h1&gt;
+&lt;p&gt;EISDIR occurs when you try to open, read, or write a path that is actually a directory. Directories are not regular files and cannot be read with standard file I/O.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Reading a directory as file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/home/user&amp;#34;&lt;/span&gt;, O_RDONLY); &lt;span style="color:#75715e"&gt;// EISDIR
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Writing to directory path
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;write&lt;/span&gt;(fd, &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// if fd points to directory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Using fopen on directory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FILE &lt;span style="color:#f92672"&gt;*&lt;/span&gt;f &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;fopen&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/tmp&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;r&amp;#34;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// EISDIR
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-check-if-path-is-directory"&gt;Fix 1: Check if path is directory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; stat st;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;stat&lt;/span&gt;(path, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;st) &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;S_ISDIR&lt;/span&gt;(st.st_mode)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;%s is a directory&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, path);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-directory-functions"&gt;Fix 2: Use directory functions&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DIR &lt;span style="color:#f92672"&gt;*&lt;/span&gt;dir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;opendir&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/home/user&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (dir) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; dirent &lt;span style="color:#f92672"&gt;*&lt;/span&gt;entry;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; ((entry &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;readdir&lt;/span&gt;(dir)) &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;printf&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;%s&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, entry&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;d_name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;closedir&lt;/span&gt;(dir);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-add-filename-to-path"&gt;Fix 3: Add filename to path&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;char&lt;/span&gt; path[&lt;span style="color:#ae81ff"&gt;256&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;snprintf&lt;/span&gt;(path, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(path), &lt;span style="color:#e6db74"&gt;&amp;#34;%s/%s&amp;#34;&lt;/span&gt;, dir_path, filename);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/not-a-directory/"&gt;Not a directory&lt;/a&gt; — ENOTDIR.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/no-such-file/"&gt;No such file&lt;/a&gt; — ENOENT.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/bad-file-descriptor/"&gt;Bad file descriptor&lt;/a&gt; — EBADF.&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>[Solution] Go No Such File or Directory Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/file-not-found/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/file-not-found/</guid><description>&lt;h1 id="no-such-file-or-directory--fix"&gt;No Such File or Directory — Fix&lt;/h1&gt;
 &lt;p&gt;A &amp;ldquo;no such file or directory&amp;rdquo; error occurs when your Go program tries to open, read, or stat a file path that doesn&amp;rsquo;t exist.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
@@ -196,6 +230,67 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/permission-denied/"&gt;permission-denied&lt;/a&gt; — file exists but no permission.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/too-many-open-files/"&gt;too-many-open-files&lt;/a&gt; — file descriptor limit reached.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/io-eof/"&gt;io-eof&lt;/a&gt; — end of file on read.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] go-ldap Bind Failed Fix</title><link>https://errorcode.excellentwiki.com/languages/go/go-ldap-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/go-ldap-error/</guid><description>&lt;h1 id="go-ldap-bind-failed"&gt;go-ldap Bind Failed&lt;/h1&gt;
+&lt;p&gt;Fix Go LDAP bind errors. Handle authentication, connection security, and directory queries..&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common error scenarios include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Connection or network failures&lt;/li&gt;
+&lt;li&gt;Invalid configuration or options&lt;/li&gt;
+&lt;li&gt;Resource not found or unavailable&lt;/li&gt;
+&lt;li&gt;Permission or access denied&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Incorrect configuration or missing setup&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Network or connection issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Invalid input or parameters&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Missing dependencies or resources&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-verify-configuration-and-setup"&gt;Fix 1: Verify configuration and setup&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check configuration values and ensure required setup&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Verify the service/library is properly configured&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-add-proper-error-handling"&gt;Fix 2: Add proper error handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;result&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;doSomething&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt; &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;log&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Printf&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Error: %v&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-add-retry-and-timeout-logic"&gt;Fix 3: Add retry and timeout logic&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;cancel&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;WithTimeout&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Background&lt;/span&gt;(), &lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;&lt;span style="color:#f92672"&gt;*&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Second&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;defer&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;cancel&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use context for timeouts on operations&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;result&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;doWork&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt; &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Err&lt;/span&gt;() &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;DeadlineExceeded&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;log&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Println&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Operation timed out&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;package&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;context&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;time&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;cancel&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;WithTimeout&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;context&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Background&lt;/span&gt;(), &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;&lt;span style="color:#f92672"&gt;*&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;time&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Second&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;defer&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;cancel&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;result&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt; &lt;span style="color:#f92672"&gt;:=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;doWork&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;ctx&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt; &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;nil&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;log&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Fatalf&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Error: %v&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;err&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fmt&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;Println&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;result&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/context-deadline/"&gt;context-deadline&lt;/a&gt; — context deadline exceeded&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/net-dial/"&gt;net-dial&lt;/a&gt; — connection refused&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/go/io-eof/"&gt;io-eof&lt;/a&gt; — I/O error&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>[Solution] Linux EISDIR (errno 21) — Is a Directory Fix</title><link>https://errorcode.excellentwiki.com/os/linux/errno-21/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/errno-21/</guid><description>&lt;h1 id="linux-eisdir-errno-21--is-a-directory"&gt;Linux EISDIR (errno 21) — Is a Directory&lt;/h1&gt;
 &lt;p&gt;EISDIR (errno 21) means an operation attempted on a file actually refers to a directory. This error occurs when you try to read from, write to, or open a directory as if it were a regular file. It is distinct from ENOTDIR (errno 20) because EISDIR indicates the target is a directory when a file was expected, rather than a file where a directory was expected.&lt;/p&gt;</description></item><item><title>[Solution] Linux ENOTDIR (errno 20) — Not a Directory Fix</title><link>https://errorcode.excellentwiki.com/os/linux/errno-20/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/errno-20/</guid><description>&lt;h1 id="linux-enotdir-errno-20--not-a-directory"&gt;Linux ENOTDIR (errno 20) — Not a Directory&lt;/h1&gt;
 &lt;p&gt;ENOTDIR (errno 20) means a component of the path used in an operation is not a directory when it was expected to be. This error occurs when you try to use a file as if it were a directory, such as listing its contents or creating a path through it. It is distinct from ENOENT (errno 2) because the file exists but is not a directory.&lt;/p&gt;</description></item><item><title>[Solution] Linux ENOTEMPTY (errno 39) — Directory Not Empty Fix</title><link>https://errorcode.excellentwiki.com/os/linux/errno-39/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/errno-39/</guid><description>&lt;h1 id="linux-enotempty-errno-39--directory-not-empty"&gt;Linux ENOTEMPTY (errno 39) — Directory Not Empty&lt;/h1&gt;
@@ -209,7 +304,91 @@
 &lt;/ul&gt;
 &lt;h2 id="how-to-fix-enotempty"&gt;How to Fix ENOTEMPTY&lt;/h2&gt;
 &lt;h3 id="1-list-directory-contents"&gt;1. List Directory Contents&lt;/h3&gt;
-&lt;p&gt;Check what files remain in the directory:&lt;/p&gt;</description></item><item><title>[Solution] Python FileExistsError — File Already Exists Fix</title><link>https://errorcode.excellentwiki.com/languages/python/fileexistserror/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/python/fileexistserror/</guid><description>&lt;h1 id="fileexistserror--file-already-exists-fix"&gt;FileExistsError — File Already Exists Fix&lt;/h1&gt;
+&lt;p&gt;Check what files remain in the directory:&lt;/p&gt;</description></item><item><title>[Solution] Nginx 403 Forbidden — directory index forbidden</title><link>https://errorcode.excellentwiki.com/tools/nginx/nginx-403-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/nginx/nginx-403-error-v2/</guid><description>&lt;p&gt;An Nginx 403 Forbidden with &amp;ldquo;directory index of &amp;hellip; is forbidden&amp;rdquo; means Nginx cannot serve the requested path because directory listing is disabled and no index file exists, or the file permissions prevent access.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;When a client requests a directory path (e.g., &lt;code&gt;/images/&lt;/code&gt;), Nginx looks for an index file (&lt;code&gt;index.html&lt;/code&gt;, &lt;code&gt;index.htm&lt;/code&gt;). If no index file exists and &lt;code&gt;autoindex&lt;/code&gt; is off (the default), Nginx returns 403 Forbidden. This can also occur when the Nginx worker process lacks filesystem permissions to read the file, or when an explicit &lt;code&gt;deny&lt;/code&gt; rule blocks access.&lt;/p&gt;</description></item><item><title>[Solution] Pascal: file not found error</title><link>https://errorcode.excellentwiki.com/languages/pascal/pascal-file-not-found-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/pascal/pascal-file-not-found-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Pascal file not found errors occur when the program tries to open a file that doesn&amp;rsquo;t exist. This is similar to runtime error 2 in Free Pascal.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;File path incorrect&lt;/li&gt;
+&lt;li&gt;File doesn&amp;rsquo;t exist&lt;/li&gt;
+&lt;li&gt;Wrong working directory&lt;/li&gt;
+&lt;li&gt;File moved or deleted&lt;/li&gt;
+&lt;li&gt;Case sensitivity&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;program FileNotFound;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; f: TextFile;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AssignFile(f, &lt;span style="color:#e6db74"&gt;&amp;#39;nonexistent.txt&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Reset(f); &lt;span style="color:#f92672"&gt;//&lt;/span&gt; Error: file &lt;span style="color:#f92672"&gt;not&lt;/span&gt; found
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;end&lt;span style="color:#f92672"&gt;.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;program SafeFileOpen;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; f: TextFile;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; FileExists(&lt;span style="color:#e6db74"&gt;&amp;#39;data.txt&amp;#39;&lt;/span&gt;) then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AssignFile(f, &lt;span style="color:#e6db74"&gt;&amp;#39;data.txt&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Reset(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;//&lt;/span&gt; Process file
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CloseFile(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; end
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; WriteLn(&lt;span style="color:#e6db74"&gt;&amp;#39;File not found&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;end&lt;span style="color:#f92672"&gt;.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;program FullPathDemo;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; f: TextFile;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; path: string;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; path :&lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;C:\Users\Data&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\f&lt;/span&gt;&lt;span style="color:#e6db74"&gt;ile.txt&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; FileExists(path) then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AssignFile(f, path);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Reset(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CloseFile(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; end
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; WriteLn(&lt;span style="color:#e6db74"&gt;&amp;#39;Not found: &amp;#39;&lt;/span&gt;, path);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;end&lt;span style="color:#f92672"&gt;.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;program RelativePathDemo;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; f: TextFile;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;//&lt;/span&gt; Use relative path from current directory
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; FileExists(&lt;span style="color:#e6db74"&gt;&amp;#39;..\data&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\f&lt;/span&gt;&lt;span style="color:#e6db74"&gt;ile.txt&amp;#39;&lt;/span&gt;) then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AssignFile(f, &lt;span style="color:#e6db74"&gt;&amp;#39;..\data&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\f&lt;/span&gt;&lt;span style="color:#e6db74"&gt;ile.txt&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Reset(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CloseFile(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; end;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;end&lt;span style="color:#f92672"&gt;.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;program CreateIfMissing;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; f: TextFile;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;not&lt;/span&gt; FileExists(&lt;span style="color:#e6db74"&gt;&amp;#39;data.txt&amp;#39;&lt;/span&gt;) then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; begin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AssignFile(f, &lt;span style="color:#e6db74"&gt;&amp;#39;data.txt&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Rewrite(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; WriteLn(f, &lt;span style="color:#e6db74"&gt;&amp;#39;Default data&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CloseFile(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; end;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AssignFile(f, &lt;span style="color:#e6db74"&gt;&amp;#39;data.txt&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Reset(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;//&lt;/span&gt; Process file
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CloseFile(f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;end&lt;span style="color:#f92672"&gt;.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="pascal-runtime-error-v2"&gt;Runtime Error&lt;/a&gt; - file errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="pascal-invalid-pointer-v2"&gt;Invalid Pointer&lt;/a&gt; - pointer errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="pascal-exception-error-v2"&gt;Exception Error&lt;/a&gt; - exception handling&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Python FileExistsError — File Already Exists Fix</title><link>https://errorcode.excellentwiki.com/languages/python/fileexistserror/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/python/fileexistserror/</guid><description>&lt;h1 id="fileexistserror--file-already-exists-fix"&gt;FileExistsError — File Already Exists Fix&lt;/h1&gt;
 &lt;p&gt;A &lt;code&gt;FileExistsError&lt;/code&gt; is raised when you try to create a file or directory that already exists and the operation doesn&amp;rsquo;t allow overwriting. It&amp;rsquo;s a subclass of &lt;code&gt;OSError&lt;/code&gt;.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;FileExistsError&lt;/code&gt; commonly occurs when creating directories with &lt;code&gt;os.mkdir()&lt;/code&gt; or &lt;code&gt;os.makedirs()&lt;/code&gt; without the &lt;code&gt;exist_ok&lt;/code&gt; parameter, or when creating files with flags that require a new file (like &lt;code&gt;os.open()&lt;/code&gt; with &lt;code&gt;O_CREAT&lt;/code&gt; and &lt;code&gt;O_EXCL&lt;/code&gt;).&lt;/p&gt;
@@ -319,10 +498,225 @@
 &lt;/ul&gt;</description></item><item><title>[Solution] Python FileNotFoundError: [Errno 2] No such file or directory (Path Fix)</title><link>https://errorcode.excellentwiki.com/languages/python/oserror-no-such-file2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/python/oserror-no-such-file2/</guid><description>&lt;h1 id="filenotfounderror-errno-2-no-such-file-or-directory"&gt;FileNotFoundError: [Errno 2] No such file or directory&lt;/h1&gt;
 &lt;p&gt;A &lt;code&gt;FileNotFoundError&lt;/code&gt; with &lt;code&gt;[Errno 2] No such file or directory&lt;/code&gt; is raised when Python tries to access a file or directory at a path that does not exist. This is the most common file I/O error and often results from incorrect paths, wrong working directory, or missing files.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
-&lt;p&gt;This error is the Python 3 replacement for the old &lt;code&gt;IOError&lt;/code&gt;. The &lt;code&gt;[Errno 2]&lt;/code&gt; corresponds to the POSIX &lt;code&gt;ENOENT&lt;/code&gt; error code. It occurs whenever an OS-level file operation fails because the target path doesn&amp;rsquo;t resolve to an existing filesystem entry.&lt;/p&gt;</description></item><item><title>[Solution] Swift Error — POSIX Error: No Such File or Directory</title><link>https://errorcode.excellentwiki.com/languages/swift/file-not-found/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/file-not-found/</guid><description>&lt;h1 id="posix-error-no-such-file-or-directory"&gt;POSIX Error: No Such File or Directory&lt;/h1&gt;
+&lt;p&gt;This error is the Python 3 replacement for the old &lt;code&gt;IOError&lt;/code&gt;. The &lt;code&gt;[Errno 2]&lt;/code&gt; corresponds to the POSIX &lt;code&gt;ENOENT&lt;/code&gt; error code. It occurs whenever an OS-level file operation fails because the target path doesn&amp;rsquo;t resolve to an existing filesystem entry.&lt;/p&gt;</description></item><item><title>[Solution] std::filesystem Directory Iteration Error Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/filesystem-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/filesystem-error-v2/</guid><description>&lt;h1 id="stdfilesystem-directory-iteration-error"&gt;std::filesystem Directory Iteration Error&lt;/h1&gt;
+&lt;p&gt;Fix std::filesystem directory iteration errors. Handle permission denied, non-existent paths, and recursive directory errors.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;std::filesystem directory errors occur when iterating or manipulating directories:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-zed" data-lang="zed"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;filesystem error&lt;span style="color:#f92672"&gt;:&lt;/span&gt; cannot increment directory iterator
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;filesystem error&lt;span style="color:#f92672"&gt;:&lt;/span&gt; directory not found
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;filesystem error&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;permission&lt;/span&gt; denied
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Directory deleted during iteration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; entry : std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;filesystem&lt;span style="color:#f92672"&gt;::&lt;/span&gt;directory_iterator(&lt;span style="color:#e6db74"&gt;&amp;#34;/tmp&amp;#34;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;filesystem&lt;span style="color:#f92672"&gt;::&lt;/span&gt;remove(entry); &lt;span style="color:#75715e"&gt;// May invalidate iterator
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Symlink loop causes infinite iteration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Permission denied on restricted directory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Path contains invalid characters
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-use-error_code-overload-for-safe-iteration"&gt;Fix 1: Use error_code overload for safe iteration&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;filesystem&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; fs &lt;span style="color:#f92672"&gt;=&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;filesystem;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;list_directory&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;path&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; dir) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;error_code ec;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; entry : fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;directory_iterator(dir, ec)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; entry.path() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ec) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cerr &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Error: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; ec.message() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-collect-paths-first-then-modify"&gt;Fix 2: Collect paths first, then modify&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;filesystem&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;vector&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; fs &lt;span style="color:#f92672"&gt;=&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;filesystem;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;remove_old_files&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;path&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; dir, &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; max_age_days) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Collect first to avoid invalidating iterator
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;vector&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;path&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; to_remove;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; entry : fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;directory_iterator(dir)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Check file age and collect paths
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; to_remove.push_back(entry.path());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; path : to_remove) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;remove(path);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-recursive_directory_iterator-with-max-depth"&gt;Fix 3: Use recursive_directory_iterator with max depth&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;filesystem&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; fs &lt;span style="color:#f92672"&gt;=&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;filesystem;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;list_recursive&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;path&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; root) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; entry :
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;recursive_directory_iterator(root, fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;directory_options&lt;span style="color:#f92672"&gt;::&lt;/span&gt;skip_permission_denied)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; entry.path() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;filesystem&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;iostream&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;vector&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; fs &lt;span style="color:#f92672"&gt;=&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;filesystem;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;vector&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;path&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; find_files(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;path&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; root,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;string&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; extension
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;vector&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;path&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; results;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;error_code ec;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; entry : fs&lt;span style="color:#f92672"&gt;::&lt;/span&gt;recursive_directory_iterator(root, ec)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (entry.is_regular_file() &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; entry.path().extension() &lt;span style="color:#f92672"&gt;==&lt;/span&gt; extension) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; results.push_back(entry.path());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ec) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cerr &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Warning: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; ec.message() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; results;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; files &lt;span style="color:#f92672"&gt;=&lt;/span&gt; find_files(&lt;span style="color:#e6db74"&gt;&amp;#34;.&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;.cpp&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; f : files) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cout &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; f &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/filesystem-error-2/"&gt;Filesystem Error 2&lt;/a&gt; — filesystem error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/fstream-error/"&gt;FStream Error&lt;/a&gt; — fstream error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/ifstream-error/"&gt;IFStream Error&lt;/a&gt; — ifstream error&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift Error — POSIX Error: No Such File or Directory</title><link>https://errorcode.excellentwiki.com/languages/swift/file-not-found/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/file-not-found/</guid><description>&lt;h1 id="posix-error-no-such-file-or-directory"&gt;POSIX Error: No Such File or Directory&lt;/h1&gt;
 &lt;p&gt;This error occurs when your code tries to access a file or directory that doesn&amp;rsquo;t exist. The POSIX error code &lt;code&gt;ENOENT&lt;/code&gt; (2) is returned by file system operations.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
-&lt;p&gt;Every file path reference in Swift can fail if the target doesn&amp;rsquo;t exist. This is one of the most common file system errors, occurring with incorrect paths, deleted files, or uninitialized directories. Unlike permission denied, this error specifically means the path itself has no matching file system entry.&lt;/p&gt;</description></item><item><title>No such file or directory</title><link>https://errorcode.excellentwiki.com/languages/perl/file-not-found3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/perl/file-not-found3/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Every file path reference in Swift can fail if the target doesn&amp;rsquo;t exist. This is one of the most common file system errors, occurring with incorrect paths, deleted files, or uninitialized directories. Unlike permission denied, this error specifically means the path itself has no matching file system entry.&lt;/p&gt;</description></item><item><title>[Solution] VBA: Run-time error '53': File not found</title><link>https://errorcode.excellentwiki.com/languages/vba/vba-file-not-found-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/vba/vba-file-not-found-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Run-time error &amp;lsquo;53&amp;rsquo; occurs when VBA tries to open a file that doesn&amp;rsquo;t exist at the specified path. This is common with hardcoded file paths.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;File moved or deleted&lt;/li&gt;
+&lt;li&gt;Incorrect file path&lt;/li&gt;
+&lt;li&gt;Typo in filename&lt;/li&gt;
+&lt;li&gt;File on network drive not mapped&lt;/li&gt;
+&lt;li&gt;Relative path resolving incorrectly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; WRONG: Hardcoded path without checking
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Open &amp;#34;C:\data\report.xlsx&amp;#34; For Input As #1 &amp;#39; Error 53
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Close #1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Check if file exists first
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim filePath As String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; filePath = &amp;#34;C:\data\report.xlsx&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; If Dir(filePath) &amp;lt;&amp;gt; &amp;#34;&amp;#34; Then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Open filePath For Input As #1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Close #1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Else
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; MsgBox &amp;#34;File not found: &amp;#34; &amp;amp; filePath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; End If
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Use FileDialog for user selection
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example2()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim fd As FileDialog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set fd = Application.FileDialog(msoFileDialogFilePicker)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; With fd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .Title = &amp;#34;Select a file&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .Filters.Clear
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .Filters.Add &amp;#34;Excel Files&amp;#34;, &amp;#34;*.xlsx;*.xls&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; If .Show = -1 Then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Open .SelectedItems(1) For Input As #1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Close #1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Else
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; MsgBox &amp;#34;No file selected&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; End If
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; End With
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Safe file open wrapper
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Function SafeOpenFile(filePath As String) As Boolean
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; SafeOpenFile = False
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; If Dir(filePath) = &amp;#34;&amp;#34; Then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; MsgBox &amp;#34;File not found: &amp;#34; &amp;amp; filePath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Exit Function
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; End If
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; On Error GoTo ErrHandler
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Open filePath For Input As #1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; SafeOpenFile = True
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Exit Function
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ErrHandler:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; MsgBox &amp;#34;Cannot open file: &amp;#34; &amp;amp; Err.Description
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Function
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="vba-permission-denied-v2"&gt;Permission Denied&lt;/a&gt; - access issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="vba-adodb-connection-error"&gt;ADO Connection Error&lt;/a&gt; - database files&lt;/li&gt;
+&lt;li&gt;&lt;a href="vba-shell-error"&gt;Shell Error&lt;/a&gt; - process/file access&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>ERROR_DIR_NOT_EMPTY (145) - How to Fix</title><link>https://errorcode.excellentwiki.com/os/windows/win32-directory-not-empty/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/win32-directory-not-empty/</guid><description>&lt;h1 id="error_dir_not_empty-win32-error-145"&gt;ERROR_DIR_NOT_EMPTY (Win32 Error 145)&lt;/h1&gt;
+&lt;p&gt;This Win32 API error occurs when trying to delete or rename a directory that still contains files or subdirectories. The error code is &lt;code&gt;ERROR_DIR_NOT_EMPTY&lt;/code&gt; (value 145). The full message reads:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;The directory is not empty.&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This commonly occurs during cleanup operations, application uninstallation, and folder management.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hidden files in directory&lt;/strong&gt; — Directory contains hidden or system files.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Files still open&lt;/strong&gt; — Application has files locked in the directory.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Recycle Bin contents&lt;/strong&gt; — Directory is the Recycle Bin with items in it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Protected/system files&lt;/strong&gt; — Windows system files prevent deletion.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Subdirectory permissions&lt;/strong&gt; — Can&amp;rsquo;t list contents of subdirectories.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="list-all-files-including-hidden"&gt;List All Files Including Hidden&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-ChildItem &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt; -Force -Recurse | Select-Object FullName, Attributes
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="force-remove-directory-contents"&gt;Force Remove Directory Contents&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Remove-Item &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt; -Recurse -Force
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-command-prompt-for-stubborn-deletion"&gt;Use Command Prompt for Stubborn Deletion&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;rmdir&lt;/span&gt; /s /q &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-for-locked-files"&gt;Check for Locked Files&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-Process | ForEach-Object {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $proc = $_
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $proc.Modules | Where-Object { $_.FileName &lt;span style="color:#f92672"&gt;-like&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory\*&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} | Where-Object { $_ &lt;span style="color:#f92672"&gt;-ne&lt;/span&gt; $null }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-handle-tool-to-find-locks"&gt;Use Handle Tool to Find Locks&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;handle &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="remove-read-only-attributes"&gt;Remove Read-Only Attributes&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;attrib -r &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory\*.*&amp;#34;&lt;/span&gt; /s
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;rmdir&lt;/span&gt; /s /q &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="delete-with-robocopy-empty-directory-trick"&gt;Delete with Robocopy Empty Directory Trick&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;mkdir&lt;/span&gt; C:\EmptyDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;robocopy C:\EmptyDir &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt; /MIR
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;rmdir&lt;/span&gt; /s /q &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;rmdir&lt;/span&gt; /s /q C:\EmptyDir
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-for-long-path-files"&gt;Check for Long Path Files&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-ChildItem &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Path\To\Directory&amp;#34;&lt;/span&gt; -Recurse | Where-Object { $_.FullName.Length &lt;span style="color:#f92672"&gt;-gt&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;260&lt;/span&gt; } | Select-Object FullName
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-file-not-found/"&gt;ERROR_FILE_NOT_FOUND (2)&lt;/a&gt; — Files in directory not found&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-access-denied-win32/"&gt;ERROR_ACCESS_DENIED (5)&lt;/a&gt; — Permission denied accessing files&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-path-not-found/"&gt;ERROR_PATH_NOT_FOUND (3)&lt;/a&gt; — Path doesn&amp;rsquo;t exist&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>No such file or directory</title><link>https://errorcode.excellentwiki.com/languages/perl/file-not-found3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/perl/file-not-found3/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
 &lt;p&gt;A &lt;code&gt;No such file or directory&lt;/code&gt; error is raised when Perl tries to open a file that doesn&amp;rsquo;t exist at the specified path. This is a system-level error that occurs during file I/O operations.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;

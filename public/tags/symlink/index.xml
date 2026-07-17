@@ -42,6 +42,50 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-20/"&gt;errno-20 ENOTDIR&lt;/a&gt; — not a directory.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-40/"&gt;errno-40 ELOOP&lt;/a&gt; — too many symbolic links (self).&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/errno-13/"&gt;errno-13 EACCES&lt;/a&gt; — permission denied.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C Too many levels of symbolic links: ELOOP</title><link>https://errorcode.excellentwiki.com/languages/c/symbolic-link-loop/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/symbolic-link-loop/</guid><description>&lt;h1 id="too-many-levels-of-symbolic-links-eloop"&gt;Too many levels of symbolic links: ELOOP&lt;/h1&gt;
+&lt;p&gt;ELOOP occurs when following symbolic links reaches the system limit (typically 40 hops). This usually means a circular symlink chain exists.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Circular symlinks
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// a -&amp;gt; b, b -&amp;gt; a
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;a/file.txt&amp;#34;&lt;/span&gt;, O_RDONLY); &lt;span style="color:#75715e"&gt;// ELOOP
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Self-referencing symlink
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// link -&amp;gt; link
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;readlink&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;link&amp;#34;&lt;/span&gt;, buf, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(buf)); &lt;span style="color:#75715e"&gt;// ELOOP
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Deep symlink chain
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// a -&amp;gt; b -&amp;gt; c -&amp;gt; d -&amp;gt; ... (too many)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-find-and-break-the-loop"&gt;Fix 1: Find and break the loop&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Find circular symlinks&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;find /path -type l -exec readlink &lt;span style="color:#f92672"&gt;{}&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;\;&lt;/span&gt; | sort | uniq -d
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Find circular links&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;find /path -type l -follow -print 2&amp;gt;&amp;amp;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; | grep -i loop
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-remove-circular-symlinks"&gt;Fix 2: Remove circular symlinks&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rm link_name
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-realpath-to-resolve"&gt;Fix 3: Use realpath to resolve&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;char&lt;/span&gt; resolved[PATH_MAX];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;realpath&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;link&amp;#34;&lt;/span&gt;, resolved); &lt;span style="color:#75715e"&gt;// will fail if circular
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;limits.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;char&lt;/span&gt; resolved[PATH_MAX];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;realpath&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;mylink&amp;#34;&lt;/span&gt;, resolved) &lt;span style="color:#f92672"&gt;==&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;realpath&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;printf&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Resolves to: %s&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, resolved);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/not-a-directory/"&gt;Not a directory&lt;/a&gt; — ENOTDIR.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/is-a-directory/"&gt;Is a directory&lt;/a&gt; — EISDIR.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/too-many-links/"&gt;Too many links&lt;/a&gt; — EMLINK.&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>[Solution] Linux ELOOP (errno 40) — Too Many Levels of Symbolic Links Fix</title><link>https://errorcode.excellentwiki.com/os/linux/errno-40/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/errno-40/</guid><description>&lt;h1 id="linux-eloop-errno-40--too-many-levels-of-symbolic-links"&gt;Linux ELOOP (errno 40) — Too Many Levels of Symbolic Links&lt;/h1&gt;
 &lt;p&gt;ELOOP (errno 40) means too many symbolic links were encountered while resolving a path. This error occurs when symbolic links form a cycle or the chain of links exceeds the kernel&amp;rsquo;s maximum depth (typically 40). It is distinct from ENAMETOOLONG (errno 36) because ELOOP specifically refers to link indirection, not path length.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
@@ -53,4 +97,97 @@
 &lt;/ul&gt;
 &lt;h2 id="how-to-fix-eloop"&gt;How to Fix ELOOP&lt;/h2&gt;
 &lt;h3 id="1-detect-symlink-cycles"&gt;1. Detect Symlink Cycles&lt;/h3&gt;
-&lt;p&gt;Use &lt;code&gt;readlink&lt;/code&gt; or &lt;code&gt;ls -la&lt;/code&gt; to trace the chain:&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Use &lt;code&gt;readlink&lt;/code&gt; or &lt;code&gt;ls -la&lt;/code&gt; to trace the chain:&lt;/p&gt;</description></item><item><title>[Solution] npm Workspace Error — workspace link error</title><link>https://errorcode.excellentwiki.com/tools/npm/npm-workspace-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/npm/npm-workspace-error/</guid><description>&lt;p&gt;An npm workspace error occurs when packages in a monorepo cannot properly link to each other. This causes missing dependencies or incorrect resolution.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Workspace packages not properly defined in root package.json&lt;/li&gt;
+&lt;li&gt;Circular dependencies between workspace packages&lt;/li&gt;
+&lt;li&gt;Version mismatches between workspace packages&lt;/li&gt;
+&lt;li&gt;Symlinks broken after node_modules reinstall&lt;/li&gt;
+&lt;li&gt;npm version does not support workspaces&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="check-workspace-configuration"&gt;Check Workspace Configuration&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;workspaces&amp;#34;&lt;/span&gt;: [&lt;span style="color:#e6db74"&gt;&amp;#34;packages/*&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="install-all-workspaces"&gt;Install All Workspaces&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="run-script-in-specific-workspace"&gt;Run Script in Specific Workspace&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm run build -w &amp;lt;workspace-name&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="verify-symlinks"&gt;Verify Symlinks&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ls -la node_modules/&amp;lt;workspace-package&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-broken-symlinks"&gt;Fix Broken Symlinks&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rm -rf node_modules
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: Workspace not found&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm run build -w my-package
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# npm ERR! No workspaces found&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: add workspaces config to root package.json&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Circular dependency&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# npm ERR! code ERESOLVE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: remove circular dependency between packages&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/npm/npm-run-script-error/"&gt;npm Run Script Error&lt;/a&gt; — script execution failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/npm/npm-peer/"&gt;npm Peer&lt;/a&gt; — ERESOLVE unable to resolve&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Deployer deployment error</title><link>https://errorcode.excellentwiki.com/frameworks/laravel/laravel-deployer-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/frameworks/laravel/laravel-deployer-error/</guid><description>&lt;p&gt;This error occurs when a Deployer-based Laravel deployment fails during any of its tasks (checkout, composer install, migration, symlink creation, etc.).&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;SSH key not configured for the deployment user&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;composer install&lt;/code&gt; fails on the production server&lt;/li&gt;
+&lt;li&gt;Insufficient disk space for new releases&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.env&lt;/code&gt; file missing or misconfigured on the server&lt;/li&gt;
+&lt;li&gt;Shared directory permissions incorrect&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Verify the &lt;code&gt;deploy.php&lt;/code&gt; configuration:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-php" data-lang="php"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;?&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;php&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Deployer&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;require&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;recipe/laravel.php&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;set&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;repository&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;git@github.com:user/repo.git&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;set&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;shared_files&amp;#39;&lt;/span&gt;, [&lt;span style="color:#e6db74"&gt;&amp;#39;.env&amp;#39;&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;set&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;shared_dirs&amp;#39;&lt;/span&gt;, [&lt;span style="color:#e6db74"&gt;&amp;#39;storage&amp;#39;&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;set&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;writable_dirs&amp;#39;&lt;/span&gt;, [&lt;span style="color:#e6db74"&gt;&amp;#39;storage&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;bootstrap/cache&amp;#39;&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;host&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;production&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;set&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;deploy_path&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;/var/www/app&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;set&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;user&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;deployer&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Test the deployment manually:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Deploy to production&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;dep deploy production
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Run a specific task&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;dep deploy:unlock production
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Check the deployment log:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# View release history&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ls -la /var/www/app/releases/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check the latest release&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cat /var/www/app/current/storage/logs/deployer.log
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="4"&gt;
+&lt;li&gt;Ensure the server has required PHP extensions:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# On the production server&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;php -m | grep -E &lt;span style="color:#e6db74"&gt;&amp;#39;mbstring|xml|curl|mysql|zip&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;composer install --no-dev --optimize-autoloader
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Error: The &amp;#34;shared&amp;#34; directory does not exist&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: Create the shared directory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ssh deployer@server &lt;span style="color:#e6db74"&gt;&amp;#34;mkdir -p /var/www/app/shared/storage&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=""&gt;Vapor error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=""&gt;Sail error&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

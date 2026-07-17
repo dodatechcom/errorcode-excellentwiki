@@ -46,4 +46,143 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="exit-status"&gt;Exit Status&lt;/a&gt; — understanding exit codes when signals terminate scripts.&lt;/li&gt;
 &lt;li&gt;&lt;a href="pipe-failure"&gt;Pipe Failure&lt;/a&gt; — signal-related issues in pipelines.&lt;/li&gt;
-&lt;/ul&gt;</description></item></channel></rss>
+&lt;/ul&gt;</description></item><item><title>[Solution] Bash Trap Error</title><link>https://errorcode.excellentwiki.com/languages/bash/bash-trap-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/bash-trap-error/</guid><description>&lt;h1 id="bash-trap-error-fix"&gt;Bash Trap Error Fix&lt;/h1&gt;
+&lt;p&gt;Trap errors occur when signal handlers are set incorrectly, the trap function produces errors, or cleanup code doesn&amp;rsquo;t execute on script exit.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;trap&lt;/code&gt; command registers signal handlers that execute code when signals are received (EXIT, INT, TERM, ERR, etc.). Errors happen when the trap command itself has syntax issues or the handler function fails.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Trap command syntax error (missing signal name)&lt;/li&gt;
+&lt;li&gt;Handler function not defined before trap&lt;/li&gt;
+&lt;li&gt;Recursive trap (handler triggering itself)&lt;/li&gt;
+&lt;li&gt;Trap in subshell doesn&amp;rsquo;t affect parent&lt;/li&gt;
+&lt;li&gt;Missing quotes around handler code&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-define-handler-before-trap"&gt;1. Define handler before trap&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: function not yet defined&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap cleanup EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt; rm -f /tmp/lockfile; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RIGHT: define function first&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt; rm -f /tmp/lockfile; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap cleanup EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-use-proper-trap-syntax"&gt;2. Use proper trap syntax&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: missing signal&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;cleaning&amp;#34;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RIGHT: with signal&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;cleaning&amp;#34;&amp;#39;&lt;/span&gt; EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-prevent-recursive-traps"&gt;3. Prevent recursive traps&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: handler might trigger ERR recursively&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;Error on line $LINENO&amp;#34;&amp;#39;&lt;/span&gt; ERR
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RIGHT: disable trap inside handler&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap_handler&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; trap - ERR &lt;span style="color:#75715e"&gt;# Temporarily disable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;Error occurred&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# cleanup code&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap trap_handler ERR
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-handle-exit-trap-in-subshells"&gt;4. Handle EXIT trap in subshells&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Subshell trap doesn&amp;#39;t affect parent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt; trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;done&amp;#34;&amp;#39;&lt;/span&gt; EXIT; sleep &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Parent doesn&amp;#39;t see this trap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="signal-trap"&gt;Signal Trap&lt;/a&gt; — signal handling behavior&lt;/li&gt;
+&lt;li&gt;&lt;a href="return-code"&gt;Return Code&lt;/a&gt; — exit status handling&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Bash Trap: Invalid Signal Specification Error Fix</title><link>https://errorcode.excellentwiki.com/languages/bash/bash-trap-signal-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/bash-trap-signal-error/</guid><description>&lt;h1 id="bash-trap-invalid-signal-specification-error-fix"&gt;Bash Trap: Invalid Signal Specification Error Fix&lt;/h1&gt;
+&lt;p&gt;A bash trap signal error occurs when you specify an invalid signal name or number in the &lt;code&gt;trap&lt;/code&gt; command.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;trap&lt;/code&gt; command registers handlers for signals. If you provide a signal name that doesn&amp;rsquo;t exist (e.g., &lt;code&gt;SIGTYPO&lt;/code&gt;), bash reports &amp;ldquo;invalid signal specification.&amp;rdquo;&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Typo in signal name (e.g., &lt;code&gt;SIGINTT&lt;/code&gt; instead of &lt;code&gt;SIGINT&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Using wrong signal number&lt;/li&gt;
+&lt;li&gt;Using platform-specific signals not available on all systems&lt;/li&gt;
+&lt;li&gt;Missing signal name argument&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-use-correct-signal-names"&gt;1. Use correct signal names&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Typo in signal name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;caught&amp;#34;&amp;#39;&lt;/span&gt; SIGINTT
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Use valid signal name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;caught&amp;#34;&amp;#39;&lt;/span&gt; SIGINT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-list-available-signals"&gt;2. List available signals&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check available signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kill -l
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use numeric signal codes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;caught&amp;#34;&amp;#39;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt; &lt;span style="color:#75715e"&gt;# SIGINT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-handle-common-signals-properly"&gt;3. Handle common signals properly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Handle common signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; rm -f /tmp/lockfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;Cleaned up&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap cleanup EXIT INT TERM
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-use-err-for-error-handling"&gt;4. Use ERR for error handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Trap errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;Error on line $LINENO&amp;#34;&amp;#39;&lt;/span&gt; ERR
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;set -e
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="signal-trap"&gt;Signal Trap&lt;/a&gt; — signal handling behavior&lt;/li&gt;
+&lt;li&gt;&lt;a href="return-code"&gt;Return Code&lt;/a&gt; — exit status handling&lt;/li&gt;
+&lt;li&gt;&lt;a href="command-not-found"&gt;Command Not Found&lt;/a&gt; — missing commands&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] BSOD UNEXPECTED_KERNEL_MODE_TRAP — 0x7F CI.dll Windows 11/10</title><link>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode4/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode4/</guid><description>&lt;h1 id="bsod-unexpected_kernel_mode_trap--0x7f-cidll"&gt;BSOD UNEXPECTED_KERNEL_MODE_TRAP — 0x7F CI.dll&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;UNEXPECTED_KERNEL_MODE_TRAP&lt;/code&gt; stop code &lt;code&gt;0x7F&lt;/code&gt; with &lt;code&gt;CI.dll&lt;/code&gt; indicates the Code Integrity module triggered an unexpected kernel-mode trap. This is caused by driver signature verification failures or corrupted code integrity components.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Unsigned driver triggering CI trap&lt;/strong&gt; — A driver without valid signature causes CI.dll to generate a trap.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Corrupted CI.dll&lt;/strong&gt; — The Code Integrity module is damaged by disk errors or failed updates.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Driver signature database corruption&lt;/strong&gt; — CatRoot database is damaged.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Malware tampering with driver signatures&lt;/strong&gt; — Malicious software modifies signed drivers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="repair-system-files"&gt;Repair System Files&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sfc /scannow
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DISM /Online /Cleanup-Image /RestoreHealth
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sfc /scannow
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-for-unsigned-drivers"&gt;Check for Unsigned Drivers&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-WindowsDriver -Online | Where-Object { $_.SignatureStatus &lt;span style="color:#f92672"&gt;-ne&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Signed&amp;#34;&lt;/span&gt; } | Select-Object OriginalFileName, ProviderName, Date, Version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="clear-catroot-cache"&gt;Clear CatRoot Cache&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;net stop cryptsvc
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;rd&lt;/span&gt; /s /q C:\Windows\System32\catroot2
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;net start cryptsvc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="boot-into-safe-mode"&gt;Boot into Safe Mode&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;bcdedit /set {current} safeboot minimal
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;shutdown /r /t 0
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Uninstall recently installed drivers.&lt;/p&gt;</description></item><item><title>[Solution] BSOD UNEXPECTED_KERNEL_MODE_TRAP — 0x7F WHEA Windows 11/10</title><link>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode2/</guid><description>&lt;h1 id="bsod-unexpected_kernel_mode_trap--0x7f-whea"&gt;BSOD UNEXPECTED_KERNEL_MODE_TRAP — 0x7F WHEA&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;UNEXPECTED_KERNEL_MODE_TRAP&lt;/code&gt; stop code &lt;code&gt;0x7F&lt;/code&gt; with WHEA (Windows Hardware Error Architecture) involvement indicates the CPU encountered a hardware error that triggered an unexpected trap. This combines CPU exception handling with hardware error reporting, typically pointing to CPU or motherboard issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CPU hardware error&lt;/strong&gt; — Physical CPU defects cause the WHEA subsystem to report uncorrectable errors.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Motherboard VRM failure&lt;/strong&gt; — Faulty voltage regulation causes unstable CPU operation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PCIe device errors&lt;/strong&gt; — A PCIe device generates machine check exceptions handled by WHEA.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overheating CPU&lt;/strong&gt; — Extreme temperatures cause hardware errors reported through WHEA.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="check-whea-error-source"&gt;Check WHEA Error Source&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-WinEvent -LogName System | Where-Object { $_.Id &lt;span style="color:#f92672"&gt;-eq&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt; &lt;span style="color:#f92672"&gt;-or&lt;/span&gt; $_.ProviderName &lt;span style="color:#f92672"&gt;-like&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;*WHEA*&amp;#34;&lt;/span&gt; } | Select-Object -First &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; TimeCreated, Message | Format-Table -Wrap
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="reset-bios-to-defaults"&gt;Reset BIOS to Defaults&lt;/h3&gt;
+&lt;p&gt;Load optimized defaults in BIOS/UEFI and disable all overclocking.&lt;/p&gt;</description></item><item><title>[Solution] BSOD UNEXPECTED_KERNEL_MODE_TRAP — 0x7F Windows 11/10</title><link>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode/</guid><description>&lt;h1 id="bsod-unexpected_kernel_mode_trap--0x7f"&gt;BSOD UNEXPECTED_KERNEL_MODE_TRAP — 0x7F&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;UNEXPECTED_KERNEL_MODE_TRAP&lt;/code&gt; stop code &lt;code&gt;0x7F&lt;/code&gt; means the CPU generated an unexpected trap (exception) that the kernel was not prepared to handle. This is most commonly caused by hardware failures, particularly RAM or CPU issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Failing RAM&lt;/strong&gt; — Memory errors cause the CPU to generate unexpected exceptions.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CPU overheating&lt;/strong&gt; — Thermal throttling or shutdown causes the CPU to generate traps.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Faulty CPU or motherboard&lt;/strong&gt; — Hardware defects cause unpredictable CPU behavior.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overclocking instability&lt;/strong&gt; — Aggressive CPU or RAM clocks cause intermittent exceptions.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Driver causing hardware-level error&lt;/strong&gt; — A driver triggers an instruction that causes a CPU trap.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="test-ram-thoroughly"&gt;Test RAM Thoroughly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mdsched.exe
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Select &lt;strong&gt;Restart now and check for problems&lt;/strong&gt;. Run MemTest86 for at least 8 passes.&lt;/p&gt;</description></item><item><title>[Solution] BSOD UNEXPECTED_KERNEL_MODE_TRAP WHEA Error Fix</title><link>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode-whea/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/bsod-unexpected-kernel-mode-whea/</guid><description>&lt;h1 id="solution-bsod-unexpected_kernel_mode_trap-whea-error-fix"&gt;[Solution] BSOD UNEXPECTED_KERNEL_MODE_TRAP WHEA Error Fix&lt;/h1&gt;
+&lt;p&gt;UNEXPECTED_KERNEL_MODE_TRAP caused by WHEA errors is a critical Blue Screen indicating that the CPU encountered a hardware trap that the kernel could not handle. This error is reported through the Windows Hardware Error Architecture (WHEA).&lt;/p&gt;
+&lt;p&gt;This BSOD typically indicates a serious hardware problem with the CPU, motherboard, or memory. It requires hardware diagnostics to identify the root cause.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;The full blue screen message reads:&lt;/p&gt;</description></item></channel></rss>

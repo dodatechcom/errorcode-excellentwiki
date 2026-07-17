@@ -1,91 +1,70 @@
 ---
-title: "[Solution] Docker Build cache error / corruption"
-description: "Fix Docker build cache errors and corruption. Resolve cache mount failures, stale layers, and rebuild issues."
+title: "[Solution] Docker Build Cache Error — build cache error"
+description: "Fix Docker build cache errors. Resolve cache-related issues during Docker image builds."
 tools: ["docker"]
-error-types: ["build-error"]
+error-types: ["tool-error"]
 severities: ["error"]
-tags: ["build-cache", "cache", "layer", "corruption", "rebuild"]
+tags: ["build", "cache", "layer", "docker", "buildkit"]
 weight: 5
 ---
 
-# Docker Build cache error / corruption
-
-Build cache errors occur when Docker's layer cache becomes corrupted or stale. This causes builds to fail with cache mount errors or produce incorrect layer reuse.
+A Docker build cache error occurs when the build cache is corrupted or incompatible. This can cause builds to fail or produce unexpected results.
 
 ## Common Causes
 
-- Interrupted build left cache in inconsistent state
-- Docker engine upgrade invalidated old cache format
-- Disk corruption in Docker's storage directory
-- Concurrent builds competing for the same cache layers
+- Corrupted build cache from an interrupted build
+- Cache mount points not available during build
+- BuildKit cache backend issues
+- Insufficient disk space for cache storage
+- Cross-platform build cache incompatibility
 
 ## How to Fix
 
-### Clear Build Cache
+### Prune Build Cache
 
 ```bash
-# Remove all build cache
 docker builder prune
-
-# Remove all unused data (cache, images, networks)
-docker system prune -a --volumes
-
-# Remove cache older than 24 hours
-docker builder prune --filter "until=24h"
 ```
 
-### Rebuild Without Cache
+### Clear All Build Cache
 
 ```bash
-docker build --no-cache -t my-app .
+docker builder prune -a
 ```
 
-### Prune BuildKit Cache
+### Disable Build Cache
 
 ```bash
-# If using BuildKit
-docker buildx prune -a
-docker buildx prune --all --type=regular
+docker build --no-cache -t my-image .
 ```
 
-### Check Docker Storage Driver
+### Check BuildKit Status
 
 ```bash
-docker info | grep "Storage Driver"
-# Should show overlay2 or similar stable driver
+DOCKER_BUILDKIT=1 docker build -t my-image .
 ```
 
-### Reset Docker Storage
+### Set Cache Export/Import
 
 ```bash
-# Nuclear option - removes everything
-sudo systemctl stop docker
-sudo rm -rf /var/lib/docker
-sudo systemctl start docker
+docker build --cache-from type=registry,ref=my-image:latest -t my-image .
 ```
 
 ## Examples
 
 ```bash
-# Example 1: Cache mount failure
-docker build .
-# ERROR: failed to solve: failed to mount cache: ...
-# Fix: docker builder prune && docker build .
+# Example 1: Clear and rebuild
+docker builder prune -a
+docker build -t my-image .
 
-# Example 2: Stale layers after upgrade
-docker build .
-# error: cache import not found
-# Fix: docker builder prune -a && docker build --no-cache .
+# Example 2: Build without cache
+docker build --no-cache -t my-image .
 
-# Example 3: Concurrent build conflict
-docker build . &
-docker build . &
-# Error: error creating build cache
-# Fix: run builds sequentially or use buildx builders
+# Example 3: Use BuildKit for better caching
+DOCKER_BUILDKIT=1 docker build --progress=plain -t my-image .
 ```
 
 ## Related Errors
 
-- [Docker BuildKit Error]({{< relref "/tools/docker/docker-buildkit" >}}) — BuildKit failed to solve
-- [No Space Left]({{< relref "/tools/docker/no-space" >}}) — disk space exhausted
-- [Build Failed]({{< relref "/tools/docker/build-failed2" >}}) — general build failures
+- [Docker Image Not Found]({{< relref "/tools/docker/docker-image-not-found" >}}) — image not found in registry
+- [Docker Pull Timeout]({{< relref "/tools/docker/docker-pull-timeout" >}}) — Docker pull timeout

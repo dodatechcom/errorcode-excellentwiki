@@ -8,4 +8,38 @@
 &lt;li&gt;The filesystem does not support the requested operation (e.g., &lt;code&gt;fallocate()&lt;/code&gt; on NFS).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
-&lt;p&gt;Check feature support before using it. Use &lt;code&gt;getsockopt()&lt;/code&gt; to verify options or probe with &lt;code&gt;ioctl()&lt;/code&gt;.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Check feature support before using it. Use &lt;code&gt;getsockopt()&lt;/code&gt; to verify options or probe with &lt;code&gt;ioctl()&lt;/code&gt;.&lt;/p&gt;</description></item><item><title>[Solution] C Socket type not supported: EOPNOTSUPP</title><link>https://errorcode.excellentwiki.com/languages/c/socket-type-not-supported/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/socket-type-not-supported/</guid><description>&lt;h1 id="socket-type-not-supported-eopnotsupp"&gt;Socket type not supported: EOPNOTSUPP&lt;/h1&gt;
+&lt;p&gt;EOPNOTSUPP occurs when you try to use a socket type or option that is not supported by the underlying system or protocol.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Unsupported socket type
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; sock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;socket&lt;/span&gt;(AF_INET, SOCK_RAW, IPPROTO_RAW); &lt;span style="color:#75715e"&gt;// may fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Unsupported socket option
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;setsockopt&lt;/span&gt;(sock, SOL_SOCKET, SO_KEEPALIVE, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;opt, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(opt)); &lt;span style="color:#75715e"&gt;// EOPNOTSUPP
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Wrong address family
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; sock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;socket&lt;/span&gt;(AF_UNIX, SOCK_STREAM, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Trying to use with AF_INET operations
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-check-socket-type-support"&gt;Fix 1: Check socket type support&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; sock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;socket&lt;/span&gt;(AF_INET, SOCK_STREAM, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// standard TCP
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (sock &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;socket&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-supported-options"&gt;Fix 2: Use supported options&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check if option is supported before setting
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; opt &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;setsockopt&lt;/span&gt;(sock, SOL_SOCKET, SO_REUSEADDR, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;opt, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(opt));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (result &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; errno &lt;span style="color:#f92672"&gt;==&lt;/span&gt; EOPNOTSUPP) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Option not supported, continue without it
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-check-platform-support"&gt;Fix 3: Check platform support&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check available socket options&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;man socket
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;man setsockopt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/protocol-error/"&gt;Protocol error&lt;/a&gt; — EPROTO.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/address-already-in-use/"&gt;Address already in use&lt;/a&gt; — EADDRINUSE.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/not-connected/"&gt;Not connected&lt;/a&gt; — ENOTCONN.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

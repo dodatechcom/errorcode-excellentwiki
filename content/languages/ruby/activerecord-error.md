@@ -1,109 +1,78 @@
 ---
-title: "[Solution] Ruby ActiveRecord::RecordNotFound / StatementInvalid Fix"
-description: "Fix ActiveRecord RecordNotFound and StatementInvalid errors. Learn how to handle missing records and database query issues in Rails."
+title: "[Solution] Ruby ActiveRecord::RecordNotFound Fix"
+description: "Fix ActiveRecord::RecordNotFound in Rails. Learn why record lookups fail and how to handle missing records gracefully."
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["activerecord", "recordnotfound", "statementinvalid", "rails", "ruby"]
+tags: ["activerecord", "record-not-found", "rails", "database", "ruby"]
 weight: 5
 ---
 
-# ActiveRecord::RecordNotFound / StatementInvalid
+## What This Error Means
 
-ActiveRecord errors occur when database operations fail, either because a record doesn't exist or because the SQL query is invalid.
-
-## Description
-
-ActiveRecord is the ORM layer in Ruby on Rails. `RecordNotFound` is raised when `find` can't locate a record, and `StatementInvalid` occurs when SQL queries are malformed or fail.
-
-Common causes:
-
-- **Record doesn't exist** — using `find` with a non-existent ID
-- **Invalid SQL** — malformed query syntax
-- **Missing table/column** — schema doesn't match the query
-- **Database connection issues** — connection lost or timeout
+An `ActiveRecord::RecordNotFound` is raised when ActiveRecord cannot find a record by its ID. This commonly happens with `find`, `find!`, and `find_by!` methods when no matching record exists.
 
 ## Common Causes
 
-```ruby
-# Cause 1: Record not found
-User.find(99999)  # ActiveRecord::RecordNotFound: Couldn't find User with 'id'=99999
-
-# Cause 2: Invalid SQL
-User.where("invalid_column = ?", value)  # ActiveRecord::StatementInvalid: PG::UndefinedColumn
-
-# Cause 3: Missing table
-User.connection.execute("SELECT * FROM nonexistent_table")  # ActiveRecord::StatementInvalid
-
-# Cause 4: Type mismatch
-User.where(id: "not_a_number")  # ActiveRecord::StatementInvalid
-```
+- Record was deleted or never existed
+- Wrong ID passed to `find`
+- Using `find!` instead of `find_by`
+- Race condition between check and access
 
 ## How to Fix
 
-### Fix 1: Use find_by instead of find
-
 ```ruby
-# Wrong
-User.find(99999)  # RecordNotFound
+# WRONG: Using find! without rescue
+user = User.find!(params[:id])  # ActiveRecord::RecordNotFound if missing
 
-# Correct
-user = User.find_by(id: 99999)
-user || handle_not_found
+# CORRECT: Use find_by for optional lookup
+user = User.find_by(id: params[:id])
+render json: { error: "Not found" }, status: :not_found unless user
 ```
 
-### Fix 2: Use find_or_create
-
 ```ruby
-# Wrong
-user = User.find(params[:id])  # RecordNotFound
+# WRONG: Not handling missing record in controller
+def show
+  @user = User.find(params[:id])  # 404 if missing
+end
 
-# Correct
-user = User.find_or_create_by(id: params[:id]) do |u|
-  u.name = "Default"
+# CORRECT: Handle gracefully
+def show
+  @user = User.find_by(id: params[:id])
+  if @user
+    render json: @user
+  else
+    render json: { error: "User not found" }, status: :not_found
+  end
 end
 ```
 
-### Fix 3: Validate SQL queries
-
 ```ruby
-# Wrong
-User.where("invalid_column = ?", value)  # StatementInvalid
+# WRONG: Using find with invalid ID format
+User.find("abc")  # ActiveRecord::RecordNotFound
 
-# Correct
-User.where(column_name: value) if User.column_names.include?("column_name")
-```
-
-### Fix 4: Handle database errors
-
-```ruby
-# Wrong
-User.create!(bad_data)  # StatementInvalid
-
-# Correct
-begin
-  User.create!(bad_data)
-rescue ActiveRecord::StatementInvalid => e
-  Rails.logger.error "Database error: #{e.message}"
-end
+# CORRECT: Validate ID format
+id = params[:id].to_i
+user = User.find_by(id: id)
 ```
 
 ## Examples
 
 ```ruby
-# Example 1: Safe record lookup
-def find_user(id)
-  User.find_by(id: id) or raise ActiveRecord::RecordNotFound
-end
+# Example 1: find vs find_by
+User.find(999)         # ActiveRecord::RecordNotFound
+User.find_by(id: 999)  # nil
 
-# Example 2: Batch operations
-User.where(id: [1, 2, 3]).find_each do |user|
-  process(user)
-end
+# Example 2: find! raises, find does not
+User.find!(999)        # ActiveRecord::RecordNotFound
+User.find(999)         # ActiveRecord::RecordNotFound (find also raises)
+
+# Example 3: find_by with conditions
+User.find_by(email: "nonexistent@example.com")  # nil
 ```
 
 ## Related Errors
 
-- [NoMethodError]({{< relref "/languages/ruby/no-method-error" >}}) — undefined method for object
-- [TypeError]({{< relref "/languages/ruby/typeerror-ruby" >}}) — wrong object type for an operation
-- [IOError]({{< relref "/languages/ruby/io-error" >}}) — input/output operation failed
+- [ActiveRecord::RecordInvalid](activerecord-validation) — validation failed
+- [ActiveRecord::ConnectionNotEstablished](activerecord-connection) — no database connection
+- [ActiveRecord::MigrationError](activerecord-migration) — migration issues

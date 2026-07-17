@@ -216,4 +216,63 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/swift/network-connection/"&gt;URLError:notConnectedToInternet&lt;/a&gt; — no internet connection.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/swift/network-ssl/"&gt;URLError:secureConnectionFailed&lt;/a&gt; — SSL/TLS failure.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/swift/url-session-error/"&gt;URLError&lt;/a&gt; — general URLSession error.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift URLError Cannot Find Host Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/urlerror-cannot-find-host/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/urlerror-cannot-find-host/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;URLError.cannotFindHost&lt;/code&gt; error occurs when the URL loading system cannot resolve the hostname in a URL. This is typically a DNS resolution failure, meaning the domain name doesn&amp;rsquo;t exist or DNS servers are unreachable.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Domain name doesn&amp;rsquo;t exist&lt;/li&gt;
+&lt;li&gt;DNS server unreachable&lt;/li&gt;
+&lt;li&gt;Typo in hostname&lt;/li&gt;
+&lt;li&gt;DNS cache issues&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling DNS failure&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; (data, &lt;span style="color:#66d9ef"&gt;_&lt;/span&gt;) = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; await URLSession.shared.data(from: url) &lt;span style="color:#75715e"&gt;// Throws when DNS fails&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle DNS failure gracefully&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; (data, &lt;span style="color:#66d9ef"&gt;_&lt;/span&gt;) = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; await URLSession.shared.data(from: url)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; error &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; URLError &lt;span style="color:#66d9ef"&gt;where&lt;/span&gt; error.code == .cannotFindHost {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;DNS resolution failed: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error.localizedDescription&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Show user-friendly error message&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Hardcoded hostname&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; url = URL(string: &lt;span style="color:#e6db74"&gt;&amp;#34;https://api.example.com&amp;#34;&lt;/span&gt;)&lt;span style="color:#f92672"&gt;!&lt;/span&gt; &lt;span style="color:#75715e"&gt;// May be wrong&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Validate hostname&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;validateHost&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; host: String) -&amp;gt; Bool {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#f92672"&gt;!&lt;/span&gt;host.isEmpty &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; host.contains(&lt;span style="color:#e6db74"&gt;&amp;#34;.&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; host = &lt;span style="color:#e6db74"&gt;&amp;#34;api.example.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; validateHost(host), &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; url = URL(string: &lt;span style="color:#e6db74"&gt;&amp;#34;https://&lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;host&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Use URL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Check DNS resolution&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;checkDNS&lt;/span&gt;(host: String) async -&amp;gt; Bool {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;guard&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; url = URL(string: &lt;span style="color:#e6db74"&gt;&amp;#34;https://&lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;host&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; { &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt;, response) = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; await URLSession.shared.data(from: url)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; (response &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt;? HTTPURLResponse)?.statusCode == &lt;span style="color:#ae81ff"&gt;200&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Custom error handling&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;enum&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;NetworkError&lt;/span&gt;: Error {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; dnsFailure(String)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; noConnection
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; serverError(Int)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Fallback to alternative host&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; primaryHost = &lt;span style="color:#e6db74"&gt;&amp;#34;api.example.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; fallbackHost = &lt;span style="color:#e6db74"&gt;&amp;#34;api-backup.example.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="urlerror-not-connected"&gt;URLError not connected&lt;/a&gt; — no internet&lt;/li&gt;
+&lt;li&gt;&lt;a href="urlerror-timed-out"&gt;URLError timed out&lt;/a&gt; — request timeout&lt;/li&gt;
+&lt;li&gt;&lt;a href="urlerror-secure-connection"&gt;URLError secure connection&lt;/a&gt; — SSL error&lt;/li&gt;
 &lt;/ul&gt;</description></item></channel></rss>

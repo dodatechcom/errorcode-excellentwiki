@@ -1,127 +1,83 @@
 ---
-title: "[Solution] C++ std::bad_function_call — Empty Callable Invoked Fix"
-description: "Fix C++ std::bad_function_call when invoking an empty std::function. Handle null callables and validate function wrappers before invocation."
+title: "[Solution] C++ std::bad_function_call - empty function"
+description: "Fix C++ std::bad_function_call when invoking empty std::function. Check validity before calling."
 languages: ["cpp"]
 severities: ["error"]
-error_types: ["runtime"]
-tags: ["bad-function-call", "std-function", "callable", "exception"]
-weight: 50
+error-types: ["runtime-error"]
+tags: ["bad-function-call", "function", "empty", "callable", "invoke"]
+weight: 5
 ---
 
-# [Solution] C++ std::bad_function_call — Empty Callable Invoked Fix
+# std::bad_function_call - empty function
 
-A `std::bad_function_call` exception is thrown when you invoke an empty `std::function` wrapper — one that does not hold any callable target. This typically happens when a `std::function` is default-constructed, reset, or assigned `nullptr`, and then called without checking whether it holds a valid target.
+`std::bad_function_call` is thrown when you invoke an empty `std::function` (one that holds no callable target).
 
-## Why std::bad_function_call Occurs
-
-Common causes include default-constructing a `std::function` and calling it, resetting a `std::function` with `.reset()` then invoking it, moving a `std::function` which leaves the source empty, or assigning `nullptr` to a `std::function`.
-
-## Wrong: Calling an Empty std::function
+## Common Causes
 
 ```cpp
-// WRONG — crashes with std::bad_function_call
-#include <functional>
-#include <iostream>
+// Cause 1: Empty function
+std::function<void()> f;
+f(); // throws
 
-int main() {
-    std::function<int(int, int)> op;
-    // op is empty — has no callable target
-    int result = op(1, 2);  // throws std::bad_function_call
-    std::cout << result << std::endl;
-    return 0;
+// Cause 2: After move
+std::function<int()> g = []{ return 42; };
+std::function<int()> h = std::move(g);
+int val = g(); // throws — g is now empty
+
+// Cause 3: Null function pointer
+std::function<int()> f = nullptr;
+f(); // throws
+```
+
+## How to Fix
+
+### Fix 1: Check if callable
+
+```cpp
+std::function<void()> f = get_callback();
+if (f) {
+    f(); // safe
 }
 ```
 
-## Correct: Check if std::function Has a Target Before Calling
+### Fix 2: Provide default function
 
 ```cpp
-// CORRECT — verify the function holds a target
+std::function<void()> f = []{ /* default */ };
+```
+
+### Fix 3: Use target to check
+
+```cpp
+if (f.target<void(*)()>() != nullptr) {
+    f();
+}
+```
+
+## Examples
+
+```cpp
 #include <functional>
 #include <iostream>
 
-int main() {
-    std::function<int(int, int)> op;
-
-    if (op) {
-        int result = op(1, 2);
-        std::cout << result << std::endl;
+void safe_call(std::function<void()> f) {
+    if (f) {
+        f();
     } else {
-        std::cerr << "Function is not set" << std::endl;
+        std::cerr << "Function is empty" << std::endl;
     }
-    return 0;
 }
-```
-
-## Handling Moved std::function Objects
-
-```cpp
-// CORRECT — moved-from std::function is empty
-#include <functional>
-#include <iostream>
 
 int main() {
-    std::function<int(int)> square = [](int x) { return x * x; };
-
-    std::function<int(int)> moved = std::move(square);
-
-    // square is now empty
-    if (!square) {
-        std::cerr << "square is empty after move" << std::endl;
-    }
-
-    // moved still works
-    if (moved) {
-        std::cout << "Result: " << moved(5) << std::endl;
-    }
+    std::function<void()> empty;
+    safe_call(empty); // prints "Function is empty"
+    safe_call([]{ std::cout << "Called!" << std::endl; });
     return 0;
 }
 ```
-
-## Safe Invocation Pattern with Fallback
-
-```cpp
-// CORRECT — provide a default callable or fallback
-#include <functional>
-#include <iostream>
-#include <string>
-
-class Pipeline {
-    std::function<double(double)> transform_;
-public:
-    void set_transform(std::function<double(double)> fn) {
-        transform_ = std::move(fn);
-    }
-
-    double apply(double value) const {
-        if (transform_) {
-            return transform_(value);
-        }
-        // Return unmodified value if no transform is set
-        return value;
-    }
-};
-
-int main() {
-    Pipeline pipe;
-    std::cout << "No transform: " << pipe.apply(42.0) << std::endl;
-
-    pipe.set_transform([](double x) { return x * 2.0; });
-    std::cout << "With transform: " << pipe.apply(42.0) << std::endl;
-    return 0;
-}
-```
-
-## Summary
-
-| Fix | When to Use |
-|---|---|
-| Check `if (func)` before calling | Always when the function may be unset |
-| Provide default callable | When a sensible fallback exists |
-| Use `std::function::target<T>()` | When you need type information about the stored callable |
-| Use `noexcept` callables | When you want to avoid exception propagation |
 
 ## Related Errors
 
-- [std::bad_any_cast]({{< relref "/languages/cpp/badany-cast" >}}) — casting with `std::any::cast` fails.
-- [std::bad_weak_ptr]({{< relref "/languages/cpp/badweak-ptr" >}}) — locking a `std::weak_ptr` to an expired object.
-- [std::bad_alloc]({{< relref "/languages/cpp/std-bad-alloc" >}}) — memory allocation failure.
+- [std::bad_weak_ptr]({{< relref "/languages/cpp/bad-weak-ptr" >}}) — expired weak_ptr.
+- [std::bad_optional_access]({{< relref "/languages/cpp/bad-optional-access" >}}) — empty optional.
+- [std::bad_any_cast]({{< relref "/languages/cpp/any-cast-error" >}}) — any_cast failure.

@@ -1,75 +1,34 @@
 ---
-title: "[Solution] BSOD NTFS_FILE_SYSTEM Windows 11/10 — Fixed"
-description: "Fix Blue Screen NTFS_FILE_SYSTEM error on Windows 10 and 11. Run CHKDSK, update storage drivers, and repair the NTFS volume to resolve this file system stop code."
+title: "[Solution] BSOD NTFS_FILE_SYSTEM — 0x24 Ntfs.sys Windows 11/10"
+description: "Fix Blue Screen NTFS_FILE_SYSTEM stop code 0x24 caused by Ntfs.sys file system driver on Windows 10 and 11."
 platforms: ["windows"]
+error-types: ["bsod"]
 severities: ["critical"]
-error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "ntfs", "file-system", "storage", "stop-code"]
+tags: ["bsod", "blue-screen", "ntfs-file-system", "ntfs", "filesystem", "stop-0x24"]
 weight: 5
 ---
 
-# [Solution] BSOD NTFS_FILE_SYSTEM Windows 11/10 — Fixed
+# BSOD NTFS_FILE_SYSTEM — 0x24 Ntfs.sys
 
-NTFS_FILE_SYSTEM is a critical Blue Screen of Death error with stop code `0x00000024`. It occurs when the NTFS file system driver encounters a fatal error while performing file system operations. This means the NTFS driver (`ntfs.sys`) has detected an internal inconsistency, corruption, or I/O failure that it cannot recover from.
-
-This BSOD affects both Windows 10 and 11 and is almost always related to disk corruption, storage driver issues, or failing hard drives.
+The `NTFS_FILE_SYSTEM` stop code `0x24` indicates a problem occurred in the NTFS file system driver. The driver encountered a condition it could not handle, typically caused by file system corruption, disk errors, or bad sectors on the drive.
 
 ## Common Causes
 
-- **Disk corruption** — Bad sectors on the system drive prevent NTFS from reading critical file system structures.
-- **Failing hard drive** — Physical degradation of the disk causes intermittent read/write failures.
-- **Outdated storage drivers** — AHCI, NVMe, or SATA controller drivers with bugs in their I/O handling.
-- **Sudden power loss** — Unexpected shutdowns during write operations leave NTFS metadata in an inconsistent state.
+- **NTFS file system corruption** — Damaged MFT, directory entries, or file metadata.
+- **Disk bad sectors** — Bad sectors on critical NTFS structures cause the driver to fail.
+- **Failing storage device** — Hardware defects prevent reliable file system operations.
+- **Abrupt power loss** — Sudden shutdowns corrupt NTFS journal and metadata.
+- **Antivirus minifilter interference** — Third-party antivirus conflicts with NTFS operations.
 
 ## How to Fix
 
-### Run CHKDSK
-
-This is the primary fix for NTFS file system errors:
+### Run Check Disk
 
 ```cmd
-chkdsk C: /f /r /x
+chkdsk C: /f /r
 ```
 
-Press `Y` to schedule for next restart, then reboot. The `/r` flag locates bad sectors and recovers readable data. The `/x` forces the volume to dismount first.
-
-**If you cannot boot normally**, boot from a Windows installation USB or recovery drive:
-
-1. Select **Repair your computer**.
-2. Go to **Troubleshoot > Advanced options > Command Prompt**.
-3. Run:
-
-```cmd
-chkdsk C: /f /r /x
-```
-
-Replace `C:` with the correct drive letter if Windows is on a different partition.
-
-### Update Storage Drivers
-
-```powershell
-Get-WmiObject Win32_PnPSignedDriver | Where-Object { $_.DeviceClass -eq "SCSIAdapter" -or $_.DeviceClass -eq "HDC" } | Select-Object DeviceName, DriverVersion, DriverDate | Format-Table -AutoSize
-```
-
-Download the latest storage drivers from the motherboard or system manufacturer's website:
-- **Intel**: Intel Rapid Storage Technology (IRST)
-- **AMD**: AMD StoreMI or SATA/NVMe driver
-- **NVMe**: Check the NVMe drive manufacturer's website
-
-### Check Disk Health
-
-```powershell
-Get-PhysicalDisk | Select-Object FriendlyName, HealthStatus, OperationalStatus
-Get-StorageReliabilityCounter -PhysicalDisk (Get-PhysicalDisk) | Select-Object Temperature, Wear, ReadErrorsTotal, WriteErrorsTotal
-```
-
-A `HealthStatus` of `Unhealthy` or any `ReadErrorsTotal`/`WriteErrorsTotal` greater than 0 indicates a failing drive. Back up data immediately and replace the drive.
-
-**Check SMART status:**
-
-```powershell
-Get-WmiObject -Namespace root\wmi -Class MSStorageDriver_FailurePredictStatus | Select-Object PredictFailure, Reason
-```
+Allow chkdsk to complete fully at next restart. This is the most important fix for NTFS_FILE_SYSTEM errors.
 
 ### Repair System Files
 
@@ -79,36 +38,46 @@ DISM /Online /Cleanup-Image /RestoreHealth
 sfc /scannow
 ```
 
-### Repair the NTFS Volume with DISM
+### Check Disk Health
 
-If NTFS corruption persists after CHKDSK:
-
-```cmd
-DISM /Online /Cleanup-Image /RestoreHealth
+```powershell
+Get-PhysicalDisk | Get-StorageReliabilityCounter | Select-Object DeviceId, Temperature, Health, Wear
 ```
 
-### Check for Write Caching Issues
+### Disable Antivirus Temporarily
 
-Write caching can cause NTFS corruption during sudden power loss:
+```powershell
+Get-WmiObject Win32_Product | Where-Object { $_.Name -like "*antivirus*" } | Select-Object Name, Version
+```
 
-1. Open **Device Manager**.
-2. Expand **Disk drives**.
-3. Right-click your system drive and select **Properties**.
-4. Go to the **Policies** tab.
-5. Uncheck **Enable write caching on the device** if you experience frequent power loss.
+### Check NTFS Volume
+
+```cmd
+fsutil dirty query C:
+```
+
+### Check SATA Connection
+
+Reseat SATA cables and try different ports.
+
+### Verify File System
+
+```cmd
+chkdsk C: /scan
+```
 
 ## Examples
 
-This error commonly occurs in these scenarios:
+```text
+NTFS_FILE_SYSTEM (24)
+A problem occurred in the NTFS file system driver.
 
-- **After a sudden power loss** — The computer lost power during a write operation, leaving NTFS metadata corrupted.
-- **With a failing hard drive** — Bad sectors on the disk prevent NTFS from reading the MFT (Master File Table).
-- **After connecting a corrupted external drive** — A damaged USB drive triggers NTFS errors when Windows scans it.
-- **Following a failed Windows Update** — An interrupted update corrupts NTFS system files.
+MODULE_NAME: Ntfs
+IMAGE_NAME:  Ntfs.sys
+```
 
 ## Related Errors
 
-- [BSOD FAT_FILE_SYSTEM]({{< relref "/os/windows/bsod-fat-file-system" >}}) — Similar file system error for FAT-formatted volumes
-- [BSOD MUP_FILE_SYSTEM]({{< relref "/os/windows/bsod-mup-file-system" >}}) — Multi-UNC Provider file system error
-- [BSOD PAGE_FAULT_IN_NONPAGED_AREA]({{< relref "/os/windows/bsod-page-fault-in-nonpaged-area" >}}) — Memory page fault often caused by disk corruption
-- [BSOD KERNEL_SECURITY_CHECK_FAILURE]({{< relref "/os/windows/bsod-kernel-security-check-failure" >}}) — Kernel security structure corruption from disk errors
+- [BSOD PAGE_FAULT_IN_NONPAGED_AREA ntfs.sys]({{< relref "/os/windows/bsod-page-fault-in-npaged" >}}) — NTFS page fault
+- [BSOD SYSTEM_THREAD_EXCEPTION_NOT_HANDLED ntfs.sys]({{< relref "/os/windows/bsod-system-thread-exception5" >}}) — NTFS thread exception
+- [BSOD KERNEL_DATA_INPAGE_ERROR]({{< relref "/os/windows/bsod-kernel-data-inpage-error" >}}) — Kernel data read failure

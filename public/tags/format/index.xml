@@ -1,7 +1,680 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Format on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/format/</link><description>Recent content in Format on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/format/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C++ std::format Error — Format String Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/format-error/</guid><description>&lt;h1 id="solution-c-stdformat-error--format-string-fix"&gt;[Solution] C++ std::format Error — Format String Fix&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Format on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/format/</link><description>Recent content in Format on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/format/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C++ spdlog - logging error</title><link>https://errorcode.excellentwiki.com/languages/cpp/spdlog-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/spdlog-error/</guid><description>&lt;h1 id="spdlog---logging-error"&gt;spdlog - logging error&lt;/h1&gt;
+&lt;p&gt;spdlog errors occur from invalid format strings, sink failures, or asynchronous queue overflow.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Format mismatch
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;info(&lt;span style="color:#e6db74"&gt;&amp;#34;Hello, {} and {}!&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Alice&amp;#34;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// too few args
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Sink failure
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; file_sink &lt;span style="color:#f92672"&gt;=&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;make_shared&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;sinks&lt;span style="color:#f92672"&gt;::&lt;/span&gt;basic_file_sink_mt&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;readonly/path.log&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Permission denied
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Async queue overflow
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;set_mode(spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;async_mode);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Queue full when logging too fast
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-match-format-arguments"&gt;Fix 1: Match format arguments&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;info(&lt;span style="color:#e6db74"&gt;&amp;#34;Hello, {} and {}!&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Alice&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Bob&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-check-sink-availability"&gt;Fix 2: Check sink availability&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; logger &lt;span style="color:#f92672"&gt;=&lt;/span&gt; spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;basic_logger_mt(&lt;span style="color:#e6db74"&gt;&amp;#34;file_logger&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;logs/app.log&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;spdlog_ex&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cerr &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Logger init failed: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; e.what() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-increase-async-queue-size"&gt;Fix 3: Increase async queue size&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;spdlog&lt;span style="color:#f92672"&gt;::&lt;/span&gt;init_thread_pool(&lt;span style="color:#ae81ff"&gt;83886&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/fmt-error/"&gt;fmt - formatting error&lt;/a&gt; — format string errors.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/spdlog-error/"&gt;spdlog error (detailed)&lt;/a&gt; — detailed spdlog errors.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/ios-base-failure/"&gt;std::ios_base::failure&lt;/a&gt; — stream errors.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C++ std::format Error — Format String Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/format-error/</guid><description>&lt;h1 id="solution-c-stdformat-error--format-string-fix"&gt;[Solution] C++ std::format Error — Format String Fix&lt;/h1&gt;
 &lt;p&gt;A &lt;code&gt;std::format&lt;/code&gt; error occurs when the format string is malformed — such as mismatched argument count, invalid format specifiers, or unmatched braces. This throws &lt;code&gt;std::format_error&lt;/code&gt; at runtime (or causes compile-time errors when the format string can be validated at compile time in C++20).&lt;/p&gt;
 &lt;h2 id="why-stdformat-errors-occur"&gt;Why std::format Errors Occur&lt;/h2&gt;
-&lt;p&gt;Common causes include mismatched number of arguments and format placeholders, unescaped curly braces in format strings, invalid format specifiers for the given type (e.g., &lt;code&gt;{:d}&lt;/code&gt; for a string), and nested format strings with incorrect nesting.&lt;/p&gt;</description></item><item><title>[Solution] PowerShell FormatError Fix</title><link>https://errorcode.excellentwiki.com/languages/powershell/format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/powershell/format-error/</guid><description>&lt;h1 id="powershell-formaterror-fix"&gt;PowerShell FormatError Fix&lt;/h1&gt;
+&lt;p&gt;Common causes include mismatched number of arguments and format placeholders, unescaped curly braces in format strings, invalid format specifiers for the given type (e.g., &lt;code&gt;{:d}&lt;/code&gt; for a string), and nested format strings with incorrect nesting.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::stringstream - string stream error</title><link>https://errorcode.excellentwiki.com/languages/cpp/sstream-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/sstream-error/</guid><description>&lt;h1 id="stdstringstream---string-stream-error"&gt;std::stringstream - string stream error&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;std::stringstream&lt;/code&gt; errors occur when string-to-number conversion fails or the stream enters an error state.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Format mismatch
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;stringstream ss(&lt;span style="color:#e6db74"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; val;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss &lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; val; &lt;span style="color:#75715e"&gt;// failbit
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Empty stream
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;stringstream ss(&lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; val;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss &lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; val; &lt;span style="color:#75715e"&gt;// failbit
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Incomplete read
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;stringstream ss(&lt;span style="color:#e6db74"&gt;&amp;#34;1 2&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; a, b;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss &lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; a;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss &lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; b; &lt;span style="color:#75715e"&gt;// may fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-check-stream-state-after-read"&gt;Fix 1: Check stream state after read&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;stringstream ss(input);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; val;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ss &lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; val) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// success
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cerr &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Conversion failed&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-usestr-to-reset"&gt;Fix 2: Use.str() to reset&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;stringstream ss;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss.str(&lt;span style="color:#e6db74"&gt;&amp;#34;42&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; val;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss &lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; val; &lt;span style="color:#75715e"&gt;// success
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss.clear();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss.str(&lt;span style="color:#e6db74"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss &lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; val; &lt;span style="color:#75715e"&gt;// fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ss.clear();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-stdfrom_chars-for-performance"&gt;Fix 3: Use std::from_chars for performance&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;charconv&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; val;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; [ptr, ec] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;from_chars(input.data(), input.data() &lt;span style="color:#f92672"&gt;+&lt;/span&gt; input.size(), val);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ec &lt;span style="color:#f92672"&gt;==&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;errc{}) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// success
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/ios-base-failbit/"&gt;std::ios_base::failbit&lt;/a&gt; — format error.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/invalid-argument-stoi/"&gt;std::invalid_argument - stoi&lt;/a&gt; — conversion error.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/ios-base-failure/"&gt;std::ios_base::failure&lt;/a&gt; — stream exception.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] COBOL: record format error</title><link>https://errorcode.excellentwiki.com/languages/cobol/cobol-record-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cobol/cobol-record-error-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;COBOL record format errors occur when the record structure doesn&amp;rsquo;t match the file format, record length is incorrect, or record operations encounter issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Record length mismatch with file&lt;/li&gt;
+&lt;li&gt;FD description doesn&amp;rsquo;t match actual file&lt;/li&gt;
+&lt;li&gt;Variable-length records handled incorrectly&lt;/li&gt;
+&lt;li&gt;Record contains invalid data&lt;/li&gt;
+&lt;li&gt;Record already locked&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; WRONG: &lt;span style="color:#66d9ef"&gt;Record&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;length&lt;/span&gt; mismatch&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IDENTIFICATION&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROGRAM-ID&lt;/span&gt;. RECORD-ERROR.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATA&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FILE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SECTION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FD &lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;RECORD&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CONTAINS&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;80 &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;CHARACTERS&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;01 &lt;/span&gt;DATA-RECORD &lt;span style="color:#66d9ef"&gt;PIC X(100)&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; Mismatch: &lt;span style="color:#66d9ef"&gt;FD&lt;/span&gt; says &lt;span style="color:#ae81ff"&gt;80&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;record&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; CORRECT: Match &lt;span style="color:#66d9ef"&gt;record&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;length
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IDENTIFICATION&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROGRAM-ID&lt;/span&gt;. RECORD-MATCH.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATA&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FILE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SECTION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FD &lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;RECORD&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CONTAINS&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;80 &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;CHARACTERS&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;01 &lt;/span&gt;DATA-RECORD &lt;span style="color:#66d9ef"&gt;PIC X(80)&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROCEDURE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;OPEN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;INPUT&lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;AT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DISPLAY &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;EOF&amp;#39;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-READ
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CLOSE&lt;/span&gt; DATA-FILE.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; CORRECT: Handle variable-length &lt;span style="color:#66d9ef"&gt;records
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IDENTIFICATION&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROGRAM-ID&lt;/span&gt;. VARIABLE-RECORD.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATA&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FILE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SECTION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FD &lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;RECORD&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IS&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;VARYING&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SIZE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10 &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;TO&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100 &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;CHARACTERS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CONTAINS&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0 &lt;/span&gt;&lt;span style="color:#66d9ef"&gt;CHARACTERS&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;01 &lt;/span&gt;DATA-RECORD &lt;span style="color:#66d9ef"&gt;PIC X(100)&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROCEDURE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;OPEN&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;INPUT&lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;AT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DISPLAY &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;EOF&amp;#39;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-READ
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;CLOSE&lt;/span&gt; DATA-FILE.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; CORRECT: Check &lt;span style="color:#66d9ef"&gt;record&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;after&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;read
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IDENTIFICATION&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROGRAM-ID&lt;/span&gt;. CHECK-RECORD.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATA&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WORKING-STORAGE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SECTION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;01 &lt;/span&gt;WS-FILE-STATUS &lt;span style="color:#66d9ef"&gt;PIC XX&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;VALUE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SPACES&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROCEDURE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; DATA-FILE&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;AT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DISPLAY &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;EOF&amp;#39;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-READ
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IF&lt;/span&gt; WS-FILE-STATUS &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;00&amp;#39;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DISPLAY &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;Record read successfully&amp;#39;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;ELSE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DISPLAY &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;Record error: &amp;#39;&lt;/span&gt; WS-FILE-STATUS&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-IF&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cobol" data-lang="cobol"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; CORRECT: &lt;span style="color:#66d9ef"&gt;Validate&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;record&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;content
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IDENTIFICATION&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROGRAM-ID&lt;/span&gt;. VALIDATE-RECORD.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATA&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;WORKING-STORAGE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SECTION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;01 &lt;/span&gt;WS-RECORD.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;05 &lt;/span&gt;WS-KEY &lt;span style="color:#66d9ef"&gt;PIC X(10)&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;05 &lt;/span&gt;WS-NAME &lt;span style="color:#66d9ef"&gt;PIC A(20)&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#ae81ff"&gt;05 &lt;/span&gt;WS-VALUE &lt;span style="color:#66d9ef"&gt;PIC 9(5)&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PROCEDURE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DIVISION&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;READ&lt;/span&gt; DATA-FILE &lt;span style="color:#66d9ef"&gt;INTO&lt;/span&gt; WS-RECORD&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;IF&lt;/span&gt; WS-KEY &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SPACES
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DISPLAY &lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;Invalid record: empty key&amp;#39;&lt;/span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt; &lt;/span&gt; &lt;span style="color:#66d9ef"&gt;END-IF&lt;/span&gt;.&lt;span style="color:#960050;background-color:#1e0010"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="cobol-file-not-found-v2"&gt;File Not Found&lt;/a&gt; - file errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="cobol-duplicate-key-v2"&gt;Duplicate Key&lt;/a&gt; - key errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="cobol-index-error-v2"&gt;Index Error&lt;/a&gt; - subscript errors&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Dart FormatException - Invalid Format</title><link>https://errorcode.excellentwiki.com/languages/dart/dart-format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/dart/dart-format-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;FormatException&lt;/code&gt; occurs when attempting to parse a string into a specific type (int, double, DateTime, etc.) and the string does not match the expected format.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Parsing non-numeric string as int or double&lt;/li&gt;
+&lt;li&gt;Invalid date format string&lt;/li&gt;
+&lt;li&gt;Malformed JSON or URI string&lt;/li&gt;
+&lt;li&gt;Incorrect number format (commas, currency symbols)&lt;/li&gt;
+&lt;li&gt;Null or empty string passed to parser&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Validate input before parsing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; input &lt;span style="color:#f92672"&gt;=&lt;/span&gt; getUserInput();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;?&lt;/span&gt; value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;.tryParse(input);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (value &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#39;Parsed value: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;$&lt;/span&gt;value&lt;span style="color:#e6db74"&gt;&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#39;Invalid number format&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Use tryParse for safe conversion:&lt;/p&gt;</description></item><item><title>[Solution] Dart FormatException Invalid Format</title><link>https://errorcode.excellentwiki.com/languages/dart/dart-format-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/dart/dart-format-error-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;FormatException: Invalid format&lt;/code&gt; error occurs when &lt;code&gt;parse()&lt;/code&gt; methods fail to convert a string to the expected type, such as parsing a non-numeric string to an integer.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Parsing non-numeric string to int/double&lt;/li&gt;
+&lt;li&gt;Incorrect date format string&lt;/li&gt;
+&lt;li&gt;Malformed input from user or external source&lt;/li&gt;
+&lt;li&gt;Wrong locale for number parsing&lt;/li&gt;
+&lt;li&gt;Trailing or leading whitespace&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Parsing without validation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; number &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;.parse(&lt;span style="color:#e6db74"&gt;&amp;#39;abc&amp;#39;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// FormatException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use tryParse for safe parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;?&lt;/span&gt; number &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;.tryParse(&lt;span style="color:#e6db74"&gt;&amp;#39;abc&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;print(number); &lt;span style="color:#75715e"&gt;// null
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Parsing user input directly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; input &lt;span style="color:#f92672"&gt;=&lt;/span&gt; getUserInput();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;double&lt;/span&gt; value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;double&lt;/span&gt;.parse(input); &lt;span style="color:#75715e"&gt;// May fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Validate before parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;double&lt;/span&gt; parseDouble(&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; input) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;double&lt;/span&gt;.tryParse(input.trim()) &lt;span style="color:#f92672"&gt;??&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0.0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Date parsing without format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DateTime date &lt;span style="color:#f92672"&gt;=&lt;/span&gt; DateTime.parse(&lt;span style="color:#e6db74"&gt;&amp;#39;not-a-date&amp;#39;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// FormatException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use intl package for flexible parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;package:intl/intl.dart&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; formatter &lt;span style="color:#f92672"&gt;=&lt;/span&gt; DateFormat(&lt;span style="color:#e6db74"&gt;&amp;#39;yyyy-MM-dd&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DateTime&lt;span style="color:#f92672"&gt;?&lt;/span&gt; date;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; date &lt;span style="color:#f92672"&gt;=&lt;/span&gt; formatter.parseStrict(&lt;span style="color:#e6db74"&gt;&amp;#39;2024-01-15&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#39;Invalid date format&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; main() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Example 1: Safe number parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; List&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; inputs &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#e6db74"&gt;&amp;#39;42&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;3.14&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;abc&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39; 100 &amp;#39;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; input &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; inputs) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;?&lt;/span&gt; value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;.tryParse(input.trim());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#39;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;$&lt;/span&gt;input&lt;span style="color:#e6db74"&gt; -&amp;gt; &lt;/span&gt;&lt;span style="color:#e6db74"&gt;$&lt;/span&gt;value&lt;span style="color:#e6db74"&gt;&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 42 -&amp;gt; 42, 3.14 -&amp;gt; null, abc -&amp;gt; null, &amp;#39;&amp;#39; -&amp;gt; null, 100 -&amp;gt; 100
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Example 2: Parsing with fallback
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;double&lt;/span&gt; safeParse(&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; s, {&lt;span style="color:#66d9ef"&gt;double&lt;/span&gt; fallback &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0.0&lt;/span&gt;}) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;double&lt;/span&gt;.tryParse(s.trim()) &lt;span style="color:#f92672"&gt;??&lt;/span&gt; fallback;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Example 3: NumberFormat for locale-aware parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// import &amp;#39;package:intl/intl.dart&amp;#39;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// var nf = NumberFormat(&amp;#39;#,###.##&amp;#39;, &amp;#39;en_US&amp;#39;);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// double val = nf.parse(&amp;#39;1,234.56&amp;#39;);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/dart/dart-json-error/"&gt;dart-json-error&lt;/a&gt; — JSON parsing error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/dart/dart-type-error/"&gt;dart-type-error&lt;/a&gt; — type mismatch&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/dart/dart-null-error/"&gt;dart-null-error&lt;/a&gt; — null check error&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Dart FormatException Unexpected Character in JSON</title><link>https://errorcode.excellentwiki.com/languages/dart/dart-json-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/dart/dart-json-error-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;FormatException: Unexpected character&lt;/code&gt; error in JSON parsing occurs when &lt;code&gt;jsonDecode()&lt;/code&gt; encounters malformed JSON input. This happens with invalid syntax, incorrect quoting, or encoding issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Malformed JSON string (missing quotes, trailing commas)&lt;/li&gt;
+&lt;li&gt;Single quotes instead of double quotes&lt;/li&gt;
+&lt;li&gt;Unescaped special characters&lt;/li&gt;
+&lt;li&gt;BOM (byte order mark) in file&lt;/li&gt;
+&lt;li&gt;Null bytes or control characters&lt;/li&gt;
+&lt;li&gt;Server returning HTML instead of JSON&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Parsing invalid JSON
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;dart:convert&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jsonDecode(&lt;span style="color:#e6db74"&gt;&amp;#34;{name: &amp;#39;Alice&amp;#39;}&amp;#34;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// Error: single quotes
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use proper JSON syntax
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jsonDecode(&lt;span style="color:#e6db74"&gt;&amp;#39;{&amp;#34;name&amp;#34;: &amp;#34;Alice&amp;#34;}&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling server errors
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; response &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; http.&lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;(url);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jsonDecode(response.body); &lt;span style="color:#75715e"&gt;// Error if HTML error page
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Validate response first
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; response &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; http.&lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;(url);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (response.headers[&lt;span style="color:#e6db74"&gt;&amp;#39;content-type&amp;#39;&lt;/span&gt;]&lt;span style="color:#f92672"&gt;?&lt;/span&gt;.contains(&lt;span style="color:#e6db74"&gt;&amp;#39;json&amp;#39;&lt;/span&gt;) &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jsonDecode(response.body);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;throw&lt;/span&gt; FormatException(&lt;span style="color:#e6db74"&gt;&amp;#39;Expected JSON, got &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;response.headers[&lt;span style="color:#e6db74"&gt;&amp;#39;content-type&amp;#39;&lt;/span&gt;]&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Parsing user input directly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; userInput &lt;span style="color:#f92672"&gt;=&lt;/span&gt; getUserInput();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jsonDecode(userInput); &lt;span style="color:#75715e"&gt;// May fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Try-catch with fallback
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Map&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;dynamic&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; safeJsonDecode(&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; input) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; jsonDecode(input) &lt;span style="color:#f92672"&gt;as&lt;/span&gt; Map&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;dynamic&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; {};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-dart" data-lang="dart"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;dart:convert&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Validate JSON before parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt; isValidJson(&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;source&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; jsonDecode(&lt;span style="color:#66d9ef"&gt;source&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Parse with type safety
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;T&lt;span style="color:#f92672"&gt;?&lt;/span&gt; safeParseJson&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;T&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;source&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;final&lt;/span&gt; decoded &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jsonDecode(&lt;span style="color:#66d9ef"&gt;source&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (decoded &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; T) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; decoded;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Handle nested JSON safely
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Map&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;dynamic&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; parseApiResponse(&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; body) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;final&lt;/span&gt; json &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jsonDecode(body);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; json &lt;span style="color:#f92672"&gt;as&lt;/span&gt; Map&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;dynamic&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } on FormatException &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#39;Invalid JSON: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;e.message&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; {&lt;span style="color:#e6db74"&gt;&amp;#39;error&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;Invalid response&amp;#39;&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/dart/dart-format-error/"&gt;dart-format-error&lt;/a&gt; — format exception&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/dart/dart-type-error/"&gt;dart-type-error&lt;/a&gt; — type mismatch&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/dart/dart-io-error/"&gt;dart-io-error&lt;/a&gt; — connection closed&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Dart jsonDecode Error</title><link>https://errorcode.excellentwiki.com/languages/dart/dart-json-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/dart/dart-json-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;jsonDecode&lt;/code&gt; error in Dart occurs when attempting to parse an invalid JSON string. This happens when the JSON is malformed, contains invalid characters, or does not conform to JSON syntax rules.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Malformed JSON string (missing quotes, trailing commas)&lt;/li&gt;
+&lt;li&gt;Single quotes instead of double quotes&lt;/li&gt;
+&lt;li&gt;Null bytes or invalid characters&lt;/li&gt;
+&lt;li&gt;JSON string is actually HTML or plain text&lt;/li&gt;
+&lt;li&gt;Encoding issues (BOM, wrong charset)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Decode JSON with error handling:&lt;/p&gt;</description></item><item><title>[Solution] F# FormatException String Not in Correct Format</title><link>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-formatexception-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-formatexception-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;FormatException&lt;/code&gt; occurs when a string cannot be parsed into the expected type, such as parsing a non-numeric string to an integer or an incorrect date format.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Parsing non-numeric string to int/double&lt;/li&gt;
+&lt;li&gt;Incorrect date format&lt;/li&gt;
+&lt;li&gt;Malformed input from user or external source&lt;/li&gt;
+&lt;li&gt;Wrong culture or locale settings&lt;/li&gt;
+&lt;li&gt;Extra whitespace in input&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Parsing without validation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; number &lt;span style="color:#f92672"&gt;=&lt;/span&gt; int &lt;span style="color:#e6db74"&gt;&amp;#34;abc&amp;#34;&lt;/span&gt; &lt;span style="color:#75715e"&gt;// FormatException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use tryParse for safe parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; number &lt;span style="color:#f92672"&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; System.Int32.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;abc&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; n &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; Some n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#f92672"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; None
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// None
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Direct parsing of user input
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; input &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.Console.ReadLine()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; age &lt;span style="color:#f92672"&gt;=&lt;/span&gt; int input &lt;span style="color:#75715e"&gt;// May fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Validate first
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; input &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.Console.ReadLine()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; System.Int32.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;input&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; age &lt;span style="color:#66d9ef"&gt;when&lt;/span&gt; age &lt;span style="color:#f92672"&gt;&amp;gt;=&lt;/span&gt; 0 &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; age &lt;span style="color:#f92672"&gt;&amp;lt;=&lt;/span&gt; 150 &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;Age: %d&amp;#34;&lt;/span&gt; age
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#f92672"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;Invalid age&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Date parsing without format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; date &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.DateTime.Parse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;not-a-date&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#75715e"&gt;// FormatException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use TryParse with culture
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; mutable date &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.DateTime.MinValue
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; success &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.DateTime.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;2024-01-15&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;date&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; success &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%A&amp;#34;&lt;/span&gt; date
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Safe parsing helpers
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; tryParseInt s &lt;span style="color:#f92672"&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; System.Int32.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;s&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; n &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; Some n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#f92672"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; None
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; tryParseFloat s &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; System.Double.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;s&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; n &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; Some n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#f92672"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; None
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Parse with default
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; parseIntDefault defaultValue s &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; System.Int32.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;s&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; n &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#f92672"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; defaultValue
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; parseIntDefault 0 &lt;span style="color:#e6db74"&gt;&amp;#34;abc&amp;#34;&lt;/span&gt; &lt;span style="color:#75715e"&gt;// 0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: DateTime parsing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; parseDate s &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; System.DateTime.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;s&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; d &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; Some d
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#f92672"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; None
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-argumentexception/"&gt;fsharp-argumentexception&lt;/a&gt; — argument error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-indexoutofrange/"&gt;fsharp-indexoutofrange&lt;/a&gt; — index out of range&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-matcherror/"&gt;fsharp-matcherror&lt;/a&gt; — match failure&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Financial Toolbox: invalid date format in MATLAB</title><link>https://errorcode.excellentwiki.com/languages/matlab/matlab-financial-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/matlab/matlab-financial-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Financial Toolbox errors occur when date formats are incorrect, financial data is invalid, or calculations encounter mathematical issues like division by zero.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Invalid date string format&lt;/li&gt;
+&lt;li&gt;Date conversion errors&lt;/li&gt;
+&lt;li&gt;Cash flow timing issues&lt;/li&gt;
+&lt;li&gt;Zero or negative interest rates&lt;/li&gt;
+&lt;li&gt;Mismatched date vectors&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-matlab" data-lang="matlab"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;% WRONG: Invalid date format&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;d = datenum(&lt;span style="color:#e6db74"&gt;&amp;#39;2024-13-01&amp;#39;&lt;/span&gt;); &lt;span style="color:#75715e"&gt;% Error: month 13 invalid&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;% CORRECT: Valid date format&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;d = datenum(&lt;span style="color:#e6db74"&gt;&amp;#39;2024-01-15&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-matlab" data-lang="matlab"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;% WRONG: Mismatched dates&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;StartDates = datenum({&lt;span style="color:#e6db74"&gt;&amp;#39;2024-01-01&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;2024-02-01&amp;#39;&lt;/span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;EndDates = datenum({&lt;span style="color:#e6db74"&gt;&amp;#39;2024-12-31&amp;#39;&lt;/span&gt;}); &lt;span style="color:#75715e"&gt;% Different count&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rates = [&lt;span style="color:#ae81ff"&gt;0.05&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0.06&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;princ = yearfrac(StartDates, EndDates, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;); &lt;span style="color:#75715e"&gt;% Error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;% CORRECT: Match date vectors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;StartDates = datenum({&lt;span style="color:#e6db74"&gt;&amp;#39;2024-01-01&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;2024-02-01&amp;#39;&lt;/span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;EndDates = datenum({&lt;span style="color:#e6db74"&gt;&amp;#39;2024-12-31&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;2024-12-31&amp;#39;&lt;/span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rates = [&lt;span style="color:#ae81ff"&gt;0.05&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0.06&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;princ = yearfrac(StartDates, EndDates, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;); &lt;span style="color:#75715e"&gt;% Works&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-matlab" data-lang="matlab"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;% CORRECT: Validate dates&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; d = &lt;span style="color:#a6e22e"&gt;safeDate&lt;/span&gt;(dateStr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; d = datenum(dateStr);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; error(&lt;span style="color:#e6db74"&gt;&amp;#39;Invalid date format: %s&amp;#39;&lt;/span&gt;, dateStr);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-matlab" data-lang="matlab"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;% CORRECT: Financial calculations with validation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; pv = &lt;span style="color:#a6e22e"&gt;presentValue&lt;/span&gt;(cashFlows, rates, dates)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; any(rates &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; error(&lt;span style="color:#e6db74"&gt;&amp;#39;Interest rates must be non-negative&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; length(cashFlows) &lt;span style="color:#f92672"&gt;~=&lt;/span&gt; length(dates)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; error(&lt;span style="color:#e6db74"&gt;&amp;#39;Cash flows and dates must have same length&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; pv = cfdates(cashFlows, dates);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="matlab-statistics-error"&gt;Statistics Error&lt;/a&gt; - data issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="matlab-table-error"&gt;Table Error&lt;/a&gt; - data format&lt;/li&gt;
+&lt;li&gt;&lt;a href="matlab-string-error"&gt;String Error&lt;/a&gt; - conversion issues&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Fortran: format specification error</title><link>https://errorcode.excellentwiki.com/languages/fortran/fortran-format-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fortran/fortran-format-error-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Format specification errors occur when the format descriptor doesn&amp;rsquo;t match the data type, count, or layout. Common with FORMAT statements, inline formats, and namelist I/O.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Wrong format for data type (e.g., I for real)&lt;/li&gt;
+&lt;li&gt;Format has fewer descriptors than variables&lt;/li&gt;
+&lt;li&gt;Mismatched parentheses in format&lt;/li&gt;
+&lt;li&gt;Reading string into numeric variable&lt;/li&gt;
+&lt;li&gt;Incorrect repeat count&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! WRONG: Format mismatch
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; format_error
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(A)&amp;#39;&lt;/span&gt;) x &lt;span style="color:#75715e"&gt;! Reading string into integer
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Matching format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; format_safe
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;character&lt;/span&gt;(len&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; str
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(I5)&amp;#39;&lt;/span&gt;) x &lt;span style="color:#75715e"&gt;! Integer format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(A)&amp;#39;&lt;/span&gt;) str &lt;span style="color:#75715e"&gt;! String format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Use list-directed I/O (free format)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; list_directed
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; a, b
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x, y
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#f92672"&gt;*&lt;/span&gt;) a, b, x, y &lt;span style="color:#75715e"&gt;! No format needed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;, a, b, x, y
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Format with repeat counts
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; format_repeat
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; i, arr(&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;! Write 5 integers with I4 format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(5I4)&amp;#39;&lt;/span&gt;) arr
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;! Or use repeat
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(5(I4))&amp;#39;&lt;/span&gt;) arr
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Complex format specifications
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; complex_format
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; pi, e
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;character&lt;/span&gt;(len&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; pi &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3.14159265&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; e &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2.71828183&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;MATLAB&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;! F format for reals, A for strings
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(A, F8.4, A, F8.4)&amp;#39;&lt;/span&gt;) name, pi, &lt;span style="color:#e6db74"&gt;&amp;#39; and &amp;#39;&lt;/span&gt;, e
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Namelist I/O
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; namelist_example
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x, y
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;namelist&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt;params&lt;span style="color:#f92672"&gt;/&lt;/span&gt; n, x, y
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; n &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1.5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; y &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2.5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, nml&lt;span style="color:#f92672"&gt;=&lt;/span&gt;params)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="fortran-io-error-v2"&gt;I/O Error&lt;/a&gt; - file operation errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="fortran-end-of-file-v2"&gt;End of File&lt;/a&gt; - EOF errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="fortran-runtime-error-v2"&gt;Runtime Error&lt;/a&gt; - general runtime&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Fortran: namelist read error</title><link>https://errorcode.excellentwiki.com/languages/fortran/fortran-namelist-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fortran/fortran-namelist-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Fortran namelist errors occur when reading or writing namelist groups with incorrect syntax, missing delimiters, or data type mismatches.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing ampersand (&amp;amp;) delimiters&lt;/li&gt;
+&lt;li&gt;Variable not in namelist group&lt;/li&gt;
+&lt;li&gt;Data type mismatch&lt;/li&gt;
+&lt;li&gt;Invalid value format&lt;/li&gt;
+&lt;li&gt;Missing or extra variables&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! WRONG: Missing namelist syntax
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; namelist_error
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;namelist&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt;params&lt;span style="color:#f92672"&gt;/&lt;/span&gt; n, x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;! Reading without proper format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#f92672"&gt;*&lt;/span&gt;) n, x &lt;span style="color:#75715e"&gt;! Not namelist format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Proper namelist syntax
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; namelist_safe
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;namelist&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt;params&lt;span style="color:#f92672"&gt;/&lt;/span&gt; n, x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;! Write namelist
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; n &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3.14&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, nml&lt;span style="color:#f92672"&gt;=&lt;/span&gt;params)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;! Read namelist
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;rewind&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, nml&lt;span style="color:#f92672"&gt;=&lt;/span&gt;params)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;, n, x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Namelist file format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! params.nml file content:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! &amp;amp;params
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! n = 10
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! x = 3.14
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! /
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; namelist_file
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;namelist&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt;params&lt;span style="color:#f92672"&gt;/&lt;/span&gt; n, x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;open&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;file&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;params.nml&amp;#39;&lt;/span&gt;, status&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;old&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;, nml&lt;span style="color:#f92672"&gt;=&lt;/span&gt;params)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;close&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;n =&amp;#39;&lt;/span&gt;, n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;x =&amp;#39;&lt;/span&gt;, x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Handle namelist errors
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; namelist_error_handling
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; n, ios
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;namelist&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt;params&lt;span style="color:#f92672"&gt;/&lt;/span&gt; n, x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;open&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;file&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;params.nml&amp;#39;&lt;/span&gt;, status&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;old&amp;#39;&lt;/span&gt;, iostat&lt;span style="color:#f92672"&gt;=&lt;/span&gt;ios)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ios &lt;span style="color:#f92672"&gt;/=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;Error opening namelist file&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;stop&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;, nml&lt;span style="color:#f92672"&gt;=&lt;/span&gt;params, iostat&lt;span style="color:#f92672"&gt;=&lt;/span&gt;ios)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (ios &lt;span style="color:#f92672"&gt;/=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;Error reading namelist&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;close&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Multiple namelist groups
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; multi_namelist
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; n
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;character&lt;/span&gt;(len&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;namelist&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt;params&lt;span style="color:#f92672"&gt;/&lt;/span&gt; n, x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;namelist&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt;info&lt;span style="color:#f92672"&gt;/&lt;/span&gt; name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; n &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; x &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3.14&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;test&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, nml&lt;span style="color:#f92672"&gt;=&lt;/span&gt;params)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, nml&lt;span style="color:#f92672"&gt;=&lt;/span&gt;info)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="fortran-io-error-v2"&gt;I/O Error&lt;/a&gt; - file operation errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="fortran-format-error-v2"&gt;Format Error&lt;/a&gt; - format mismatch&lt;/li&gt;
+&lt;li&gt;&lt;a href="fortran-runtime-error-v2"&gt;Runtime Error&lt;/a&gt; - general runtime&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Kotlin kotlinx.serialization Format Error Fix</title><link>https://errorcode.excellentwiki.com/languages/kotlin/kotlinx-serialization-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/kotlin/kotlinx-serialization-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A kotlinx.serialization format error occurs when the serialization format does not match the data. This can happen when using JSON with protobuf data, or when the format configuration is wrong.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Wrong format (JSON vs Protobuf)&lt;/li&gt;
+&lt;li&gt;Missing format converter&lt;/li&gt;
+&lt;li&gt;Format configuration mismatch&lt;/li&gt;
+&lt;li&gt;Unknown keys in input&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Wrong format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; json = &lt;span style="color:#a6e22e"&gt;Json&lt;/span&gt;.encodeToString(protobufData) &lt;span style="color:#75715e"&gt;// Format mismatch
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use correct format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; json = &lt;span style="color:#a6e22e"&gt;Json&lt;/span&gt;.encodeToString(serializer, &lt;span style="color:#66d9ef"&gt;data&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Unknown keys causing error
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; json = &lt;span style="color:#a6e22e"&gt;Json&lt;/span&gt;.decodeFromString&amp;lt;User&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&amp;#34;{&amp;#34;name&amp;#34;: &amp;#34;Alice&amp;#34;, &amp;#34;extra&amp;#34;: &amp;#34;data&amp;#34;}&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Ignore unknown keys
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; json = Json { ignoreUnknownKeys = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; user = json.decodeFromString&amp;lt;User&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&amp;#34;{&amp;#34;name&amp;#34;: &amp;#34;Alice&amp;#34;, &amp;#34;extra&amp;#34;: &amp;#34;data&amp;#34;}&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-kotlin" data-lang="kotlin"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: JSON format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Serializable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;data&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; name: String, &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; age: Int)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; json = Json { prettyPrint = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; encoded = json.encodeToString(user)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; decoded = json.decodeFromString&amp;lt;User&amp;gt;(encoded)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Protobuf format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@Serializable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;data&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Message&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; text: String)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; protobuf = ProtoBuf
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; encoded = protobuf.encodeToString(serializer, message)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: CBOR format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; cbor = Cbor { ignoreUnknownKeys = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; encoded = cbor.encodeToString(serializer, &lt;span style="color:#66d9ef"&gt;data&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="serializationexception"&gt;SerializationException&lt;/a&gt; — serialization failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="ktor-serializationerror"&gt;Ktor serialization error&lt;/a&gt; — Ktor serialization error&lt;/li&gt;
+&lt;li&gt;[JSON decoding error] — JSON parse failed&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] PowerShell FormatError Fix</title><link>https://errorcode.excellentwiki.com/languages/powershell/format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/powershell/format-error/</guid><description>&lt;h1 id="powershell-formaterror-fix"&gt;PowerShell FormatError Fix&lt;/h1&gt;
 &lt;p&gt;This error occurs when PowerShell encounters a malformed format string in cmdlets like &lt;code&gt;Write-Host&lt;/code&gt;, &lt;code&gt;-f&lt;/code&gt; operator, or format specifiers. The error message reads: &lt;code&gt;FormatException: Input string was not in a correct format.&lt;/code&gt;&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
 &lt;p&gt;PowerShell uses format strings (similar to C#&amp;rsquo;s &lt;code&gt;String.Format&lt;/code&gt;) with placeholder syntax like &lt;code&gt;{0}&lt;/code&gt;, &lt;code&gt;{1}&lt;/code&gt;, etc. When these placeholders are malformed, mismatched, or reference non-existent indexes, a &lt;code&gt;FormatException&lt;/code&gt; is thrown during string interpolation.&lt;/p&gt;
@@ -105,6 +778,102 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/malformed-db/"&gt;Malformed DB&lt;/a&gt; — database structure is corrupted&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/sqlite/io-error2/"&gt;I/O Error&lt;/a&gt; — disk I/O failure&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] time Formatting Error Fix</title><link>https://errorcode.excellentwiki.com/languages/rust/time-error-rs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/time-error-rs/</guid><description>&lt;h1 id="time-formatting-error"&gt;time Formatting Error&lt;/h1&gt;
+&lt;p&gt;Fix time crate formatting errors. Handle format strings, timezone conversion, and arithmetic..&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common error scenarios include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Connection or network failures&lt;/li&gt;
+&lt;li&gt;Invalid configuration or options&lt;/li&gt;
+&lt;li&gt;Resource not found or unavailable&lt;/li&gt;
+&lt;li&gt;Permission or access denied&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Incorrect configuration or missing setup
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Network or connection issues
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Invalid input or parameters
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Missing dependencies or resources
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-verify-configuration-and-setup"&gt;Fix 1: Verify configuration and setup&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check configuration values and ensure required setup
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Verify the crate/library is properly configured
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-add-proper-error-handling"&gt;Fix 2: Add proper error handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; anyhow::Result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;do_something&lt;/span&gt;() -&amp;gt; Result&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;()&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Use proper error handling with Result and ?
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Ok(())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-add-timeout-and-retry-logic"&gt;Fix 3: Add timeout and retry logic&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; std::time::Duration;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Add timeout for network operations
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; tokio::time::timeout(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Duration::from_secs(&lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; do_operation(),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;).&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; std::error::Error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() -&amp;gt; Result&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;(), Box&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;dyn&lt;/span&gt; Error&lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Operation that may fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; do_work()&lt;span style="color:#f92672"&gt;?&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;println!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;{:?}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Ok(())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/connection-refused/"&gt;Connection Refused&lt;/a&gt; — connection refused&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/timed-out/"&gt;Timed Out&lt;/a&gt; — request timed out&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/io-error/"&gt;IO Error&lt;/a&gt; — I/O error&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] uuid Parse Error Fix</title><link>https://errorcode.excellentwiki.com/languages/rust/uuid-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/uuid-error/</guid><description>&lt;h1 id="uuid-parse-error"&gt;uuid Parse Error&lt;/h1&gt;
+&lt;p&gt;Fix uuid parsing errors. Handle invalid format, version mismatch, and generation..&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common error scenarios include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Connection or network failures&lt;/li&gt;
+&lt;li&gt;Invalid configuration or options&lt;/li&gt;
+&lt;li&gt;Resource not found or unavailable&lt;/li&gt;
+&lt;li&gt;Permission or access denied&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Incorrect configuration or missing setup
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Network or connection issues
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Invalid input or parameters
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Missing dependencies or resources
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-verify-configuration-and-setup"&gt;Fix 1: Verify configuration and setup&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check configuration values and ensure required setup
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Verify the crate/library is properly configured
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-add-proper-error-handling"&gt;Fix 2: Add proper error handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; anyhow::Result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;do_something&lt;/span&gt;() -&amp;gt; Result&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;()&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Use proper error handling with Result and ?
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Ok(())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-add-timeout-and-retry-logic"&gt;Fix 3: Add timeout and retry logic&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; std::time::Duration;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Add timeout for network operations
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; tokio::time::timeout(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Duration::from_secs(&lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; do_operation(),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;).&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; std::error::Error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() -&amp;gt; Result&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;(), Box&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;dyn&lt;/span&gt; Error&lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Operation that may fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; do_work()&lt;span style="color:#f92672"&gt;?&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;println!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;{:?}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Ok(())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/connection-refused/"&gt;Connection Refused&lt;/a&gt; — connection refused&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/timed-out/"&gt;Timed Out&lt;/a&gt; — request timed out&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/io-error/"&gt;IO Error&lt;/a&gt; — I/O error&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>Format / format error</title><link>https://errorcode.excellentwiki.com/languages/fortran/format-error2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fortran/format-error2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
 &lt;p&gt;A format error occurs when the format descriptor in a Fortran &lt;code&gt;read&lt;/code&gt; or &lt;code&gt;write&lt;/code&gt; statement does not match the data type or number of variables being formatted. This includes mismatched data types (e.g., using an integer format descriptor for a real variable), insufficient format descriptors for the number of variables, or malformed format strings.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
@@ -167,7 +936,61 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fortran/io-error3"&gt;I/O error&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fortran/undefined-variable"&gt;Undefined variable&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description></item><item><title>FormatException: Invalid format</title><link>https://errorcode.excellentwiki.com/languages/dart/format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/dart/format-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;/ul&gt;</description></item><item><title>Format error in Fortran</title><link>https://errorcode.excellentwiki.com/languages/fortran/fortran-format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fortran/fortran-format-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Fortran uses format specifications (FORMAT statements or inline formats) to control I/O. A format error occurs when the format doesn&amp;rsquo;t match the data type, count, or layout.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Reading string into integer variable&lt;/li&gt;
+&lt;li&gt;Format has fewer descriptors than variables&lt;/li&gt;
+&lt;li&gt;Wrong format for data type (e.g., I format for real)&lt;/li&gt;
+&lt;li&gt;Mismatched parentheses in format&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! WRONG: Format mismatch
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; fmt_error
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(A)&amp;#39;&lt;/span&gt;) x &lt;span style="color:#75715e"&gt;! Reading string into integer
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;! CORRECT: Matching format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; fmt_safe
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;integer&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; x
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;character&lt;/span&gt;(len&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; str
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(I5)&amp;#39;&lt;/span&gt;) x &lt;span style="color:#75715e"&gt;! Integer format
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;read&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(A)&amp;#39;&lt;/span&gt;) str &lt;span style="color:#75715e"&gt;! String format for strings
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fortran" data-lang="fortran"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;program&lt;/span&gt; example
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;none&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;real&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;::&lt;/span&gt; pi
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; pi &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3.14159&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(I5)&amp;#39;&lt;/span&gt;) pi &lt;span style="color:#75715e"&gt;! Error: I format for real number
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;write&lt;/span&gt;(&lt;span style="color:#f92672"&gt;*&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;(F5.2)&amp;#39;&lt;/span&gt;) pi &lt;span style="color:#75715e"&gt;! Correct: F format for real
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fortran/fortran-io-error"&gt;I/O Error&lt;/a&gt; - file operation errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fortran/fortran-end-of-file"&gt;End of File&lt;/a&gt; - EOF errors&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>FormatException in F#</title><link>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-formatexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-formatexception/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;FormatException&lt;/code&gt; occurs when attempting to parse a string into a specific type (int, float, DateTime, etc.) and the string does not match the expected format.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Parsing non-numeric string as number&lt;/li&gt;
+&lt;li&gt;Invalid date format&lt;/li&gt;
+&lt;li&gt;Malformed input string&lt;/li&gt;
+&lt;li&gt;Missing type conversion&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Use &lt;code&gt;TryParse&lt;/code&gt; instead of &lt;code&gt;Parse&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; tryParseInt &lt;span style="color:#f92672"&gt;(&lt;/span&gt;s&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; System.Int32.TryParse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;s&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; value &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; Some value
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#f92672"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; None
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; tryParseInt &lt;span style="color:#e6db74"&gt;&amp;#34;42&amp;#34;&lt;/span&gt; &lt;span style="color:#75715e"&gt;// Some 42
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; tryParseInt &lt;span style="color:#e6db74"&gt;&amp;#34;abc&amp;#34;&lt;/span&gt; &lt;span style="color:#75715e"&gt;// None
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Use &lt;code&gt;Option.ofTry&lt;/code&gt;:&lt;/p&gt;</description></item><item><title>FormatException: Invalid format</title><link>https://errorcode.excellentwiki.com/languages/dart/format-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/dart/format-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
 &lt;p&gt;A &lt;code&gt;FormatException&lt;/code&gt; is thrown when you try to parse a string into a number (int, double) or other format, but the string doesn&amp;rsquo;t contain a valid representation of the target type.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;

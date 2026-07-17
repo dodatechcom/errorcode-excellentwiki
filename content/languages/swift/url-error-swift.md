@@ -1,157 +1,86 @@
 ---
-title: "[Solution] Swift URL / URLSession Error Fix"
-description: "Fix Swift URLSession and URL errors. Learn how to handle network request failures, invalid URLs, and connection issues."
+title: "[Solution] Swift URLError Network Error Fix"
+description: "Fix Swift URLError network errors. Learn why network requests fail and how to handle URL loading system errors."
 languages: ["swift"]
 severities: ["error"]
-error-types: ["runtime-error"]
-tags: ["url-error", "urlsession", "networking", "http", "swift"]
+error-types: ["network-error"]
+tags: ["urlerror", "network", "urlsession", "swift"]
 weight: 5
 ---
 
-# URL / URLSession Error — Network Request Failed
+## What This Error Means
 
-URL and URLSession errors occur when network requests fail due to invalid URLs, connection issues, or server errors.
-
-## Description
-
-URLSession is Swift's API for making network requests. Errors can occur at various stages: URL creation, connection, data transfer, or response parsing.
-
-Common causes:
-
-- **Invalid URL** — malformed URL string
-- **No internet connection** — device offline
-- **Server error** — 4xx or 5xx HTTP status
-- **Timeout** — request took too long
-- **SSL/TLS error** — certificate validation failure
+A `URLError` is thrown by the URL loading system when a network request fails. This covers a wide range of network issues from connectivity problems to server errors.
 
 ## Common Causes
 
-```swift
-// Cause 1: Invalid URL
-let url = URL(string: "not a valid url")  // nil
-
-// Cause 2: No internet
-let task = URLSession.shared.dataTask(with: url) { data, response, error in
-    if let error = error {
-        print(error)  // NSURLErrorNotConnectedToInternet
-    }
-}
-
-// Cause 3: Server error
-let task = URLSession.shared.dataTask(with: url) { data, response, error in
-    if let httpResponse = response as? HTTPURLResponse {
-        if httpResponse.statusCode >= 400 {
-            print("Server error: \(httpResponse.statusCode)")
-        }
-    }
-}
-
-// Cause 4: Timeout
-let config = URLSessionConfiguration.default
-config.timeoutIntervalForRequest = 5
-let session = URLSession(configuration: config)
-```
+- No internet connection
+- Server unreachable
+- Invalid URL
+- Request timeout
+- SSL/TLS certificate issues
 
 ## How to Fix
 
-### Fix 1: Validate URL before use
-
 ```swift
-// Wrong
-let url = URL(string: userInput)!
-let task = URLSession.shared.dataTask(with: url)
+// WRONG: Not handling network errors
+let url = URL(string: "https://api.example.com/data")!
+let (data, _) = try await URLSession.shared.data(from: url)  // May throw
 
-// Correct
-guard let url = URL(string: userInput) else {
-    print("Invalid URL")
-    return
-}
-let task = URLSession.shared.dataTask(with: url)
-```
-
-### Fix 2: Handle network errors
-
-```swift
-// Wrong
-let task = URLSession.shared.dataTask(with: url) { data, response, error in
-    // Ignoring error
-}
-
-// Correct
-let task = URLSession.shared.dataTask(with: url) { data, response, error in
-    if let error = error {
-        print("Network error: \(error.localizedDescription)")
-        return
-    }
-    guard let httpResponse = response as? HTTPURLResponse,
-          (200...299).contains(httpResponse.statusCode) else {
-        print("Server error")
-        return
-    }
-}
-```
-
-### Fix 3: Set timeout
-
-```swift
-// Wrong
-let task = URLSession.shared.dataTask(with: url)
-
-// Correct
-let config = URLSessionConfiguration.default
-config.timeoutIntervalForRequest = 30
-let session = URLSession(configuration: config)
-let task = session.dataTask(with: url)
-```
-
-### Fix 4: Use async/await (iOS 15+)
-
-```swift
-// Wrong
-let task = URLSession.shared.dataTask(with: url) { data, response, error in
-    // Completion handler
-}
-
-// Correct
+// CORRECT: Handle URLError
 do {
-    let (data, response) = try await URLSession.shared.data(from: url)
-    let httpResponse = response as! HTTPURLResponse
+    let (data, _) = try await URLSession.shared.data(from: url)
+} catch let error as URLError {
+    switch error.code {
+    case .notConnectedToInternet:
+        print("No internet connection")
+    case .timedOut:
+        print("Request timed out")
+    default:
+        print("Network error: \(error.localizedDescription)")
+    }
+}
+```
+
+```swift
+// WRONG: Not checking HTTP status code
+let (data, response) = try await URLSession.shared.data(from: url)
+// May have 404 or 500 status
+
+// CORRECT: Check status code
+let (data, response) = try await URLSession.shared.data(from: url)
+if let httpResponse = response as? HTTPURLResponse {
     guard (200...299).contains(httpResponse.statusCode) else {
         throw URLError(.badServerResponse)
     }
-} catch {
-    print("Error: \(error)")
 }
 ```
 
 ## Examples
 
 ```swift
-// Example 1: Complete network request
-func fetchUser(id: Int) async throws -> User {
-    guard let url = URL(string: "https://api.example.com/users/\(id)") else {
-        throw URLError(.badURL)
-    }
-    
+// Example 1: Network request with error handling
+func fetchData() async throws -> Data {
+    let url = URL(string: "https://api.example.com/data")!
     let (data, response) = try await URLSession.shared.data(from: url)
-    
     guard let httpResponse = response as? HTTPURLResponse,
           httpResponse.statusCode == 200 else {
         throw URLError(.badServerResponse)
     }
-    
-    return try JSONDecoder().decode(User.self, from: data)
+    return data
 }
 
-// Example 2: Retry logic
-func fetchWithRetry(url: URL, retries: Int = 3) async throws -> Data {
-    for attempt in 0..<retries {
+// Example 2: Check connectivity
+let isConnected = try await checkNetworkConnectivity()
+
+// Example 3: Retry on failure
+func fetchWithRetry(maxRetries: Int = 3) async throws -> Data {
+    for attempt in 0..<maxRetries {
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            return data
+            return try await fetchData()
         } catch {
-            if attempt == retries - 1 { throw error }
-            try await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(attempt))) * 1_000_000_000)
+            if attempt == maxRetries - 1 { throw error }
+            try await Task.sleep(nanoseconds: 1_000_000_000)
         }
     }
     throw URLError(.unknown)
@@ -160,6 +89,7 @@ func fetchWithRetry(url: URL, retries: Int = 3) async throws -> Data {
 
 ## Related Errors
 
-- [Decoding Error]({{< relref "/languages/swift/decodable-error" >}}) — JSONDecoder failure
-- [SwiftUI Error]({{< relref "/languages/swift/swiftui-error" >}}) — SwiftUI runtime error
-- [Memory Error]({{< relref "/languages/swift/memory-error-swift" >}}) — memory corruption
+- [URLError not connected](urlerror-not-connected) — no internet
+- [URLError timed out](urlerror-timed-out) — request timeout
+- [URLError secure connection](urlerror-secure-connection) — SSL error
+- [URLError bad server response](urlerror-bad-server-response) — server error

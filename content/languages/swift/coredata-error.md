@@ -1,97 +1,69 @@
 ---
-title: "[Solution] Swift Error — Core Data Error"
-description: "Fix Swift Core Data errors. Learn about NSManagedObjectContext errors, save failures, and how to handle Core Data stack issues."
+title: "[Solution] Swift CoreData Persistence Error Fix"
+description: "Fix Swift CoreData persistence errors. Learn why CoreData operations fail and how to handle persistence layer issues."
 languages: ["swift"]
 severities: ["error"]
-error-types: ["runtime-error"]
-tags: ["coredata", "persistence", "database", "nsmanagedobject", "sqlite"]
+error-types: ["database-error"]
+tags: ["coredata", "persistence", "database", "swift"]
 weight: 5
 ---
 
-# Core Data Error
+## What This Error Means
 
-Core Data errors occur during fetch, save, delete, or migration operations on the persistence stack. These errors are typically wrapped in `NSManagedObjectContext` or `NSPersistentContainer` methods.
-
-## Description
-
-Core Data is Apple's object-graph and persistence framework. Errors can occur at any level: model loading, context save, migration, or store access. Most Core Data errors are `NSError` instances with domain `NSCocoaErrorDomain` and specific error codes.
-
-Common patterns:
-
-- **Save conflicts** — multiple contexts modifying the same object.
-- **Migration failures** — model changes without proper migration.
-- **Validation failures** — violating constraints (unique, non-nil, min/max).
-- **Store corruption** — SQLite database file becomes invalid.
+A CoreData persistence error occurs when CoreData fails to save, fetch, or manage persistent data. This can happen due to validation failures, concurrency issues, or model configuration problems.
 
 ## Common Causes
 
-```swift
-// Cause 1: Unhandled save error
-let context = persistentContainer.viewContext
-try context.save() // May throw with no catch
-
-// Cause 2: Validation failure
-let entity = User(context: context)
-entity.name = "" // May violate non-empty constraint
-try context.save() // ValidationError
-
-// Cause 3: Concurrency violation
-// Accessing context from wrong thread
-context.perform {
-    let fetchRequest = User.fetchRequest()
-    let users = try? context.fetch(fetchRequest) // Must be on context queue
-}
-
-// Cause 4: Migration not configured
-// Model changed but no mapping model or lightweight migration enabled
-```
+- Validation rule violations
+- Concurrency context access issues
+- Model migration required
+- Missing persistent store
 
 ## How to Fix
 
-### Fix 1: Always wrap saves in do/catch
-
 ```swift
-let context = persistentContainer.viewContext
+// WRONG: Not handling save errors
+try viewContext.save()  // May throw ValidationError
+
+// CORRECT: Handle save errors
 do {
-    try context.save()
+    try viewContext.save()
 } catch {
-    context.rollback()
-    print("Save failed: \(error.localizedDescription)")
+    viewContext.rollback()
+    print("Save failed: \(error)")
 }
 ```
 
-### Fix 2: Configure automatic migration
-
 ```swift
-let description = NSPersistentStoreDescription()
-description.shouldMigrateStoreAutomatically = true
-description.shouldInferMappingModelAutomatically = true
-persistentContainer.persistentStoreDescriptions = [description]
+// WRONG: Accessing context from wrong thread
+let context = persistentContainer.viewContext
+DispatchQueue.global().async {
+    let objects = try? context.fetch(request)  // Wrong thread!
+}
+
+// CORRECT: Use perform block
+let context = persistentContainer.viewContext
+context.perform {
+    let objects = try? context.fetch(request)
+}
 ```
 
-### Fix 3: Handle merge conflicts
-
 ```swift
-context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-// This merges changes, preferring in-memory values for conflicts
-```
+// WRONG: Ignoring validation
+class User: NSManagedObject {
+    @NSManaged var name: String
+    @NSManaged var email: String
+}
 
-### Fix 4: Validate before saving
+// CORRECT: Add validation
+class User: NSManagedObject {
+    @NSManaged var name: String
+    @NSManaged var email: String
 
-```swift
-func saveContext(_ context: NSManagedObjectContext) {
-    guard context.hasChanges else { return }
-    do {
-        try context.save()
-    } catch let error as NSError {
-        switch error.code {
-        case NSValidationErrorNumberTooLargeError:
-            print("Number too large")
-        case NSValidationMissingMandatoryPropertyError:
-            print("Missing required property")
-        default:
-            print("Core Data error: \(error), \(error.userInfo)")
-        }
+    override func validateForInsert() throws {
+        try super.validateForInsert()
+        if name.isEmpty { throw ValidationError.nameEmpty }
+        if !email.contains("@") { throw ValidationError.invalidEmail }
     }
 }
 ```
@@ -99,18 +71,35 @@ func saveContext(_ context: NSManagedObjectContext) {
 ## Examples
 
 ```swift
-// Example 1: Fetch without context queue
-let context = persistentContainer.viewContext
-let request = User.fetchRequest()
-let users = try context.fetch(request) // May crash if not on context queue
+// Example 1: Basic CoreData stack
+lazy var persistentContainer: NSPersistentContainer = {
+    let container = NSPersistentContainer(name: "Model")
+    container.loadPersistentStores { _, error in
+        if let error = error {
+            fatalError("CoreData error: \(error)")
+        }
+    }
+    return container
+}()
 
-// Example 2: Save after delete without proper handling
-context.delete(user)
-try context.save() // Fails if user has required relationships
+// Example 2: Save with rollback
+func saveContext() {
+    guard viewContext.hasChanges else { return }
+    do {
+        try viewContext.save()
+    } catch {
+        viewContext.rollback()
+    }
+}
+
+// Example 3: Batch delete
+let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+let batchDelete = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+try persistentContainer.viewContext.execute(batchDelete)
 ```
 
 ## Related Errors
 
-- [NSPersistentStore Error]({{< relref "/languages/swift/coredata-store" >}}) — persistent store issues.
-- [File Permission Denied]({{< relref "/languages/swift/file-permission" >}}) — file access issues.
-- [File Not Found]({{< relref "/languages/swift/file-not-found" >}}) — missing files.
+- [CoreData fetch error](coredata-fetch-error) — fetch request failed
+- [CoreData save error](coredata-save-error) — save operation failed
+- [CoreData validation error](coredata-validation-error) — validation failed

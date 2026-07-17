@@ -18,7 +18,103 @@
 &lt;li&gt;The allocation request is too large for the available contiguous virtual address space.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
-&lt;p&gt;Always check the return value of memory allocation functions. If &lt;code&gt;ENOMEM&lt;/code&gt; occurs, consider reducing the allocation size, freeing unused memory, or adjusting system limits.&lt;/p&gt;</description></item><item><title>[Solution] C++ std::bad_alloc — Memory Allocation Failed Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/bad-alloc-3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/bad-alloc-3/</guid><description>&lt;h1 id="solution-c-stdbad_alloc--memory-allocation-failed-fix"&gt;[Solution] C++ std::bad_alloc — Memory Allocation Failed Fix&lt;/h1&gt;
+&lt;p&gt;Always check the return value of memory allocation functions. If &lt;code&gt;ENOMEM&lt;/code&gt; occurs, consider reducing the allocation size, freeing unused memory, or adjusting system limits.&lt;/p&gt;</description></item><item><title>[Solution] C Out of memory: malloc failed</title><link>https://errorcode.excellentwiki.com/languages/c/out-of-memory-malloc/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/out-of-memory-malloc/</guid><description>&lt;h1 id="out-of-memory-malloc-failed"&gt;Out of memory: malloc failed&lt;/h1&gt;
+&lt;p&gt;malloc returns NULL when the system cannot allocate the requested memory. Dereferencing this NULL pointer causes a segmentation fault.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Requesting too much memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;huge &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;malloc&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;100000000000LL&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Memory leak exhaustion
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; (&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;malloc&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// leaks memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Not checking return value
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;malloc&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;*&lt;/span&gt;p &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;; &lt;span style="color:#75715e"&gt;// crash if malloc returned NULL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-always-check-malloc-return"&gt;Fix 1: Always check malloc return&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;malloc&lt;/span&gt;(n &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (p &lt;span style="color:#f92672"&gt;==&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;perror&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;malloc&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-validate-size-before-allocation"&gt;Fix 2: Validate size before allocation&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (n &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; SIZE_MAX &lt;span style="color:#f92672"&gt;/&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;Size too large&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;malloc&lt;/span&gt;(n &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-calloc-for-zero-initialized-memory"&gt;Fix 3: Use calloc for zero-initialized memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;arr &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;calloc&lt;/span&gt;(n, &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (arr &lt;span style="color:#f92672"&gt;==&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;calloc failed&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;size_t&lt;/span&gt; n &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;arr &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;malloc&lt;/span&gt;(n &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (arr &lt;span style="color:#f92672"&gt;==&lt;/span&gt; NULL) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;Failed to allocate %zu bytes&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, n &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;size_t&lt;/span&gt; i &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;; i &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt; n; i&lt;span style="color:#f92672"&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; arr[i] &lt;span style="color:#f92672"&gt;=&lt;/span&gt; i;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;free&lt;/span&gt;(arr);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/memory-leak-valgrind/"&gt;Memory leak&lt;/a&gt; — leaked memory.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/double-free-heap/"&gt;Double free&lt;/a&gt; — heap corruption.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/heap-corruption/"&gt;Heap corruption&lt;/a&gt; — heap damage.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C++ std::bad_alloc - out of memory with new</title><link>https://errorcode.excellentwiki.com/languages/cpp/bad-alloc-nostd/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/bad-alloc-nostd/</guid><description>&lt;h1 id="stdbad_alloc---out-of-memory-with-new"&gt;std::bad_alloc - out of memory with new&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;std::bad_alloc&lt;/code&gt; is thrown when the &lt;code&gt;new&lt;/code&gt; operator fails to allocate memory. The system has run out of available memory, or the requested allocation exceeds available resources.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Excessively large allocation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;*&lt;/span&gt; arr &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;10000000000LL&lt;/span&gt;]; &lt;span style="color:#75715e"&gt;// may throw std::bad_alloc
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Memory leak accumulation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; (true) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;]; &lt;span style="color:#75715e"&gt;// leaks memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Fragmented heap
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Total free memory exists but not contiguous
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-use-stdnothrow"&gt;Fix 1: Use std::nothrow&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;*&lt;/span&gt; arr &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt;(std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;nothrow) &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;100000000&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (arr &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;nullptr&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cerr &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Allocation failed&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-catch-and-handle"&gt;Fix 2: Catch and handle&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&lt;span style="color:#f92672"&gt;*&lt;/span&gt; arr &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[&lt;span style="color:#ae81ff"&gt;100000000&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;delete&lt;/span&gt;[] arr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;bad_alloc&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; e) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cerr &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Memory allocation failed: &amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; e.what() &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-smart-pointers"&gt;Fix 3: Use smart pointers&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;auto&lt;/span&gt; arr &lt;span style="color:#f92672"&gt;=&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;make_unique&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;[]&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;(&lt;span style="color:#ae81ff"&gt;100000000&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;arr) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;cerr &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Allocation failed&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&amp;lt;&lt;/span&gt; std&lt;span style="color:#f92672"&gt;::&lt;/span&gt;endl;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/bad-array-new-length/"&gt;std::bad_array_new_length&lt;/a&gt; — invalid array size.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/length-error-vector/"&gt;std::length_error&lt;/a&gt; — container resize too large.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/memory-leak-valgrind/"&gt;Memory leak: Valgrind&lt;/a&gt; — gradual memory exhaustion.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C++ std::bad_alloc — Memory Allocation Failed Fix</title><link>https://errorcode.excellentwiki.com/languages/cpp/bad-alloc-3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/cpp/bad-alloc-3/</guid><description>&lt;h1 id="solution-c-stdbad_alloc--memory-allocation-failed-fix"&gt;[Solution] C++ std::bad_alloc — Memory Allocation Failed Fix&lt;/h1&gt;
 &lt;p&gt;A &lt;code&gt;std::bad_alloc&lt;/code&gt; is thrown when the &lt;code&gt;new&lt;/code&gt; operator or &lt;code&gt;malloc()&lt;/code&gt; fails to allocate the requested amount of memory. This typically happens when the system runs out of available memory, the requested size is unreasonably large, or there is a memory leak gradually exhausting available resources. The exception is defined in &lt;code&gt;&amp;lt;new&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;
@@ -142,8 +238,173 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/length-error-3/"&gt;std::length_error&lt;/a&gt; — container resize exceeds max allowed size&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/cpp/bad-allocation-length-2/"&gt;std::bad_array_length&lt;/a&gt; — invalid array length in new[]&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/memory-leak/"&gt;Memory Leak: Valgrind Lost Bytes&lt;/a&gt; — gradual memory exhaustion&lt;/li&gt;
-&lt;/ul&gt;</description></item><item><title>[Solution] Linux Out of Memory (OOM Killer) — Fix Killed Process</title><link>https://errorcode.excellentwiki.com/os/linux/oom-killer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/oom-killer/</guid><description>&lt;h1 id="linux-out-of-memory--oom-killer"&gt;Linux: Out of Memory — OOM Killer&lt;/h1&gt;
-&lt;p&gt;The &lt;code&gt;Out of memory: Killed process&lt;/code&gt; message means the Linux kernel&amp;rsquo;s OOM (Out of Memory) killer terminated a process because the system ran out of memory. When available RAM and swap are exhausted, the kernel selects the process with the highest memory usage (or &amp;ldquo;oom_score&amp;rdquo;) and kills it to prevent a complete system freeze. This is a critical event because the killed process loses all its data.&lt;/p&gt;</description></item><item><title>[Solution] macOS OSStatus -108 (memFullErr) — Memory Full Error</title><link>https://errorcode.excellentwiki.com/os/macos/osstatus-1/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/macos/osstatus-1/</guid><description>&lt;h1 id="macos-osstatus--108-memfullerr--memory-full-error"&gt;macOS OSStatus -108 (memFullErr) — Memory Full Error&lt;/h1&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Docker Container OOM Killed — Out of Memory</title><link>https://errorcode.excellentwiki.com/os/linux/linux-docker-out-of-memory/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/linux-docker-out-of-memory/</guid><description>&lt;h1 id="docker-container-oom-killed--out-of-memory"&gt;Docker Container OOM Killed — Out of Memory&lt;/h1&gt;
+&lt;p&gt;A Docker container OOM killed error occurs when the Linux OOM (Out of Memory) killer terminates a container because it exceeded its memory limit or the host ran out of memory. The error reads:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;container [name] exceeded memory limit&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Or in &lt;code&gt;docker inspect&lt;/code&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;OOMKilled&amp;rdquo;: true&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Docker uses Linux cgroups to enforce memory limits on containers. When a container&amp;rsquo;s memory usage exceeds its configured limit, the kernel&amp;rsquo;s OOM killer selects the container&amp;rsquo;s process as the victim and sends &lt;code&gt;SIGKILL&lt;/code&gt;. If no memory limit is set, the host&amp;rsquo;s OOM killer may still kill the container when the host runs out of memory.&lt;/p&gt;</description></item><item><title>[Solution] F# OutOfMemoryException</title><link>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-outofmemoryexception-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-outofmemoryexception-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;An &lt;code&gt;OutOfMemoryException&lt;/code&gt; occurs when the .NET garbage collector cannot allocate enough memory to fulfill a request. This happens when processing large datasets or creating many objects.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Loading large files entirely into memory&lt;/li&gt;
+&lt;li&gt;Building large intermediate collections&lt;/li&gt;
+&lt;li&gt;Memory leaks from retained references&lt;/li&gt;
+&lt;li&gt;Large string concatenation&lt;/li&gt;
+&lt;li&gt;Too many objects preventing GC&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Loading entire file into memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; lines &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.IO.File.ReadAllLines&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;huge.csv&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#75715e"&gt;// May OOM
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Process line by line
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;System.IO.File.ReadLines&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;huge.csv&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Seq.iter &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; line &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; processLine line&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Building large list in memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;1 &lt;span style="color:#f92672"&gt;..&lt;/span&gt; 10000000&lt;span style="color:#f92672"&gt;]&lt;/span&gt; &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; List.map &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; x &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; x &lt;span style="color:#f92672"&gt;*&lt;/span&gt; x&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#75715e"&gt;// OOM
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use sequences (lazy evaluation)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; seq &lt;span style="color:#f92672"&gt;{&lt;/span&gt; 1 &lt;span style="color:#f92672"&gt;..&lt;/span&gt; 10000000 &lt;span style="color:#f92672"&gt;}&lt;/span&gt; &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Seq.map &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; x &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; x &lt;span style="color:#f92672"&gt;*&lt;/span&gt; x&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Process lazily
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;result &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Seq.iter &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; x &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%d&amp;#34;&lt;/span&gt; x&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: String concatenation in loop
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; mutable result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; i &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; 1 &lt;span style="color:#f92672"&gt;..&lt;/span&gt; 1000000 &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; result &lt;span style="color:#f92672"&gt;&amp;lt;-&lt;/span&gt; result &lt;span style="color:#f92672"&gt;+&lt;/span&gt; i&lt;span style="color:#f92672"&gt;.&lt;/span&gt;ToString() &lt;span style="color:#75715e"&gt;// OOM
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use StringBuilder or Array.concat
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; sb &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.Text.StringBuilder()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; i &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; 1 &lt;span style="color:#f92672"&gt;..&lt;/span&gt; 1000000 &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sb&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Append&lt;span style="color:#f92672"&gt;(&lt;/span&gt;i&lt;span style="color:#f92672"&gt;.&lt;/span&gt;ToString()&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; ignore
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; sb&lt;span style="color:#f92672"&gt;.&lt;/span&gt;ToString()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Streaming file processing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;open&lt;/span&gt; System.IO
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; processFile path &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; reader &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; StreamReader&lt;span style="color:#f92672"&gt;(&lt;/span&gt;path&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; &lt;span style="color:#f92672"&gt;not&lt;/span&gt; reader&lt;span style="color:#f92672"&gt;.&lt;/span&gt;EndOfStream &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; line &lt;span style="color:#f92672"&gt;=&lt;/span&gt; reader&lt;span style="color:#f92672"&gt;.&lt;/span&gt;ReadLine()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; processLine line
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Chunked processing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; processInChunks size items &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; items
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Seq.chunkBySize size
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Seq.iter &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;fun&lt;/span&gt; chunk &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; processChunk chunk&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Monitor memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; checkMemory () &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; mem &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.GC.GetTotalMemory&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;Memory: %d bytes&amp;#34;&lt;/span&gt; mem
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; mem &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; 1_000_000_000L &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; System.GC.Collect()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-stackoverflowexception/"&gt;fsharp-stackoverflowexception&lt;/a&gt; — stack overflow&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-operationcanceled/"&gt;fsharp-operationcanceled&lt;/a&gt; — operation cancelled&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-invalidoperation/"&gt;fsharp-invalidoperation&lt;/a&gt; — invalid operation&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] HRESULT E_OUTOFMEMORY (0x8007000E) — Out of Memory</title><link>https://errorcode.excellentwiki.com/os/windows/hresult-e-outofmemory/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/hresult-e-outofmemory/</guid><description>&lt;h1 id="hresult-e_outofmemory-0x8007000e--out-of-memory"&gt;HRESULT E_OUTOFMEMORY (0x8007000E) — Out of Memory&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Error Code:&lt;/strong&gt; &lt;code&gt;0x8007000E&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;E_OUTOFMEMORY indicates that the system or application failed to allocate sufficient memory for the requested operation.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;This HRESULT occurs when the COM memory allocator cannot allocate the requested number of bytes. The system may have available physical RAM but the process virtual address space may be exhausted, or system-wide memory limits have been reached.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Process virtual address space exhaustion (especially 32-bit processes)&lt;/li&gt;
+&lt;li&gt;System-wide physical memory exhaustion&lt;/li&gt;
+&lt;li&gt;Memory leaks in running applications&lt;/li&gt;
+&lt;li&gt;Excessive memory usage by background services or malware&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="check-current-memory-usage"&gt;Check Current Memory Usage&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;systeminfo | findstr /C:&lt;span style="color:#e6db74"&gt;&amp;#34;Memory&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="close-memory-heavy-processes"&gt;Close Memory-Heavy Processes&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cmd" data-lang="cmd"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;tasklist /FO table | sort /R /+55
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;taskkill /F /PID &amp;lt;process_id&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="increase-virtual-memory-page-file"&gt;Increase Virtual Memory (Page File)&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Open &lt;strong&gt;System Properties&lt;/strong&gt; &amp;gt; &lt;strong&gt;Advanced&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Performance&lt;/strong&gt; &amp;gt; &lt;strong&gt;Settings&lt;/strong&gt; &amp;gt; &lt;strong&gt;Advanced&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Virtual Memory&lt;/strong&gt; &amp;gt; &lt;strong&gt;Change&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set a larger page file size or select &lt;strong&gt;System managed size&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="for-32-bit-applications"&gt;For 32-bit Applications&lt;/h3&gt;
+&lt;p&gt;Recompile or switch to the 64-bit version of the application to access more than 2GB of virtual address space:&lt;/p&gt;</description></item><item><title>[Solution] Linux Out of Memory — Kill Process at Fault Fix</title><link>https://errorcode.excellentwiki.com/os/linux/linux-oom-killer-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/linux-oom-killer-v2/</guid><description>&lt;h1 id="linux-out-of-memory--kill-process"&gt;Linux: Out of memory — Kill process&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;Out of memory: Kill process &amp;lt;PID&amp;gt; (&amp;lt;name&amp;gt;)&lt;/code&gt; message means the kernel&amp;rsquo;s OOM killer has terminated a process to free memory. This occurs when the system has exhausted all available RAM and swap, and the kernel must sacrifice a process to prevent a complete system freeze. The killed process loses all unsaved data.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Memory leak in an application consuming RAM over time&lt;/li&gt;
+&lt;li&gt;Insufficient physical RAM for active workload&lt;/li&gt;
+&lt;li&gt;Swap space exhausted or misconfigured&lt;/li&gt;
+&lt;li&gt;Container/VM memory limits too restrictive&lt;/li&gt;
+&lt;li&gt;Too many concurrent processes or threads&lt;/li&gt;
+&lt;li&gt;Database or JVM heap size misconfiguration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-identify-the-oom-event"&gt;1. Identify the OOM Event&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check kernel logs for OOM killer activity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;dmesg | grep -A &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;oom-killer&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo journalctl -k | grep -i &lt;span style="color:#e6db74"&gt;&amp;#34;oom&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Look for the killed process and its memory usage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example output:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# [12345.678] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0-1,task=mysqld,pid=1234,uid=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-check-memory-usage"&gt;2. Check Memory Usage&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Overall memory status&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;free -h
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Show memory in megabytes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;free -m
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Top memory-consuming processes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ps aux --sort&lt;span style="color:#f92672"&gt;=&lt;/span&gt;-%mem | head -15
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Detailed per-process memory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;smem -t -p | head -20
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check swap usage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;swapon --show
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-add-or-increase-swap"&gt;3. Add or Increase Swap&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check current swap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo swapon --show
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Create a swap file (e.g., 8GB)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo fallocate -l 8G /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo chmod &lt;span style="color:#ae81ff"&gt;600&lt;/span&gt; /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo mkswap /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo swapon /swapfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Make permanent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#39;/swapfile none swap sw 0 0&amp;#39;&lt;/span&gt; | sudo tee -a /etc/fstab
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Adjust swappiness (lower = less aggressive swapping)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo sysctl vm.swappiness&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;vm.swappiness=10&amp;#34;&lt;/span&gt; | sudo tee -a /etc/sysctl.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-adjust-oom-killer-behavior"&gt;4. Adjust OOM Killer Behavior&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Protect a critical process from OOM killer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl set-property myservice.service OOMScoreAdjust&lt;span style="color:#f92672"&gt;=&lt;/span&gt;-1000
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# For non-systemd processes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo echo -1000 &amp;gt; /proc/&amp;lt;PID&amp;gt;/oom_score_adj
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Allow a process to be killed first (sacrificial)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo echo &lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt; &amp;gt; /proc/&amp;lt;PID&amp;gt;/oom_score_adj
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Disable OOM killer entirely (not recommended)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo sysctl vm.oom-kill&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="5-configure-memory-limits"&gt;5. Configure Memory Limits&lt;/h3&gt;
+&lt;p&gt;For systemd services:&lt;/p&gt;</description></item><item><title>[Solution] Linux Out of Memory (OOM Killer) — Fix Killed Process</title><link>https://errorcode.excellentwiki.com/os/linux/oom-killer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/oom-killer/</guid><description>&lt;h1 id="linux-out-of-memory--oom-killer"&gt;Linux: Out of Memory — OOM Killer&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;Out of memory: Killed process&lt;/code&gt; message means the Linux kernel&amp;rsquo;s OOM (Out of Memory) killer terminated a process because the system ran out of memory. When available RAM and swap are exhausted, the kernel selects the process with the highest memory usage (or &amp;ldquo;oom_score&amp;rdquo;) and kills it to prevent a complete system freeze. This is a critical event because the killed process loses all its data.&lt;/p&gt;</description></item><item><title>[Solution] Linux Redis OOM Command Not Allowed</title><link>https://errorcode.excellentwiki.com/os/linux/linux-redis-oom/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/linux/linux-redis-oom/</guid><description>&lt;h1 id="linux-redis--oom-command-not-allowed"&gt;Linux: Redis — OOM command not allowed&lt;/h1&gt;
+&lt;p&gt;The &lt;code&gt;OOM command not allowed when used memory &amp;gt; 'maxmemory'&lt;/code&gt; error means Redis has reached its configured maximum memory limit (&lt;code&gt;maxmemory&lt;/code&gt;) and the current eviction policy does not allow the command to proceed. Redis refuses write operations when memory is full and no eviction policy is set to free space.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Redis uses &lt;code&gt;maxmemory&lt;/code&gt; to cap its memory usage. When this limit is reached, Redis behavior depends on the &lt;code&gt;maxmemory-policy&lt;/code&gt; setting. If the policy is &lt;code&gt;noeviction&lt;/code&gt; (the default), Redis rejects all write commands with an OOM error. Other policies (like &lt;code&gt;allkeys-lru&lt;/code&gt;) evict existing keys to make room for new writes. The OOM error is a safety mechanism to prevent Redis from consuming all system memory.&lt;/p&gt;</description></item><item><title>[Solution] macOS OSStatus -108 (memFullErr) — Memory Full Error</title><link>https://errorcode.excellentwiki.com/os/macos/osstatus-1/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/macos/osstatus-1/</guid><description>&lt;h1 id="macos-osstatus--108-memfullerr--memory-full-error"&gt;macOS OSStatus -108 (memFullErr) — Memory Full Error&lt;/h1&gt;
 &lt;p&gt;OSStatus -108 (memFullErr) indicates that the system or application has exhausted available memory. This error is returned by legacy Core Services and Carbon APIs when a memory allocation fails. On modern macOS, this error is rare because the virtual memory system handles most memory pressure, but it can still occur in 32-bit processes, embedded systems, or when the system is under extreme memory pressure.&lt;/p&gt;</description></item><item><title>[Solution] PHP Error 7 — ENOMEM Out of Memory Fix</title><link>https://errorcode.excellentwiki.com/languages/php/error-7/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/php/error-7/</guid><description>&lt;h1 id="solution-php-error-7--enomem-out-of-memory-fix"&gt;[Solution] PHP Error 7 — ENOMEM Out of Memory Fix&lt;/h1&gt;
 &lt;p&gt;PHP error code 7 corresponds to &lt;code&gt;ENOMEM&lt;/code&gt; (error number 7), the out-of-memory condition. PHP reports this as &lt;code&gt;Fatal error: Allowed memory size of X bytes exhausted (tried to allocate Y bytes)&lt;/code&gt;. The script halts immediately when PHP cannot allocate more memory from the system.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
@@ -222,6 +483,503 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/php/fatal-out-of-memory/"&gt;PHP Fatal Out of Memory&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/php/e-error/"&gt;PHP E_ERROR&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/php/e-all/"&gt;PHP E_ALL&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] PyTorch RuntimeError: CUDA Out of Memory Fix</title><link>https://errorcode.excellentwiki.com/languages/python/torch-cuda-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/python/torch-cuda-error/</guid><description>&lt;h1 id="runtimeerror-cuda-out-of-memory--pytorch-fix"&gt;RuntimeError: CUDA Out of Memory — PyTorch Fix&lt;/h1&gt;
+&lt;p&gt;A &lt;code&gt;RuntimeError: CUDA out of memory&lt;/code&gt; is raised when PyTorch cannot allocate enough GPU memory for a tensor or operation. This is the most common GPU error in deep learning workflows.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common messages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;RuntimeError: CUDA out of memory. Tried to allocate X MiB&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RuntimeError: CUDA error: out of memory&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;torch.cuda.OutOfMemoryError: CUDA out of memory&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;PyTorch attempted to allocate GPU memory for a new tensor but the GPU has insufficient free VRAM. Existing tensors, cached memory, or other processes consuming GPU resources leave too little room.&lt;/p&gt;</description></item><item><title>[Solution] Scala OutOfMemoryError</title><link>https://errorcode.excellentwiki.com/languages/scala/scala-outofmemory-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/scala/scala-outofmemory-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;An &lt;code&gt;OutOfMemoryError&lt;/code&gt; occurs when the JVM cannot allocate more memory because the heap is full. This happens when processing large datasets or holding too many objects in memory.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Loading entire large dataset into memory&lt;/li&gt;
+&lt;li&gt;Memory leaks (retained references)&lt;/li&gt;
+&lt;li&gt;Infinite recursion building stack frames&lt;/li&gt;
+&lt;li&gt;Large collection operations (e.g., &lt;code&gt;groupBy&lt;/code&gt; on large data)&lt;/li&gt;
+&lt;li&gt;JVM heap size too small&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Loading everything into memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; largeFile &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Source&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fromFile&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;huge.csv&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;getLines&lt;span style="color:#f92672"&gt;().&lt;/span&gt;toList &lt;span style="color:#75715e"&gt;// OOM
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Process line by line
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; source &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Source&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fromFile&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;huge.csv&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; source&lt;span style="color:#f92672"&gt;.&lt;/span&gt;getLines&lt;span style="color:#f92672"&gt;().&lt;/span&gt;foreach &lt;span style="color:#f92672"&gt;{&lt;/span&gt; line &lt;span style="color:#66d9ef"&gt;=&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; processLine&lt;span style="color:#f92672"&gt;(&lt;/span&gt;line&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;finally&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; source&lt;span style="color:#f92672"&gt;.&lt;/span&gt;close&lt;span style="color:#f92672"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Building large intermediate collections
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; to &lt;span style="color:#ae81ff"&gt;10000000&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;map&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;filter&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;toList
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use views (lazy collections)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; to &lt;span style="color:#ae81ff"&gt;10000000&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;view&lt;span style="color:#f92672"&gt;.&lt;/span&gt;map&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;filter&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;toList
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Or use iterators
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Iterator&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;from&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;map&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;filter&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;take&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;toList
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not increasing heap for large jobs
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// java -cp app.jar MainClass
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Increase JVM heap
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// java -Xmx4g -Xms2g -cp app.jar MainClass
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Or in build.sbt:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// javaOptions += &amp;#34;-Xmx4g&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Grouping large dataset into memory
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; grouped &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; hugeDataset&lt;span style="color:#f92672"&gt;.&lt;/span&gt;groupBy&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;category&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#75715e"&gt;// May OOM
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use Spark or streaming for big data
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; org.apache.spark.sql.SparkSession
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; spark &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;SparkSession&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;builder&lt;span style="color:#f92672"&gt;().&lt;/span&gt;getOrCreate&lt;span style="color:#f92672"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; df &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; spark&lt;span style="color:#f92672"&gt;.&lt;/span&gt;read&lt;span style="color:#f92672"&gt;.&lt;/span&gt;csv&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;huge.csv&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Monitor memory usage
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; withMemoryLogging&lt;span style="color:#f92672"&gt;[&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;T&lt;/span&gt;&lt;span style="color:#f92672"&gt;](&lt;/span&gt;name&lt;span style="color:#66d9ef"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;String&lt;/span&gt;&lt;span style="color:#f92672"&gt;)(&lt;/span&gt;f&lt;span style="color:#66d9ef"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; T&lt;span style="color:#f92672"&gt;)&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;T&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; rt &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Runtime&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;getRuntime
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; before &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; rt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;totalMemory&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt; rt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;freeMemory&lt;span style="color:#f92672"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; result &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; f
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; after &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; rt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;totalMemory&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt; rt&lt;span style="color:#f92672"&gt;.&lt;/span&gt;freeMemory&lt;span style="color:#f92672"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; println&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;s&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;$name&lt;/span&gt;&lt;span style="color:#e6db74"&gt; used &lt;/span&gt;&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;after &lt;span style="color:#f92672"&gt;-&lt;/span&gt; before&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;&lt;span style="color:#e6db74"&gt; KB&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; result
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Streaming processing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; scala.io.Source
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Source&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;fromFile&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;big.csv&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;.&lt;/span&gt;getLines&lt;span style="color:#f92672"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;.&lt;/span&gt;sliding&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1000&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#75715e"&gt;// Process in batches of 1000
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;.&lt;/span&gt;foreach&lt;span style="color:#f92672"&gt;(&lt;/span&gt;processBatch&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Lazy evaluation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;lazy&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; hugeComputation &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; to &lt;span style="color:#ae81ff"&gt;10000000&lt;/span&gt;&lt;span style="color:#f92672"&gt;).&lt;/span&gt;map&lt;span style="color:#f92672"&gt;(&lt;/span&gt;computeExpensive&lt;span style="color:#f92672"&gt;).&lt;/span&gt;toList
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Only computed when accessed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=""&gt;scala-stackoverflow&lt;/a&gt; — stack overflow in recursion&lt;/li&gt;
+&lt;li&gt;&lt;a href=""&gt;scala-nullpointer&lt;/a&gt; — null pointer&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/scala/scala-matcherror/"&gt;scala-matcherror&lt;/a&gt; — pattern match failed&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift Out of Memory Error Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/out-of-memory-swift/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/out-of-memory-swift/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;An out of memory error occurs when your Swift app exhausts available memory. This typically happens due to large data allocations, memory leaks, or retain cycles that prevent memory from being freed.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Loading very large data sets into memory&lt;/li&gt;
+&lt;li&gt;Retain cycles in closures&lt;/li&gt;
+&lt;li&gt;Unbounded cache growth&lt;/li&gt;
+&lt;li&gt;Large image/data processing without streaming&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Loading all data into memory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; hugeData = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; Data(contentsOf: largeFileURL) &lt;span style="color:#75715e"&gt;// Memory spike&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Stream data instead&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; handle = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; FileHandle(forReadingFrom: largeFileURL)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;while&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; chunk = handle.readData(ofLength: &lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; processChunk(chunk)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Retain cycle in closure&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ViewController&lt;/span&gt;: UIViewController {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; handler: (() -&amp;gt; Void)?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;setup&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; handler = {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;.updateUI() &lt;span style="color:#75715e"&gt;// Strong reference to self&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use weak self&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ViewController&lt;/span&gt;: UIViewController {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; handler: (() -&amp;gt; Void)?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;setup&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; handler = { [&lt;span style="color:#66d9ef"&gt;weak&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;] &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;?.updateUI()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Unbounded cache&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; cache: [String: Data] = [:]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;cacheData&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; key: String, data: Data) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cache[key] = data &lt;span style="color:#75715e"&gt;// Grows forever&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Limit cache size&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;LRUCache&lt;/span&gt;&amp;lt;Key: Hashable, Value&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; cache: [Key: Value] = [:]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; maxSize: Int
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;init&lt;/span&gt;(maxSize: Int) { &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;.maxSize = maxSize }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;set&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt; key: Key, value: Value) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; cache.count &lt;span style="color:#f92672"&gt;&amp;gt;=&lt;/span&gt; maxSize {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cache.removeValue(forKey: cache.keys.first!)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; cache[key] = value
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Monitor memory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;memoryUsage&lt;/span&gt;() -&amp;gt; UInt64 {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; info = mach_task_basic_info()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; count = mach_msg_type_number_t(MemoryLayout&amp;lt;mach_task_basic_info&amp;gt;.size) &lt;span style="color:#f92672"&gt;/&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result = withUnsafeMutablePointer(to: &amp;amp;info) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $0.withMemoryRebound(to: integer_t.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, capacity: &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; task_info(mach_task_self_, task_flavor_t(MACH_TASK_BASIC_INFO), $0, &amp;amp;count)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; result == KERN_SUCCESS ? info.resident_size : &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Lazy loading&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;lazy&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; expensiveView: UIView = {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; view = UIView()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Expensive setup&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; view
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Autorelease pool for loops&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; i &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0.&lt;/span&gt;.&amp;lt;&lt;span style="color:#ae81ff"&gt;10000&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; autoreleasepool {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; image = processImage(at: i)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="memory-access-error"&gt;Memory access error&lt;/a&gt; — EXC_BAD_ACCESS&lt;/li&gt;
+&lt;li&gt;&lt;a href="stack-overflow-swift"&gt;Stack overflow&lt;/a&gt; — recursion limit&lt;/li&gt;
+&lt;li&gt;&lt;a href="integer-overflow-swift"&gt;Integer overflow&lt;/a&gt; — arithmetic overflow&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] VBA Out of Memory Error</title><link>https://errorcode.excellentwiki.com/languages/vba/vba-out-of-memory/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/vba/vba-out-of-memory/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Out of Memory (Error 7) occurs when VBA cannot allocate sufficient memory for a new variable, array, or object. This is rare on modern systems but can happen with very large arrays.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Array too large for available memory&lt;/li&gt;
+&lt;li&gt;Too many open workbooks or objects&lt;/li&gt;
+&lt;li&gt;Memory leak from unreleased objects&lt;/li&gt;
+&lt;li&gt;Declaring very large arrays with Dim&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; WRONG: Very large array
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Dim huge(1 To 100000000) As Double &amp;#39; May cause Error 7
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Use smaller arrays or process in chunks
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Dim chunk(1 To 100000) As Double
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; Process data in chunks
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Release objects when done
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub ProcessData()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim rng As Range
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set rng = Range(&amp;#34;A1:A10000&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; ... process ...
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set rng = Nothing &amp;#39; Release memory
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim arr() As Double
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ReDim arr(1 To 50000000) &amp;#39; May cause Error 7
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="vba-overflow"&gt;Overflow&lt;/a&gt; - numeric overflow errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="vba-runtime-error"&gt;Runtime Error&lt;/a&gt; - general execution errors&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] VBA: Run-time error '7': Out of memory</title><link>https://errorcode.excellentwiki.com/languages/vba/vba-out-of-memory-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/vba/vba-out-of-memory-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Run-time error &amp;lsquo;7&amp;rsquo; occurs when VBA cannot allocate enough memory for an operation. This happens with excessively large arrays, too many open objects, or memory leaks.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Declaring excessively large arrays&lt;/li&gt;
+&lt;li&gt;Too many open workbooks or worksheets&lt;/li&gt;
+&lt;li&gt;Memory leak from unreleased objects&lt;/li&gt;
+&lt;li&gt;Large string concatenation&lt;/li&gt;
+&lt;li&gt;Multiple COM objects not properly released&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; WRONG: Massive array declaration
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim arr(1 To 10000000) As Double &amp;#39; ~80MB
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; Error 7: Not enough memory
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Use dynamic arrays with bounds
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim arr() As Double
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ReDim arr(1 To 1000000) &amp;#39; ~8MB
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; Process in chunks if needed
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; WRONG: Not releasing objects
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example2()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim i As Integer
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; For i = 1 To 100
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim wb As Workbook
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set wb = Workbooks.Open(&amp;#34;C:\temp\file&amp;#34; &amp;amp; i &amp;amp; &amp;#34;.xlsx&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; Memory accumulates
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Next i
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Release objects properly
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example2()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim i As Integer
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim wb As Workbook
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; For i = 1 To 100
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set wb = Workbooks.Open(&amp;#34;C:\temp\file&amp;#34; &amp;amp; i &amp;amp; &amp;#34;.xlsx&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; Process file
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; wb.Close SaveChanges:=False
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set wb = Nothing
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Next i
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Optimize string operations
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example3()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim result As String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim i As Integer
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; WRONG: String concatenation in loop
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; For i = 1 To 10000
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; result = result &amp;amp; &amp;#34;Item &amp;#34; &amp;amp; i &amp;amp; vbCrLf
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Next i
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; CORRECT: Use array and Join
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim arr() As String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ReDim arr(1 To 10000)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; For i = 1 To 10000
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; arr(i) = &amp;#34;Item &amp;#34; &amp;amp; i
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Next i
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; result = Join(arr, vbCrLf)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="vba-overflow-v2"&gt;Overflow&lt;/a&gt; - numeric limits&lt;/li&gt;
+&lt;li&gt;&lt;a href="vba-subscript-out-of-range-v2"&gt;Subscript Out of Range&lt;/a&gt; - array bounds&lt;/li&gt;
+&lt;li&gt;&lt;a href="vba-object-not-set-v2"&gt;Object Not Set&lt;/a&gt; - memory issues&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>ERROR_OUTOFMEMORY (14) - How to Fix</title><link>https://errorcode.excellentwiki.com/os/windows/win32-outofmemory-win32/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/win32-outofmemory-win32/</guid><description>&lt;h1 id="error_outofmemory-win32-error-14"&gt;ERROR_OUTOFMEMORY (Win32 Error 14)&lt;/h1&gt;
+&lt;p&gt;This Win32 API error occurs when the system cannot allocate memory for an operation. The error code is &lt;code&gt;ERROR_OUTOFMEMORY&lt;/code&gt; (value 14). The full message reads:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Not enough memory resources are available to complete this operation.&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Unlike ERROR_NOT_ENOUGH_MEMORY (8), this error means the system is genuinely out of available memory for allocation.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Memory leak&lt;/strong&gt; — Application continuously allocates memory without releasing it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Too many applications open&lt;/strong&gt; — System RAM fully consumed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Large dataset processing&lt;/strong&gt; — Application trying to load more data than RAM can hold.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Malware&lt;/strong&gt; — Malicious process consuming memory.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Driver memory leak&lt;/strong&gt; — Kernel driver leaking memory.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="identify-memory-heavy-processes"&gt;Identify Memory-Heavy Processes&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First &lt;span style="color:#ae81ff"&gt;15&lt;/span&gt; Name, Id, @{N=&lt;span style="color:#e6db74"&gt;&amp;#34;Memory(MB)&amp;#34;&lt;/span&gt;;E={[&lt;span style="color:#66d9ef"&gt;math&lt;/span&gt;]::Round($_.WorkingSet64/&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;MB)}}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-for-memory-leaks"&gt;Check for Memory Leaks&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$before = Get-Process -Name &lt;span style="color:#e6db74"&gt;&amp;#34;YourApp&amp;#34;&lt;/span&gt; | Select-Object WorkingSet64
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Start-Sleep -Seconds &lt;span style="color:#ae81ff"&gt;300&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$after = Get-Process -Name &lt;span style="color:#e6db74"&gt;&amp;#34;YourApp&amp;#34;&lt;/span&gt; | Select-Object WorkingSet64
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$growth = ($after.WorkingSet64 - $before.WorkingSet64) / &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;MB
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Write-Host &lt;span style="color:#e6db74"&gt;&amp;#34;Memory growth: &lt;/span&gt;$([&lt;span style="color:#66d9ef"&gt;math&lt;/span&gt;]::Round($growth))&lt;span style="color:#e6db74"&gt; MB in 5 minutes&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="free-system-memory"&gt;Free System Memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Clear-RecycleBin -Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Clear-DnsClientCache
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[&lt;span style="color:#66d9ef"&gt;System.GC&lt;/span&gt;]::Collect()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="increase-page-file-size"&gt;Increase Page File Size&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$pagefile = Get-WmiObject Win32_PageFileSetting -ErrorAction SilentlyContinue
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ($pagefile) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set-WmiInstance -Class Win32_PageFileSetting -Arguments @{Name=$pagefile.Name; InitialSize=&lt;span style="color:#ae81ff"&gt;4096&lt;/span&gt;; MaximumSize=&lt;span style="color:#ae81ff"&gt;16384&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="monitor-memory-usage-over-time"&gt;Monitor Memory Usage Over Time&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;.&lt;span style="color:#ae81ff"&gt;.12&lt;/span&gt; | ForEach-Object {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $mem = Get-CimInstance Win32_OperatingSystem
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#66d9ef"&gt;PSCustomObject&lt;/span&gt;]@{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Time = Get-Date -Format &lt;span style="color:#e6db74"&gt;&amp;#34;HH:mm:ss&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; FreeMB = [&lt;span style="color:#66d9ef"&gt;math&lt;/span&gt;]::Round($mem.FreePhysicalMemory/&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; UsedMB = [&lt;span style="color:#66d9ef"&gt;math&lt;/span&gt;]::Round(($mem.TotalVisibleMemorySize - $mem.FreePhysicalMemory)/&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Start-Sleep -Seconds &lt;span style="color:#ae81ff"&gt;300&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-physical-ram"&gt;Check Physical RAM&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-CimInstance Win32_PhysicalMemory | Select-Object Capacity, Speed, Manufacturer
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-not-enough-memory/"&gt;ERROR_NOT_ENOUGH_MEMORY (8)&lt;/a&gt; — Address space fragmentation&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/win32-insufficient-buffer/"&gt;ERROR_INSUFFICIENT_BUFFER (122)&lt;/a&gt; — Buffer too small&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/disk-full/"&gt;Disk Full&lt;/a&gt; — Disk space exhaustion&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Gradle Java Heap Space Out of Memory</title><link>https://errorcode.excellentwiki.com/tools/gradle/gradle-out-of-memory-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/gradle/gradle-out-of-memory-v2/</guid><description>&lt;h1 id="gradle-java-heap-space--out-of-memory"&gt;Gradle Java Heap Space — Out of Memory&lt;/h1&gt;
+&lt;p&gt;This error occurs when Gradle runs out of JVM heap memory during a build. Large projects with many dependencies or heavy annotation processing can exhaust the default memory allocation.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Default heap size too small for project size&lt;/li&gt;
+&lt;li&gt;Large number of dependencies being resolved&lt;/li&gt;
+&lt;li&gt;Memory leaks in custom Gradle plugins&lt;/li&gt;
+&lt;li&gt;Annotation processors consuming excessive memory&lt;/li&gt;
+&lt;li&gt;Multiple daemons running simultaneously&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="increase-jvm-heap-size"&gt;Increase JVM Heap Size&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# gradle.properties&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;org.gradle.jvmargs&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;-Xmx4g -XX:MaxMetaspaceSize=512m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="increase-for-specific-builds"&gt;Increase for Specific Builds&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;./gradlew build -Dorg.gradle.jvmargs&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;-Xmx8g&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="limit-daemon-memory"&gt;Limit Daemon Memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# gradle.properties&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;org.gradle.daemon&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;org.gradle.jvmargs&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;-Xmx2g&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="stop-all-running-daemons"&gt;Stop All Running Daemons&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;./gradlew --stop
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="configure-memory-in-init-script"&gt;Configure Memory in init Script&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-groovy" data-lang="groovy"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ~/.gradle/init.d/memory.gradle
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;gradle&lt;span style="color:#f92672"&gt;.&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;settingsEvaluated&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; jvmArgs &lt;span style="color:#e6db74"&gt;&amp;#39;-Xmx4g&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;-XX:MaxMetaspaceSize=512m&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="reduce-memory-pressure-from-plugins"&gt;Reduce Memory Pressure from Plugins&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-groovy" data-lang="groovy"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Disable parallel execution if causing memory issues
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// org.gradle.parallel=false in gradle.properties
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;java.lang.OutOfMemoryError: Java heap space
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Gradle could not start your process.
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;gt; JVM heap space exhausted
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;java.lang.OutOfMemoryError: Metaspace
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/gradle/gradle-task-error/"&gt;Gradle Task Error&lt;/a&gt; — task execution failure&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/gradle/gradle-daemon-error/"&gt;Gradle Daemon Error&lt;/a&gt; — daemon connection issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/gradle/gradle-build-failed/"&gt;Gradle Build Failed&lt;/a&gt; — general build failure&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Gradle Java Heap Space Out of Memory</title><link>https://errorcode.excellentwiki.com/tools/gradle/gradle-out-of-memory/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/gradle/gradle-out-of-memory/</guid><description>&lt;h1 id="gradle-java-heap-space-out-of-memory"&gt;Gradle Java Heap Space Out of Memory&lt;/h1&gt;
+&lt;p&gt;This error means Gradle&amp;rsquo;s JVM ran out of heap memory during build execution. The build process tried to allocate more memory than the JVM was configured to allow.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Large projects with many dependencies exceed default heap limits&lt;/li&gt;
+&lt;li&gt;Memory leaks in custom Gradle plugins or build scripts&lt;/li&gt;
+&lt;li&gt;Too many parallel tasks running simultaneously&lt;/li&gt;
+&lt;li&gt;Insufficient &lt;code&gt;org.gradle.jvmargs&lt;/code&gt; configuration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="increase-jvm-memory"&gt;Increase JVM Memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# gradle.properties&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;org.gradle.jvmargs&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;-Xmx4g -XX:MaxMetaspaceSize=512m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="reduce-parallel-workers"&gt;Reduce Parallel Workers&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# gradle.properties&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;org.gradle.parallel&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;org.gradle.workers.max&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="enable-gradle-build-cache"&gt;Enable Gradle Build Cache&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# gradle.properties&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;org.gradle.caching&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="analyze-memory-usage"&gt;Analyze Memory Usage&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;./gradlew build --profile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Open the generated HTML report in build/reports/profile/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-memory-leaks-in-build-scripts"&gt;Fix Memory Leaks in Build Scripts&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-groovy" data-lang="groovy"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Avoid accumulating collections in buildSrc
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Don&amp;#39;t create objects inside task actions that persist
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-daemon-with-proper-memory-settings"&gt;Use Daemon with Proper Memory Settings&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;./gradlew --stop
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;./gradlew build -Dorg.gradle.jvmargs&lt;span style="color:#f92672"&gt;=&lt;/span&gt;-Xmx6g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;./gradlew build
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# FAILURE: Build failed with an exception.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# * What went wrong: Java heap space&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# &amp;gt; GC overhead limit exceeded&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# After increasing memory:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# gradle.properties: org.gradle.jvmargs=-Xmx4g&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Build succeeds&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/gradle/build-failed/"&gt;Build Failed&lt;/a&gt; — general build failure&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/gradle/task-error/"&gt;Task Error&lt;/a&gt; — task execution failure&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Maven Java Heap Space Error</title><link>https://errorcode.excellentwiki.com/tools/maven/maven-out-of-memory-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/maven/maven-out-of-memory-v2/</guid><description>&lt;h1 id="maven-java-heap-space-error"&gt;Maven Java Heap Space Error&lt;/h1&gt;
+&lt;p&gt;This error occurs when Maven runs out of JVM heap memory during a build. Large projects with many dependencies or heavy annotation processing can exhaust the default memory allocation.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Default heap size too small for project&lt;/li&gt;
+&lt;li&gt;Large number of dependencies being resolved&lt;/li&gt;
+&lt;li&gt;Memory leaks in Maven plugins&lt;/li&gt;
+&lt;li&gt;Annotation processors consuming excessive memory&lt;/li&gt;
+&lt;li&gt;Test suites with large data sets&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="increase-maven-jvm-memory"&gt;Increase Maven JVM Memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;export MAVEN_OPTS&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;-Xmx4g -XX:MaxMetaspaceSize=512m&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mvn clean install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="configure-in-maven-options-file"&gt;Configure in Maven Options File&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# .mvn/jvm.config&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#960050;background-color:#1e0010"&gt;-Xmx4g&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;-XX&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt;&lt;span style="color:#e6db74"&gt;MaxMetaspaceSize=512m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="set-in-pom-configuration"&gt;Set in POM Configuration&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.maven.plugins&lt;span style="color:#f92672"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;maven-compiler-plugin&lt;span style="color:#f92672"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;fork&amp;gt;&lt;/span&gt;true&lt;span style="color:#f92672"&gt;&amp;lt;/fork&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;compilerArgs&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;arg&amp;gt;&lt;/span&gt;-J-Xmx2g&lt;span style="color:#f92672"&gt;&amp;lt;/arg&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;/compilerArgs&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="reduce-memory-usage"&gt;Reduce Memory Usage&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Skip tests to reduce memory&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mvn clean package -DskipTests
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use parallel builds&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mvn clean install -T &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="configure-surefire-for-less-memory"&gt;Configure Surefire for Less Memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.maven.plugins&lt;span style="color:#f92672"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;maven-surefire-plugin&lt;span style="color:#f92672"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;argLine&amp;gt;&lt;/span&gt;-Xmx2g&lt;span style="color:#f92672"&gt;&amp;lt;/argLine&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="create-mvnjvmconfig"&gt;Create .mvn/jvm.config&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;-Xmx4g&amp;#34;&lt;/span&gt; &amp;gt; .mvn/jvm.config
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;-XX:MaxMetaspaceSize=512m&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; .mvn/jvm.config
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;java.lang.OutOfMemoryError: Java heap space
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; at java.util.Arrays.copyOf(Arrays.java:3236)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; at org.apache.maven...
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;java.lang.OutOfMemoryError: Metaspace
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/maven/maven-build-error/"&gt;Maven Build Error&lt;/a&gt; — general build failure&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/maven/maven-test-error/"&gt;Maven Test Error&lt;/a&gt; — test execution failure&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/maven/maven-compiler-error/"&gt;Maven Compiler Error&lt;/a&gt; — compiler issues&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Maven Java Heap Space Error</title><link>https://errorcode.excellentwiki.com/tools/maven/maven-out-of-memory/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/maven/maven-out-of-memory/</guid><description>&lt;h1 id="maven-java-heap-space-error"&gt;Maven Java Heap Space Error&lt;/h1&gt;
+&lt;p&gt;This error means Maven&amp;rsquo;s JVM ran out of heap memory during build execution. The build process tried to allocate more memory than the JVM was configured to allow.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Large projects with many dependencies exceed default heap limits&lt;/li&gt;
+&lt;li&gt;Memory leaks in custom Maven plugins&lt;/li&gt;
+&lt;li&gt;Too many parallel compilation threads&lt;/li&gt;
+&lt;li&gt;Large resource processing (big XML files, databases)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="increase-maven-memory"&gt;Increase Maven Memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;export MAVEN_OPTS&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;-Xmx4g -XX:MaxMetaspaceSize=512m&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mvn clean install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="configure-in-mvnjvmconfig"&gt;Configure in .mvn/jvm.config&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# .mvn/jvm.config&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;-Xmx4g -XX:MaxMetaspaceSize&lt;span style="color:#f92672"&gt;=&lt;/span&gt;512m
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="reduce-parallel-compilation"&gt;Reduce Parallel Compilation&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.maven.plugins&lt;span style="color:#f92672"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;maven-compiler-plugin&lt;span style="color:#f92672"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;fork&amp;gt;&lt;/span&gt;true&lt;span style="color:#f92672"&gt;&amp;lt;/fork&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;maxmem&amp;gt;&lt;/span&gt;2g&lt;span style="color:#f92672"&gt;&amp;lt;/maxmem&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="build-modules-sequentially"&gt;Build Modules Sequentially&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mvn clean install -T &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="skip-resource-processing"&gt;Skip Resource Processing&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mvn clean compile -Dmaven.resources.skip&lt;span style="color:#f92672"&gt;=&lt;/span&gt;true
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-available-memory"&gt;Check Available Memory&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;free -h
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mvn clean install
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;ERROR&lt;span style="color:#f92672"&gt;]&lt;/span&gt; Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;ERROR&lt;span style="color:#f92672"&gt;]&lt;/span&gt; Java heap space
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;ERROR&lt;span style="color:#f92672"&gt;]&lt;/span&gt; GC overhead limit exceeded
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/maven/maven-build-error/"&gt;Build Failed&lt;/a&gt; — general build failure&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/maven/maven-test-error/"&gt;Test Error&lt;/a&gt; — test failure&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>Out of Memory: Java Heap Space</title><link>https://errorcode.excellentwiki.com/tools/gradle/out-of-memory/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/gradle/out-of-memory/</guid><description>&lt;p&gt;This error means the Gradle daemon process exceeded its allocated Java heap memory. It typically happens on large projects with many modules or heavy compilation tasks.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;
@@ -315,7 +1073,25 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/scala/stack-overflow3"&gt;StackOverflowException&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/scala/index-out-of-bound"&gt;IndexOutOfBoundsException&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description></item><item><title>PHP Fatal Error: Allowed memory size exhausted</title><link>https://errorcode.excellentwiki.com/languages/php/fatal-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/php/fatal-error/</guid><description>&lt;h1 id="php-fatal-error-allowed-memory-size-exhausted"&gt;PHP Fatal Error: Allowed memory size exhausted&lt;/h1&gt;
+&lt;/ul&gt;</description></item><item><title>OutOfMemoryException in F#</title><link>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-outofmemoryexception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-outofmemoryexception/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;An &lt;code&gt;OutOfMemoryException&lt;/code&gt; occurs when the CLR cannot allocate more memory for objects. This happens when the managed heap is full and garbage collection cannot free enough space.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Loading too much data into memory&lt;/li&gt;
+&lt;li&gt;Memory leaks (retained references)&lt;/li&gt;
+&lt;li&gt;Large array/list allocations&lt;/li&gt;
+&lt;li&gt;Infinite recursion creating stack objects&lt;/li&gt;
+&lt;li&gt;Insufficient .NET heap configuration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Process data in chunks:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; processLargeFile path &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; seq &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; reader &lt;span style="color:#f92672"&gt;=&lt;/span&gt; System.IO.File.ReadLines&lt;span style="color:#f92672"&gt;(&lt;/span&gt;path&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; line &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; reader &lt;span style="color:#66d9ef"&gt;do&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; processLine line
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Use sequences for lazy evaluation:&lt;/p&gt;</description></item><item><title>PHP Fatal Error: Allowed memory size exhausted</title><link>https://errorcode.excellentwiki.com/languages/php/fatal-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/php/fatal-error/</guid><description>&lt;h1 id="php-fatal-error-allowed-memory-size-exhausted"&gt;PHP Fatal Error: Allowed memory size exhausted&lt;/h1&gt;
 &lt;p&gt;This fatal error occurs when a PHP script tries to use more memory than the configured &lt;code&gt;memory_limit&lt;/code&gt;. PHP immediately halts execution because the process has exhausted its allocated memory.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;

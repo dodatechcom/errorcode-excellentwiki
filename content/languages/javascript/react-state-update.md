@@ -1,41 +1,85 @@
 ---
-title: "[Solution] React State Update on Unmounted Component Warning Fix"
-description: "Fix React 'Can't perform a React state update on an unmounted component' warning. Clean up async operations and use cancellation tokens."
+title: "[Solution] React Warning: Can't perform state update on unmounted component"
+description: "Fix React state update warning on unmounted components. Clean up async operations, use AbortController, and manage component lifecycle."
 languages: ["javascript"]
-severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["react", "state-update", "unmounted", "useEffect", "cleanup", "memory-leak"]
+severities: ["error"]
+tags: ["react", "state-update", "unmounted", "cleanup", "async", "lifecycle"]
 weight: 5
 ---
 
-# React: Can't Perform a React State Update on an Unmounted Component
+# React Warning: Can't perform state update on unmounted component
 
-This warning occurs when a component unmounts (is removed from the DOM) but an asynchronous operation (API call, timer, subscription) still tries to call `setState` after the component is gone. While React 18 no longer prints this warning by default, it still represents a real bug — a wasted async operation and potential memory leak.
+This warning occurs when you try to update the state of a component that has already been unmounted. It typically happens with async operations that complete after the component is gone.
+
+## What This Error Means
+
+Common error messages:
+
+- `Warning: Can't perform a React state update on an unmounted component.`
+- `Warning: setState(...): Can only update a mounted or mounting component.`
+
+React 18+ removed this warning, but the underlying issue still causes memory leaks and wasted computation.
 
 ## Common Causes
 
-- **Un-cancelled API calls** — `fetch` or `axios` returns after component unmounts
-- **Missing cleanup in useEffect** — no return function to cancel subscriptions or timers
-- **Promise resolved after unmount** — `.then()` handler runs after component is gone
-- **Race condition with navigation** — user navigates away during a data fetch
-
-## How to Fix
-
 ```jsx
-// Cause 1: API call without cancellation
+// Cause 1: Fetching data without cleanup
 function UserProfile({ userId }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetch(`/api/users/${userId}`)
       .then(res => res.json())
-      .then(data => setUser(data));  // Warning if component unmounts first
+      .then(data => setUser(data)); // component may be unmounted
   }, [userId]);
-
-  return user ? <div>{user.name}</div> : <p>Loading...</p>;
 }
 
-// Fix: use AbortController
+// Cause 2: setTimeout without cleanup
+function Timer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCount(1); // if component unmounted before timeout
+    }, 5000);
+  }, []);
+}
+
+// Cause 3: Event listener not removed
+function ScrollTracker() {
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    // missing cleanup
+  }, []);
+}
+```
+
+## How to Fix
+
+### Fix 1: Use cleanup function in useEffect
+
+```jsx
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!cancelled) setUser(data);
+      });
+
+    return () => { cancelled = true; };
+  }, [userId]);
+}
+```
+
+### Fix 2: Use AbortController
+
+```jsx
 function UserProfile({ userId }) {
   const [user, setUser] = useState(null);
 
@@ -46,94 +90,90 @@ function UserProfile({ userId }) {
       .then(res => res.json())
       .then(data => setUser(data))
       .catch(err => {
-        if (err.name !== "AbortError") throw err;
+        if (err.name !== 'AbortError') throw err;
       });
 
     return () => controller.abort();
   }, [userId]);
-
-  return user ? <div>{user.name}</div> : <p>Loading...</p>;
-}
-
-// Cause 2: Missing cleanup for timer
-function Clock() {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    setInterval(() => {
-      setTime(new Date());  // Warning if component unmounts
-    }, 1000);
-  }, []);
-
-  return <p>{time.toLocaleTimeString()}</p>;
-}
-
-// Fix: clear interval in cleanup
-function Clock() {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  return <p>{time.toLocaleTimeString()}</p>;
 }
 ```
 
+### Fix 3: Clean up timers and listeners
+
 ```jsx
-// Cause 3: Subscription without cleanup
-function ChatRoom({ roomId }) {
-  const [messages, setMessages] = useState([]);
+function Timer() {
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const socket = connect(roomId);
-    socket.on("message", msg => setMessages(prev => [...prev, msg]));
-  }, [roomId]);
-
-  return <ul>{messages.map((m, i) => <li key={i}>{m}</li>)}</ul>;
+    const timer = setTimeout(() => setCount(1), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 }
 
-// Fix: unsubscribe in cleanup
-function ChatRoom({ roomId }) {
-  const [messages, setMessages] = useState([]);
-
+function ScrollTracker() {
   useEffect(() => {
-    const socket = connect(roomId);
-    socket.on("message", msg => setMessages(prev => [...prev, msg]));
-    return () => socket.disconnect();
-  }, [roomId]);
-
-  return <ul>{messages.map((m, i) => <li key={i}>{m}</li>)}</ul>;
+    const handler = () => console.log(window.scrollY);
+    window.addEventListener('scroll', handler);
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
 }
 ```
 
-## Using a Mounted Flag Pattern
+### Fix 4: Use ignore flag pattern
 
 ```jsx
-function DataLoader({ url }) {
+function DataFetcher({ url }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    let isMounted = true;
+    let ignore = false;
 
-    fetch(url)
-      .then(res => res.json())
-      .then(result => {
-        if (isMounted) setData(result);
-      });
+    async function fetchData() {
+      const res = await fetch(url);
+      const json = await res.json();
+      if (!ignore) setData(json);
+    }
 
-    return () => { isMounted = false; };
+    fetchData();
+    return () => { ignore = true; };
   }, [url]);
 
-  return data ? <pre>{JSON.stringify(data)}</pre> : <p>Loading...</p>;
+  return <div>{data ? JSON.stringify(data) : 'Loading...'}</div>;
+}
+```
+
+## Examples
+
+```jsx
+// This triggers the warning
+function SearchResults({ query }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    fetch(`/api/search?q=${query}`)
+      .then(res => res.json())
+      .then(data => setResults(data)); // query changed before fetch completes
+  }, [query]);
+}
+
+// Fix
+function SearchResults({ query }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/search?q=${query}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!cancelled) setResults(data);
+      });
+    return () => { cancelled = true; };
+  }, [query]);
 }
 ```
 
 ## Related Errors
 
-- [React Key Warning]({{< relref "/languages/javascript/react-keys" >}}) — missing keys in list rendering
-- [React Hooks Violation]({{< relref "/languages/javascript/react-hooks" >}}) — rules of hooks
-- [Cannot Read Properties of undefined]({{< relref "/languages/javascript/react-undefined-prop" >}}) — undefined access after unmount
+- [React Error Boundary]({{< relref "/languages/javascript/react-error-boundary" >}}) — error boundary
+- [AbortError]({{< relref "/languages/javascript/aborterror" >}}) — operation aborted
+- [React Key Prop]({{< relref "/languages/javascript/react-key-prop" >}}) — unique key warning

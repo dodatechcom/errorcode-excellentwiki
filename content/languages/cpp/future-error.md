@@ -1,140 +1,63 @@
 ---
-title: "[Solution] C++ std::future_error — Future Operation Failed Fix"
-description: "Fix C++ std::future_error when promise/future operations fail. Handle broken promises, future already retrieved, and shared state errors."
+title: "[Solution] C++ std::future_error - promise already satisfied"
+description: "Fix C++ std::future_error when promise is already satisfied or future already retrieved."
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["future-error", "std-future", "promise", "exception"]
-weight: 50
+tags: ["future-error", "future_error", "promise", "async", "concurrency"]
+weight: 5
 ---
 
-# [Solution] C++ std::future_error — Future Operation Failed Fix
+# std::future_error - promise already satisfied
 
-A `std::future_error` is thrown when an operation on `std::future` or `std::promise` fails due to an invalid state. This includes calling `get()` on a future with no shared state, retrieving a future twice, setting a value on a promise that already has one, or breaking a promise without setting a value.
+`std::future_error` is thrown when you try to satisfy a `std::promise` that has already been set, or retrieve a `std::future` that has already been retrieved.
 
 ## Common Causes
 
-- Calling `get()` on a default-constructed `std::future`
-- Calling `get()` on a future that has already been retrieved
-- Setting a value on a promise that already has a value
-- Destroying a promise without setting a value (broken promise)
+```cpp
+// Cause 1: Setting value twice
+std::promise<int> p;
+p.set_value(1);
+p.set_value(2); // throws future_error (promise_already_satisfied)
 
-## Example: Throwing std::future_error
+// Cause 2: Getting future twice
+std::promise<int> p;
+auto f1 = p.get_future();
+auto f2 = p.get_future(); // throws (future_already_retrieved)
+```
+
+## How to Fix
+
+### Fix 1: Check if already satisfied
 
 ```cpp
-#include <future>
-#include <iostream>
+std::promise<int> p;
+auto f = p.get_future();
 
-int main() {
-    auto fut = std::async(std::launch::async, [] { return 42; });
-
-    int a = fut.get();  // OK
-    int b = fut.get();  // throws std::future_error
-    return 0;
+// Check before setting
+if (f.valid()) {
+    p.set_value(42);
 }
 ```
 
-## How to Fix: Check Future State Before Getting
+### Fix 2: Use try_set_value
 
 ```cpp
-#include <future>
-#include <iostream>
-
-int main() {
-    auto fut = std::async(std::launch::async, [] { return 42; });
-
-    if (fut.valid()) {
-        int result = fut.get();
-        std::cout << "Result: " << result << std::endl;
-    } else {
-        std::cerr << "Future is not valid" << std::endl;
-    }
-
-    return 0;
-}
+std::promise<int> p;
+bool success1 = p.set_value(1); // true
+bool success2 = p.set_value(2); // false (no throw)
 ```
 
-## Handling Broken Promises
+### Fix 3: Use shared_future
 
 ```cpp
-#include <future>
-#include <iostream>
-#include <thread>
-
-int main() {
-    std::promise<int> prom;
-    auto fut = prom.get_future();
-
-    prom.set_exception(std::make_exception_ptr(
-        std::runtime_error("Producer failed")));
-
-    try {
-        int result = fut.get();
-    } catch (const std::future_error& e) {
-        std::cerr << "Future error: " << e.what() << std::endl;
-        std::cerr << "Error code: " << e.code().message() << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
-    }
-    return 0;
-}
+std::promise<int> p;
+std::shared_future<int> f = p.get_future().share();
+auto f2 = f; // OK — shared_future can be copied
 ```
-
-## Safe Promise-Future Pattern
-
-```cpp
-#include <future>
-#include <iostream>
-#include <thread>
-
-void producer(std::promise<int> prom) {
-    try {
-        int result = 42;
-        prom.set_value(result);
-    } catch (...) {
-        prom.set_exception(std::current_exception());
-    }
-}
-
-int main() {
-    std::promise<int> prom;
-    auto fut = prom.get_future();
-
-    std::thread t(producer, std::move(prom));
-    t.join();
-
-    if (fut.valid()) {
-        try {
-            int result = fut.get();
-            std::cout << "Result: " << result << std::endl;
-        } catch (const std::future_error& e) {
-            std::cerr << "Future error: " << e.what() << std::endl;
-        }
-    }
-    return 0;
-}
-```
-
-## Common Future Error Codes
-
-| Error Code | Meaning |
-|---|---|
-| `future_errc::broken_promise` | Promise destroyed without setting value |
-| `future_errc::future_already_retrieved` | `get()` called on already-retrieved future |
-| `future_errc::promise_already_satisfied` | Value already set on promise |
-| `future_errc::no_state` | Operation on future with no shared state |
-
-## Summary
-
-| Fix | When to Use |
-|---|---|
-| Check `valid()` before `get()` | Always when future lifecycle is uncertain |
-| Use try-catch around `get()` | To handle broken promises and errors |
-| Move promise to thread | When producer runs in a separate thread |
-| Call `get()` only once | Store result after first retrieval |
 
 ## Related Errors
 
-- [std::runtime_error]({{< relref "/languages/cpp/runtime-error-example" >}}) — general runtime failures.
-- [std::system_error]({{< relref "/languages/cpp/system-error" >}}) — OS-level error codes.
-- [std::bad_alloc]({{< relref "/languages/cpp/bad-allocation" >}}) — memory allocation failure.
+- [std::promise already satisfied]({{< relref "/languages/cpp/promise-already-satisfied" >}}) — detailed analysis.
+- [std::future_error (retrieved)]({{< relref "/languages/cpp/future-error-2" >}}) — future already retrieved.
+- [std::bad_function_call]({{< relref "/languages/cpp/bad-function-call" >}}) — empty function.

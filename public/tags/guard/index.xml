@@ -53,4 +53,77 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/frameworks/laravel/validation-error2/"&gt;Validation error&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description></item></channel></rss>
+&lt;/ul&gt;</description></item><item><title>Authentication required error</title><link>https://errorcode.excellentwiki.com/frameworks/laravel/laravel-auth-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/frameworks/laravel/laravel-auth-error-v2/</guid><description>&lt;p&gt;This error occurs when an unauthenticated user tries to access a route protected by the &lt;code&gt;auth&lt;/code&gt; middleware. Laravel throws &lt;code&gt;Illuminate\Auth\AuthenticationException&lt;/code&gt; and redirects to the login page or returns a 401 response.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;User is not logged in but accessing a protected route&lt;/li&gt;
+&lt;li&gt;Session expired or token invalid&lt;/li&gt;
+&lt;li&gt;Wrong authentication guard configured for the route&lt;/li&gt;
+&lt;li&gt;Sanctum or Passport token is missing or expired&lt;/li&gt;
+&lt;li&gt;Middleware applied to the wrong route group&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Check if the user is authenticated before accessing protected data:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-php" data-lang="php"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;dashboard&lt;/span&gt;(&lt;span style="color:#a6e22e"&gt;Request&lt;/span&gt; $request)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;$request&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;redirect&lt;/span&gt;()&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;route&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;login&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;view&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;dashboard&amp;#39;&lt;/span&gt;, [&lt;span style="color:#e6db74"&gt;&amp;#39;user&amp;#39;&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; $request&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;()]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Register a custom &lt;code&gt;AuthenticationException&lt;/code&gt; handler:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-php" data-lang="php"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Illuminate\Auth\AuthenticationException&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;protected&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;unauthenticated&lt;/span&gt;($request, &lt;span style="color:#a6e22e"&gt;AuthenticationException&lt;/span&gt; $exception)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ($request&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;expectsJson&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;response&lt;/span&gt;()&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;json&lt;/span&gt;([&lt;span style="color:#e6db74"&gt;&amp;#39;error&amp;#39;&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;Unauthenticated&amp;#39;&lt;/span&gt;], &lt;span style="color:#ae81ff"&gt;401&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;redirect&lt;/span&gt;()&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;guest&lt;/span&gt;($exception&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;redirectTo&lt;/span&gt;() &lt;span style="color:#f92672"&gt;??&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;route&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;login&amp;#39;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Use the correct guard for API routes:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-php" data-lang="php"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// api.php
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Route&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;middleware&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;auth:sanctum&amp;#39;&lt;/span&gt;)&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;group&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; () {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;Route&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/user&amp;#39;&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;Request&lt;/span&gt; $request) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; $request&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;user&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-php" data-lang="php"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Route protected by auth middleware
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Route&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;middleware&lt;/span&gt;([&lt;span style="color:#e6db74"&gt;&amp;#39;auth&amp;#39;&lt;/span&gt;])&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;group&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; () {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;Route&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/profile&amp;#39;&lt;/span&gt;, [&lt;span style="color:#a6e22e"&gt;ProfileController&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;show&amp;#39;&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Using a specific guard
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;Route&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;middleware&lt;/span&gt;([&lt;span style="color:#e6db74"&gt;&amp;#39;auth:admin&amp;#39;&lt;/span&gt;])&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;group&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; () {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;Route&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;get&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;/admin&amp;#39;&lt;/span&gt;, [&lt;span style="color:#a6e22e"&gt;AdminController&lt;/span&gt;&lt;span style="color:#f92672"&gt;::&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;index&amp;#39;&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/frameworks/laravel/laravel-csrf-error-v2/"&gt;CSRF token mismatch&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/frameworks/laravel/laravel-throttle-error-v2/"&gt;Rate throttle exceeded&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>if_clause Error in Erlang</title><link>https://errorcode.excellentwiki.com/languages/erlang/erlang-ifclause/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/erlang/erlang-ifclause/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;An &lt;code&gt;if_clause&lt;/code&gt; error occurs when none of the clauses in an &lt;code&gt;if&lt;/code&gt; expression evaluate to &lt;code&gt;true&lt;/code&gt;. In Erlang, &lt;code&gt;if&lt;/code&gt; expressions require at least one clause to match.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;All guard expressions evaluate to false&lt;/li&gt;
+&lt;li&gt;Missing catch-all with &lt;code&gt;true&lt;/code&gt; guard&lt;/li&gt;
+&lt;li&gt;Guard expressions throw exceptions&lt;/li&gt;
+&lt;li&gt;Boolean logic errors in conditions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Always include a true clause:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-erlang" data-lang="erlang"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; X &lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; positive;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; X &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; negative;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; true &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; zero
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;end&lt;/span&gt;.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Check guard expressions:&lt;/p&gt;</description></item></channel></rss>

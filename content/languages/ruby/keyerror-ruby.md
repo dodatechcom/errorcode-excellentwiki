@@ -1,6 +1,6 @@
 ---
-title: "[Solution] Ruby KeyError — Key Not Found Fix"
-description: "Fix Ruby KeyError: key not found. Learn how to safely access hash keys with fetch, dig, and default values."
+title: "[Solution] Ruby KeyError — Key Not Found in Hash Fix"
+description: "Fix Ruby KeyError: key not found. Learn why hash key lookups fail and how to use default values or fetch with fallbacks."
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
@@ -8,104 +8,64 @@ tags: ["keyerror", "hash", "key-not-found", "ruby"]
 weight: 5
 ---
 
-# KeyError — Key Not Found
+## What This Error Means
 
-A `KeyError` is raised when you try to access a hash key that doesn't exist using `fetch` or `Hash#key?`.
-
-## Description
-
-Ruby hashes raise `KeyError` when you use `fetch` to access a non-existent key. Unlike bracket notation (`[]`), `fetch` doesn't return `nil` by default — it raises an error.
-
-Common causes:
-
-- **Using fetch without default** — accessing a key that doesn't exist
-- **Assuming key exists** — not checking if a key is present before access
-- **Typo in key name** — misspelling a key
-- **Missing nested key** — accessing a deeply nested key that's absent
+A `KeyError` is raised when you access a hash using `fetch` with a key that doesn't exist and no default value is provided. Unlike `[]`, `fetch` raises an error instead of returning `nil`.
 
 ## Common Causes
 
-```ruby
-# Cause 1: fetch without default value
-config = { "host" => "localhost" }
-config.fetch("port")  # KeyError: key not found: "port"
-
-# Cause 2: Typo in key name
-user = { "name" => "Alice", "email" => "alice@example.com" }
-user.fetch("ename")  # KeyError: key not found: "ename"
-
-# Cause 3: Missing nested key
-data = { "user" => { "name" => "Alice" } }
-data.fetch("user").fetch("address")  # KeyError: key not found: "address"
-
-# Cause 4: Integer vs String key confusion
-hash = { 1 => "one", 2 => "two" }
-hash.fetch("1")  # KeyError: key not found: "1"
-```
+- Using `fetch` without a default for a missing key
+- Typo in hash key name
+- Accessing nested hash with missing intermediate key
+- Data structure changed but code wasn't updated
 
 ## How to Fix
 
-### Fix 1: Use fetch with default value
-
 ```ruby
-# Wrong
-config.fetch("port")  # KeyError
+# WRONG: fetch without default for missing key
+config = { "host" => "localhost" }
+port = config.fetch("port")  # KeyError: key not found: "port"
 
-# Correct
-config.fetch("port", 8080)  # 8080
+# CORRECT: Provide a default value
+port = config.fetch("port", 3000)  # 3000
 ```
 
-### Fix 2: Use bracket notation with default
-
 ```ruby
-# Wrong
-config.fetch("port")  # KeyError
+# WRONG: Missing nested key
+user = { name: "Alice", address: { city: "NYC" } }
+zip = user.fetch(:address).fetch(:zip)  # KeyError
 
-# Correct
-config["port"] || 8080  # 8080
+# CORRECT: Use dig for safe nested access
+zip = user.dig(:address, :zip)  # nil
 ```
 
-### Fix 3: Use dig for nested access
-
 ```ruby
-# Wrong
-data.fetch("user").fetch("address")  # KeyError
+# WRONG: Typo in key name
+settings = { "color" => "blue" }
+value = settings.fetch("colour")  # KeyError
 
-# Correct
-data.dig("user", "address")  # nil (no error)
-data.dig("user", "address") || "No address"
-```
-
-### Fix 4: Check key existence first
-
-```ruby
-# Wrong
-value = hash.fetch("key")  # KeyError
-
-# Correct
-if hash.key?("key")
-  value = hash["key"]
-end
+# CORRECT: Verify key exists first
+value = settings.key?("color") ? settings["color"] : nil
 ```
 
 ## Examples
 
 ```ruby
-# Example 1: Safe hash access
-config = { "database" => { "host" => "localhost", "port" => 5432 } }
-host = config.dig("database", "host")  # "localhost"
-timeout = config.dig("database", "timeout")  # nil
-timeout ||= 30  # 30
+# Example 1: Simple fetch
+hash = { a: 1, b: 2 }
+hash.fetch(:c)  # KeyError: key not found: :c
+hash.fetch(:c, 0)  # 0
 
-# Example 2: Building with defaults
-settings = {}
-defaults = { "theme" => "dark", "lang" => "en" }
-result = defaults.merge(settings)
-result.fetch("theme")  # "dark"
+# Example 2: Using a block
+hash.fetch(:c) { |key| puts "Missing key: #{key}" }
+
+# Example 3: Hash with default
+hash = Hash.new(0)
+hash[:missing]  # 0 (no error)
 ```
 
 ## Related Errors
 
-- [NoMethodError]({{< relref "/languages/ruby/no-method-error" >}}) — undefined method for object
-- [TypeError]({{< relref "/languages/ruby/typeerror-ruby" >}}) — wrong object type for an operation
-- [IndexError]({{< relref "/languages/ruby/index-error" >}}) — index out of range in array
+- [NoMethodError](nomethoderror-ruby) — calling method on nil from hash
+- [TypeError](typeerror-ruby) — wrong type for hash operation
+- [IndexError](indexerror-ruby) — index out of range in array

@@ -21,4 +21,171 @@
 &lt;p&gt;Serde errors are descriptive and include the exact field and expected types, making debugging straightforward.&lt;/p&gt;</description></item><item><title>[Solution] Rust Trait Not Implemented — Compiler Error Fix</title><link>https://errorcode.excellentwiki.com/languages/rust/trait-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/trait-error/</guid><description>&lt;h1 id="the-trait-x-is-not-implemented"&gt;The Trait &lt;code&gt;X&lt;/code&gt; Is Not Implemented&lt;/h1&gt;
 &lt;p&gt;The error &lt;code&gt;the trait bound X is not satisfied&lt;/code&gt; or &lt;code&gt;the trait X is not implemented for Y&lt;/code&gt; occurs when you use a type in a context that requires a specific trait, but the type does not implement that trait.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
-&lt;p&gt;Rust&amp;rsquo;s trait system defines shared behavior through interfaces. Generic functions and macros require types to implement specific traits (like &lt;code&gt;Display&lt;/code&gt;, &lt;code&gt;Debug&lt;/code&gt;, &lt;code&gt;Clone&lt;/code&gt;). When a type is used where a trait bound is required, the compiler produces this error.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Rust&amp;rsquo;s trait system defines shared behavior through interfaces. Generic functions and macros require types to implement specific traits (like &lt;code&gt;Display&lt;/code&gt;, &lt;code&gt;Debug&lt;/code&gt;, &lt;code&gt;Clone&lt;/code&gt;). When a type is used where a trait bound is required, the compiler produces this error.&lt;/p&gt;</description></item><item><title>[Solution] thiserror Custom Error Derive Fix</title><link>https://errorcode.excellentwiki.com/languages/rust/thiserror-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/thiserror-error-v2/</guid><description>&lt;h1 id="thiserror-custom-error-derive"&gt;thiserror Custom Error Derive&lt;/h1&gt;
+&lt;p&gt;Fix thiserror custom derive errors. Handle error enum definitions, source chaining, and Display implementations.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;thiserror errors occur when defining custom error types with the derive macro:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-mysql" data-lang="mysql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;error[E0277]: the trait bound &lt;span style="color:#f92672"&gt;`&lt;/span&gt;MyError: std::error::Error&lt;span style="color:#f92672"&gt;`&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;is&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;not&lt;/span&gt; satisfied
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;error[E0599]: no method named &lt;span style="color:#f92672"&gt;`&lt;/span&gt;context&lt;span style="color:#f92672"&gt;`&lt;/span&gt; found &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; struct &lt;span style="color:#f92672"&gt;`&lt;/span&gt;MyError&lt;span style="color:#f92672"&gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Missing #[from] attribute for automatic conversion
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[derive(thiserror::Error)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;enum&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyError&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Io(&lt;span style="color:#75715e"&gt;#[from]&lt;/span&gt; std::io::Error), &lt;span style="color:#75715e"&gt;// Missing #[from] prevents ? operator
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Conflicting Display and #[error] attributes
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Source field not properly annotated
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Using thiserror in binary when library crate defines errors
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-properly-annotate-error-variants"&gt;Fix 1: Properly annotate error variants&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; thiserror::Error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[derive(Error, Debug)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;pub&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;enum&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;AppError&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;I/O error: {0}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Io(&lt;span style="color:#75715e"&gt;#[from]&lt;/span&gt; std::io::Error),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Parse error: {0}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Parse(&lt;span style="color:#75715e"&gt;#[from]&lt;/span&gt; std::num::ParseIntError),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Configuration error: {message}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Config {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; message: String,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[source]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; source: Option&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;Box&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;dyn&lt;/span&gt; std::error::Error &lt;span style="color:#f92672"&gt;+&lt;/span&gt; Send &lt;span style="color:#f92672"&gt;+&lt;/span&gt; Sync&lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Database error&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Database(&lt;span style="color:#75715e"&gt;#[from]&lt;/span&gt; sqlx::Error),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-use-source-for-error-chaining"&gt;Fix 2: Use #[source] for error chaining&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; thiserror::Error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[derive(Error, Debug)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;pub&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;enum&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;BuildError&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Failed to compile: {0}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Compile(&lt;span style="color:#75715e"&gt;#[source]&lt;/span&gt; std::io::Error),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Missing dependency: {name}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; MissingDep {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; name: String,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Version conflict: {package} requires {required}, found {found}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; VersionConflict {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; package: String,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; required: String,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; found: String,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-convert-between-error-types-with-from"&gt;Fix 3: Convert between error types with From&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; thiserror::Error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[derive(Error, Debug)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;pub&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;enum&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ServiceError&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Not found: {0}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NotFound(String),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Unauthorized&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Unauthorized,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(transparent)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Internal(&lt;span style="color:#75715e"&gt;#[from]&lt;/span&gt; anyhow::Error),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;impl&lt;/span&gt; From&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;std::io::Error&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; ServiceError {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;from&lt;/span&gt;(e: &lt;span style="color:#a6e22e"&gt;std&lt;/span&gt;::io::Error) -&amp;gt; &lt;span style="color:#a6e22e"&gt;Self&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ServiceError::Internal(e.into())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; thiserror::Error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[derive(Error, Debug)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;pub&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;enum&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;CliError&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Failed to read file &amp;#39;{path}&amp;#39;: {source}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; FileRead {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; path: String,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[source]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; source: &lt;span style="color:#a6e22e"&gt;std&lt;/span&gt;::io::Error,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Invalid configuration: {0}&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Config(String),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;#[error(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Operation timed out after {seconds}s&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Timeout { seconds: &lt;span style="color:#66d9ef"&gt;u64&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;read_config&lt;/span&gt;(path: &lt;span style="color:#66d9ef"&gt;&amp;amp;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;str&lt;/span&gt;) -&amp;gt; Result&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;String, CliError&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; std::fs::read_to_string(path)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .map_err(&lt;span style="color:#f92672"&gt;|&lt;/span&gt;e&lt;span style="color:#f92672"&gt;|&lt;/span&gt; CliError::FileRead {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; path: &lt;span style="color:#a6e22e"&gt;path&lt;/span&gt;.to_string(),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; source: &lt;span style="color:#a6e22e"&gt;e&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; })
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; read_config(&lt;span style="color:#e6db74"&gt;&amp;#34;config.toml&amp;#34;&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Ok(content) &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;println!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Config: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;{}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, content),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Err(CliError::FileRead { path, source }) &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;eprintln!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Could not read &amp;#39;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;{}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;{}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, path, source);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Err(e) &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;eprintln!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;Error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;{}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, e),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/anyhow-error-v2/"&gt;Anyhow Error&lt;/a&gt; — anyhow context error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/trait-error/"&gt;Trait Error&lt;/a&gt; — trait object error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/io-error/"&gt;IO Error&lt;/a&gt; — I/O error&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] thiserror Derive Macro Error Fix</title><link>https://errorcode.excellentwiki.com/languages/rust/thiserror-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/thiserror-error/</guid><description>&lt;h1 id="thiserror-derive-macro-error"&gt;thiserror Derive Macro Error&lt;/h1&gt;
+&lt;p&gt;Fix thiserror derive macro errors. Handle error type definitions, Display impl, and source chaining..&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common error scenarios include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Connection or network failures&lt;/li&gt;
+&lt;li&gt;Invalid configuration or options&lt;/li&gt;
+&lt;li&gt;Resource not found or unavailable&lt;/li&gt;
+&lt;li&gt;Permission or access denied&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Incorrect configuration or missing setup
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Network or connection issues
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Invalid input or parameters
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 4: Missing dependencies or resources
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-verify-configuration-and-setup"&gt;Fix 1: Verify configuration and setup&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check configuration values and ensure required setup
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Verify the crate/library is properly configured
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-add-proper-error-handling"&gt;Fix 2: Add proper error handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; anyhow::Result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;do_something&lt;/span&gt;() -&amp;gt; Result&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;()&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Use proper error handling with Result and ?
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Ok(())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-add-timeout-and-retry-logic"&gt;Fix 3: Add timeout and retry logic&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; std::time::Duration;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Add timeout for network operations
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; tokio::time::timeout(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Duration::from_secs(&lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; do_operation(),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;).&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;use&lt;/span&gt; std::error::Error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;() -&amp;gt; Result&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;(), Box&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;dyn&lt;/span&gt; Error&lt;span style="color:#f92672"&gt;&amp;gt;&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Operation that may fail
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; do_work()&lt;span style="color:#f92672"&gt;?&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;println!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;{:?}&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;, result);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Ok(())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/connection-refused/"&gt;Connection Refused&lt;/a&gt; — connection refused&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/timed-out/"&gt;Timed Out&lt;/a&gt; — request timed out&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/rust/io-error/"&gt;IO Error&lt;/a&gt; — I/O error&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

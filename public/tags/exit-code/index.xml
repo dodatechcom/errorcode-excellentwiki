@@ -1,4 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Exit-Code on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/exit-code/</link><description>Recent content in Exit-Code on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/exit-code/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Docker Container Exited — container exited with code</title><link>https://errorcode.excellentwiki.com/tools/docker/container-exited/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/docker/container-exited/</guid><description>&lt;h1 id="docker-container-exited--container-exited-with-code-x"&gt;Docker Container Exited — container exited with code X&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Exit-Code on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/exit-code/</link><description>Recent content in Exit-Code on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/exit-code/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Bash Pipe Error</title><link>https://errorcode.excellentwiki.com/languages/bash/bash-pipe-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/bash-pipe-error/</guid><description>&lt;h1 id="bash-pipe-error-fix"&gt;Bash Pipe Error Fix&lt;/h1&gt;
+&lt;p&gt;Pipe errors include &amp;ldquo;Broken pipe&amp;rdquo; (SIGPIPE), commands in a pipeline returning non-zero exit codes, or pipe output not reaching the next command.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A pipe connects stdout of one command to stdin of another. SIGPIPE occurs when a process writes to a pipe whose read end has closed (e.g., &lt;code&gt;head&lt;/code&gt; closes early). Pipeline errors also occur when individual commands fail.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Downstream command exits before upstream finishes (SIGPIPE)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set -o pipefail&lt;/code&gt; catching failures in pipeline stages&lt;/li&gt;
+&lt;li&gt;Pipe buffer overflow with heavy output&lt;/li&gt;
+&lt;li&gt;Command producing no output when next command expects input&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-handle-sigpipe-gracefully"&gt;1. Handle SIGPIPE gracefully&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Suppress SIGPIPE errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;set +o pipefail
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Or handle SIGPIPE explicitly&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;&amp;#39;&lt;/span&gt; PIPE
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt; | head -1 &lt;span style="color:#75715e"&gt;# No error even though head closes pipe&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap - PIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-use-pipefail-to-find-failing-command"&gt;2. Use pipefail to find failing command&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;set -o pipefail
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cmd1 | cmd2 | cmd3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;Pipeline exit code: &lt;/span&gt;$?&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Shows which command in the pipeline failed&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-use-process-substitution-instead-of-pipes"&gt;3. Use process substitution instead of pipes&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Pipe: may cause SIGPIPE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;diff &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;sort file1&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;sort file2&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Safer than:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sort file1 | sort file2 | diff - file3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-check-for-empty-pipe-input"&gt;4. Check for empty pipe input&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Ensure upstream produces output&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;command_that_may_fail | next_command
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Safer:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;command_that_may_fail | &lt;span style="color:#f92672"&gt;{&lt;/span&gt; read -r line; &lt;span style="color:#f92672"&gt;[&lt;/span&gt; -n &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;$line&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;]&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; process &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;$line&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="bash-process-substitution"&gt;Process Substitution&lt;/a&gt; — &lt;code&gt;&amp;lt;()&lt;/code&gt; and &lt;code&gt;&amp;gt;()&lt;/code&gt; errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="return-code"&gt;Return Code&lt;/a&gt; — exit status handling&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Docker Container Exited — container exited with code</title><link>https://errorcode.excellentwiki.com/tools/docker/container-exited/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/docker/container-exited/</guid><description>&lt;h1 id="docker-container-exited--container-exited-with-code-x"&gt;Docker Container Exited — container exited with code X&lt;/h1&gt;
 &lt;p&gt;A container exits when the main process inside it stops. The exit code indicates the reason: 0 is normal, non-zero means an error occurred.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;

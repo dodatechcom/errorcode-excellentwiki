@@ -8,4 +8,28 @@
 &lt;li&gt;CD-ROM, DVD, or write-protected media is mounted.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
-&lt;p&gt;Remount the filesystem read-write if modification is needed, or avoid writing to read-only filesystems.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Remount the filesystem read-write if modification is needed, or avoid writing to read-only filesystems.&lt;/p&gt;</description></item><item><title>[Solution] C Read-only file system: EROFS</title><link>https://errorcode.excellentwiki.com/languages/c/read-only-file-system/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/read-only-file-system/</guid><description>&lt;h1 id="read-only-file-system-erofs"&gt;Read-only file system: EROFS&lt;/h1&gt;
+&lt;p&gt;EROFS occurs when you try to write to a filesystem mounted as read-only. This can happen on CD-ROMs, certain mount options, or when the filesystem has errors.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Writing to read-only mount
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/mnt/cdrom/file.txt&amp;#34;&lt;/span&gt;, O_WRONLY); &lt;span style="color:#75715e"&gt;// EROFS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Filesystem remounted read-only due to errors
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Linux remounts ext4 as read-only on corruption
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Writing to /boot or similar protected path
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/boot/kernel&amp;#34;&lt;/span&gt;, O_WRONLY); &lt;span style="color:#75715e"&gt;// EROFS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-remount-as-read-write"&gt;Fix 1: Remount as read-write&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mount -o remount,rw /mnt/data
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-check-filesystem-errors"&gt;Fix 2: Check filesystem errors&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fsck /dev/sda1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-writable-path"&gt;Fix 3: Use writable path&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Write to /tmp instead
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;open&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;/tmp/file.txt&amp;#34;&lt;/span&gt;, O_WRONLY &lt;span style="color:#f92672"&gt;|&lt;/span&gt; O_CREAT, &lt;span style="color:#ae81ff"&gt;0644&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/permission-denied-file/"&gt;Permission denied&lt;/a&gt; — EACCES.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/no-space-left/"&gt;No space left&lt;/a&gt; — ENOSPC.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/input-output-error/"&gt;Input/output error&lt;/a&gt; — EIO.&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

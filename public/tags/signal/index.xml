@@ -1,10 +1,245 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Signal on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/signal/</link><description>Recent content in Signal on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/signal/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] C signal() Deprecated — Replace with sigaction()</title><link>https://errorcode.excellentwiki.com/deprecated/c/signal/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/deprecated/c/signal/</guid><description>&lt;h1 id="solution-c-signal-deprecated--replace-with-sigaction"&gt;[Solution] C signal() Deprecated — Replace with sigaction()&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Signal on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/tags/signal/</link><description>Recent content in Signal on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/tags/signal/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Bash Pipe Error</title><link>https://errorcode.excellentwiki.com/languages/bash/bash-pipe-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/bash-pipe-error/</guid><description>&lt;h1 id="bash-pipe-error-fix"&gt;Bash Pipe Error Fix&lt;/h1&gt;
+&lt;p&gt;Pipe errors include &amp;ldquo;Broken pipe&amp;rdquo; (SIGPIPE), commands in a pipeline returning non-zero exit codes, or pipe output not reaching the next command.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A pipe connects stdout of one command to stdin of another. SIGPIPE occurs when a process writes to a pipe whose read end has closed (e.g., &lt;code&gt;head&lt;/code&gt; closes early). Pipeline errors also occur when individual commands fail.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Downstream command exits before upstream finishes (SIGPIPE)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;set -o pipefail&lt;/code&gt; catching failures in pipeline stages&lt;/li&gt;
+&lt;li&gt;Pipe buffer overflow with heavy output&lt;/li&gt;
+&lt;li&gt;Command producing no output when next command expects input&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-handle-sigpipe-gracefully"&gt;1. Handle SIGPIPE gracefully&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Suppress SIGPIPE errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;set +o pipefail
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Or handle SIGPIPE explicitly&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;&amp;#39;&lt;/span&gt; PIPE
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt; | head -1 &lt;span style="color:#75715e"&gt;# No error even though head closes pipe&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap - PIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-use-pipefail-to-find-failing-command"&gt;2. Use pipefail to find failing command&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;set -o pipefail
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cmd1 | cmd2 | cmd3
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;echo &lt;span style="color:#e6db74"&gt;&amp;#34;Pipeline exit code: &lt;/span&gt;$?&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Shows which command in the pipeline failed&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-use-process-substitution-instead-of-pipes"&gt;3. Use process substitution instead of pipes&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Pipe: may cause SIGPIPE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;diff &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;sort file1&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;sort file2&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Safer than:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sort file1 | sort file2 | diff - file3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-check-for-empty-pipe-input"&gt;4. Check for empty pipe input&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Ensure upstream produces output&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;command_that_may_fail | next_command
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Safer:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;command_that_may_fail | &lt;span style="color:#f92672"&gt;{&lt;/span&gt; read -r line; &lt;span style="color:#f92672"&gt;[&lt;/span&gt; -n &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;$line&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt; &lt;span style="color:#f92672"&gt;]&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; process &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;$line&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="bash-process-substitution"&gt;Process Substitution&lt;/a&gt; — &lt;code&gt;&amp;lt;()&lt;/code&gt; and &lt;code&gt;&amp;gt;()&lt;/code&gt; errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="return-code"&gt;Return Code&lt;/a&gt; — exit status handling&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Bash Trap Error</title><link>https://errorcode.excellentwiki.com/languages/bash/bash-trap-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/bash-trap-error/</guid><description>&lt;h1 id="bash-trap-error-fix"&gt;Bash Trap Error Fix&lt;/h1&gt;
+&lt;p&gt;Trap errors occur when signal handlers are set incorrectly, the trap function produces errors, or cleanup code doesn&amp;rsquo;t execute on script exit.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;trap&lt;/code&gt; command registers signal handlers that execute code when signals are received (EXIT, INT, TERM, ERR, etc.). Errors happen when the trap command itself has syntax issues or the handler function fails.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Trap command syntax error (missing signal name)&lt;/li&gt;
+&lt;li&gt;Handler function not defined before trap&lt;/li&gt;
+&lt;li&gt;Recursive trap (handler triggering itself)&lt;/li&gt;
+&lt;li&gt;Trap in subshell doesn&amp;rsquo;t affect parent&lt;/li&gt;
+&lt;li&gt;Missing quotes around handler code&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-define-handler-before-trap"&gt;1. Define handler before trap&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: function not yet defined&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap cleanup EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt; rm -f /tmp/lockfile; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RIGHT: define function first&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt; rm -f /tmp/lockfile; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap cleanup EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-use-proper-trap-syntax"&gt;2. Use proper trap syntax&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: missing signal&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;cleaning&amp;#34;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RIGHT: with signal&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;cleaning&amp;#34;&amp;#39;&lt;/span&gt; EXIT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-prevent-recursive-traps"&gt;3. Prevent recursive traps&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: handler might trigger ERR recursively&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;Error on line $LINENO&amp;#34;&amp;#39;&lt;/span&gt; ERR
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# RIGHT: disable trap inside handler&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap_handler&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; trap - ERR &lt;span style="color:#75715e"&gt;# Temporarily disable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;Error occurred&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# cleanup code&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap trap_handler ERR
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-handle-exit-trap-in-subshells"&gt;4. Handle EXIT trap in subshells&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Subshell trap doesn&amp;#39;t affect parent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt; trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;done&amp;#34;&amp;#39;&lt;/span&gt; EXIT; sleep &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Parent doesn&amp;#39;t see this trap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="signal-trap"&gt;Signal Trap&lt;/a&gt; — signal handling behavior&lt;/li&gt;
+&lt;li&gt;&lt;a href="return-code"&gt;Return Code&lt;/a&gt; — exit status handling&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Bash Trap: Invalid Signal Specification Error Fix</title><link>https://errorcode.excellentwiki.com/languages/bash/bash-trap-signal-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/bash/bash-trap-signal-error/</guid><description>&lt;h1 id="bash-trap-invalid-signal-specification-error-fix"&gt;Bash Trap: Invalid Signal Specification Error Fix&lt;/h1&gt;
+&lt;p&gt;A bash trap signal error occurs when you specify an invalid signal name or number in the &lt;code&gt;trap&lt;/code&gt; command.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;trap&lt;/code&gt; command registers handlers for signals. If you provide a signal name that doesn&amp;rsquo;t exist (e.g., &lt;code&gt;SIGTYPO&lt;/code&gt;), bash reports &amp;ldquo;invalid signal specification.&amp;rdquo;&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Typo in signal name (e.g., &lt;code&gt;SIGINTT&lt;/code&gt; instead of &lt;code&gt;SIGINT&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Using wrong signal number&lt;/li&gt;
+&lt;li&gt;Using platform-specific signals not available on all systems&lt;/li&gt;
+&lt;li&gt;Missing signal name argument&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="1-use-correct-signal-names"&gt;1. Use correct signal names&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Typo in signal name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;caught&amp;#34;&amp;#39;&lt;/span&gt; SIGINTT
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Use valid signal name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;caught&amp;#34;&amp;#39;&lt;/span&gt; SIGINT
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="2-list-available-signals"&gt;2. List available signals&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Check available signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kill -l
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use numeric signal codes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;caught&amp;#34;&amp;#39;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt; &lt;span style="color:#75715e"&gt;# SIGINT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="3-handle-common-signals-properly"&gt;3. Handle common signals properly&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Handle common signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cleanup&lt;span style="color:#f92672"&gt;()&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; rm -f /tmp/lockfile
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; echo &lt;span style="color:#e6db74"&gt;&amp;#34;Cleaned up&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap cleanup EXIT INT TERM
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="4-use-err-for-error-handling"&gt;4. Use ERR for error handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Trap errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;trap &lt;span style="color:#e6db74"&gt;&amp;#39;echo &amp;#34;Error on line $LINENO&amp;#34;&amp;#39;&lt;/span&gt; ERR
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;set -e
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="signal-trap"&gt;Signal Trap&lt;/a&gt; — signal handling behavior&lt;/li&gt;
+&lt;li&gt;&lt;a href="return-code"&gt;Return Code&lt;/a&gt; — exit status handling&lt;/li&gt;
+&lt;li&gt;&lt;a href="command-not-found"&gt;Command Not Found&lt;/a&gt; — missing commands&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C Broken pipe: EPIPE</title><link>https://errorcode.excellentwiki.com/languages/c/broken-pipe/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/c/broken-pipe/</guid><description>&lt;h1 id="broken-pipe-epipe"&gt;Broken pipe: EPIPE&lt;/h1&gt;
+&lt;p&gt;EPIPE occurs when you write to a pipe or socket whose read end has been closed. The process receives a &lt;code&gt;SIGPIPE&lt;/code&gt; signal which, if not handled, terminates the program.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Writing to closed pipe end
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd[&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;pipe&lt;/span&gt;(fd);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(fd[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;]); &lt;span style="color:#75715e"&gt;// close read end
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;write&lt;/span&gt;(fd[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;], &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// EPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Reading end of pipe closed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Common with shell pipes: cmd1 | cmd2
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// If cmd2 exits, cmd1 gets SIGPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Socket peer disconnected
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;send&lt;/span&gt;(sock, data, len, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;); &lt;span style="color:#75715e"&gt;// peer closed connection
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-ignore-sigpipe"&gt;Fix 1: Ignore SIGPIPE&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;signal&lt;/span&gt;(SIGPIPE, SIG_IGN);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// write() will return -1 with errno = EPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-check-write-return-value"&gt;Fix 2: Check write return value&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ssize_t&lt;/span&gt; written &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;write&lt;/span&gt;(fd[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;], &lt;span style="color:#e6db74"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;4&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (written &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (errno &lt;span style="color:#f92672"&gt;==&lt;/span&gt; EPIPE) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;Pipe closed&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-use-msg_nosignal-on-sockets"&gt;Fix 3: Use MSG_NOSIGNAL on sockets&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;send&lt;/span&gt;(sock, data, len, MSG_NOSIGNAL);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;unistd.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;signal.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;errno.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;main&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;signal&lt;/span&gt;(SIGPIPE, SIG_IGN);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; fd[&lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;pipe&lt;/span&gt;(fd);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(fd[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;ssize_t&lt;/span&gt; result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;write&lt;/span&gt;(fd[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;], &lt;span style="color:#e6db74"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (result &lt;span style="color:#f92672"&gt;==&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; errno &lt;span style="color:#f92672"&gt;==&lt;/span&gt; EPIPE) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;fprintf&lt;/span&gt;(stderr, &lt;span style="color:#e6db74"&gt;&amp;#34;Broken pipe&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;\n&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;close&lt;/span&gt;(fd[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;]);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/connection-reset/"&gt;Connection reset&lt;/a&gt; — ECONNRESET.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/connection-refused-c/"&gt;Connection refused&lt;/a&gt; — ECONNREFUSED.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/c/bad-file-descriptor/"&gt;Bad file descriptor&lt;/a&gt; — EBADF.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] C signal() Deprecated — Replace with sigaction()</title><link>https://errorcode.excellentwiki.com/deprecated/c/signal/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/deprecated/c/signal/</guid><description>&lt;h1 id="solution-c-signal-deprecated--replace-with-sigaction"&gt;[Solution] C signal() Deprecated — Replace with sigaction()&lt;/h1&gt;
 &lt;p&gt;The &lt;code&gt;signal()&lt;/code&gt; function is deprecated in POSIX because its behavior is unreliable and implementation-defined. When a signal handler is invoked, the handler disposition may be reset to &lt;code&gt;SIG_DFL&lt;/code&gt;, requiring the handler to re-register itself — creating a race condition. &lt;code&gt;sigaction()&lt;/code&gt; provides explicit control over signal behavior and is the recommended replacement.&lt;/p&gt;
 &lt;h2 id="what-youll-see"&gt;What You&amp;rsquo;ll See&lt;/h2&gt;
 &lt;p&gt;Compiler warnings with strict POSIX compliance flags:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;warning: &lt;span style="color:#e6db74"&gt;&amp;#39;signal&amp;#39;&lt;/span&gt; is deprecated: use sigaction() &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; reliable &lt;span style="color:#66d9ef"&gt;signal&lt;/span&gt; handling
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="why-deprecated"&gt;Why Deprecated&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;signal()&lt;/code&gt; is deprecated because:&lt;/p&gt;</description></item><item><title>[Solution] Go Broken Pipe Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/io-pipe-broken-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/io-pipe-broken-2/</guid><description>&lt;h1 id="broken-pipe-error-fix"&gt;Broken Pipe Error Fix&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;signal()&lt;/code&gt; is deprecated because:&lt;/p&gt;</description></item><item><title>[Solution] Control-C Interrupt Handler Error</title><link>https://errorcode.excellentwiki.com/os/windows/runtime-error-control-c/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/runtime-error-control-c/</guid><description>&lt;h1 id="control-c-interrupt-handler-error"&gt;Control-C Interrupt Handler Error&lt;/h1&gt;
+&lt;p&gt;A Control-C interrupt handler error occurs when a console application fails to handle the &lt;code&gt;CTRL_C_EVENT&lt;/code&gt; signal properly, or when the default handler terminates the process unexpectedly. The crash may show:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Unhandled exception: control-C&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Or the application terminates without any error message when &lt;code&gt;Ctrl+C&lt;/code&gt; is pressed.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;When the user presses &lt;code&gt;Ctrl+C&lt;/code&gt; in a Windows console, the system sends a &lt;code&gt;CTRL_C_EVENT&lt;/code&gt; to all processes attached to that console. By default, this terminates the process. Applications can register a custom console control handler with &lt;code&gt;SetConsoleCtrlHandler&lt;/code&gt; to catch the signal and perform cleanup. If the handler itself crashes or the application does not install a handler, the process is terminated abruptly.&lt;/p&gt;</description></item><item><title>[Solution] Django Signal Handler Error</title><link>https://errorcode.excellentwiki.com/frameworks/django/django-signal-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/frameworks/django/django-signal-error/</guid><description>&lt;p&gt;A Django signal handler error occurs when a signal handler fails during dispatch. This can cause the entire operation to fail silently or raise an exception.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Signal handler raises an unhandled exception&lt;/li&gt;
+&lt;li&gt;Recursive signal triggers (saving in post_save causes infinite loop)&lt;/li&gt;
+&lt;li&gt;Signal handler not connected properly&lt;/li&gt;
+&lt;li&gt;Using &lt;code&gt;send_robust&lt;/code&gt; vs &lt;code&gt;send&lt;/code&gt; incorrectly&lt;/li&gt;
+&lt;li&gt;Signal handler accessing deleted objects&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="connect-signal-handler"&gt;Connect Signal Handler&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; django.db.models.signals &lt;span style="color:#f92672"&gt;import&lt;/span&gt; post_save
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; django.dispatch &lt;span style="color:#f92672"&gt;import&lt;/span&gt; receiver
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@receiver&lt;/span&gt;(post_save, sender&lt;span style="color:#f92672"&gt;=&lt;/span&gt;User)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;create_profile&lt;/span&gt;(sender, instance, created, &lt;span style="color:#f92672"&gt;**&lt;/span&gt;kwargs):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; created:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Profile&lt;span style="color:#f92672"&gt;.&lt;/span&gt;objects&lt;span style="color:#f92672"&gt;.&lt;/span&gt;create(user&lt;span style="color:#f92672"&gt;=&lt;/span&gt;instance)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="avoid-recursive-saves"&gt;Avoid Recursive Saves&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@receiver&lt;/span&gt;(post_save, sender&lt;span style="color:#f92672"&gt;=&lt;/span&gt;Profile)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;update_user&lt;/span&gt;(sender, instance, &lt;span style="color:#f92672"&gt;**&lt;/span&gt;kwargs):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# Use update() to avoid triggering post_save again&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; User&lt;span style="color:#f92672"&gt;.&lt;/span&gt;objects&lt;span style="color:#f92672"&gt;.&lt;/span&gt;filter(pk&lt;span style="color:#f92672"&gt;=&lt;/span&gt;instance&lt;span style="color:#f92672"&gt;.&lt;/span&gt;user_id)&lt;span style="color:#f92672"&gt;.&lt;/span&gt;update(last_login&lt;span style="color:#f92672"&gt;=&lt;/span&gt;now())
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-send_robust-for-error-handling"&gt;Use send_robust for Error Handling&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; django.dispatch &lt;span style="color:#f92672"&gt;import&lt;/span&gt; Signal
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;my_signal &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Signal()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# send_robust catches exceptions in handlers&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;responses &lt;span style="color:#f92672"&gt;=&lt;/span&gt; my_signal&lt;span style="color:#f92672"&gt;.&lt;/span&gt;send_robust(sender&lt;span style="color:#f92672"&gt;=&lt;/span&gt;MyModel, instance&lt;span style="color:#f92672"&gt;=&lt;/span&gt;obj)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-signal-registration"&gt;Check Signal Registration&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# In apps.py&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyAppConfig&lt;/span&gt;(AppConfig):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ready&lt;/span&gt;(self):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;import&lt;/span&gt; myapp.signals
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: Recursive save&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@receiver&lt;/span&gt;(post_save, sender&lt;span style="color:#f92672"&gt;=&lt;/span&gt;Profile)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;bad_handler&lt;/span&gt;(sender, instance, &lt;span style="color:#f92672"&gt;**&lt;/span&gt;kwargs):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; instance&lt;span style="color:#f92672"&gt;.&lt;/span&gt;save() &lt;span style="color:#75715e"&gt;# Infinite loop!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: use User.objects.filter().update()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Signal not connected&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: ensure AppConfig.ready() imports signals&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/frameworks/django/django-transaction-error/"&gt;Django Transaction Error&lt;/a&gt; — TransactionManagementError&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/frameworks/django/django-settings-error/"&gt;Django Settings Error&lt;/a&gt; — ImproperlyConfigured&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Go Broken Pipe Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/io-pipe-broken-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/io-pipe-broken-2/</guid><description>&lt;h1 id="broken-pipe-error-fix"&gt;Broken Pipe Error Fix&lt;/h1&gt;
 &lt;p&gt;The &lt;code&gt;write |0: broken pipe&lt;/code&gt; error occurs when a process writes to a pipe or socket whose read end has been closed.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
 &lt;p&gt;A broken pipe happens when one end of a pipe or socket connection is closed while the other end is still writing. In Unix-like systems, this generates a SIGPIPE signal which Go ignores by default (unlike C programs). Instead, the write operation returns an &lt;code&gt;EPIPE&lt;/code&gt; error. This commonly occurs with HTTP responses to clients that disconnect early.&lt;/p&gt;</description></item><item><title>[Solution] Go Broken Pipe Error Fix</title><link>https://errorcode.excellentwiki.com/languages/go/io-pipe-broken/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/go/io-pipe-broken/</guid><description>&lt;h1 id="write-0-broken-pipe--error-fix"&gt;Write |0: Broken Pipe — Error Fix&lt;/h1&gt;
@@ -21,7 +256,18 @@
 &lt;/ul&gt;
 &lt;h2 id="how-to-fix-epipe"&gt;How to Fix EPIPE&lt;/h2&gt;
 &lt;h3 id="1-handle-sigpipe-signal"&gt;1. Handle SIGPIPE Signal&lt;/h3&gt;
-&lt;p&gt;Ignore or handle the SIGPIPE signal to prevent process termination:&lt;/p&gt;</description></item><item><title>[Solution] PHP Error 128 — SIGTERM Script Terminated Fix</title><link>https://errorcode.excellentwiki.com/languages/php/error-128/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/php/error-128/</guid><description>&lt;h1 id="solution-php-error-128--sigterm-script-terminated-fix"&gt;[Solution] PHP Error 128 — SIGTERM Script Terminated Fix&lt;/h1&gt;
+&lt;p&gt;Ignore or handle the SIGPIPE signal to prevent process termination:&lt;/p&gt;</description></item><item><title>[Solution] Nginx worker process — exited on signal</title><link>https://errorcode.excellentwiki.com/tools/nginx/nginx-worker-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/nginx/nginx-worker-error-v2/</guid><description>&lt;p&gt;A worker process exited on signal means an Nginx worker process was terminated unexpectedly by the operating system or a signal, causing request processing to fail. This indicates a critical issue with the Nginx process or system resources.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Nginx runs a master process that spawns worker processes to handle requests. When a worker receives a fatal signal (SIGSEGV, SIGBUS, SIGKILL, OOM killer), it exits abnormally. The master process typically respawns a new worker, but during the transition, some requests may fail. Frequent worker exits indicate a serious problem — memory corruption, resource exhaustion, or a bug in an Nginx module.&lt;/p&gt;</description></item><item><title>[Solution] Node.js EPIPE: broken pipe Error Fix</title><link>https://errorcode.excellentwiki.com/languages/javascript/epipe/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/javascript/epipe/</guid><description>&lt;h1 id="nodejs-epipe--broken-pipe"&gt;Node.js EPIPE — broken pipe&lt;/h1&gt;
+&lt;p&gt;This error occurs when trying to write to a pipe (stream) whose read end has been closed. It commonly happens when piping data to a process that has already exited.&lt;/p&gt;
+&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Common error messages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Error: write EPIPE&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Error: EBROKENPIPE: broken pipe&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;EPIPE: broken pipe, write&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When a process reads from a pipe and exits, the write end receives a SIGPIPE signal and EPIPE error.&lt;/p&gt;</description></item><item><title>[Solution] PHP Error 128 — SIGTERM Script Terminated Fix</title><link>https://errorcode.excellentwiki.com/languages/php/error-128/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/php/error-128/</guid><description>&lt;h1 id="solution-php-error-128--sigterm-script-terminated-fix"&gt;[Solution] PHP Error 128 — SIGTERM Script Terminated Fix&lt;/h1&gt;
 &lt;p&gt;PHP error code 128 indicates the script was terminated by a &lt;code&gt;SIGTERM&lt;/code&gt; (signal 15) from an external source. This is not a PHP error itself — it means the operating system or a process manager killed the PHP process. PHP exit codes are calculated as &lt;code&gt;128 + signal number&lt;/code&gt;, so &lt;code&gt;128 + 15 = 143&lt;/code&gt; for SIGTERM, but error 128 specifically reflects the base exit code when the process receives a termination signal.&lt;/p&gt;</description></item><item><title>[Solution] Python BrokenPipeError — Broken Pipe Fix</title><link>https://errorcode.excellentwiki.com/languages/python/brokenpipeerror/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/python/brokenpipeerror/</guid><description>&lt;h1 id="brokenpipeerror--broken-pipe-fix"&gt;BrokenPipeError — Broken Pipe Fix&lt;/h1&gt;
 &lt;p&gt;A &lt;code&gt;BrokenPipeError&lt;/code&gt; is raised when you try to write to a pipe, socket, or stream whose reading end has been closed. It&amp;rsquo;s a subclass of &lt;code&gt;ConnectionError&lt;/code&gt; (which is a subclass of &lt;code&gt;OSError&lt;/code&gt;). On Unix systems, this often manifests as &lt;code&gt;SIGPIPE&lt;/code&gt;.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
@@ -31,7 +277,168 @@
 &lt;p&gt;In Unix-like systems, pipes connect the stdout of one process to the stdin of another. When the reading process exits, the writing process receives a &lt;code&gt;SIGPIPE&lt;/code&gt; signal. If not handled, this signal terminates the process. In Rust, the default behavior is to ignore &lt;code&gt;SIGPIPE&lt;/code&gt; and return an &lt;code&gt;IO&lt;/code&gt; error instead.&lt;/p&gt;</description></item><item><title>[Solution] Rust Broken Pipe — Pipe Closed Error</title><link>https://errorcode.excellentwiki.com/languages/rust/broken-pipe-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/broken-pipe-2/</guid><description>&lt;h1 id="broken-pipe--pipe-closed-error"&gt;Broken Pipe — Pipe Closed Error&lt;/h1&gt;
 &lt;p&gt;An IO error with the message &amp;ldquo;Broken pipe (os error 32)&amp;rdquo; occurs when you write to a pipe or socket whose reading end has been closed.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
-&lt;p&gt;In Unix, pipes connect processes — stdout of one to stdin of another. When the reader exits, the writer gets a &lt;code&gt;SIGPIPE&lt;/code&gt; signal. Rust ignores &lt;code&gt;SIGPIPE&lt;/code&gt; by default and returns an IO error instead (error code 32, &lt;code&gt;EPIPE&lt;/code&gt;).&lt;/p&gt;</description></item><item><title>[Solution] Systemd Failed to Reload</title><link>https://errorcode.excellentwiki.com/tools/systemd/reload-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/systemd/reload-error/</guid><description>&lt;h1 id="systemd-failed-to-reload"&gt;Systemd Failed to Reload&lt;/h1&gt;
+&lt;p&gt;In Unix, pipes connect processes — stdout of one to stdin of another. When the reader exits, the writer gets a &lt;code&gt;SIGPIPE&lt;/code&gt; signal. Rust ignores &lt;code&gt;SIGPIPE&lt;/code&gt; by default and returns an IO error instead (error code 32, &lt;code&gt;EPIPE&lt;/code&gt;).&lt;/p&gt;</description></item><item><title>[Solution] Segfault: null pointer dereference in assembly</title><link>https://errorcode.excellentwiki.com/languages/assembly/asm-segmentation-fault-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/assembly/asm-segmentation-fault-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A segmentation fault (SIGSEGV) from null pointer dereference occurs when assembly code attempts to read from or write to memory address 0, which is protected by the operating system.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Uninitialized pointer register (contains 0)&lt;/li&gt;
+&lt;li&gt;Failed memory allocation not checked&lt;/li&gt;
+&lt;li&gt;Incorrect base or index register values&lt;/li&gt;
+&lt;li&gt;Stack pointer corruption&lt;/li&gt;
+&lt;li&gt;Jumping to address 0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-asm" data-lang="asm"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; WRONG: Dereferencing uninitialized pointer
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#75715e"&gt;; rax = NULL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rbx&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;] &lt;span style="color:#75715e"&gt;; SIGSEGV: read from address 0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; CORRECT: Check pointer before use
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;test&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jz&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.null_error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rbx&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jmp&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.done&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.null_error:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Handle NULL pointer error
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.done:
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-asm" data-lang="asm"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; WRONG: malloc result not checked
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;call&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;malloc&lt;/span&gt; &lt;span style="color:#75715e"&gt;; Returns pointer in rax
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; [&lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;], &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#75715e"&gt;; May be NULL if malloc failed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; CORRECT: Check malloc return value
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;call&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;malloc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;test&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jz&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.malloc_failed&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;qword&lt;/span&gt; [&lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;], &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jmp&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.done&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.malloc_failed:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Handle allocation failure
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.done:
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-asm" data-lang="asm"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; CORRECT: Safe memory access pattern
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;global&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;_start&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;_start:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Load base address
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;lea&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rel&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;data&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;test&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jz&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Safe dereference
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rbx&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jmp&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.exit&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.error:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;60&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;syscall&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.exit:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;60&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;syscall&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.data&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;data&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;dq&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="asm-stack-overflow-v2"&gt;Stack Overflow&lt;/a&gt; - stack pointer issues&lt;/li&gt;
+&lt;li&gt;&lt;a href="asm-page-fault-v2"&gt;Page Fault&lt;/a&gt; - page errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="asm-general-protection-v2"&gt;General Protection&lt;/a&gt; - protection faults&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] SIGPIPE: broken pipe in assembly</title><link>https://errorcode.excellentwiki.com/languages/assembly/asm-broken-pipe/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/assembly/asm-broken-pipe/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;SIGPIPE occurs when a process writes to a pipe or socket that has no reading process (the read end was closed). The kernel sends SIGPIPE to the writing process, which typically terminates it.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Writing to pipe after reader closed&lt;/li&gt;
+&lt;li&gt;Socket connection reset by peer&lt;/li&gt;
+&lt;li&gt;Shell pipeline broken&lt;/li&gt;
+&lt;li&gt;File descriptor closed prematurely&lt;/li&gt;
+&lt;li&gt;Network connection dropped&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-asm" data-lang="asm"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; WRONG: No SIGPIPE handling
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Write to pipe - may get SIGPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sys_write
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;pipe_fd&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;lea&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rsi&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rel&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;data&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;syscall&lt;/span&gt; &lt;span style="color:#75715e"&gt;; May generate SIGPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; CORRECT: Ignore SIGPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Set SIG_IGN for SIGPIPE (signal 13)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;13&lt;/span&gt; &lt;span style="color:#75715e"&gt;; SIGPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#75715e"&gt;; SIG_IGN
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rsi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;13&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sys_rt_sigaction
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;13&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sig
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;lea&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rsi&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rel&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;act&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;xor&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;r10&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;8&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sizeof(sigset_t)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;syscall&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-asm" data-lang="asm"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; CORRECT: Check write return value
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sys_write
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;fd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;lea&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rsi&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rel&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;data&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;syscall&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Check for error
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;cmp&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jl&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.write_error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; rax = bytes written
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jmp&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.done&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.write_error:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Handle error (errno = -rax)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;neg&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;cmp&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;32&lt;/span&gt; &lt;span style="color:#75715e"&gt;; EPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;jne&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.other_error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Handle broken pipe specifically
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.other_error:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.done:
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-asm" data-lang="asm"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; CORRECT: Use MSG_NOSIGNAL for sockets
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; send() with MSG_NOSIGNAL flag
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;44&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sys_sendto
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;sock_fd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;lea&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rsi&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rel&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;data&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;r10&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0x4000&lt;/span&gt; &lt;span style="color:#75715e"&gt;; MSG_NOSIGNAL
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;xor&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;r8&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;r8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;xor&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;r9&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;r9&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;syscall&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-asm" data-lang="asm"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;; CORRECT: Handle SIGPIPE with signal handler
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.data&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; sigaction_struct:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;dq&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sigpipe_handler&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sa_handler
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;dq&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sa_flags
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;dq&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sa_mask
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sigpipe_handler:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Handle SIGPIPE - just return
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;ret&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;section&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;.text&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;; Install handler
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rax&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;13&lt;/span&gt; &lt;span style="color:#75715e"&gt;; sys_rt_sigaction
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdi&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;13&lt;/span&gt; &lt;span style="color:#75715e"&gt;; SIGPIPE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;lea&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rsi&lt;/span&gt;, [&lt;span style="color:#66d9ef"&gt;rel&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;sigaction_struct&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;xor&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;rdx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;mov&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;r10&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;syscall&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="asm-invalid-syscall"&gt;Invalid Syscall&lt;/a&gt; - syscall errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="asm-segmentation-fault-v2"&gt;Segmentation Fault&lt;/a&gt; - memory access&lt;/li&gt;
+&lt;li&gt;&lt;a href="asm-general-protection-v2"&gt;General Protection&lt;/a&gt; - protection faults&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Systemd Failed to Reload</title><link>https://errorcode.excellentwiki.com/tools/systemd/reload-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/systemd/reload-error/</guid><description>&lt;h1 id="systemd-failed-to-reload"&gt;Systemd Failed to Reload&lt;/h1&gt;
 &lt;p&gt;A reload failure means systemd sent the reload signal to the running service, but the service rejected the new configuration or failed to re-read it.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;

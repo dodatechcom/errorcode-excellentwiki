@@ -1,116 +1,79 @@
 ---
-title: "[Solution] Ruby TypeError — No Implicit Conversion Fix"
-description: "Fix Ruby TypeError: no implicit conversion. Learn why Ruby raises this error when mixing incompatible types and how to convert properly."
+title: "[Solution] Ruby TypeError — Type Mismatch Fix"
+description: "Fix Ruby TypeError: type mismatch. Learn why incompatible types cause this error and how to convert or validate types."
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["typeerror", "type-conversion", "implicit-conversion", "ruby"]
+tags: ["typeerror", "type-mismatch", "incompatible", "ruby"]
 weight: 5
 ---
 
-# TypeError — No Implicit Conversion
+## What This Error Means
 
-A `TypeError` is raised when an operation receives an argument of the wrong type and Ruby can't implicitly convert it.
-
-## Description
-
-Ruby is dynamically typed but still enforces type compatibility for operations. When you mix incompatible types (like adding a String to an Integer), Ruby raises a `TypeError`.
-
-Common causes:
-
-- **Mixing incompatible types** — arithmetic between String and Integer
-- **Wrong argument type** — passing a String where an Integer is expected
-- **Frozen object modification** — trying to modify a frozen object
-- **Encoding mismatches** — incompatible string encodings
+A `TypeError` is raised when an operation is performed on an object of an incompatible type. Ruby is dynamically typed but still enforces type constraints for certain operations.
 
 ## Common Causes
 
-```ruby
-# Cause 1: Adding String to Integer
-"hello" + 123  # TypeError: no implicit conversion of Integer into String
-
-# Cause 2: Wrong argument type
-def multiply(a, b)
-  a * b
-end
-multiply("hello", "world")  # TypeError: no implicit conversion of String into Integer
-
-# Cause 3: Comparing incompatible types
-"hello" > 123  # TypeError: comparison of String with Integer failed
-
-# Cause 4: Frozen object modification
-str = "hello".freeze
-str << "world"  # TypeError: can't modify frozen String
-```
+- Converting incompatible types (e.g., `nil` to Integer)
+- Passing wrong type to a method expecting a specific type
+- Comparing incompatible types
+- Attempting to freeze an incompatible object
 
 ## How to Fix
 
-### Fix 1: Convert types explicitly
-
 ```ruby
-# Wrong
-"hello" + 123  # TypeError
+# WRONG: Incompatible type conversion
+nil + 1  # TypeError: no implicit conversion of nil into Integer
 
-# Correct
-"hello" + 123.to_s  # "hello123"
+# CORRECT: Validate and convert
+value = nil
+result = value.to_i if value  # 0
 ```
 
-### Fix 2: Validate argument types
-
 ```ruby
-# Wrong
-def multiply(a, b)
-  a * b
-end
+# WRONG: Wrong type for array operations
+"hello"[0]  # Works, but:
+123[0]  # TypeError: no implicit conversion of Integer into String
 
-# Correct
-def multiply(a, b)
-  raise ArgumentError, "Arguments must be numbers" unless a.is_a?(Numeric) && b.is_a?(Numeric)
-  a * b
-end
+# CORRECT: Ensure correct type
+num = 123
+str = num.to_s
+str[0]  # "1"
 ```
 
-### Fix 3: Use explicit conversions
-
 ```ruby
-# Wrong
-Integer("abc")  # ArgumentError, but similar concept
+# WRONG: Comparing incompatible types
+"hello" > 123  # TypeError: no implicit conversion of Integer into String
 
-# Correct
-"123".to_i  # 123
-"3.14".to_f  # 3.14
-123.to_s  # "123"
+# CORRECT: Compare same types
+"hello".length > 123  # false (comparing integers)
 ```
 
-### Fix 4: Handle frozen strings
-
 ```ruby
-# Wrong
-str = "hello".freeze
-str << "world"  # TypeError
+# WRONG: Trying to freeze wrong type
+123.freeze  # Works, but some objects have restrictions
 
-# Correct
-str = +("hello")  # Creates mutable copy
-str << "world"  # "helloworld"
+# CORRECT: Check object type before freezing
+obj.freeze if obj.respond_to?(:freeze)
 ```
 
 ## Examples
 
 ```ruby
-# Example 1: Common type mismatch
-a = "10"
-b = 20
-# a + b  # TypeError
-a.to_i + b  # 30
+# Example 1: Nil in arithmetic
+x = nil
+y = x + 5  # TypeError
 
-# Example 2: Array operations
-mixed = [1, "two", 3]
-mixed.sum  # TypeError: no implicit conversion of String into Integer
-mixed.select { |x| x.is_a?(Integer) }.sum  # 4
+# Example 2: Wrong method argument type
+[1, 2, 3].join(",")  # "1,2,3"
+[1, 2, 3].join(123)  # TypeError: no implicit conversion of Integer into String
+
+# Example 3: Encoding mismatch
+"hello".encode("UTF-8")  # OK
 ```
 
 ## Related Errors
 
-- [NoMethodError]({{< relref "/languages/ruby/no-method-error" >}}) — undefined method for object
-- [ArgumentError]({{< relref "/languages/ruby/argument-error" >}}) — wrong number or type of arguments
-- [FrozenError]({{< relref "/languages/ruby/frozen-error" >}}) — modifying frozen object
+- [NoMethodError](nomethoderror-ruby) — undefined method on object
+- [ArgumentError](argumenterror-ruby) — wrong number of arguments
+- [NameError](nameerror-ruby) — uninitialized constant

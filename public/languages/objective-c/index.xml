@@ -1,4 +1,589 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Objective-C on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/languages/objective-c/</link><description>Recent content in Objective-C on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/languages/objective-c/index.xml" rel="self" type="application/rss+xml"/><item><title>Array bounds error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/array-bounds/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/array-bounds/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Objective-C on ErrorCode — Error Code Reference &amp; Solutions</title><link>https://errorcode.excellentwiki.com/languages/objective-c/</link><description>Recent content in Objective-C on ErrorCode — Error Code Reference &amp; Solutions</description><generator>Hugo</generator><language>en</language><atom:link href="https://errorcode.excellentwiki.com/languages/objective-c/index.xml" rel="self" type="application/rss+xml"/><item><title>[Solution] Objective-C ARC Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-arc-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-arc-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;ARC errors occur when Objective-C code violates Automatic Reference Counting rules or has incorrect memory management patterns.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Using retain/release/autorelease under ARC&lt;/li&gt;
+&lt;li&gt;Incorrect bridge casts between ObjC and Core Foundation&lt;/li&gt;
+&lt;li&gt;Assigning to ivar without proper ownership&lt;/li&gt;
+&lt;li&gt;Mixing ARC and non-ARC code&lt;/li&gt;
+&lt;li&gt;Circular strong references&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Don&amp;#39;t call retain/release under ARC
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// [object retain]; // WRONG
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// [object release]; // WRONG
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use proper bridge casts
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CFStringRef cfString &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (__bridge_retained CFStringRef)nsString; &lt;span style="color:#75715e"&gt;// +1 ref
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CFRelease(cfString); &lt;span style="color:#75715e"&gt;// Balance
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use weak for delegates
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@property&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;nonatomic&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;weak&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;id&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;MyDelegate&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; delegate;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use __block to avoid retain cycles in blocks
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;__block&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;id&lt;/span&gt; weakSelf &lt;span style="color:#f92672"&gt;=&lt;/span&gt; self;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;self.block &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;id&lt;/span&gt; strongSelf &lt;span style="color:#f92672"&gt;=&lt;/span&gt; weakSelf;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [strongSelf doWork];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Block Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-block-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-block-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Block errors occur when Objective-C blocks capture variables incorrectly, create retain cycles, or access variables out of scope.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Strong reference cycles between blocks and objects&lt;/li&gt;
+&lt;li&gt;Capturing self strongly in blocks (creating retain cycles)&lt;/li&gt;
+&lt;li&gt;Accessing variables after they go out of scope&lt;/li&gt;
+&lt;li&gt;Incorrect block copy semantics&lt;/li&gt;
+&lt;li&gt;Modifying captured variables without __block qualifier&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use __weak to avoid retain cycles
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;__weak&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;typeof&lt;/span&gt;(self) weakSelf &lt;span style="color:#f92672"&gt;=&lt;/span&gt; self;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;self.completionBlock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;__strong&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;typeof&lt;/span&gt;(weakSelf) strongSelf &lt;span style="color:#f92672"&gt;=&lt;/span&gt; weakSelf;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [strongSelf doWork];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use __block for mutable captured variables
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;__block&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; counter &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; (&lt;span style="color:#f92672"&gt;^&lt;/span&gt;increment)(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;) &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; counter&lt;span style="color:#f92672"&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Copy blocks to heap when needed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Block_copy(myBlock);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Bridging Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-bridging-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-bridging-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Bridging errors occur when converting between Objective-C and Swift types, often due to incorrect type annotations or missing nullability information.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing nullability annotations in ObjC headers&lt;/li&gt;
+&lt;li&gt;Incorrect nullable/nonnull annotations&lt;/li&gt;
+&lt;li&gt;Bridging between NSString and String incorrectly&lt;/li&gt;
+&lt;li&gt;Optionality mismatches&lt;/li&gt;
+&lt;li&gt;Missing NS_SWIFT_NAME annotations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Add nullability annotations to ObjC headers
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (nullable NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;fetchDataWithError:&lt;/span&gt;(NSError &lt;span style="color:#f92672"&gt;*&lt;/span&gt;_Nullable &lt;span style="color:#f92672"&gt;*&lt;/span&gt;_Nullable)error;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use NS_ASSUME_NONNULL_BEGIN/END
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NS_ASSUME_NONNULL_BEGIN
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@interface&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyClass&lt;/span&gt; : &lt;span style="color:#a6e22e"&gt;NSObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;requiredMethod&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (nullable NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;optionalMethod&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NS_ASSUME_NONNULL_END
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use NS_REFINED_FOR_SWIFT for better Swift naming
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;-&lt;/span&gt; (NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)dataDescription NS_REFINED_FOR_SWIFT;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Category Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-category-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-category-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Category errors occur when Objective-C categories have naming conflicts, duplicate method implementations, or missing required methods.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Category method name collision with existing method&lt;/li&gt;
+&lt;li&gt;Category overriding existing method without awareness&lt;/li&gt;
+&lt;li&gt;Missing methods expected by category interface&lt;/li&gt;
+&lt;li&gt;Category loaded at wrong time&lt;/li&gt;
+&lt;li&gt;Circular category dependencies&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use unique method names with prefixes
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@interface&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;NSString&lt;/span&gt; (MyCategory)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;myCategory_method&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@implementation&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;NSString&lt;/span&gt; (MyCategory)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;myCategory_method&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; [self uppercaseString];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check if category method exists
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([string respondsToSelector:&lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(myCategory_method)]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;result &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [string myCategory_method];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Prefer class extensions over categories for private methods
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@interface&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyClass&lt;/span&gt; ()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;-&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)privateMethod;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C CoreAnimation Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-coreanimation-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-coreanimation-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Core Animation errors occur when configuring CALayer properties incorrectly, causing rendering artifacts or performance issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Setting bounds/frame incorrectly&lt;/li&gt;
+&lt;li&gt;Invalid corner radius with masksToBounds&lt;/li&gt;
+&lt;li&gt;Off-screen rendering performance issues&lt;/li&gt;
+&lt;li&gt;Incorrect transform values&lt;/li&gt;
+&lt;li&gt;Layer not added to view hierarchy&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Configure layer properties correctly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CALayer &lt;span style="color:#f92672"&gt;*&lt;/span&gt;layer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; self.view.layer;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;layer.cornerRadius &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;8.0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;layer.masksToBounds &lt;span style="color:#f92672"&gt;=&lt;/span&gt; YES; &lt;span style="color:#75715e"&gt;// Clips to bounds
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;layer.borderWidth &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1.0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;layer.borderColor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [UIColor grayColor].CGColor;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Avoid off-screen rendering when possible
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;layer.shouldRasterize &lt;span style="color:#f92672"&gt;=&lt;/span&gt; YES;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;layer.rasterizationScale &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [UIScreen mainScreen].scale;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Apply transforms properly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CATransform3D transform &lt;span style="color:#f92672"&gt;=&lt;/span&gt; CATransform3DIdentity;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;transform.m34 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1.0&lt;/span&gt; &lt;span style="color:#f92672"&gt;/&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1000.0&lt;/span&gt;; &lt;span style="color:#75715e"&gt;// Perspective
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;layer.transform &lt;span style="color:#f92672"&gt;=&lt;/span&gt; transform;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C CoreData Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-coredata-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-coredata-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Core Data errors occur when managing the object graph and persistence layer, including fetch request failures, save conflicts, and migration issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Fetch request with invalid predicate&lt;/li&gt;
+&lt;li&gt;Save conflicts between contexts&lt;/li&gt;
+&lt;li&gt;Missing lightweight migration options&lt;/li&gt;
+&lt;li&gt;Context not saved before fetching&lt;/li&gt;
+&lt;li&gt;Incompatible model versions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Handle fetch errors properly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSFetchRequest &lt;span style="color:#f92672"&gt;*&lt;/span&gt;fetchRequest &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [[NSFetchRequest alloc] initWithEntityName:&lt;span style="color:#e6db74"&gt;@&amp;#34;Entity&amp;#34;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;fetchRequest.predicate &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [NSPredicate predicateWithFormat:&lt;span style="color:#e6db74"&gt;@&amp;#34;name == %@&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;@&amp;#34;Test&amp;#34;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSError &lt;span style="color:#f92672"&gt;*&lt;/span&gt;error &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nil;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSArray &lt;span style="color:#f92672"&gt;*&lt;/span&gt;results &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [context executeFetchRequest:fetchRequest error:&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;error];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (error) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Fetch error: %@&amp;#34;&lt;/span&gt;, error.localizedDescription);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Save with conflict resolution
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSError &lt;span style="color:#f92672"&gt;*&lt;/span&gt;saveError &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nil;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;!&lt;/span&gt;[context save:&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;saveError]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Save error: %@&amp;#34;&lt;/span&gt;, saveError.localizedDescription);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Enable lightweight migration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSDictionary &lt;span style="color:#f92672"&gt;*&lt;/span&gt;options &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;@{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSMigratePersistentStoresAutomaticallyOption: &lt;span style="color:#ae81ff"&gt;@YES&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSInferMappingModelAutomaticallyOption: &lt;span style="color:#ae81ff"&gt;@YES&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#ae81ff"&gt;}&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Exception</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-exception/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-exception/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Objective-C exceptions are thrown for serious runtime errors that cannot be recovered from gracefully, often leading to application termination.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;NSRangeException from invalid index access&lt;/li&gt;
+&lt;li&gt;NSInvalidArgumentException from invalid method arguments&lt;/li&gt;
+&lt;li&gt;NSInternalInconsistencyException from framework contract violations&lt;/li&gt;
+&lt;li&gt;Uncaught exceptions reaching main()&lt;/li&gt;
+&lt;li&gt;Throwing exceptions in dealloc or init methods&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use @try/@catch for exception handling
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSArray &lt;span style="color:#f92672"&gt;*&lt;/span&gt;array &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;@[&lt;/span&gt;&lt;span style="color:#e6db74"&gt;@&amp;#34;a&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;@&amp;#34;b&amp;#34;&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;element &lt;span style="color:#f92672"&gt;=&lt;/span&gt; array[&lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;]; &lt;span style="color:#75715e"&gt;// Throws NSRangeException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;@catch&lt;/span&gt; (NSException &lt;span style="color:#f92672"&gt;*&lt;/span&gt;exception) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Caught: %@&amp;#34;&lt;/span&gt;, exception.name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Reason: %@&amp;#34;&lt;/span&gt;, exception.reason);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;@finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Cleanup code
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Set up exception handler for uncaught exceptions
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSSetUncaughtExceptionHandler(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;handleException);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C File Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-file-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-file-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;File errors occur when Objective-C code cannot read, write, or access files due to missing files, permissions, or path issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;File does not exist at specified path&lt;/li&gt;
+&lt;li&gt;Insufficient file system permissions&lt;/li&gt;
+&lt;li&gt;Incorrect file path (sandbox restrictions)&lt;/li&gt;
+&lt;li&gt;File locked by another process&lt;/li&gt;
+&lt;li&gt;Bundle resource not included in build&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check if file exists before accessing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSFileManager &lt;span style="color:#f92672"&gt;*&lt;/span&gt;fileManager &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [NSFileManager defaultManager];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([fileManager fileExistsAtPath:filePath]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSData &lt;span style="color:#f92672"&gt;*&lt;/span&gt;data &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [NSData dataWithContentsOfFile:filePath];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Handle errors with NSError
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSError &lt;span style="color:#f92672"&gt;*&lt;/span&gt;error &lt;span style="color:#f92672"&gt;=&lt;/span&gt; nil;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;content &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [NSString stringWithContentsOfFile:filePath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; encoding:NSUTF8StringEncoding
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; error:&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;error];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (error) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Error: %@&amp;#34;&lt;/span&gt;, error.localizedDescription);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use bundle resources correctly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;path &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [[NSBundle mainBundle] pathForResource:&lt;span style="color:#e6db74"&gt;@&amp;#34;data&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ofType:&lt;span style="color:#e6db74"&gt;@&amp;#34;json&amp;#34;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C KVC Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-kvc-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-kvc-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;KVC errors occur when using Key-Value Coding to access properties dynamically, typically due to undefined keys or type conversion issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Accessing key that doesn&amp;rsquo;t exist on object&lt;/li&gt;
+&lt;li&gt;Type mismatch between property and value&lt;/li&gt;
+&lt;li&gt;Missing accessor methods for key&lt;/li&gt;
+&lt;li&gt;Setting readonly properties via KVC&lt;/li&gt;
+&lt;li&gt;Key path components invalid&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Implement valueForUndefinedKey: for custom handling
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;id&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;valueForUndefinedKey:&lt;/span&gt;(NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)key {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Undefined key: %@&amp;#34;&lt;/span&gt;, key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; nil;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Implement setValue:forUndefinedKey: for setting
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;setValue:&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;id&lt;/span&gt;)value &lt;span style="color:#a6e22e"&gt;forUndefinedKey:&lt;/span&gt;(NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)key {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Cannot set undefined key: %@&amp;#34;&lt;/span&gt;, key);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check if key exists before accessing
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([object respondsToSelector:NSSelectorFromString(&lt;span style="color:#e6db74"&gt;@&amp;#34;propertyName&amp;#34;&lt;/span&gt;)]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;id&lt;/span&gt; value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [object valueForKey:&lt;span style="color:#e6db74"&gt;@&amp;#34;propertyName&amp;#34;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use key paths with care
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [object valueForKeyPath:&lt;span style="color:#e6db74"&gt;@&amp;#34;user.profile.name&amp;#34;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Memory Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-memory-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-memory-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Memory errors occur when Objective-C code accesses memory it shouldn&amp;rsquo;t, leaks memory, or has incorrect retain/release patterns.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Accessing deallocated objects&lt;/li&gt;
+&lt;li&gt;Retain cycles causing memory leaks&lt;/li&gt;
+&lt;li&gt;Using MRC (Manual Reference Counting) incorrectly&lt;/li&gt;
+&lt;li&gt;Buffer overflows in C-level code&lt;/li&gt;
+&lt;li&gt;Incorrect use of __bridge casts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use weak references to break retain cycles
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@property&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;nonatomic&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;weak&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;id&lt;/span&gt; delegate;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use ARC (Automatic Reference Counting)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// @property (nonatomic, strong) NSString *name;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check for memory issues with Instruments
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use Address Sanitizer in Xcode scheme settings
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Proper bridge casts
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CFStringRef cfString &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;__bridge&lt;/span&gt; CFStringRef)nsString;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Message Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-message-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-message-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Message errors occur when an Objective-C object receives a message it cannot respond to, or when memory has been freed before the message arrives.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Calling a method not declared in the object&amp;rsquo;s interface&lt;/li&gt;
+&lt;li&gt;Typo in method name&lt;/li&gt;
+&lt;li&gt;Using a protocol without implementing required methods&lt;/li&gt;
+&lt;li&gt;Object deallocated before message delivery&lt;/li&gt;
+&lt;li&gt;Incorrect method signature between declaration and implementation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Declare methods in header file
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@interface&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyClass&lt;/span&gt; : &lt;span style="color:#a6e22e"&gt;NSObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;myMethod&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Verify protocol conformance
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@interface&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyClass&lt;/span&gt; : &lt;span style="color:#a6e22e"&gt;NSObject&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;MyProtocol&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Must implement all required @protocol methods
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use performSelector for dynamic dispatch
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([object respondsToSelector:&lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(myMethod)]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [object performSelector:&lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(myMethod)];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C MRC Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-mrc-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-mrc-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;MRC errors occur in legacy Objective-C code using manual retain/release, leading to memory leaks or crashes from incorrect reference counting.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing retain/release calls&lt;/li&gt;
+&lt;li&gt;Over-releasing objects&lt;/li&gt;
+&lt;li&gt;Not retaining objects stored in collections&lt;/li&gt;
+&lt;li&gt;Incorrect autorelease pool usage&lt;/li&gt;
+&lt;li&gt;Accessing ivar after release&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Retain objects you want to keep
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;self.myObject &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [[MyObject alloc] init]; &lt;span style="color:#75715e"&gt;// Retains
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Release in dealloc
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;dealloc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [_myObject &lt;span style="color:#66d9ef"&gt;release&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [super dealloc];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use autorelease for temporary objects
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;temp &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [[[NSString alloc] initWithFormat:&lt;span style="color:#e6db74"&gt;@&amp;#34;Hello %@&amp;#34;&lt;/span&gt;, name] autorelease];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use NSAutoreleasePool for loops
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSAutoreleasePool &lt;span style="color:#f92672"&gt;*&lt;/span&gt;pool &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [[NSAutoreleasePool alloc] init];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Code creating autoreleased objects
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[pool drain];
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Network Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-network-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-network-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Network errors occur when Objective-C code fails to make HTTP requests, connect to servers, or handle network responses correctly.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;No internet connection available&lt;/li&gt;
+&lt;li&gt;Invalid URL format&lt;/li&gt;
+&lt;li&gt;Server returning error status codes&lt;/li&gt;
+&lt;li&gt;SSL/TLS certificate validation failures&lt;/li&gt;
+&lt;li&gt;Request timeout&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check network reachability before requests
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;SCNetworkReachabilityRef reachability &lt;span style="color:#f92672"&gt;=&lt;/span&gt; SCNetworkReachabilityCreateWithName(NULL, &lt;span style="color:#e6db74"&gt;&amp;#34;example.com&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;SCNetworkReachabilityFlags flags;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (SCNetworkReachabilityGetFlags(reachability, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;flags)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;BOOL&lt;/span&gt; isConnected &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (flags &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt; kSCNetworkReachabilityFlagsReachable) &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Handle URLSession errors
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSURLSessionDataTask &lt;span style="color:#f92672"&gt;*&lt;/span&gt;task &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [[NSURLSession sharedSession]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dataTaskWithURL:[NSURL URLWithString:&lt;span style="color:#e6db74"&gt;@&amp;#34;https://example.com&amp;#34;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; completionHandler:&lt;span style="color:#f92672"&gt;^&lt;/span&gt;(NSData &lt;span style="color:#f92672"&gt;*&lt;/span&gt;data, NSURLResponse &lt;span style="color:#f92672"&gt;*&lt;/span&gt;response, NSError &lt;span style="color:#f92672"&gt;*&lt;/span&gt;error) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (error) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Network error: %@&amp;#34;&lt;/span&gt;, error.localizedDescription);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSHTTPURLResponse &lt;span style="color:#f92672"&gt;*&lt;/span&gt;httpResponse &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (NSHTTPURLResponse &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)response;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (httpResponse.statusCode &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;200&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;HTTP error: %ld&amp;#34;&lt;/span&gt;, (&lt;span style="color:#66d9ef"&gt;long&lt;/span&gt;)httpResponse.statusCode);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[task resume];
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Notification Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-notification-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-notification-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Notification errors occur when posting, observing, or handling NSNotification messages incorrectly, often leading to crashes or memory issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Posting notification from wrong thread&lt;/li&gt;
+&lt;li&gt;Not removing observers (pre-iOS 9)&lt;/li&gt;
+&lt;li&gt;Posting notifications with incorrect userInfo format&lt;/li&gt;
+&lt;li&gt;Observer deallocated but still registered&lt;/li&gt;
+&lt;li&gt;Typo in notification name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Remove observers in dealloc (pre-iOS 9)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;dealloc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [[NSNotificationCenter defaultCenter] removeObserver:self];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Post notification on main thread
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[[NSNotificationCenter defaultCenter] postNotificationName:&lt;span style="color:#e6db74"&gt;@&amp;#34;MyNotification&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; object:nil
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; userInfo:&lt;span style="color:#ae81ff"&gt;@{&lt;/span&gt;&lt;span style="color:#e6db74"&gt;@&amp;#34;key&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;@&amp;#34;value&amp;#34;&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;}&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Register for notifications
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[[NSNotificationCenter defaultCenter]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; addObserver:self
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; selector:&lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(handleNotification:)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; name:&lt;span style="color:#e6db74"&gt;@&amp;#34;MyNotification&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; object:nil];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Handle notification safely
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;handleNotification:&lt;/span&gt;(NSNotification &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)notification {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSDictionary &lt;span style="color:#f92672"&gt;*&lt;/span&gt;userInfo &lt;span style="color:#f92672"&gt;=&lt;/span&gt; notification.userInfo;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (userInfo) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;value &lt;span style="color:#f92672"&gt;=&lt;/span&gt; userInfo[&lt;span style="color:#e6db74"&gt;@&amp;#34;key&amp;#34;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Property Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-property-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-property-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Property errors occur when Objective-C properties are declared incorrectly or have mismatched ivars, accessors, or memory management semantics.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing @synthesize or @dynamic directives&lt;/li&gt;
+&lt;li&gt;Incorrect property attributes (nonatomic vs atomic)&lt;/li&gt;
+&lt;li&gt;Memory management mismatch (strong vs weak)&lt;/li&gt;
+&lt;li&gt;Property name collision with ivar&lt;/li&gt;
+&lt;li&gt;Accessing ivar directly instead of property&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Correct property declaration
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@property&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;nonatomic&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;strong&lt;/span&gt;) NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@property&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;nonatomic&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;weak&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;id&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;MyDelegate&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt; delegate;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@property&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;nonatomic&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;copy&lt;/span&gt;) NSArray &lt;span style="color:#f92672"&gt;*&lt;/span&gt;items;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use @dynamic for Core Data properties
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@dynamic&lt;/span&gt; name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Access properties through self.property
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;self.name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;@&amp;#34;Value&amp;#34;&lt;/span&gt;; &lt;span style="color:#75715e"&gt;// Correct
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;_name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;@&amp;#34;Value&amp;#34;&lt;/span&gt;; &lt;span style="color:#75715e"&gt;// Avoid unless in init/dealloc
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Override accessors if needed
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;setName:&lt;/span&gt;(NSString &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)name {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [name &lt;span style="color:#66d9ef"&gt;copy&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Protocol Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-protocol-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-protocol-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Protocol errors occur when Objective-C classes don&amp;rsquo;t properly implement required protocol methods or incorrectly adopt protocols.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing required protocol methods&lt;/li&gt;
+&lt;li&gt;Typo in method signature&lt;/li&gt;
+&lt;li&gt;Protocol not declared in interface&lt;/li&gt;
+&lt;li&gt;Required vs optional method confusion&lt;/li&gt;
+&lt;li&gt;Protocol method not public in declaration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Adopt protocol in interface
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@interface&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyClass&lt;/span&gt; : &lt;span style="color:#a6e22e"&gt;NSObject&lt;/span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;MyProtocol&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Implement all required methods
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@implementation&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyClass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;requiredMethod&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Implementation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;optionalMethod&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Optional implementation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check protocol conformance
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([object conformsToProtocol:@protocol(MyProtocol)]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [object requiredMethod];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Respond to selector check
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([object respondsToSelector:&lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(optionalMethod)]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [object optionalMethod];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C RunLoop Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-runloop-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-runloop-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;RunLoop errors occur when Objective-C code incorrectly manages the run loop, causing UI freezes, missed events, or memory issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Performing selector on main thread causing deadlock&lt;/li&gt;
+&lt;li&gt;Not removing RunLoop sources before deallocation&lt;/li&gt;
+&lt;li&gt;Creating recursive run loop situations&lt;/li&gt;
+&lt;li&gt;Incorrect timer scheduling&lt;/li&gt;
+&lt;li&gt;Blocking main run loop&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Schedule timer correctly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSTimer &lt;span style="color:#f92672"&gt;*&lt;/span&gt;timer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [NSTimer scheduledTimerWithTimeInterval:&lt;span style="color:#ae81ff"&gt;1.0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; target:self
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; selector:&lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(fire:)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; userInfo:nil
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; repeats:YES];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Remove timer properly
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;dealloc&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [self.timer invalidate];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Avoid recursive performSelectorOnMainThread
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;dispatch_async(dispatch_get_main_queue(), &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [self doWork];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check if running on main thread
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([NSThread isMainThread]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [self updateUI];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dispatch_async(dispatch_get_main_queue(), &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [self updateUI];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Runtime Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-runtime-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-runtime-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Runtime errors occur when the Objective-C runtime encounters an invalid operation during program execution, typically involving message passing or memory management issues.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Sending a message to a nil object&lt;/li&gt;
+&lt;li&gt;Calling an undefined method on an object&lt;/li&gt;
+&lt;li&gt;Memory corruption from incorrect retain/release cycles&lt;/li&gt;
+&lt;li&gt;Accessing deallocated memory&lt;/li&gt;
+&lt;li&gt;Mismatched method signatures&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Check for nil before sending messages
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (object &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; nil) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [object doSomething];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use respondsToSelector for optional methods
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ([object respondsToSelector:&lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(optionalMethod)]) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [object optionalMethod];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use @try/@catch for exception handling
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [object riskyOperation];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;@catch&lt;/span&gt; (NSException &lt;span style="color:#f92672"&gt;*&lt;/span&gt;exception) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; NSLog(&lt;span style="color:#e6db74"&gt;@&amp;#34;Exception: %@&amp;#34;&lt;/span&gt;, exception.reason);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Swizzling Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-swizzling-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-swizzling-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Swizzling errors occur when method swizzling is implemented incorrectly, causing method resolution failures or unpredictable behavior.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Swizzling methods that don&amp;rsquo;t exist&lt;/li&gt;
+&lt;li&gt;Not preserving original method implementation&lt;/li&gt;
+&lt;li&gt;Swizzling in wrong load order&lt;/li&gt;
+&lt;li&gt;Swizzling superclass methods without care&lt;/li&gt;
+&lt;li&gt;Memory leaks from swapped method pointers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use method swizzling carefully
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;+ (&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;)&lt;span style="color:#a6e22e"&gt;load&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; dispatch_once_t onceToken;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dispatch_once(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;onceToken, &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;Class&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [self &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;SEL&lt;/span&gt; originalSelector &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(originalMethod);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;SEL&lt;/span&gt; swizzledSelector &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;@selector&lt;/span&gt;(swizzledMethod);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Method originalMethod &lt;span style="color:#f92672"&gt;=&lt;/span&gt; class_getInstanceMethod(&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt;, originalSelector);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Method swizzledMethod &lt;span style="color:#f92672"&gt;=&lt;/span&gt; class_getInstanceMethod(&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt;, swizzledSelector);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;BOOL&lt;/span&gt; didAddMethod &lt;span style="color:#f92672"&gt;=&lt;/span&gt; class_addMethod(&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; originalSelector,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; method_getImplementation(swizzledMethod),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; method_getTypeEncoding(swizzledMethod));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (didAddMethod) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; class_replaceMethod(&lt;span style="color:#66d9ef"&gt;class&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; swizzledSelector,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; method_getImplementation(originalMethod),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; method_getTypeEncoding(originalMethod));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; } &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; method_exchangeImplementations(originalMethod, swizzledMethod);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>[Solution] Objective-C Thread Error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/objc-thread-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/objc-thread-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Thread errors occur when Objective-C code encounters race conditions, deadlocks, or improper UI updates from background threads.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Updating UI from background thread&lt;/li&gt;
+&lt;li&gt;Race conditions with shared mutable state&lt;/li&gt;
+&lt;li&gt;Deadlocks from improper lock usage&lt;/li&gt;
+&lt;li&gt;Thread safety violations in collections&lt;/li&gt;
+&lt;li&gt;Incorrect use of performSelectorOnMainThread&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-objectivec" data-lang="objectivec"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Update UI on main thread
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;dispatch_async(dispatch_get_main_queue(), &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [self.label setText:&lt;span style="color:#e6db74"&gt;@&amp;#34;Updated&amp;#34;&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use GCD for background work
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;), &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Background work here
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dispatch_async(dispatch_get_main_queue(), &lt;span style="color:#f92672"&gt;^&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Update UI
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Use locks for thread safety
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;NSLock &lt;span style="color:#f92672"&gt;*&lt;/span&gt;lock &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [[NSLock alloc] init];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[lock lock];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;@try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Thread-safe code
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;@finally&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [lock unlock];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>Array bounds error</title><link>https://errorcode.excellentwiki.com/languages/objective-c/array-bounds/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/objective-c/array-bounds/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
 &lt;p&gt;An array bounds error (NSRangeException) occurs when you try to access an NSArray element using an index that is outside the valid range (less than 0 or greater than or equal to the array&amp;rsquo;s count).&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;

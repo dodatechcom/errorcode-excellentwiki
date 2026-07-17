@@ -49,4 +49,168 @@
 &lt;/ul&gt;</description></item><item><title>[Solution] Swift Error — POSIX Error: No Space Left on Device</title><link>https://errorcode.excellentwiki.com/languages/swift/disk-full/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/disk-full/</guid><description>&lt;h1 id="posix-error-no-space-left-on-device"&gt;POSIX Error: No Space Left on Device&lt;/h1&gt;
 &lt;p&gt;This error occurs when a file system operation fails because the device has no free disk space. The POSIX error code &lt;code&gt;ENOSPC&lt;/code&gt; (28) is returned.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
-&lt;p&gt;Every write operation — file creation, database saves, cache storage — requires free disk space. When the device is full, all write operations fail with &lt;code&gt;ENOSPC&lt;/code&gt;. This is common with large downloads, cache accumulation, and database growth.&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Every write operation — file creation, database saves, cache storage — requires free disk space. When the device is full, all write operations fail with &lt;code&gt;ENOSPC&lt;/code&gt;. This is common with large downloads, cache accumulation, and database growth.&lt;/p&gt;</description></item><item><title>MongoDB - index build failed - disk full</title><link>https://errorcode.excellentwiki.com/tools/mongodb/mongodb-index-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/mongodb/mongodb-index-error-v2/</guid><description>&lt;p&gt;An index build failed disk full error occurs when MongoDB cannot create or rebuild an index because there is insufficient disk space on the data volume. This can happen during initial index creation, index rebuilds after a crash, or during compaction.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Disk space exhausted on the data volume&lt;/li&gt;
+&lt;li&gt;Large collection requires more temporary space than available&lt;/li&gt;
+&lt;li&gt;Journal files consuming additional disk space&lt;/li&gt;
+&lt;li&gt;Multiple index builds running simultaneously&lt;/li&gt;
+&lt;li&gt;WiredTiger cache consuming memory-mapped space&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Check available disk space:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;df -h /var/lib/mongodb
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;du -sh /var/lib/mongodb/*
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Free up disk space:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Remove old log files&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;find /var/log/mongodb -name &lt;span style="color:#e6db74"&gt;&amp;#34;*.log&amp;#34;&lt;/span&gt; -mtime +30 -delete
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Compact collection to reclaim space&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;db.runCommand&lt;span style="color:#f92672"&gt;({&lt;/span&gt; compact: &lt;span style="color:#e6db74"&gt;&amp;#39;collectionName&amp;#39;&lt;/span&gt; &lt;span style="color:#f92672"&gt;})&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Drop unused indexes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;db.collection.dropIndex&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;unused_index_1&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Create indexes in the background to minimize impact:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;db&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;collection&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;largeCollection&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;createIndex&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;field&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;background&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="4"&gt;
+&lt;li&gt;Use &lt;code&gt;maxDiskUse&lt;/code&gt; to limit index build space:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;db&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;collection&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;largeCollection&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;createIndex&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;field&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;maxDiskUse&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;50&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt; } &lt;span style="color:#75715e"&gt;// 50GB limit
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="5"&gt;
+&lt;li&gt;Monitor disk usage during index builds:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Watch disk usage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;watch -n &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;df -h /var/lib/mongodb&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="6"&gt;
+&lt;li&gt;Drop and recreate indexes if space is critically low:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Drop first to free space, then recreate
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;db&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;collection&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;logs&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;dropIndex&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;timestamp_1&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;db&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;collection&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;logs&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;createIndex&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;timestamp&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Error: Index build failed. Reason: [CannotIndex]磁盘上没有足够的空间
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;db&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;collection&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;events&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;createIndex&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;timestamp&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;userId&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// PlanExecutor error during stage BUILD_INDEXES: error processing query:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// cannot build index: not enough disk space
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Fix: free space first
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;db&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;runCommand&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;compact&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;events&amp;#39;&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;await&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;db&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;collection&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#39;events&amp;#39;&lt;/span&gt;).&lt;span style="color:#a6e22e"&gt;createIndex&lt;/span&gt;({ &lt;span style="color:#a6e22e"&gt;timestamp&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;userId&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; });
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/mongodb/mongodb-index-error/"&gt;Index error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/mongodb/mongodb-write-error-v2/"&gt;Write error&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Oracle - ORA-01653: unable to extend table</title><link>https://errorcode.excellentwiki.com/tools/oracle/oracle-tablespace-error-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/oracle/oracle-tablespace-error-v2/</guid><description>&lt;p&gt;ORA-01653: unable to extend table occurs when Oracle cannot allocate additional space for a table because the tablespace has no more free extents. This typically happens when the tablespace is full or autoextend is not enabled.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Tablespace is full and autoextend is disabled&lt;/li&gt;
+&lt;li&gt;Datafile maxsize reached&lt;/li&gt;
+&lt;li&gt;Large INSERT or bulk load consuming remaining space&lt;/li&gt;
+&lt;li&gt;Tablespace not configured with autoextend&lt;/li&gt;
+&lt;li&gt;Temporary tablespace full&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Check tablespace usage:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; tablespace_name, round(sum_bytes&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; used_gb,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; round(max_bytes&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; max_gb,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; round((sum_bytes&lt;span style="color:#f92672"&gt;/&lt;/span&gt;max_bytes)&lt;span style="color:#f92672"&gt;*&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;100&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; pct_used
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; tablespace_name,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;sum&lt;/span&gt;(bytes) &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; sum_bytes,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;sum&lt;/span&gt;(maxbytes) &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; max_bytes
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; dba_data_files
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;GROUP&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;BY&lt;/span&gt; tablespace_name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;Add datafile to tablespace:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; TABLESPACE users
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ADD&lt;/span&gt; DATAFILE &lt;span style="color:#e6db74"&gt;&amp;#39;/u01/oradata/mydb/users02.dbf&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SIZE&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;AUTOEXTEND &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;NEXT&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt; MAXSIZE &lt;span style="color:#ae81ff"&gt;50&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="3"&gt;
+&lt;li&gt;Enable autoextend on existing datafile:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATABASE&lt;/span&gt; DATAFILE &lt;span style="color:#e6db74"&gt;&amp;#39;/u01/oradata/mydb/users01.dbf&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;AUTOEXTEND &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;NEXT&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt; MAXSIZE &lt;span style="color:#ae81ff"&gt;50&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="4"&gt;
+&lt;li&gt;Resize existing datafile:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATABASE&lt;/span&gt; DATAFILE &lt;span style="color:#e6db74"&gt;&amp;#39;/u01/oradata/mydb/users01.dbf&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;RESIZE &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start="5"&gt;
+&lt;li&gt;Drop unused objects to free space:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; segment_name, segment_type, bytes&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; size_mb
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; dba_segments
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; tablespace_name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;USERS&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ORDER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;BY&lt;/span&gt; bytes &lt;span style="color:#66d9ef"&gt;DESC&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Error: ORA-01653: unable to extend table EMPLOYEES by 128 in tablespace USERS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;INSERT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;INTO&lt;/span&gt; employees &lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; large_source_table;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- ORA-01653: unable to extend table EMPLOYEES by 128 in tablespace USERS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Fix: add datafile
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; TABLESPACE users
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ADD&lt;/span&gt; DATAFILE &lt;span style="color:#e6db74"&gt;&amp;#39;/u01/oradata/mydb/users03.dbf&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SIZE&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt; AUTOEXTEND &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/oracle/oracle-sequence-error/"&gt;Sequence error&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/oracle/oracle-tablespace-error/"&gt;Tablespace error&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Oracle Tablespace Error</title><link>https://errorcode.excellentwiki.com/tools/oracle/oracle-tablespace-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/oracle/oracle-tablespace-error/</guid><description>&lt;h1 id="oracle-tablespace-error"&gt;Oracle Tablespace Error&lt;/h1&gt;
+&lt;p&gt;An Oracle tablespace error occurs when the tablespace is full, has insufficient space, or encounters storage allocation issues. This prevents DDL and DML operations.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Tablespace is full (datafile cannot extend)&lt;/li&gt;
+&lt;li&gt;Tablespace autoextend is disabled&lt;/li&gt;
+&lt;li&gt;User quota on tablespace exceeded&lt;/li&gt;
+&lt;li&gt;Temporary tablespace is full&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="check-tablespace-usage"&gt;Check Tablespace Usage&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; tablespace_name,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ROUND(&lt;span style="color:#66d9ef"&gt;SUM&lt;/span&gt;(bytes)&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; used_mb,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ROUND(&lt;span style="color:#66d9ef"&gt;SUM&lt;/span&gt;(maxbytes)&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; max_mb
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; dba_data_files
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;GROUP&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;BY&lt;/span&gt; tablespace_name;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="add-datafile"&gt;Add Datafile&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; TABLESPACE users &lt;span style="color:#66d9ef"&gt;ADD&lt;/span&gt; DATAFILE &lt;span style="color:#e6db74"&gt;&amp;#39;/path/to/newfile.dbf&amp;#39;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SIZE&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt; AUTOEXTEND &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="enable-autoextend"&gt;Enable Autoextend&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;DATABASE&lt;/span&gt; DATAFILE &lt;span style="color:#e6db74"&gt;&amp;#39;/path/to/file.dbf&amp;#39;&lt;/span&gt; AUTOEXTEND &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; MAXSIZE &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-user-quota"&gt;Check User Quota&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; tablespace_name, bytes, max_bytes
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; dba_ts_quotas
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; username &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;MYUSER&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="increase-user-quota"&gt;Increase User Quota&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;USER&lt;/span&gt; myuser QUOTA &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;ON&lt;/span&gt; users;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-temporary-tablespace"&gt;Check Temporary Tablespace&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; tablespace_name, &lt;span style="color:#66d9ef"&gt;SUM&lt;/span&gt;(bytes)&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt;&lt;span style="color:#f92672"&gt;/&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1024&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;AS&lt;/span&gt; temp_mb
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; dba_temp_files
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;GROUP&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;BY&lt;/span&gt; tablespace_name;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;INSERT&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;INTO&lt;/span&gt; big_table &lt;span style="color:#66d9ef"&gt;VALUES&lt;/span&gt; (&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;data&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ORA&lt;span style="color:#f92672"&gt;-&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;01653&lt;/span&gt;: unable &lt;span style="color:#66d9ef"&gt;to&lt;/span&gt; extend &lt;span style="color:#66d9ef"&gt;table&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;ADMIN&lt;/span&gt;.BIG_TABLE &lt;span style="color:#66d9ef"&gt;by&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;128&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; tablespace USERS
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Fix: add datafile
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;ALTER&lt;/span&gt; TABLESPACE users &lt;span style="color:#66d9ef"&gt;ADD&lt;/span&gt; DATAFILE &lt;span style="color:#e6db74"&gt;&amp;#39;/u01/oradata/users02.dbf&amp;#39;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;SIZE&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;G&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=""&gt;Permission Error&lt;/a&gt; — permission denied&lt;/li&gt;
+&lt;li&gt;&lt;a href=""&gt;Sequence Error&lt;/a&gt; — sequence issues&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

@@ -1,125 +1,63 @@
 ---
-title: "[Solution] C++ Bad Optional Access — std::bad_optional_access Fix"
-description: "Fix C++ std::bad_optional_access when calling value() on an empty std::optional. Handle optional values safely with has_value checks."
+title: "[Solution] C++ std::bad_optional_access - empty optional"
+description: "Fix C++ std::bad_optional_access when accessing an empty std::optional. Check has_value() before use."
 languages: ["cpp"]
 severities: ["error"]
-error_types: ["runtime"]
-tags: ["bad-optional-access", "std-optional", "optional", "exception"]
+error-types: ["runtime-error"]
+tags: ["bad-optional-access", "optional", "empty", "value", "nullptr"]
 weight: 5
 ---
 
-# [Solution] C++ Bad Optional Access — std::bad_optional_access Fix
+# std::bad_optional_access - empty optional
 
-A `std::bad_optional_access` is thrown when you call `std::optional::value()` or `std::optional::operator*` on an optional that does not contain a value. This exception was introduced in C++17 along with `std::optional`. It indicates that code is attempting to use a value that was never assigned.
+`std::bad_optional_access` is thrown when you call `std::optional::value()` on an empty optional.
 
-## Why std::bad_optional_access Occurs
-
-Common causes include calling `value()` without checking `has_value()` first, dereferencing an optional that was default-constructed, and optional becoming empty after a failed assignment or reset.
-
-## Wrong: Calling value() on an Empty Optional
+## Common Causes
 
 ```cpp
-// WRONG — throws std::bad_optional_access
-#include <optional>
-#include <iostream>
-#include <string>
+// Cause 1: value() on empty optional
+std::optional<int> opt;
+int val = opt.value(); // throws
 
-std::optional<std::string> find_name(int id) {
-    if (id == 1) return "Alice";
-    return std::nullopt;
+// Cause 2: * operator on empty optional
+std::optional<int> opt;
+int val = *opt; // undefined behavior
+
+// Cause 3: Optional not set conditionally
+std::optional<std::string> name;
+if (condition) {
+    name = "Alice";
 }
+std::string n = name.value(); // throws if condition was false
+```
 
-int main() {
-    auto name = find_name(42);
-    std::cout << name.value() << std::endl;  // throws — no value
-    return 0;
+## How to Fix
+
+### Fix 1: Check has_value()
+
+```cpp
+std::optional<int> opt = get_value();
+if (opt.has_value()) {
+    int val = opt.value();
 }
 ```
 
-## Correct: Check has_value() Before Accessing
+### Fix 2: Use value_or()
 
 ```cpp
-// CORRECT — check before calling value()
-#include <optional>
-#include <iostream>
-#include <string>
-
-std::optional<std::string> find_name(int id) {
-    if (id == 1) return "Alice";
-    return std::nullopt;
-}
-
-int main() {
-    auto name = find_name(42);
-
-    if (name.has_value()) {
-        std::cout << "Name: " << name.value() << std::endl;
-    } else {
-        std::cout << "Name not found" << std::endl;
-    }
-    return 0;
-}
+int val = opt.value_or(0); // returns 0 if empty
 ```
 
-## Use Operator* or Arrow for Checked Access
+### Fix 3: Use operator* with check
 
 ```cpp
-// CORRECT — use operator bool or if-init
-#include <optional>
-#include <iostream>
-#include <string>
-
-std::optional<int> parse_int(const std::string& s) {
-    try {
-        return std::stoi(s);
-    } catch (...) {
-        return std::nullopt;
-    }
-}
-
-int main() {
-    if (auto val = parse_int("42")) {
-        std::cout << "Parsed: " << *val << std::endl;
-    } else {
-        std::cout << "Parse failed" << std::endl;
-    }
-    return 0;
+if (opt) {
+    int val = *opt;
 }
 ```
-
-## Use value_or for Default Values
-
-```cpp
-// CORRECT — provide fallback with value_or
-#include <optional>
-#include <iostream>
-
-std::optional<int> get_config_value(const std::string& key) {
-    if (key == "timeout") return 30;
-    return std::nullopt;
-}
-
-int main() {
-    int timeout = get_config_value("timeout").value_or(60);
-    int retries = get_config_value("retries").value_or(3);
-
-    std::cout << "Timeout: " << timeout << std::endl;
-    std::cout << "Retries: " << retries << std::endl;
-    return 0;
-}
-```
-
-## Summary
-
-| Fix | When to Use |
-|---|---|
-| Check `has_value()` before `value()` | When the optional might be empty |
-| Use `operator bool` in conditions | In if-statements for concise checks |
-| Use `value_or(default)` | When a default fallback is acceptable |
-| Use if-init statement (C++17) | When binding the contained value inline |
 
 ## Related Errors
 
-- [std::bad_variant_access]({{< relref "/languages/cpp/bad-variant-access" >}}) — wrong type access on variant.
-- [std::bad_any_cast]({{< relref "/languages/cpp/badany-cast" >}}) — invalid `std::any` cast.
-- [std::bad_function_call]({{< relref "/languages/cpp/badfunctioncall" >}}) — invoking an empty callable.
+- [std::bad_variant_access]({{< relref "/languages/cpp/bad-variant-access" >}}) — wrong variant type.
+- [std::bad_any_cast]({{< relref "/languages/cpp/any-cast-error" >}}) — any_cast failure.
+- [std::bad_function_call]({{< relref "/languages/cpp/bad-function-call" >}}) — empty function.

@@ -110,6 +110,102 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/javascript/err_invalid_uri/"&gt;ERR_INVALID_URI&lt;/a&gt; — URI is malformed.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/javascript/urierror/"&gt;URIError&lt;/a&gt; — malformed URI string.&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/javascript/syntaxerror/"&gt;SyntaxError&lt;/a&gt; — code has invalid syntax.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Swift DecodingError Fix</title><link>https://errorcode.excellentwiki.com/languages/swift/decoding-error-swift/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/decoding-error-swift/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;DecodingError&lt;/code&gt; is thrown when &lt;code&gt;JSONDecoder&lt;/code&gt; cannot decode JSON data into the expected Swift type. This typically happens due to missing keys, type mismatches, or invalid JSON format.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Missing required keys in JSON&lt;/li&gt;
+&lt;li&gt;Type mismatch (string vs int)&lt;/li&gt;
+&lt;li&gt;Nested JSON structure mismatch&lt;/li&gt;
+&lt;li&gt;Invalid JSON format&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Assuming all keys present&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: Codable {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; email: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; json = #&lt;span style="color:#e6db74"&gt;&amp;#34;{&amp;#34;&lt;/span&gt;name&lt;span style="color:#e6db74"&gt;&amp;#34;: &amp;#34;&lt;/span&gt;Alice&lt;span style="color:#e6db74"&gt;&amp;#34;}&amp;#34;&lt;/span&gt;# &lt;span style="color:#75715e"&gt;// Missing &amp;#34;email&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; user = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; JSONDecoder().decode(User.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, from: Data(json.utf8)) &lt;span style="color:#75715e"&gt;// DecodingError&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Make optional keys optional&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: Codable {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; email: String?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Strict decoding&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; json = #&lt;span style="color:#e6db74"&gt;&amp;#34;{&amp;#34;&lt;/span&gt;name&lt;span style="color:#e6db74"&gt;&amp;#34;: &amp;#34;&lt;/span&gt;Alice&lt;span style="color:#e6db74"&gt;&amp;#34;, &amp;#34;&lt;/span&gt;age&lt;span style="color:#e6db74"&gt;&amp;#34;: &amp;#34;&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;25&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;}&amp;#34;&lt;/span&gt;# &lt;span style="color:#75715e"&gt;// age is String, not Int&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: Codable {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; age: Int
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; user = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; JSONDecoder().decode(User.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, from: Data(json.utf8)) &lt;span style="color:#75715e"&gt;// Type mismatch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle type coercion&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;User&lt;/span&gt;: Codable {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; age: Int
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;init&lt;/span&gt;(from decoder: Decoder) &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; container = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; decoder.container(keyedBy: CodingKeys.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; name = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; container.decode(String.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, forKey: .name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; age = (&lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;? container.decode(Int.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, forKey: .age)) ?? &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Not handling errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; user = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; JSONDecoder().decode(User.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, from: data)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Handle decoding errors&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;do&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; user = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; JSONDecoder().decode(User.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, from: data)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; DecodingError.keyNotFound(key, context) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Missing key: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;key.stringValue&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; DecodingError.typeMismatch(type, context) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Type mismatch: expected &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;type&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} &lt;span style="color:#66d9ef"&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Decoding error: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;error&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Safe decoding extension&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;extension&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;DecodingError&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; details: String {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;switch&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; .keyNotFound(&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; key, &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Missing key &amp;#39;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;key.stringValue&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;context.debugDescription&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; .typeMismatch(&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; type, &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Type mismatch: expected &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;type&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;, &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;context.debugDescription&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; .valueNotFound(&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; type, &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Value not found: expected &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;type&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;, &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;context.debugDescription&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;case&lt;/span&gt; .dataCorrupted(&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; context):
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Data corrupted: &lt;/span&gt;&lt;span style="color:#e6db74"&gt;\(&lt;/span&gt;context.debugDescription&lt;span style="color:#e6db74"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; @unknown &lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Unknown decoding error&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Custom decoder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; decoder = JSONDecoder()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;decoder.keyDecodingStrategy = .convertFromSnakeCase
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;decoder.dateDecodingStrategy = .iso8601
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: Flexible decoding&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;FlexibleUser&lt;/span&gt;: Codable {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name: String
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; age: Int?
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;init&lt;/span&gt;(from decoder: Decoder) &lt;span style="color:#66d9ef"&gt;throws&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; container = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; decoder.container(keyedBy: CodingKeys.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; name = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt; container.decode(String.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, forKey: .name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; age = &lt;span style="color:#66d9ef"&gt;try&lt;/span&gt;? container.decodeIfPresent(Int.&lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;, forKey: .age)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="encoding-error-swift"&gt;Encoding error&lt;/a&gt; — JSON encoding failed&lt;/li&gt;
+&lt;li&gt;&lt;a href="nil-unwrap-error"&gt;Nil unwrap error&lt;/a&gt; — force unwrapping nil&lt;/li&gt;
+&lt;li&gt;&lt;a href="key-not-found-swift"&gt;Key not found&lt;/a&gt; — dictionary key missing&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>[Solution] Swift Error — DecodingError</title><link>https://errorcode.excellentwiki.com/languages/swift/json-decoding/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/swift/json-decoding/</guid><description>&lt;h1 id="decodingerror"&gt;DecodingError&lt;/h1&gt;
 &lt;p&gt;A &lt;code&gt;DecodingError&lt;/code&gt; is thrown by &lt;code&gt;JSONDecoder&lt;/code&gt; when the input JSON doesn&amp;rsquo;t match the expected &lt;code&gt;Decodable&lt;/code&gt; type structure. The error provides details about what went wrong.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;

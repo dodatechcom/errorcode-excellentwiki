@@ -489,6 +489,163 @@
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/quick-reference/"&gt;Quick Reference Table&lt;/a&gt; — All error codes in one table&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/os/windows/ntstatus-reference/"&gt;Windows NTSTATUS Reference&lt;/a&gt; — Complete Windows NTSTATUS codes&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/search/"&gt;Search&lt;/a&gt; — Search for any error code&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] F# NullReferenceException</title><link>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-nullreference-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-nullreference-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;NullReferenceException&lt;/code&gt; occurs when you access a member on a null reference. Although F# discourages null, interop with C# and .NET libraries can produce null values.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Interacting with C# code that returns null&lt;/li&gt;
+&lt;li&gt;Uninitialized mutable references&lt;/li&gt;
+&lt;li&gt;Using &lt;code&gt;Unchecked.defaultof&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Not handling null from .NET library calls&lt;/li&gt;
+&lt;li&gt;Database returning null&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Accessing potentially null value
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; getFromCSharp()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%d&amp;#34;&lt;/span&gt; name&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Length &lt;span style="color:#75715e"&gt;// NullReferenceException if null
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Check for null using Option
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; getFromCSharp()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; System.Object.ReferenceEquals&lt;span style="color:#f92672"&gt;(&lt;/span&gt;name&lt;span style="color:#f92672"&gt;,&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;Name is null&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%d&amp;#34;&lt;/span&gt; name&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Length
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: Using mutable without init
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; mutable myValue&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Unchecked.defaultof&lt;span style="color:#f92672"&gt;&amp;lt;_&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%s&amp;#34;&lt;/span&gt; myValue &lt;span style="color:#75715e"&gt;// NullReferenceException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use Option type
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; myValue&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; option &lt;span style="color:#f92672"&gt;=&lt;/span&gt; None
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; myValue &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; Some v &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%s&amp;#34;&lt;/span&gt; v
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; None &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;No value&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// WRONG: C# interop returning null
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; list &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; System.Collections.Generic.List&lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; item &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;list&lt;/span&gt;&lt;span style="color:#f92672"&gt;.[&lt;/span&gt;0&lt;span style="color:#f92672"&gt;]&lt;/span&gt; &lt;span style="color:#75715e"&gt;// May be null if list uses nullable
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// CORRECT: Use Option.ofObj
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; itemOpt &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;list&lt;/span&gt;&lt;span style="color:#f92672"&gt;.[&lt;/span&gt;0&lt;span style="color:#f92672"&gt;]&lt;/span&gt; &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Option.ofObj
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; itemOpt &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; Some item &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%s&amp;#34;&lt;/span&gt; item
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;|&lt;/span&gt; None &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; printfn &lt;span style="color:#e6db74"&gt;&amp;#34;Item is null&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 1: Option.ofObj for null-safe conversion
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; safeName &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Option.ofObj &lt;span style="color:#f92672"&gt;(&lt;/span&gt;getFromCSharp()&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%A&amp;#34;&lt;/span&gt; safeName &lt;span style="color:#75715e"&gt;// Some &amp;#34;Alice&amp;#34; or None
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 2: Null attribute for C# interop
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&amp;lt;&lt;/span&gt;AllowNullLiteral&lt;span style="color:#f92672"&gt;&amp;gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;type&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyClass&lt;/span&gt;() &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;member&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; Name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;with&lt;/span&gt; get&lt;span style="color:#f92672"&gt;,&lt;/span&gt; set
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Example 3: DefaultArg for null handling
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; DefaultArg &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Option.ofObj nameFromCSharp&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;Anonymous&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;printfn &lt;span style="color:#e6db74"&gt;&amp;#34;%s&amp;#34;&lt;/span&gt; name
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-matcherror/"&gt;fsharp-matcherror&lt;/a&gt; — match failure&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-notfoundexception/"&gt;fsharp-notfoundexception&lt;/a&gt; — key not found&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/fsharp/fsharp-argumentexception/"&gt;fsharp-argumentexception&lt;/a&gt; — argument error&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Git Reference Ambiguous Error</title><link>https://errorcode.excellentwiki.com/tools/git/git-ref-ambiguous/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/git/git-ref-ambiguous/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Git reports an ambiguous reference when a name matches multiple refs — for example, a branch and a tag share the same name. Git cannot determine which one you meant, so it blocks the operation until you disambiguate.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;A branch and tag have the same name (e.g., &lt;code&gt;v1.0&lt;/code&gt; branch and &lt;code&gt;v1.0&lt;/code&gt; tag)&lt;/li&gt;
+&lt;li&gt;A branch name matches a remote-tracking branch prefix&lt;/li&gt;
+&lt;li&gt;A ref name matches a commit hash prefix&lt;/li&gt;
+&lt;li&gt;Legacy refs in &lt;code&gt;.git/refs/&lt;/code&gt; that conflict with packed refs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="list-ambiguous-refs"&gt;List Ambiguous Refs&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git show-ref | grep &amp;lt;ref-name&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use-full-ref-path"&gt;Use Full Ref Path&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Use the full refs/heads/ or refs/tags/ prefix&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git checkout refs/heads/v1.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git checkout refs/tags/v1.0
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="rename-the-branch-or-tag"&gt;Rename the Branch or Tag&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Rename the branch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git branch -m v1.0 release/v1.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Or delete and recreate the tag&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git tag -d v1.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git tag v1.0-legacy abc1234
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="use---no-verify-for-ambiguous-hashes"&gt;Use &lt;code&gt;--no-verify&lt;/code&gt; for Ambiguous Hashes&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git log abc1234
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# warning: refname &amp;#39;abc1234&amp;#39; is ambiguous&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: use more characters from the hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git log abc1234def
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: Ambiguous branch and tag&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git checkout v2.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# warning: refname &amp;#39;v2.0&amp;#39; is ambiguous&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Switching to &amp;#39;v2.0&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: use full ref&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git checkout refs/tags/v2.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Ambiguous commit hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git log 1234abcd
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# warning: refname &amp;#39;1234abcd&amp;#39; is ambiguous&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Fix: use more characters&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git log 1234abcd567890
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 3: List all refs with a name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git show-ref | grep v2.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# abc1234 refs/heads/v2.0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# def5678 refs/tags/v2.0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/git/git-branch-error/"&gt;Git Branch Error&lt;/a&gt; — branch operation error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/git/git-tag-error/"&gt;Git Tag Error&lt;/a&gt; — tag creation error&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/tools/git/git-fetch-error/"&gt;Git Fetch Error&lt;/a&gt; — fetch failed&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] Perl Reference Error Fix</title><link>https://errorcode.excellentwiki.com/languages/perl/perl-reference-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/perl/perl-reference-error/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A Perl reference error occurs when you try to use a reference incorrectly, such as using a string as a hash reference or dereferencing undef.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Using string as reference&lt;/li&gt;
+&lt;li&gt;Dereferencing undef&lt;/li&gt;
+&lt;li&gt;Wrong dereference syntax&lt;/li&gt;
+&lt;li&gt;Circular references&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-perl" data-lang="perl"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Using string as reference&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $string &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; @array &lt;span style="color:#f92672"&gt;=&lt;/span&gt; @$string; &lt;span style="color:#75715e"&gt;# Error: Can&amp;#39;t use string as HASH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Use actual reference&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; @array &lt;span style="color:#f92672"&gt;=&lt;/span&gt; @$ref; &lt;span style="color:#75715e"&gt;# (1, 2, 3)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-perl" data-lang="perl"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# WRONG: Dereferencing undef&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; undef;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; @array &lt;span style="color:#f92672"&gt;=&lt;/span&gt; @$ref; &lt;span style="color:#75715e"&gt;# Error&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# CORRECT: Check if defined&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; undef;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (defined $ref) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; @array &lt;span style="color:#f92672"&gt;=&lt;/span&gt; @$ref;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-perl" data-lang="perl"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 1: Reference creation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $scalar_ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;\&lt;/span&gt;$scalar;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $array_ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;\&lt;/span&gt;@array;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $hash_ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;\&lt;/span&gt;%hash;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $code_ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;\&amp;amp;&lt;/span&gt;subroutine;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 2: Dereferencing&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; @array &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $ref &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;\&lt;/span&gt;@array;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; @$ref; &lt;span style="color:#75715e"&gt;# Prints array&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;print&lt;/span&gt; $$ref[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;]; &lt;span style="color:#75715e"&gt;# First element&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Example 3: Anonymous references&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $anon_array &lt;span style="color:#f92672"&gt;=&lt;/span&gt; [&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;my&lt;/span&gt; $anon_hash &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {a &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;, b &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="perl-hash-error"&gt;Perl hash error&lt;/a&gt; - hash error&lt;/li&gt;
+&lt;li&gt;&lt;a href="perl-undefined-value"&gt;Perl undefined value&lt;/a&gt; - undefined value&lt;/li&gt;
+&lt;li&gt;&lt;a href="perl-runtime-error"&gt;Perl runtime error&lt;/a&gt; - runtime issue&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>[Solution] Python UnboundLocalError — Local Variable Reference</title><link>https://errorcode.excellentwiki.com/languages/python/recv-reference/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/python/recv-reference/</guid><description>&lt;h1 id="unboundlocalerror--local-variable-reference"&gt;UnboundLocalError — Local Variable Reference&lt;/h1&gt;
 &lt;p&gt;An &lt;code&gt;UnboundLocalError&lt;/code&gt; with the message &amp;ldquo;local variable &amp;lsquo;X&amp;rsquo; referenced before assignment&amp;rdquo; is raised when you try to use a variable inside a function before it has been assigned a value within that function&amp;rsquo;s scope. This is a scoping issue that occurs because Python determines variable scope at compile time.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
@@ -537,7 +694,113 @@
 &lt;p&gt;Rust&amp;rsquo;s ownership system ensures memory safety without a garbage collector. When you assign a value like &lt;code&gt;let b = a&lt;/code&gt;, the value is &lt;em&gt;moved&lt;/em&gt; from &lt;code&gt;a&lt;/code&gt; to &lt;code&gt;b&lt;/code&gt;. After the move, &lt;code&gt;a&lt;/code&gt; is no longer valid. This prevents double-free errors and ensures each value has exactly one owner.&lt;/p&gt;</description></item><item><title>[Solution] Rust Use of Moved Value — Value Moved Error</title><link>https://errorcode.excellentwiki.com/languages/rust/move-2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/rust/move-2/</guid><description>&lt;h1 id="use-of-moved-value--value-moved-error"&gt;Use of Moved Value — Value Moved Error&lt;/h1&gt;
 &lt;p&gt;A compiler error with the message &amp;ldquo;use of moved value&amp;rdquo; occurs when you try to use a variable after its value has been moved to another owner.&lt;/p&gt;
 &lt;h2 id="description"&gt;Description&lt;/h2&gt;
-&lt;p&gt;In Rust, assigning a value to a new variable or passing it to a function by value &lt;em&gt;moves&lt;/em&gt; ownership. The original variable becomes invalid. This prevents double-free bugs without a garbage collector. Types implementing &lt;code&gt;Copy&lt;/code&gt; (integers, bools) are copied instead of moved.&lt;/p&gt;</description></item><item><title>Can't Find Action</title><link>https://errorcode.excellentwiki.com/tools/github-actions/action-not-found/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/github-actions/action-not-found/</guid><description>&lt;p&gt;This error means the &lt;code&gt;uses&lt;/code&gt; directive in a workflow step cannot resolve the specified action. The action name, version, or repository path is incorrect or unavailable.&lt;/p&gt;
+&lt;p&gt;In Rust, assigning a value to a new variable or passing it to a function by value &lt;em&gt;moves&lt;/em&gt; ownership. The original variable becomes invalid. This prevents double-free bugs without a garbage collector. Types implementing &lt;code&gt;Copy&lt;/code&gt; (integers, bools) are copied instead of moved.&lt;/p&gt;</description></item><item><title>[Solution] Scala NullPointerException</title><link>https://errorcode.excellentwiki.com/languages/scala/scala-nullpointer-scala/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/scala/scala-nullpointer-scala/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;NullPointerException&lt;/code&gt; occurs when attempting to dereference a null reference. While Scala discourages null usage, it can still arise from Java interop, uninitialized fields, or explicit null assignments.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Explicitly assigned &lt;code&gt;null&lt;/code&gt; values&lt;/li&gt;
+&lt;li&gt;Java interop returning null&lt;/li&gt;
+&lt;li&gt;Uninitialized mutable fields&lt;/li&gt;
+&lt;li&gt;Missing values in collections&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Use &lt;code&gt;Option&lt;/code&gt; instead of null:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Wrong
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; name&lt;span style="color:#66d9ef"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;String&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; length &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; name&lt;span style="color:#f92672"&gt;.&lt;/span&gt;length &lt;span style="color:#75715e"&gt;// NullPointerException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Correct
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; name&lt;span style="color:#66d9ef"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;Option&lt;/span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;String&lt;/span&gt;&lt;span style="color:#f92672"&gt;]&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;None&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;val&lt;/span&gt; length &lt;span style="color:#66d9ef"&gt;=&lt;/span&gt; name&lt;span style="color:#f92672"&gt;.&lt;/span&gt;map&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;_&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;length&lt;span style="color:#f92672"&gt;).&lt;/span&gt;getOrElse&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Use pattern matching on Option:&lt;/p&gt;</description></item><item><title>[Solution] TypeScript TS2503 — Cannot find namespace 'X'</title><link>https://errorcode.excellentwiki.com/languages/typescript/ts2503-cannot-find-namespace/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/typescript/ts2503-cannot-find-namespace/</guid><description>&lt;h1 id="ts2503--cannot-find-namespace-x"&gt;TS2503 — Cannot find namespace &amp;lsquo;X&amp;rsquo;&lt;/h1&gt;
+&lt;p&gt;TS2503 occurs when you reference a namespace that TypeScript cannot find in the current scope. This can happen if the namespace is not declared, imported, or is in a different file without proper reference.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-typescript" data-lang="typescript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 1: Referencing undeclared namespace
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;val&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;MyNamespace.Type&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {}; &lt;span style="color:#75715e"&gt;// TS2503: Cannot find namespace &amp;#39;MyNamespace&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 2: Missing triple-slash reference
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// file: types.d.ts declares namespace GlobalTypes
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// file: app.ts uses GlobalTypes without reference
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Cause 3: Wrong namespace import
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;A&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;export&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;type&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Item&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; { &lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;number&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;item&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;B.Item&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; { &lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;1&lt;/span&gt; }; &lt;span style="color:#75715e"&gt;// TS2503
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="fix-1-add-triple-slash-reference"&gt;Fix 1: Add triple-slash reference&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-typescript" data-lang="typescript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/// &amp;lt;reference path=&amp;#34;./types.d.ts&amp;#34; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;val&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;MyNamespace.Type&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-2-import-the-namespace"&gt;Fix 2: Import the namespace&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-typescript" data-lang="typescript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; { &lt;span style="color:#a6e22e"&gt;MyNamespace&lt;/span&gt; } &lt;span style="color:#66d9ef"&gt;from&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;./types&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;val&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;MyNamespace.Type&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-3-fix-the-namespace-name"&gt;Fix 3: Fix the namespace name&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-typescript" data-lang="typescript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;item&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;A.Item&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; { &lt;span style="color:#a6e22e"&gt;id&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;1&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fix-4-use-ambient-declaration"&gt;Fix 4: Use ambient declaration&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-typescript" data-lang="typescript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;declare&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MyNamespace&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;type&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Type&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; { &lt;span style="color:#75715e"&gt;/* ... */&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/typescript/ts2304-cannot-find/"&gt;TS2304: Cannot find name&lt;/a&gt; — undefined identifier.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/typescript/ts2694-namespace/"&gt;TS2694: Namespace has no exported member&lt;/a&gt; — member not found.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/typescript/ts2307-cannot-find-module/"&gt;TS2307: Cannot find module&lt;/a&gt; — module not found.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>[Solution] VBA: Run-time error '424': Object required</title><link>https://errorcode.excellentwiki.com/languages/vba/vba-object-required-v2/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/vba/vba-object-required-v2/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;Run-time error &amp;lsquo;424&amp;rsquo; occurs when VBA expects an object reference but receives a value type, Nothing, or an uninitialized variable instead.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Using a method on a value instead of an object&lt;/li&gt;
+&lt;li&gt;Object not properly initialized&lt;/li&gt;
+&lt;li&gt;Missing object reference in method call&lt;/li&gt;
+&lt;li&gt;Late-bound object not created&lt;/li&gt;
+&lt;li&gt;Typo in object name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; WRONG: Using value as object
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim x As Integer
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; x = 5
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; x.Name = &amp;#34;Test&amp;#34; &amp;#39; Error 424: Integer is not an object
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Use actual object
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example1()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim ws As Worksheet
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set ws = ActiveSheet
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ws.Name = &amp;#34;Test&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; WRONG: Object not set
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example2()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim rng As Range
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; rng.Value = 10 &amp;#39; Error 424: rng is Nothing
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Initialize object first
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub Example2()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim rng As Range
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set rng = Range(&amp;#34;A1&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; rng.Value = 10
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;#39; CORRECT: Safe object creation
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Sub SafeCreate()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Dim obj As Object
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; On Error Resume Next
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set obj = CreateObject(&amp;#34;Scripting.FileSystemObject&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; On Error GoTo 0
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; If obj Is Nothing Then
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; MsgBox &amp;#34;Failed to create object&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Exit Sub
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; End If
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;#39; Use obj safely
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;End Sub
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="vba-object-not-set-v2"&gt;Object Not Set&lt;/a&gt; - null object&lt;/li&gt;
+&lt;li&gt;&lt;a href="vba-type-mismatch-v2"&gt;Type Mismatch&lt;/a&gt; - type errors&lt;/li&gt;
+&lt;li&gt;&lt;a href="vba-compile-error-variable"&gt;Compile Error: Variable&lt;/a&gt; - declaration&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Can't Find Action</title><link>https://errorcode.excellentwiki.com/tools/github-actions/action-not-found/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/github-actions/action-not-found/</guid><description>&lt;p&gt;This error means the &lt;code&gt;uses&lt;/code&gt; directive in a workflow step cannot resolve the specified action. The action name, version, or repository path is incorrect or unavailable.&lt;/p&gt;
 &lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;The action reference is misspelled (wrong owner, repo, or action name)&lt;/li&gt;
@@ -742,6 +1005,66 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/julia/undefined-sym"&gt;UndefVarError: X not defined&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://errorcode.excellentwiki.com/languages/julia/bounds-error"&gt;BoundsError: attempt to access X at index [Y]&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>NullReferenceException in F#</title><link>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-nullreference/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/languages/fsharp/fsharp-nullreference/</guid><description>&lt;h2 id="what-this-error-means"&gt;What This Error Means&lt;/h2&gt;
+&lt;p&gt;A &lt;code&gt;NullReferenceException&lt;/code&gt; occurs when attempting to access a member or dereference a null reference. While F# discourages null, it can occur through .NET interop or explicit null assignment.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Java/.NET interop returning null&lt;/li&gt;
+&lt;li&gt;Explicitly assigned null values&lt;/li&gt;
+&lt;li&gt;Uninitialized object references&lt;/li&gt;
+&lt;li&gt;Missing null checks on .NET types&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;p&gt;Use Option types instead of null:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-fsharp" data-lang="fsharp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Wrong
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; length &lt;span style="color:#f92672"&gt;=&lt;/span&gt; name&lt;span style="color:#f92672"&gt;.&lt;/span&gt;Length &lt;span style="color:#75715e"&gt;// NullReferenceException
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Correct
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; name&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; option &lt;span style="color:#f92672"&gt;=&lt;/span&gt; None
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;let&lt;/span&gt; length &lt;span style="color:#f92672"&gt;=&lt;/span&gt; name &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Option.map String.length &lt;span style="color:#f92672"&gt;|&amp;gt;&lt;/span&gt; Option.defaultValue 0
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Handle null from .NET interop:&lt;/p&gt;</description></item><item><title>Oracle Synonym Error</title><link>https://errorcode.excellentwiki.com/tools/oracle/oracle-synonym-error/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/tools/oracle/oracle-synonym-error/</guid><description>&lt;h1 id="oracle-synonym-error"&gt;Oracle Synonym Error&lt;/h1&gt;
+&lt;p&gt;An Oracle synonym error occurs when a synonym fails to resolve to its base object. Synonyms are aliases for database objects.&lt;/p&gt;
+&lt;h2 id="common-causes"&gt;Common Causes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Base object does not exist or has been dropped&lt;/li&gt;
+&lt;li&gt;Synonym points to wrong schema&lt;/li&gt;
+&lt;li&gt;Synonym is not public and user lacks access&lt;/li&gt;
+&lt;li&gt;Object name changed after synonym creation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="how-to-fix"&gt;How to Fix&lt;/h2&gt;
+&lt;h3 id="check-synonym-status"&gt;Check Synonym Status&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; synonym_name, table_owner, &lt;span style="color:#66d9ef"&gt;table_name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; user_synonyms;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-public-synonyms"&gt;Check Public Synonyms&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; synonym_name, table_owner, &lt;span style="color:#66d9ef"&gt;table_name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; dba_synonyms
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;owner&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;PUBLIC&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="create-synonym"&gt;Create Synonym&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Private synonym
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; SYNONYM mytable &lt;span style="color:#66d9ef"&gt;FOR&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;schema&lt;/span&gt;.&lt;span style="color:#66d9ef"&gt;table_name&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Public synonym
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;PUBLIC&lt;/span&gt; SYNONYM mytable &lt;span style="color:#66d9ef"&gt;FOR&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;schema&lt;/span&gt;.&lt;span style="color:#66d9ef"&gt;table_name&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="drop-and-recreate-synonym"&gt;Drop and Recreate Synonym&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;DROP&lt;/span&gt; SYNONYM mytable;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; SYNONYM mytable &lt;span style="color:#66d9ef"&gt;FOR&lt;/span&gt; new_schema.new_table;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="check-object-exists"&gt;Check Object Exists&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; object_name, object_type, &lt;span style="color:#66d9ef"&gt;owner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; all_objects
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;WHERE&lt;/span&gt; object_name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;TABLE_NAME&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="examples"&gt;Examples&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;CREATE&lt;/span&gt; SYNONYM emp &lt;span style="color:#66d9ef"&gt;FOR&lt;/span&gt; hr.employees;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; emp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- Works if hr.employees exists
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;DROP&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;TABLE&lt;/span&gt; hr.employees;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;SELECT&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;FROM&lt;/span&gt; emp;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;-- ORA-00942: table or view does not exist
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="related-errors"&gt;Related Errors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=""&gt;View Error&lt;/a&gt; — view issues&lt;/li&gt;
+&lt;li&gt;&lt;a href=""&gt;Permission Error&lt;/a&gt; — permission denied&lt;/li&gt;
 &lt;/ul&gt;</description></item><item><title>Windows NTSTATUS Error Codes — Complete Reference</title><link>https://errorcode.excellentwiki.com/os/windows/ntstatus-reference/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://errorcode.excellentwiki.com/os/windows/ntstatus-reference/</guid><description>&lt;h1 id="windows-ntstatus-error-codes--complete-reference"&gt;Windows NTSTATUS Error Codes — Complete Reference&lt;/h1&gt;
 &lt;p&gt;NTSTATUS is a 32-bit numbering space used by the Windows NT kernel to represent error, warning, and informational conditions. Error codes follow the format &lt;code&gt;0xC000xxxx&lt;/code&gt; (error) and &lt;code&gt;0x8000xxxx&lt;/code&gt; (warning). This table covers the most commonly encountered codes from Microsoft&amp;rsquo;s &lt;a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/596a1078-e883-4972-9bbc-49e60bebca55"&gt;MS-ERREF&lt;/a&gt; documentation.&lt;/p&gt;
 &lt;h2 id="error-codes-0xc000xxxx"&gt;Error Codes (0xC000xxxx)&lt;/h2&gt;
