@@ -4,7 +4,6 @@ description: "SQL Server Always On availability group fails to synchronize or pe
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "always-on", "availability-group", "failover", "synchronization", "replica"]
 weight: 5
 ---
 

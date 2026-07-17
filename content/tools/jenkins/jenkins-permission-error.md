@@ -4,7 +4,6 @@ description: "Jenkins operation fails due to insufficient permissions or authori
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "permission", "authorization", "user", "role"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP Parse error: syntax error, unexpected token. Learn to iden
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["parse-error", "syntax", "unexpected-token"]
 weight: 5
 ---
 

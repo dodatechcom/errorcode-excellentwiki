@@ -4,7 +4,6 @@ description: "Fix R 'package or namespace load failed' error when library() fail
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["library", "namespace", "load-failed", "dependency", "r"]
 weight: 5
 ---
 

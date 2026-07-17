@@ -4,7 +4,6 @@ description: "Fix AES-GCM decryption errors. Handle key size, nonce, and authent
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aes-gcm", "encryption", "crypto"]
 weight: 5
 ---
 

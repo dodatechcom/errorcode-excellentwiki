@@ -4,7 +4,6 @@ description: "Fix 'Trigger X doesn't exist' or trigger execution errors in MySQL
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["trigger", "before-insert", "after-update", "event", "dml"]
 weight: 5
 ---
 

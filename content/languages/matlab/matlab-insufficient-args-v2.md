@@ -4,7 +4,6 @@ description: "Fix MATLAB errors when functions are called with fewer arguments t
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["arguments", "inputs", "parameters", "function", "call", "matlab"]
 weight: 5
 ---
 

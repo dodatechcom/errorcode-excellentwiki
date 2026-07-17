@@ -4,7 +4,6 @@ description: "Fix AddressSanitizer heap-buffer-overflow errors. Handle heap memo
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["asan", "sanitizer", "memory", "heap", "overflow"]
 weight: 5
 ---
 

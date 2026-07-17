@@ -4,7 +4,6 @@ description: "Fix Handoff not working on Mac when continuity features fail betwe
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["handoff", "continuity", "apple-ecosystem", "bluetooth", "icloud"]
 weight: 5
 ---
 

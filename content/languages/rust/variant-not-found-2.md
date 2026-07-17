@@ -4,7 +4,6 @@ description: "Fix Rust no variant associated error. Learn why enum variants must
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["enum", "variant", "associated", "pattern-matching", "typo"]
 weight: 5
 ---
 

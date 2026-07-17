@@ -4,7 +4,6 @@ description: "A MethodError occurs when calling a function with argument types t
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["method", "type", "dispatch", "methoderror"]
 weight: 5
 ---
 

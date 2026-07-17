@@ -4,7 +4,6 @@ description: "Fix C use of uninitialized variable. Initialize all variables befo
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["uninitialized", "undefined-behavior", "variable", "garbage-value"]
 weight: 5
 ---
 

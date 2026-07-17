@@ -4,7 +4,6 @@ description: "Fix Go json.Unmarshal invalid character errors. Handle malformed J
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "unmarshal", "invalid-character", "encoding", "decoding", "syntax"]
 weight: 5
 ---
 

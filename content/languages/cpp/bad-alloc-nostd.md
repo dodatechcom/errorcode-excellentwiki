@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_alloc when new operator fails due to insufficient
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-alloc", "bad_alloc", "new", "out-of-memory", "oom"]
 weight: 5
 ---
 

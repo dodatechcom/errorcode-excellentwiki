@@ -4,7 +4,6 @@ description: "Fix C++ std::system_error when std::thread operations fail. Handle
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["thread-error", "system-error", "concurrency", "std-thread"]
 weight: 5
 ---
 

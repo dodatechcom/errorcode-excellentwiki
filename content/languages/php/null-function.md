@@ -4,7 +4,6 @@ description: "Fix PHP Fatal error: Cannot call method on null. Learn why method 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "method-call", "fatal-error", "type-error", "non-object"]
 weight: 5
 ---
 

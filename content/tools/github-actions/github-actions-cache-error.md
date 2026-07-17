@@ -4,7 +4,6 @@ description: "GitHub Actions cache operation fails during workflow execution."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "cache", "speed-up", "dependencies", "artifacts"]
 weight: 5
 ---
 

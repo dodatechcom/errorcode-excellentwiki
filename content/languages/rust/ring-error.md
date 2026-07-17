@@ -4,7 +4,6 @@ description: "Fix ring crypto library errors. Handle key operations, signature v
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ring", "crypto", "security"]
 weight: 5
 ---
 

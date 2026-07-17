@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_INVALIDARG (0x80070057) invalid argument err
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-invalidarg", "0x80070057", "invalid-argument", "parameter"]
 weight: 5
 ---
 

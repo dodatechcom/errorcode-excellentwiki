@@ -4,7 +4,6 @@ description: "Fix Go sql: no rows in result set error. Handle empty results with
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sql", "database", "no-rows", "query", "sql-row"]
 weight: 5
 ---
 

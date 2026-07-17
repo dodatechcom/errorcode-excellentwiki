@@ -4,7 +4,6 @@ description: "Fix Kotlin typealias resolution errors. Learn why typealiases fail
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["typealias", "alias", "type", "kotlin"]
 weight: 5
 ---
 

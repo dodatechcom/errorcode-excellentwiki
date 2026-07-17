@@ -4,7 +4,6 @@ description: "Fix Kubernetes Service no endpoints available. Resolve service rou
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "service", "endpoints", "unavailable", "routing", "selector"]
 weight: 5
 ---
 

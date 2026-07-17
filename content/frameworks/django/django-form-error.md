@@ -4,7 +4,6 @@ description: "Fix Django form validation errors. Resolve form.is_valid() failure
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["form", "validation", "clean", "is_valid", "django"]
 weight: 5
 ---
 

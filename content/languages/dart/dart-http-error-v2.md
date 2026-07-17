@@ -4,7 +4,6 @@ description: "Fix Dart SocketException when server refuses connection. Handle ne
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["socket", "connection", "refused", "network", "http", "dart"]
 weight: 5
 ---
 

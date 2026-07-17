@@ -4,7 +4,6 @@ description: "Fix Java InterruptedException by properly handling thread interrup
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["interruptedexception", "thread", "interrupt", "concurrency"]
 weight: 5
 ---
 

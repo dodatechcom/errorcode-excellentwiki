@@ -4,7 +4,6 @@ description: "Fix HTTP 503 Service Unavailable errors in Go. Handle overloaded s
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "503", "service-unavailable", "overload", "graceful"]
 weight: 5
 ---
 

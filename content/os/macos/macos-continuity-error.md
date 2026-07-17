@@ -4,7 +4,6 @@ description: "Fix Continuity Camera not working on Mac when you can't scan docum
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["continuity", "camera", "iphone", "scan", "photo"]
 weight: 5
 ---
 

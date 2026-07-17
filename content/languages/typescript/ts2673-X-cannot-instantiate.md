@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2673: X cannot be instantiated with 'new'. Use ab
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2673", "cannot-instantiate", "new", "abstract", "constructor"]
 weight: 5
 ---
 

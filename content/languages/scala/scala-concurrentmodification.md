@@ -4,7 +4,6 @@ description: "Fix Scala ConcurrentModificationException. Learn about thread-safe
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["concurrent", "modification", "iterator", "thread", "synchronized"]
 weight: 5
 ---
 

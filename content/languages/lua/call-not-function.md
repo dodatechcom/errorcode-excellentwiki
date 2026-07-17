@@ -4,7 +4,6 @@ description: "An attempt to call nil occurs when trying to call a value that is 
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["call", "nil", "function", "lua"]
 weight: 5
 ---
 

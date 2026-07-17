@@ -4,7 +4,6 @@ description: "Fix Kotlin JobCancellationException when a coroutine job is cancel
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["jobcancellationexception", "coroutine", "job", "cancel"]
 weight: 5
 ---
 

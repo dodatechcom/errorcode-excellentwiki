@@ -4,7 +4,6 @@ description: "Fix C errno 24 EMFILE (Too many open files) by closing unused file
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["emfile", "errno-24", "file-descriptor", "too-many-open-files", "limit"]
 weight: 5
 ---
 

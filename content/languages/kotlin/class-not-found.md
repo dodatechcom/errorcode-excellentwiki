@@ -4,7 +4,6 @@ description: "Fix Kotlin ClassNotFoundException when a class cannot be found at 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["classnotfoundexception", "classpath", "reflection", "dependency"]
 weight: 5
 ---
 

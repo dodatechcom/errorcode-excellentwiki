@@ -4,7 +4,6 @@ description: "Fix Scala MatchError when pattern match doesn't cover all cases. L
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern-matching", "matcherror", "exhaustive", "scala"]
 weight: 5
 ---
 

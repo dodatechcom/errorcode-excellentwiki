@@ -4,7 +4,6 @@ description: "A BadMapError occurs when attempting to use a value as a map when 
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["map", "badmap", "type-error", "badmaperror"]
 weight: 5
 ---
 

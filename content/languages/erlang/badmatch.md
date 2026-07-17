@@ -4,7 +4,6 @@ description: "A badmatch error occurs when a pattern match fails because the val
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["badmatch", "pattern", "match", "no-match"]
 weight: 5
 ---
 

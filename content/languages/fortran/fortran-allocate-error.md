@@ -4,7 +4,6 @@ description: "Allocation errors in Fortran occur when ALLOCATE fails due to insu
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["allocate", "dynamic-memory", "heap", "stat", "fortran"]
 weight: 5
 ---
 

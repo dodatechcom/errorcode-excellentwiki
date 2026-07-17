@@ -4,7 +4,6 @@ description: "Fix Linux 'grafana: dashboard error' and dashboard failures. Resol
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["grafana", "dashboard-error", "datasource", "panel", "monitoring", "visualization"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "GitHub Actions workflow cannot access a configured secret."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "secret", "environment", "credential", "token"]
 weight: 5
 ---
 

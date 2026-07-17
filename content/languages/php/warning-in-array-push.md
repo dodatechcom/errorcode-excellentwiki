@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_push() expects at least 2 arguments. Learn 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-push", "array", "arguments"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Fortran errors when array indices exceed the declared bounds."
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["array", "bounds", "subscript", "index", "out-of-range", "fortran"]
 weight: 5
 ---
 

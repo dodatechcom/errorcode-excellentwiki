@@ -4,7 +4,6 @@ description: "Fix Python ImportError: ctransformers not found or ModuleNotFoundE
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "ctransformers", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

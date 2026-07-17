@@ -4,7 +4,6 @@ description: "Fix npm audit vulnerability errors. Resolve security vulnerabiliti
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["audit", "vulnerability", "security", "dependencies", "npm"]
 weight: 5
 ---
 

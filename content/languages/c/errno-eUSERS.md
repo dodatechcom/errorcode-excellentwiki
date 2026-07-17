@@ -4,7 +4,6 @@ description: "Fix C EUSERS (Too many users) by reducing concurrent sessions, inc
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eusers", "too-many-users", "user-limit", "concurrent-sessions"]
 weight: 5
 ---
 

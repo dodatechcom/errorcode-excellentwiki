@@ -4,7 +4,6 @@ description: "Fix serde deserialization errors. Handle type mismatches, missing 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["serde", "serialization", "data"]
 weight: 5
 ---
 

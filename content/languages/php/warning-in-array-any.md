@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_any() expects exactly 1 argument. Learn to 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-any", "array", "arguments"]
 weight: 5
 ---
 

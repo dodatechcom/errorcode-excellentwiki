@@ -4,7 +4,6 @@ description: "Fix VBA 'Run-time error 1004' when an application-defined or objec
 languages: ["vba"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-error-1004", "application-error", "vba"]
 weight: 5
 ---
 

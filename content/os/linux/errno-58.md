@@ -4,7 +4,6 @@ description: "Fix Linux ELIBACC (errno 58) Can't access a needed shared library 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["elibacc", "shared-library", "errno-58", "dynamic-linking"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Error: read EPIPE / write EPIPE — Fix broken pipe errors in Node
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "epipe", "broken-pipe", "stream", "pipe", "stdin"]
 weight: 5
 ---
 

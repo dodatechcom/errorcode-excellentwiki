@@ -4,7 +4,6 @@ description: "Fix npm cache errors. Resolve npm cache corruption and issues."
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["cache", "corruption", "clean", "verify", "npm"]
 weight: 5
 ---
 

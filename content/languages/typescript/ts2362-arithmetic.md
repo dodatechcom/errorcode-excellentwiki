@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2362: The left-hand side of arithmetic must be a 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2362", "arithmetic", "left-hand-side", "number", "bigint"]
 weight: 5
 ---
 

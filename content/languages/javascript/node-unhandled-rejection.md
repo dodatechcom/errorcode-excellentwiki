@@ -4,7 +4,6 @@ description: "UnhandledPromiseRejectionWarning — Fix unhandled promise rejecti
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "unhandled-rejection", "promise", "async", "await", "reject"]
 weight: 5
 ---
 

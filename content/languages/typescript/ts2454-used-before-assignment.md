@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2454: Variable 'X' is used before being assigned.
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2454", "used-before-assigned", "uninitialized", "definite-assignment"]
 weight: 5
 ---
 

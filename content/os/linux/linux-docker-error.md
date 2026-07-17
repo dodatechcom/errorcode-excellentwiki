@@ -4,7 +4,6 @@ description: "Fix Linux 'docker: permission denied' errors. Add users to docker 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "permission-denied", "docker-group", "socket", "rootless"]
 weight: 5
 ---
 

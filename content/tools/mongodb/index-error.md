@@ -4,7 +4,6 @@ description: "MongoDB fails to build an index due to conflicts, insufficient res
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["index", "build", "index-build", "performance"]
 weight: 5
 ---
 

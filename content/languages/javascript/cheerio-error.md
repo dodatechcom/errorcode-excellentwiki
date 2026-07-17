@@ -4,7 +4,6 @@ description: "Fix cheerio HTML parsing errors. Handle malformed HTML, selector i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cheerio", "html", "parsing"]
 weight: 5
 ---
 

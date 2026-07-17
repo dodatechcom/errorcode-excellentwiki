@@ -4,7 +4,6 @@ description: "Fix Lua global variable errors. Learn why global variables cause i
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["global", "variable", "scope", "lua"]
 weight: 5
 ---
 

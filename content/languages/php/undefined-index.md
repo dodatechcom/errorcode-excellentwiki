@@ -4,7 +4,6 @@ description: "Fix PHP Undefined array key warning. Learn why this occurs and how
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undefined-index", "undefined-array-key", "notice", "warning", "array"]
 weight: 5
 ---
 

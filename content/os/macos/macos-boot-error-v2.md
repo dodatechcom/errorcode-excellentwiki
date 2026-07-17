@@ -4,7 +4,6 @@ description: "Fix Mac boot errors when startup shows a folder with question mark
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["boot", "startup", "folder", "question-mark", "disk", "macos"]
 weight: 5
 ---
 

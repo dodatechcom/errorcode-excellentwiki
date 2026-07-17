@@ -4,7 +4,6 @@ description: "Fix Ruby NoMethodError: undefined method. Check method existence, 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["no-method"]
-tags: ["nomethoderror", "method", "undefined", "receiver"]
 weight: 50
 ---
 

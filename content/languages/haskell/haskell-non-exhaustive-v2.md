@@ -4,7 +4,6 @@ description: "Fix Haskell non-exhaustive patterns warnings. Cover all cases in p
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["warning"]
-tags: ["non-exhaustive", "pattern", "warning", "coverage", "haskell"]
 weight: 5
 ---
 

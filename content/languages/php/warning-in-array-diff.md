@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_diff() arguments must be arrays. Learn to p
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-diff", "array", "arguments"]
 weight: 5
 ---
 

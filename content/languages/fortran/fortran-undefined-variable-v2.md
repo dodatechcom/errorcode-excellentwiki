@@ -4,7 +4,6 @@ description: "Fix Fortran errors when variables are used before being defined or
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undefined", "variable", "scope", "declaration", "implicit", "fortran"]
 weight: 5
 ---
 

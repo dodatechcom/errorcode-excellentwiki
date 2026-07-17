@@ -4,7 +4,6 @@ description: "Fix indicatif progress bar errors. Handle terminal rendering, mult
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["indicatif", "cli", "progress"]
 weight: 5
 ---
 

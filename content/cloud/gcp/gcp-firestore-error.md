@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Firestore Error"
 description: "Fix GCP Firestore errors. Resolve Firestore database operation issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "firestore", "database", "nosql", "document"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix node-canvas font loading errors. Handle missing fonts, font pa
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["node-canvas", "canvas", "font"]
 weight: 5
 ---
 

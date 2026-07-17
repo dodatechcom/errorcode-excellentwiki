@@ -4,7 +4,6 @@ description: "Fix Blue Screen WHEA_UNCORRECTABLE_ERROR stop code 0x124 caused by
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "whea", "voltage", "cpu", "gpu", "stop-0x124"]
 weight: 5
 ---
 

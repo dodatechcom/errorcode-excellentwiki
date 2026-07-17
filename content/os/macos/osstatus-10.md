@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -4 (errNotImplemented). Resolve not implemented
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["errnotimplemented", "osstatus-4", "not-implemented", "core-services", "carbon", "unavailable"]
 weight: 5
 ---
 

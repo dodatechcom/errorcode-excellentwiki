@@ -4,7 +4,6 @@ description: "Vite fails to process CSS files with PostCSS or CSS preprocessors.
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "css", "postcss", "scss", "style"]
 weight: 5
 ---
 

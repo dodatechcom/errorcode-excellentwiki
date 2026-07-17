@@ -4,7 +4,6 @@ description: "Fix Docker secrets permission denied errors. Resolve secret access
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["secrets", "permission-denied", "swarm", "build", "credentials"]
 weight: 5
 ---
 

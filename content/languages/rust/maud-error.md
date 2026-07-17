@@ -4,7 +4,6 @@ description: "Fix maud compile-time HTML errors. Handle macro invocation, type c
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maud", "html", "macro"]
 weight: 5
 ---
 

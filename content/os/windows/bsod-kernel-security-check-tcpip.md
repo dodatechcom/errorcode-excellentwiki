@@ -4,7 +4,6 @@ description: "Fix Blue Screen KERNEL_SECURITY_CHECK_FAILURE caused by tcpip.sys 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "kernel-security", "tcpip", "network", "driver"]
 weight: 5
 ---
 

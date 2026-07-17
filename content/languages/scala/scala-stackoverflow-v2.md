@@ -4,7 +4,6 @@ description: "Fix Scala StackOverflowError in recursive functions. Convert to ta
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack-overflow", "recursion", "tail-recursion", "jvm", "scala"]
 weight: 5
 ---
 

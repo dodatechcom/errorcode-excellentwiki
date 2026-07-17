@@ -4,7 +4,6 @@ description: "Fix F# FormatException when parsing strings to numbers, dates, or 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["format", "exception", "parsing", "string", "conversion", "fsharp"]
 weight: 5
 ---
 

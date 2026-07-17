@@ -4,7 +4,6 @@ description: "Fix Elasticsearch REST high-level client errors. Resolve connectio
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["elasticsearch", "rest-client", "search", "index", "mapping"]
 weight: 5
 ---
 

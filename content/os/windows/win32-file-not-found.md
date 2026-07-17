@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_FILE_NOT_FOUND (2). Resolve file not found error
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-2", "file-not-found", "api-error"]
 weight: 5
 ---
 

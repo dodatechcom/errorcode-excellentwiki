@@ -4,7 +4,6 @@ description: "GitHub Actions runner is offline or not available to execute the w
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "runner", "offline", "self-hosted", "agent"]
 weight: 5
 ---
 

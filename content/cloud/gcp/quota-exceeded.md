@@ -1,10 +1,8 @@
 ---
 title: "GCP Quota Exceeded"
 description: "QuotaExceeded - Quota exceeded for the given resource"
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "quota", "limit", "resources", "compute"]
 weight: 5
 ---
 

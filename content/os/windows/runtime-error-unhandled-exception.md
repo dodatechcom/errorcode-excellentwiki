@@ -4,7 +4,6 @@ description: "Fix unhandled exception crashes on Windows 10/11. Diagnose and res
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unhandled-exception", "crash", "exception-code", "0xC0000005", "debug"]
 weight: 5
 ---
 

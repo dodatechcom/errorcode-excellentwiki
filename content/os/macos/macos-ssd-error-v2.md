@@ -4,7 +4,6 @@ description: "Fix SSD errors on macOS when SMART status shows failing, disk erro
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["ssd", "smart", "storage", "disk", "failure", "macos"]
 weight: 5
 ---
 

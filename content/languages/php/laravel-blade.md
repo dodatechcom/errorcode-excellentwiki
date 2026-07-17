@@ -4,7 +4,6 @@ description: "Fix Blade template errors in Laravel. Handle undefined variables, 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "blade", "template"]
 weight: 5
 ---
 

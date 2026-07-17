@@ -4,7 +4,6 @@ description: "Fix Python ImportError: sympy not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "sympy", "module-not-found", "pip", "math"]
 weight: 5
 ---
 

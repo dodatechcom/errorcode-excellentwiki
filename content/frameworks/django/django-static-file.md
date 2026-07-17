@@ -4,7 +4,6 @@ description: "Fix Django static file not found errors. Resolve static file servi
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["static", "files", "collectstatic", "css", "django"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix MATLAB optimization errors when solvers fail to converge, reac
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["optimization", "convergence", "fmincon", "fminsearch", "solver", "matlab"]
 weight: 5
 ---
 

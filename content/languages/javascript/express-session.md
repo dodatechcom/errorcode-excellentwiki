@@ -4,7 +4,6 @@ description: "Fix Express session errors including session store issues, cookie 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["express", "session", "cookie", "store", "express-session"]
 weight: 5
 ---
 

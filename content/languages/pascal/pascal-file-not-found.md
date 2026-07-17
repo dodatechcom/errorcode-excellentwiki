@@ -4,7 +4,6 @@ description: "File not found errors in Pascal occur when attempting to open a fi
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "not-found", "path", "open", "pascal"]
 weight: 5
 ---
 

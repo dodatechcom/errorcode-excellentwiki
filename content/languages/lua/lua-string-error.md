@@ -4,7 +4,6 @@ description: "Fix Lua string concatenation errors. Learn why string operations f
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["string", "concatenation", "concat", "lua"]
 weight: 5
 ---
 

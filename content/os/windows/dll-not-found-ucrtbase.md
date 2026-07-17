@@ -4,7 +4,6 @@ description: "Fix 'ucrtbase.dll is missing' error on Windows 10 and 11. Resolve 
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "ucrtbase", "missing", "universal-c-runtime", "ucrt"]
 weight: 5
 ---
 

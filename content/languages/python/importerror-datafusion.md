@@ -4,7 +4,6 @@ description: "Fix Python ImportError: datafusion not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "datafusion", "module-not-found", "pip", "query-engine"]
 weight: 5
 ---
 

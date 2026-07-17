@@ -4,7 +4,6 @@ description: "Fix Python FileNotFoundError: No such file or directory. Check fil
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["filenotfounderror", "file", "path", "io"]
 weight: 100
 ---
 

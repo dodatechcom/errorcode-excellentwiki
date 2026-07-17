@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2469: X cannot be used as a namespace. Use proper
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2469", "cannot-be-used", "namespace", "module", "import"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Lua type errors when performing operations on wrong types. Han
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type-error", "arithmetic", "nil", "type-mismatch", "lua"]
 weight: 5
 ---
 

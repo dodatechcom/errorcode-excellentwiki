@@ -4,7 +4,6 @@ description: "Fix Linux iptables 'No chain/target/match by that name' errors. Re
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["iptables", "no-chain", "firewall", "nftables", "netfilter"]
 weight: 5
 ---
 

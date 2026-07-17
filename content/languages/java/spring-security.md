@@ -4,7 +4,6 @@ description: "Fix Spring Security AccessDeniedException when a user lacks requir
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "spring-boot", "spring-security", "access-denied", "authorization"]
 weight: 5
 ---
 

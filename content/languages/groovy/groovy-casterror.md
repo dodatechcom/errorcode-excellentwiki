@@ -4,7 +4,6 @@ description: "A ClassCastException occurs when an object is cast to a type it is
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cast", "ClassCastException", "type", "groovy"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C ENODATA (No data available) by handling empty STREAMS read o
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enodata", "no-data-available", "streams", "getmsg", "ioctl"]
 weight: 5
 ---
 

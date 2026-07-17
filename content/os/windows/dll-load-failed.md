@@ -4,7 +4,6 @@ description: "Fix 'DLL Load Failed' errors on Windows. Resolve LoadLibrary failu
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dll", "load-failed", "loadlibrary", "dependency", "path"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "SQLite fails to open or create a database file due to file system 
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "connection", "open", "file", "permission", "filesystem"]
 weight: 5
 ---
 

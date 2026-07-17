@@ -4,7 +4,6 @@ description: "Fix 'Not a directory' in Bash when a file path is used where a dir
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["not-a-directory", "directory-error", "path-error"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_splice() expects at least 3 arguments. Lear
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-splice", "array", "arguments"]
 weight: 5
 ---
 

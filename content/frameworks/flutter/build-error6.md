@@ -4,7 +4,6 @@ description: "Flutter build fails during compilation, linking, or resource proce
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["build", "compile", "gradle", "xcode", "linking"]
 weight: 5
 ---
 

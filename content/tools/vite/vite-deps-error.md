@@ -4,7 +4,6 @@ description: "Vite fails to pre-bundle dependencies during dev server startup."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "pre-bundling", "dependencies", "optimize", "esbuild"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Scala IllegalArgumentException. Learn about argument validatio
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["illegalargument", "argument", "validation", "precondition", "require"]
 weight: 5
 ---
 

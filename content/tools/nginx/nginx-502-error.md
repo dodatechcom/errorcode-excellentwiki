@@ -4,7 +4,6 @@ description: "Fix Nginx 502 Bad Gateway error. Diagnose why Nginx receives an in
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["502", "bad-gateway", "upstream", "proxy", "nginx"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Groovy ClassCastException when runtime type casts fail. Use sa
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cast", "class-cast", "type", "instanceof", "groovy"]
 weight: 5
 ---
 

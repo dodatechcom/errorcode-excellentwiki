@@ -4,7 +4,6 @@ description: "Fix Python ValueError when slice length is negative or zero. Learn
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["valueerror", "slice", "length", "range"]
 weight: 5
 ---
 

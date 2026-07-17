@@ -4,7 +4,6 @@ description: "Fix MongoDBContainer startup failure in Testcontainers. Check Dock
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "mongodb", "docker", "container", "nosql"]
 weight: 5
 ---
 

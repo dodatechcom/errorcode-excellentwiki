@@ -6,7 +6,6 @@ replacement_function: "LocalDate"
 languages: ["java"]
 deprecated_since: "JDK 1.1"
 error_message: "getYear() in Date has been deprecated"
-tags: ["date", "localdate", "java-time", "deprecated"]
 weight: 130
 ---
 

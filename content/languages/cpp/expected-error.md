@@ -4,7 +4,6 @@ description: "Fix C++ std::expected errors including accessing value without che
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["expected", "result", "error-handling", "c++23"]
 weight: 5
 ---
 

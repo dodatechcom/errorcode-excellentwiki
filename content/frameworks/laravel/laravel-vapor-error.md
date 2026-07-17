@@ -4,7 +4,6 @@ description: "Laravel Vapor throws deployment errors when deploying the applicat
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vapor", "deployment", "aws", "lambda", "serverless"]
 weight: 5
 ---
 

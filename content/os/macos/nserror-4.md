@@ -4,7 +4,6 @@ description: "Fix macOS NSFileWriteNoPermission (NSCocoaErrorDomain Code 516). R
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilewritenopermission", "nscocoaerrordomain", "code-516", "file-write", "permission-denied", "cocoa", "foundation"]
 weight: 5
 ---
 

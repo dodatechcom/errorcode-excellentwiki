@@ -4,7 +4,6 @@ description: "Fix Linux ENONET (errno 49) Machine is not on the network error. S
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enonet", "network", "errno-49", "connectivity"]
 weight: 5
 ---
 

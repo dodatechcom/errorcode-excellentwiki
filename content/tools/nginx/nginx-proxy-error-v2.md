@@ -4,7 +4,6 @@ description: "Fix Nginx proxy_pass connection error. Resolve reverse proxy conne
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "proxy", "proxy_pass", "connection", "error", "reverse-proxy"]
 weight: 5
 ---
 

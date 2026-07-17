@@ -4,7 +4,6 @@ description: "Fix C invalid free. Only free pointers returned by malloc, calloc,
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-free", "free", "malloc", "heap", "pointer"]
 weight: 5
 ---
 

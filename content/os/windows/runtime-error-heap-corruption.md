@@ -4,7 +4,6 @@ description: "Fix heap corruption runtime errors on Windows. Resolve invalid hea
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["heap-corruption", "use-after-free", "double-free", "heap", "memory", "debug"]
 weight: 5
 ---
 

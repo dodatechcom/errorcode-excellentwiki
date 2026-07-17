@@ -4,7 +4,6 @@ description: "Redis cluster encounters issues with slot distribution, node commu
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "cluster", "slot", "node", "failover"]
 weight: 5
 ---
 

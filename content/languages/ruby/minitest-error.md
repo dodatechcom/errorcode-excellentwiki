@@ -4,7 +4,6 @@ description: "Fix Minitest assertion failures. Learn why Minitest tests fail and
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["test-error"]
-tags: ["minitest", "assertion", "test", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix iCloud sync errors on macOS when documents conflict, files don
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["icloud", "sync", "conflict", "cloud", "drive", "macos"]
 weight: 5
 ---
 

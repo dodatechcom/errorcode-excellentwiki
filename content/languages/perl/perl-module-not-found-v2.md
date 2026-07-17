@@ -4,7 +4,6 @@ description: "Fix Perl 'Can't locate module in @INC' error when required modules
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["module", "not-found", "inc", "install", "cpan", "perl"]
 weight: 5
 ---
 

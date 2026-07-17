@@ -4,7 +4,6 @@ description: "Fix C++ RapidJSON parse errors. Handle malformed JSON input with R
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["rapidjson", "json", "parse", "dom", "sax"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Git LFS push/upload failures. Resolve LFS object upload errors
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["lfs", "push", "upload", "large-files", "git"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Django template rendering errors. Resolve TemplateSyntaxError 
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["template", "rendering", "syntax", "template-syntax-error", "django"]
 weight: 5
 ---
 

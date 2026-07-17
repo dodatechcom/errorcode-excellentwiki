@@ -4,7 +4,6 @@ description: "Fix Swift nil unwrapping errors. Learn why forced unwrapping of op
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nil", "optional", "unwrapping", "force-unwrap", "optional-binding"]
 weight: 5
 ---
 

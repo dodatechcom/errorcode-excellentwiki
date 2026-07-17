@@ -4,7 +4,6 @@ description: "Fix iCloud sync errors on Mac when data won't sync, shows 'Unable 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["icloud", "sync", "cloud", "drive", "apple-id"]
 weight: 5
 ---
 

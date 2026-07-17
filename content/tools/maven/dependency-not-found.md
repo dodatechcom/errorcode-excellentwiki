@@ -4,7 +4,6 @@ description: "Maven cannot find a required artifact in any configured repository
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "dependency", "artifact", "resolution"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Fortran errors when attempting to deallocate arrays that haven
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["deallocate", "memory", "array", "allocated", "pointer", "fortran"]
 weight: 5
 ---
 

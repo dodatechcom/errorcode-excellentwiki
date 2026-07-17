@@ -4,7 +4,6 @@ description: "Webpack dev server fails to start or accept connections."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "dev-server", "connection", "port", "proxy"]
 weight: 5
 ---
 

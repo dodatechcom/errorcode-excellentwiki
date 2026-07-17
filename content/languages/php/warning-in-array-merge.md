@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_merge() argument not an array. Learn to val
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-merge", "array", "arguments"]
 weight: 5
 ---
 

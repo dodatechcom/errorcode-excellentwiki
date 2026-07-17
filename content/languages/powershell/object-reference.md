@@ -4,7 +4,6 @@ description: "Fix 'Object reference not set to an instance of an object' when Po
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["NullReferenceException", "null", "object-reference"]
 weight: 5
 ---
 

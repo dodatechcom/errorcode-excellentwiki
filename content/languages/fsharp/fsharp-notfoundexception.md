@@ -4,7 +4,6 @@ description: "F# raises KeyNotFoundException when accessing a dictionary key tha
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["key", "dictionary", "not-found", "keynotfound", "map"]
 weight: 5
 ---
 

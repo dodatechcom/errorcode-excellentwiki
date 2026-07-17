@@ -4,7 +4,6 @@ description: "An ArgumentError occurs when calling a function with the wrong num
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "arity", "wrong-number", "argumenterror"]
 weight: 5
 ---
 

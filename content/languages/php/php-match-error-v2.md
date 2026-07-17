@@ -4,7 +4,6 @@ description: "Fix PHP match expression unhandled value errors. Learn how match d
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "unhandled-value", "php", "expression"]
 weight: 5
 ---
 

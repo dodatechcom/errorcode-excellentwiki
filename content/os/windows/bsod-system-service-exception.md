@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_SERVICE_EXCEPTION error on Windows 10 and 1
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "system-service", "driver-error", "stop-code"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix hyper-util connection errors. Handle HTTP/1.1 and HTTP/2 conne
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hyper-util", "connection", "http"]
 weight: 5
 ---
 

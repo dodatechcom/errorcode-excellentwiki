@@ -4,7 +4,6 @@ description: "Fix Kotlin destructuring iterator errors. Learn why iterator destr
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["destructuring", "iterator", "loop", "kotlin"]
 weight: 5
 ---
 

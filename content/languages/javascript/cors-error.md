@@ -4,7 +4,6 @@ description: "Fix JavaScript CORS (Cross-Origin Resource Sharing) errors. Config
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["cors", "cross-origin", "blocked", "access-control"]
 weight: 100
 ---
 

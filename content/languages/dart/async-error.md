@@ -4,7 +4,6 @@ description: "An async error occurs when an error is thrown in an asynchronous f
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["async", "await", "future", "dart"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "MongoDB index creation fails because the disk does not have enough
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "index", "build", "disk", "storage", "space"]
 weight: 5
 ---
 

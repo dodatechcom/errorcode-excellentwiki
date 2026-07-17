@@ -4,7 +4,6 @@ description: "Fix C ELIBBAD (Accessing corrupted shared lib) by reinstalling lib
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["elibbad", "corrupted-shared-lib", "library-corruption", "dynamic-linking"]
 weight: 5
 ---
 

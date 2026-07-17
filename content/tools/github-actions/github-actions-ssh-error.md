@@ -4,7 +4,6 @@ description: "GitHub Actions workflow fails to establish SSH connection for depl
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "ssh", "deploy", "remote", "key"]
 weight: 5
 ---
 

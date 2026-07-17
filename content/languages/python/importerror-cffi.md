@@ -4,7 +4,6 @@ description: "Fix Python ImportError: cffi not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "cffi", "module-not-found", "pip", "ffi"]
 weight: 5
 ---
 

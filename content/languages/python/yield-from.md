@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when using yield from outside a function. L
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "yield", "from", "generator", "delegation"]
 weight: 5
 ---
 

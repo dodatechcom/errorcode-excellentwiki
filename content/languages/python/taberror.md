@@ -4,7 +4,6 @@ description: "Fix Python TabError caused by mixing tabs and spaces. Configure ed
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["taberror", "indentation", "tabs", "spaces", "pep8"]
 weight: 55
 ---
 

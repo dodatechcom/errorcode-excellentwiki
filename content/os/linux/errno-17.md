@@ -4,7 +4,6 @@ description: "Fix Linux EEXIST (errno 17) File Exists error. Handle file creatio
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["eexist", "errno-17", "file-exists", "creation-conflict", "o-excl"]
 weight: 60
 ---
 

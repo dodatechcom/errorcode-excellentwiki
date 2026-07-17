@@ -4,7 +4,6 @@ description: "Fix SQL view errors when a view references a table that no longer 
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["view", "invalid-table", "definer", "sql"]
 weight: 5
 ---
 

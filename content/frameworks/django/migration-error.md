@@ -4,7 +4,6 @@ description: "Django raises this OperationalError when a migration tries to crea
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["migrations", "database", "django-admin"]
 weight: 5
 ---
 

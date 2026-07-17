@@ -4,7 +4,6 @@ description: "Fix 'syntax error in expression' in Bash when an arithmetic evalua
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["arithmetic-error", "expression", "math-error"]
 weight: 5
 ---
 

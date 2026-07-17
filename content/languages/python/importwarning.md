@@ -4,7 +4,6 @@ description: "Fix Python ImportWarning when module imports have issues. Check de
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["importwarning", "import", "module", "dependency", "circular"]
 weight: 5
 ---
 

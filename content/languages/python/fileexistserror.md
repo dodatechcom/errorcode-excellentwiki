@@ -4,7 +4,6 @@ description: "Fix Python FileExistsError when creating a file or directory that 
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["fileexistserror", "file", "directory", "create", "os"]
 weight: 5
 ---
 

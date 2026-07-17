@@ -4,7 +4,6 @@ description: "Fix Gatekeeper errors on macOS when apps cannot be opened, show 'd
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["gatekeeper", "app-security", "notarization", "quarantine", "code-signing", "macos"]
 weight: 5
 ---
 

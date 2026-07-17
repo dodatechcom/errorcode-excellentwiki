@@ -4,7 +4,6 @@ description: "Fix Mac boot errors when Mac won't start, shows black screen, blin
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["boot", "startup", "apple-logo", "black-screen", "power"]
 weight: 5
 ---
 

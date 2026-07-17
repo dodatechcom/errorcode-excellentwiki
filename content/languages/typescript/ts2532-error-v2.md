@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2532 when accessing properties on values that may
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2532", "undefined", "strict-null", "optional", "async"]
 weight: 5
 ---
 

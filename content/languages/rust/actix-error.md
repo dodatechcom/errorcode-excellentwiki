@@ -4,7 +4,6 @@ description: "Fix actix-web handler errors. Handle request processing, state man
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["actix", "web", "framework"]
 weight: 5
 ---
 

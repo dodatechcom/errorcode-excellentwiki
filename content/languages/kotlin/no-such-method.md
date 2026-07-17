@@ -4,7 +4,6 @@ description: "Fix Kotlin NoSuchMethodException when a method cannot be found via
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nosuchmethodexception", "reflection", "method", "invoke"]
 weight: 5
 ---
 

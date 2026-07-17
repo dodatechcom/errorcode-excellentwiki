@@ -4,7 +4,6 @@ description: "Fix Sequel database errors in Ruby. Learn why Sequel ORM operation
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["sequel", "database", "orm", "ruby"]
 weight: 5
 ---
 

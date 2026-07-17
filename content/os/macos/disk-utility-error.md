@@ -4,7 +4,6 @@ description: "Fix Disk Utility errors: couldn't unmount disk, verify disk, or re
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["disk-utility", "unmount", "verify", "repair", "first-aid", "apfs", "hfs"]
 weight: 5
 ---
 

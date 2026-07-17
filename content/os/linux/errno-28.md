@@ -4,7 +4,6 @@ description: "Fix Linux ENOSPC (errno 28) No Space Left on Device error. Find la
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["enospc", "errno-28", "disk-full", "no-space"]
 weight: 60
 ---
 

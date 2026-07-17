@@ -4,7 +4,6 @@ description: "Fix Next.js App Router errors including Server Component issues, i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "app-router", "server-components", "react-server-components", "layout"]
 weight: 5
 ---
 

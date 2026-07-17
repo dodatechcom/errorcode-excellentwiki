@@ -4,7 +4,6 @@ description: "Fix Rust parse int error. Learn why string to integer parsing fail
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["parse", "int", "integer", "digit", "conversion"]
 weight: 5
 ---
 

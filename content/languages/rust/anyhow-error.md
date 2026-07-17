@@ -4,7 +4,6 @@ description: "Fix anyhow error context issues. Handle error chaining, context pr
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["anyhow", "error-handling", "context"]
 weight: 5
 ---
 

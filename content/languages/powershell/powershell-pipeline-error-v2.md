@@ -4,7 +4,6 @@ description: "Fix PowerShell pipeline errors when the pipeline is stopped or bro
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pipeline", "PipelineStoppedException", "broken-pipeline", "powershell"]
 weight: 5
 ---
 

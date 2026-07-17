@@ -4,7 +4,6 @@ description: "Fix exit status check failures in Bash when commands don't return 
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["return-code", "exit-status", "error-checking"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'Registry invalid data' errors on Windows 10 and 11. Resolve c
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "invalid-data", "corrupt", "data-integrity"]
 weight: 5
 ---
 

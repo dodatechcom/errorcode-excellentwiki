@@ -4,7 +4,6 @@ description: "Express rejects a request because the body exceeds the configured 
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["body-parser", "limit", "payload", "413", "upload"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Testcontainers Kafka container startup failures. Resolve image
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "kafka", "docker", "integration-test", "container"]
 weight: 5
 ---
 

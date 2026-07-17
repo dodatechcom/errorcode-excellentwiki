@@ -4,7 +4,6 @@ description: "Fix Lua memory allocation errors. Learn why memory errors occur an
 languages: ["lua"]
 severities: ["error"]
 error-types: ["memory-error"]
-tags: ["memory", "allocation", "gc", "lua"]
 weight: 5
 ---
 

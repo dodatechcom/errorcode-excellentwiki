@@ -4,7 +4,6 @@ description: "Fix Objective-C network errors including NSURLSession and connecti
 languages: ["objective-c"]
 error-types: ["network-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "networking", "urlsession"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix ent ORM constraint violation errors. Handle unique constraints
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ent", "constraint", "database"]
 weight: 5
 ---
 

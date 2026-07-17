@@ -4,7 +4,6 @@ description: "Vite fails to process Tailwind CSS due to PostCSS plugin error."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "tailwind", "postcss", "css", "plugin"]
 weight: 5
 ---
 

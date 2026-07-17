@@ -4,7 +4,6 @@ description: "React Native throws this error when a native module is not properl
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["native", "module", "linking", "ios", "android"]
 weight: 5
 ---
 

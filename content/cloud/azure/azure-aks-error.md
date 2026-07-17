@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure AKS Cluster Error"
 description: "Fix Azure AKS cluster errors. Resolve Azure Kubernetes Service issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "aks", "kubernetes", "cluster", "node"]
 weight: 5
 ---
 

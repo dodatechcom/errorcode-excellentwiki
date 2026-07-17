@@ -4,7 +4,6 @@ description: "Vite fails to load or validate its configuration file."
 tools: ["vite"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["vite", "config", "configuration", "vite.config", "validation"]
 weight: 5
 ---
 

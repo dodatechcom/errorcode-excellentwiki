@@ -4,7 +4,6 @@ description: "Fix C network is down (ENETDOWN). Check network interface status."
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enetdown", "network-down", "interface", "network", "errno"]
 weight: 5
 ---
 

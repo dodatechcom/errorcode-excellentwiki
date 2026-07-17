@@ -4,7 +4,6 @@ description: "Fix React 'useContext must be used within a Provider' error. Under
 languages: ["javascript"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["react", "context", "useContext", "provider", "context-error"]
 weight: 5
 ---
 

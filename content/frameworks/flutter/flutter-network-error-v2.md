@@ -4,7 +4,6 @@ description: "Flutter throws SocketException when attempting to connect to a ser
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "socket", "connection", "network", "http", "api"]
 weight: 5
 ---
 

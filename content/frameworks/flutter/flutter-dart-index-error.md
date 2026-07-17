@@ -4,7 +4,6 @@ description: "Dart throws RangeError when accessing a list or string index that 
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dart", "range", "index", "list", "string", "bounds"]
 weight: 5
 ---
 

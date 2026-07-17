@@ -4,7 +4,6 @@ description: "The SQLite database is locked because another connection holds a l
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["database", "locking", "concurrency"]
 weight: 5
 ---
 

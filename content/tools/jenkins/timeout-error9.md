@@ -4,7 +4,6 @@ description: "Fix Jenkins build timeout errors. Resolve long-running builds and 
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "timeout", "build", "limit", "duration"]
 weight: 5
 ---
 

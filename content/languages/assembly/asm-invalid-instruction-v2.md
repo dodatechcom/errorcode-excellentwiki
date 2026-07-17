@@ -4,7 +4,6 @@ description: "Fix assembly illegal instruction errors when the CPU encounters an
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["illegal-instruction", "sigill", "opcode", "cpu", "ud2", "assembly"]
 weight: 5
 ---
 

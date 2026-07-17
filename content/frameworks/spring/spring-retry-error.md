@@ -4,7 +4,6 @@ description: "Spring Retry throws ExhaustedRetryException when all retry attempt
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["retry", "resilience", "backoff", "spring-retry", "recovery"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen KMODE_EXCEPTION_NOT_HANDLED caused by ndis.sys on 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "ndis", "kmode", "network", "driver"]
 weight: 5
 ---
 

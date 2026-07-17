@@ -4,7 +4,6 @@ description: "Fix Python ValueError: not enough values to unpack when unpacking 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["valueerror", "unpack", "sequence", "assignment"]
 weight: 5
 ---
 

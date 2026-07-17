@@ -4,7 +4,6 @@ description: "Fix Rector automated refactoring errors. Handle rule configuration
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rector", "refactoring", "automation"]
 weight: 5
 ---
 

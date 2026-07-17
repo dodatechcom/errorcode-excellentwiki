@@ -4,7 +4,6 @@ description: "Fix bash readonly variable errors when trying to modify or unset a
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["readonly", "constant", "immutable", "bash"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rosetta 2 errors on Apple Silicon Macs when Intel apps fail to
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["rosetta", "apple-silicon", "intel", "translation", "compatibility", "macos"]
 weight: 5
 ---
 

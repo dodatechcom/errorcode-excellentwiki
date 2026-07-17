@@ -4,7 +4,6 @@ description: "Fix Ruby native extension build errors. Learn why native extension
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["native-extension", "compilation", "c-extension", "ruby"]
 weight: 5
 ---
 

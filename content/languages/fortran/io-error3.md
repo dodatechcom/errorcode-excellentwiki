@@ -4,7 +4,6 @@ description: "An I/O error occurs when a Fortran program encounters a problem re
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "file", "input-output", "device"]
 weight: 5
 ---
 

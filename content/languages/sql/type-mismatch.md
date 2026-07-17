@@ -4,7 +4,6 @@ description: "Fix 'Incorrect datetime value' or type conversion errors when a va
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type-mismatch", "incorrect-value", "datetime-error", "casting"]
 weight: 5
 ---
 

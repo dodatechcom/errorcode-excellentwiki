@@ -4,7 +4,6 @@ description: "Redis EVAL Lua script execution encounters errors."
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "lua", "script", "eval", "atomic"]
 weight: 5
 ---
 

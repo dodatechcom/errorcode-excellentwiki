@@ -4,7 +4,6 @@ description: "Oracle client cannot connect because the TNS listener is not runni
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "tns", "listener", "connection", "ora-12541", "network"]
 weight: 5
 ---
 

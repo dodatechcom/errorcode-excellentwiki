@@ -4,7 +4,6 @@ description: "Fix Dart 'jsonDecode' errors when parsing JSON strings. Learn abou
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "decode", "parse", "serialization", "format"]
 weight: 5
 ---
 

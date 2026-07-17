@@ -4,7 +4,6 @@ description: "An ArgumentException occurs when a method receives an invalid argu
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "invalid", "parameter", "argumentexception"]
 weight: 5
 ---
 

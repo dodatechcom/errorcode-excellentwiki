@@ -4,7 +4,6 @@ description: "Fix Kotlin SerializationException when serializing or deserializin
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["serializationexception", "serialization", "json", "serializable", "encode"]
 weight: 5
 ---
 

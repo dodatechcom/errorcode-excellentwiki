@@ -4,7 +4,6 @@ description: "Fix C++ std::mutex try_lock failures and deadlocks. Learn proper m
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["mutex", "try-lock", "deadlock", "concurrency"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "SQL Server client fails to connect because the TCP provider cannot
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "tcp", "connection", "network", "port", "firewall"]
 weight: 5
 ---
 

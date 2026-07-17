@@ -4,7 +4,6 @@ description: "Fix webpack 'Module parse failed' syntax errors. Resolve loader an
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "syntax", "parse", "module", "loader"]
 weight: 5
 ---
 

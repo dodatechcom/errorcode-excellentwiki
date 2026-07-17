@@ -4,7 +4,6 @@ description: "An arithmetic overflow occurs when a computation produces a value 
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "arithmetic", "range", "integer"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C errno 13 EACCES (Permission denied) by checking file permiss
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eacces", "errno-13", "permission", "access", "file-permissions"]
 weight: 5
 ---
 

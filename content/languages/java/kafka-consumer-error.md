@@ -4,7 +4,6 @@ description: "Fix Kafka CommitFailedException on consumer. Handle rebalance, adj
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kafka", "consumer", "commit", "rebalance", "offset"]
 weight: 5
 ---
 

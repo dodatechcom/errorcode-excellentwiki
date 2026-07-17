@@ -4,7 +4,6 @@ description: "Fix C++ Valgrind memory errors. Detect and fix memory leaks and ac
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["valgrind", "memory-leak", "memcheck", "heap", "debug"]
 weight: 5
 ---
 

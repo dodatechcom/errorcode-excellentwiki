@@ -4,7 +4,6 @@ description: "Fix Swift SwiftUI List rendering errors. Learn why SwiftUI List fa
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["swiftui", "list", "rendering", "view", "swift"]
 weight: 5
 ---
 

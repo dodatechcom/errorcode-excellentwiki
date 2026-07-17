@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_ENHANCE_YOUR_CALM when an HTTP/2 peer sends 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-enhance-your-calm", "http2", "flow-control", "rate-limit", "nodejs"]
 weight: 5
 ---
 

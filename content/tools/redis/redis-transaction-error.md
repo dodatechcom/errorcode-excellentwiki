@@ -4,7 +4,6 @@ description: "Redis MULTI/EXEC transaction fails or encounters errors."
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "transaction", "multi", "exec", "watch"]
 weight: 5
 ---
 

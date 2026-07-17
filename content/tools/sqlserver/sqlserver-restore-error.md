@@ -4,7 +4,6 @@ description: "SQL Server restore operation fails."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "restore", "recovery", "backup", "database"]
 weight: 5
 ---
 

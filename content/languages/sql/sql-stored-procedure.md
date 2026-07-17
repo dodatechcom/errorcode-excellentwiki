@@ -4,7 +4,6 @@ description: "Fix 'Unknown stored procedure X' when calling a procedure that doe
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stored-procedure", "call", "procedure", "routine"]
 weight: 5
 ---
 

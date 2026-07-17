@@ -4,7 +4,6 @@ description: "A BoundsError occurs when attempting to access an array, string, o
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bounds", "index", "array", "boundserror"]
 weight: 5
 ---
 

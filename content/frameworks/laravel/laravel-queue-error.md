@@ -4,7 +4,6 @@ description: "Laravel throws ConnectionFailedException when the queue worker can
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["queue", "connection", "driver", "redis", "beanstalkd"]
 weight: 5
 ---
 

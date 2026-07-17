@@ -4,7 +4,6 @@ description: "Fix Go gzip compression errors. Handle invalid gzip data, buffer i
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["compress", "gzip", "compression"]
 weight: 5
 ---
 

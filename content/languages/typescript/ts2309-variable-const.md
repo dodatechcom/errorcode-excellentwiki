@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2309: Variable 'X' is declared but its value is n
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2309", "unused", "variable", "never-read", "dead-code"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "SQLite backup operation fails."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "backup", "dump", "export", "restore"]
 weight: 5
 ---
 

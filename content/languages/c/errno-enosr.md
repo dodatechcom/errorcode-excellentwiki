@@ -4,7 +4,6 @@ description: "Fix C ENOSR (No STREAMS buffers available) by managing STREAMS buf
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enosr", "no-streams-buffers", "streams", "data-buffers", "putmsg"]
 weight: 5
 ---
 

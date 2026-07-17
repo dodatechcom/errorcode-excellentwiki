@@ -4,7 +4,6 @@ description: "Fix Groovy NullPointerException when accessing members on null ref
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "pointer", "null-safe", "navigation", "groovy"]
 weight: 5
 ---
 

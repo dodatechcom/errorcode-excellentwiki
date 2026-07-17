@@ -4,7 +4,6 @@ description: "Fix Swift URLError DNS failure. Learn why DNS resolution fails and
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["urlerror", "dns", "dns-failure", "network", "swift"]
 weight: 5
 ---
 

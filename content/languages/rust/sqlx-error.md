@@ -4,7 +4,6 @@ description: "Fix sqlx query errors. Handle database connections, query executio
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlx", "database", "query"]
 weight: 5
 ---
 

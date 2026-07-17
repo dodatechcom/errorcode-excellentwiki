@@ -4,7 +4,6 @@ description: "Fix Maven plugin execution errors. Resolve plugin lifecycle and co
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "plugin", "execution", "goal", "lifecycle"]
 weight: 5
 ---
 

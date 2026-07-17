@@ -4,7 +4,6 @@ description: "Fix Python ImportError: llama_index not found or ModuleNotFoundErr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "llama-index", "llama_index", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

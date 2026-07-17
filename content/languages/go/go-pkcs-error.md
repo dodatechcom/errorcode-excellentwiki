@@ -4,7 +4,6 @@ description: "Fix Go PKCS12 decode errors. Handle certificate chain extraction, 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pkcs", "certificate", "security"]
 weight: 5
 ---
 

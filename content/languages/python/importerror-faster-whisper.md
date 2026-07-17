@@ -4,7 +4,6 @@ description: "Fix Python ImportError: faster_whisper not found or ModuleNotFound
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "faster-whisper", "faster_whisper", "module-not-found", "pip", "speech"]
 weight: 5
 ---
 

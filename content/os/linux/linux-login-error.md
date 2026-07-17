@@ -4,7 +4,6 @@ description: "Fix Linux login authentication failures. Reset passwords, fix PAM 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["login", "authentication-failure", "pam", "password", "access"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix webpki certificate errors. Handle trust anchor loading, chain 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpki", "certificate", "security"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'DLL entry point not found' error on Windows 10 and 11. Resolv
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "entry-point", "not-found", "version-mismatch", "registration"]
 weight: 5
 ---
 

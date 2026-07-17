@@ -6,7 +6,6 @@ replacement_function: "secure_getenv"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["getenv", "secure_getenv", "environment", "security", "c"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix HMAC MAC errors. Handle key generation, verification, and algo
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hmac", "mac", "crypto"]
 weight: 5
 ---
 

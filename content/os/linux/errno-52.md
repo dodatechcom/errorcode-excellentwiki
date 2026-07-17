@@ -4,7 +4,6 @@ description: "Fix Linux EILSEQ (errno 52) Invalid or incomplete multibyte or wid
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eilseq", "encoding", "errno-52", "multibyte", "utf-8"]
 weight: 5
 ---
 

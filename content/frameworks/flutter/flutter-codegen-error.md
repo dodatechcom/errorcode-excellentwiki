@@ -4,7 +4,6 @@ description: "Flutter build_runner fails to generate code due to source code err
 frameworks: ["flutter"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["flutter", "build-runner", "code-generation", "json-serializable", "freezed"]
 weight: 5
 ---
 

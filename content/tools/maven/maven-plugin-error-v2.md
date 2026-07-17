@@ -4,7 +4,6 @@ description: "Maven plugin goal cannot be found or does not exist in the plugin.
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "plugin", "goal", "execution", "not-found"]
 weight: 5
 ---
 

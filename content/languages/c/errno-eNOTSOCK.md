@@ -4,7 +4,6 @@ description: "Fix C ENOTSOCK (Socket operation on non-socket) by verifying file 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotsock", "socket-operation-on-non-socket", "socket", "fd-check"]
 weight: 5
 ---
 

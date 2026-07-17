@@ -4,7 +4,6 @@ description: "Fix Objective-C block-related errors including retain cycles and s
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "blocks", "closures", "memory-management"]
 weight: 5
 ---
 

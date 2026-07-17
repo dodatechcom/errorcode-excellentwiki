@@ -4,7 +4,6 @@ description: "Fix Perl CGI script errors. Learn why CGI scripts fail and how to 
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cgi", "web", "http", "perl"]
 weight: 5
 ---
 

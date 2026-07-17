@@ -4,7 +4,6 @@ description: "Fix ActiveRecord connection errors when Rails cannot connect to th
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["activerecord", "connection", "database", "rails", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes probe failed error. Diagnose and fix liveness and r
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["probe-failed", "liveness", "readiness", "health", "kubernetes"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2305: Module 'X' has no exported member 'Y'. Impo
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2305", "module", "exported-member", "import", "no-export"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Homebrew errors when package dependencies conflict, including 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["homebrew", "brew", "dependency", "conflict", "keg", "macos"]
 weight: 5
 ---
 

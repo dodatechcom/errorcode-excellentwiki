@@ -4,7 +4,6 @@ description: "Fix Nginx 413 client body size exceeds limit. Resolve request size
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "413", "request-entity-too-large", "client-body", "upload", "size"]
 weight: 5
 ---
 

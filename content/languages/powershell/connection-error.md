@@ -4,7 +4,6 @@ description: "Fix 'WinRM connection error' when PowerShell cannot connect to a r
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["WinRM", "connection", "remote", "network"]
 weight: 5
 ---
 

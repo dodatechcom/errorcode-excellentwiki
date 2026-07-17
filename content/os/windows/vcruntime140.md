@@ -4,7 +4,6 @@ description: "Fix 'vcruntime140.dll not found' error on Windows 10 and 11. Insta
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["vcruntime140", "dll", "visual-cpp", "redistributable", "runtime"]
 weight: 5
 ---
 

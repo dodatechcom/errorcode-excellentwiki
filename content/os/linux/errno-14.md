@@ -4,7 +4,6 @@ description: "Fix Linux EFAULT (errno 14) Bad address error. Solutions for inval
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enEFAULT", "address", "errno-14", "pointer"]
 weight: 5
 ---
 

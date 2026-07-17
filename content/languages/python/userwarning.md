@@ -4,7 +4,6 @@ description: "Handle Python UserWarning when custom warnings are raised. Use war
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["userwarning", "warning", "custom", "warnings", "diagnostic"]
 weight: 5
 ---
 

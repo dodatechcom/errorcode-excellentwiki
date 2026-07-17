@@ -4,7 +4,6 @@ description: "Fix Blue Screen WHEA_UNCORRECTABLE_ERROR on Windows 10 and 11. Res
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "whea", "hardware", "cpu", "gpu", "temperature"]
 weight: 5
 ---
 

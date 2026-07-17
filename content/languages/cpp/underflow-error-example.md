@@ -4,7 +4,6 @@ description: "Example of std::underflow_error in C++. Handle floating-point unde
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["underflow-error", "arithmetic", "floating-point", "precision"]
 weight: 50
 ---
 

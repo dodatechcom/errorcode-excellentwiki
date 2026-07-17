@@ -4,7 +4,6 @@ description: "Fix Turbo navigation errors in Rails. Learn why Turbo Drive and Tu
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["turbo", "navigation", "hotwire", "rails", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'Not unique table or alias' when a table is referenced multipl
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["table-alias", "unique", "self-join", "ambiguous"]
 weight: 5
 ---
 

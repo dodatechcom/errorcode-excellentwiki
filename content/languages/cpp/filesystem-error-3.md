@@ -4,7 +4,6 @@ description: "Fix C++ std::filesystem::filesystem_error when file operations fai
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["filesystem-error", "filesystem_error", "filesystem", "path", "io-error"]
 weight: 5
 ---
 

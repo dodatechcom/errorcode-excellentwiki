@@ -4,7 +4,6 @@ description: "Laravel throws TokenMismatchException when the CSRF token in the r
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["csrf", "token", "security", "middleware", "session"]
 weight: 5
 ---
 

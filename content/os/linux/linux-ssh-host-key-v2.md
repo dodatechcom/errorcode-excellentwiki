@@ -4,7 +4,6 @@ description: "Fix Linux 'ssh: Host key verification failed' errors. Accept, remo
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssh", "host-key", "known-hosts", "fingerprint", "security", "remote-access"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C EISDIR (Is a directory) by checking file types before read/w
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eisdir", "is-a-directory", "file-type", "open-directory"]
 weight: 5
 ---
 

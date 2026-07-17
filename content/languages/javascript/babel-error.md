@@ -4,7 +4,6 @@ description: "Fix Babel transpilation errors. Handle missing presets, syntax err
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["babel", "transpiler", "ecmascript"]
 weight: 5
 ---
 

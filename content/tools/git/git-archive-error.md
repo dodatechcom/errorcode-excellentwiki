@@ -4,7 +4,6 @@ description: "Fix Git archive errors. Resolve failures when creating zip or tar 
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["archive", "zip", "tar", "export", "snapshot", "git"]
 weight: 5
 ---
 

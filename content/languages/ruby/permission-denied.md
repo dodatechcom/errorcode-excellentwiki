@@ -4,7 +4,6 @@ description: "Fix Ruby Errno::EACCES: Permission denied. Check file permissions,
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["permission"]
-tags: ["eacces", "permission_denied", "file", "access", "chmod"]
 weight: 240
 ---
 

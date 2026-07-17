@@ -4,7 +4,6 @@ description: "Fix std::thread spawn errors. Handle thread configuration, join ha
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["std-thread", "threading", "concurrency"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Lua index out of range errors. Learn why table indexing fails 
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["index", "range", "table", "lua"]
 weight: 5
 ---
 

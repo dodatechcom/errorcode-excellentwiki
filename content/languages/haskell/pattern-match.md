@@ -4,7 +4,6 @@ description: "A pattern match failure occurs when a function encounters a value 
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pattern-match", "non-exhaustive", "runtime", "haskell"]
 weight: 5
 ---
 

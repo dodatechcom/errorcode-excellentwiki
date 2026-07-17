@@ -4,7 +4,6 @@ description: "Fix Hotwire errors in Rails. Learn why Hotwire integration fails a
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["hotwire", "turbo", "stimulus", "rails", "ruby"]
 weight: 5
 ---
 

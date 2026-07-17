@@ -4,7 +4,6 @@ description: "Fix macOS Bluetooth device not found, not connecting, or disconnec
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bluetooth", "device", "pairing", "connection", "peripheral", "macos"]
 weight: 5
 ---
 

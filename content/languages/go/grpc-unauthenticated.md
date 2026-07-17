@@ -4,7 +4,6 @@ description: "Fix Go gRPC unauthenticated errors. Handle token validation, crede
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "unauthenticated", "auth"]
 weight: 5
 ---
 

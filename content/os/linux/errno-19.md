@@ -4,7 +4,6 @@ description: "Fix Linux ENODEV (errno 19) No such device error. Solutions for mi
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enODEV", "device", "errno-19", "driver"]
 weight: 5
 ---
 

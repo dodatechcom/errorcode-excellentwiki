@@ -4,7 +4,6 @@ description: "Fix npm peer dependency resolution errors. Resolve ERESOLVE confli
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["peer", "dependency", "eresolve", "resolution", "npm"]
 weight: 5
 ---
 

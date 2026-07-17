@@ -4,7 +4,6 @@ description: "A timeout error occurs when a receive statement or synchronous cal
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["timeout", "receive", "synchronous", "time-limit"]
 weight: 5
 ---
 

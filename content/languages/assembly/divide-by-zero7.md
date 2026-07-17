@@ -4,7 +4,6 @@ description: "A divide by zero error occurs when the CPU attempts to divide an i
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "arithmetic", "exception"]
 weight: 5
 ---
 

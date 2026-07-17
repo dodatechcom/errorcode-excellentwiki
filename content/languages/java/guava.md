@@ -4,7 +4,6 @@ description: "Fix Guava Preconditions check failures. Handle IllegalArgumentExce
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["guava", "google", "preconditions", "check", "validation"]
 weight: 5
 ---
 

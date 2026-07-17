@@ -4,7 +4,6 @@ description: "Fix macOS AirDrop errors: person could not be received, no one nea
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["airdrop", "bluetooth", "wi-fi", "transfer", "nearby-sharing"]
 weight: 5
 ---
 

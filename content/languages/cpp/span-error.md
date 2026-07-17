@@ -4,7 +4,6 @@ description: "Fix C++ std::span errors including out-of-bounds access, dangling 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["span", "bounds", "view", "c++20"]
 weight: 5
 ---
 

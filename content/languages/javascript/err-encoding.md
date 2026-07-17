@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_ENCODING when an invalid or unsupported encoding i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-encoding", "encoding", "nodejs", "buffer", "string"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rust JSON parse error. Learn why serde_json fails with 'expect
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "parse", "serde", "syntax", "trailing-comma"]
 weight: 5
 ---
 

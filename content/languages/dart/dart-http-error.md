@@ -4,7 +4,6 @@ description: "Fix Dart 'ClientException' in HTTP requests. Learn about network e
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "client", "network", "timeout", "request"]
 weight: 5
 ---
 

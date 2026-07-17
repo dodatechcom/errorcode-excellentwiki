@@ -4,7 +4,6 @@ description: "Django view function raises an unhandled exception during request 
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["views", "request", "exception", "http"]
 weight: 5
 ---
 

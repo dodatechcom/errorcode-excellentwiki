@@ -4,7 +4,6 @@ description: "Fix Python StopIteration error when an iterator runs out of items.
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["stopiteration", "iterator", "next", "generator"]
 weight: 110
 ---
 

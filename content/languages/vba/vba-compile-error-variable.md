@@ -4,7 +4,6 @@ description: "Fix VBA compile error when Option Explicit is used and a variable 
 languages: ["vba"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["compile-error", "variable", "not-defined", "option-explicit", "vba"]
 weight: 5
 ---
 

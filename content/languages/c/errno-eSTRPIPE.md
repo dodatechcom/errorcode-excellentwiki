@@ -4,7 +4,6 @@ description: "Fix C ESTRPIPE (Streams pipe error) by handling STREAMS-based pipe
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["estrpipe", "streams-pipe-error", "streams", "pipe", "fifos"]
 weight: 5
 ---
 

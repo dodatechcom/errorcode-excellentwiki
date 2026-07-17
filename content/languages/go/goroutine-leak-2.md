@@ -4,7 +4,6 @@ description: "Fix Go goroutine leaks by ensuring goroutines complete, channels a
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["goroutine", "leak", "concurrency", "memory", "runtime", "channel"]
 weight: 5
 ---
 

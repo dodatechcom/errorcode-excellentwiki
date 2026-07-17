@@ -4,7 +4,6 @@ description: "Fix Linux 'SELinux: access denied' errors. Set correct SELinux con
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["selinux", "access-denied", "security", "context", "audit2allow", "policy"]
 weight: 5
 ---
 

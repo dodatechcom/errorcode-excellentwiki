@@ -4,7 +4,6 @@ description: "Fix Go too many open files error. Close file handles properly, use
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["files", "open", "file-descriptor", "ulimit", "resource"]
 weight: 5
 ---
 

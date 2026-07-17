@@ -4,7 +4,6 @@ description: "Fix C++ std::ios_base::failure when streams throw on badbit or fai
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["ios-failure", "iostream", "stream-exception", "file-io"]
 weight: 5
 ---
 

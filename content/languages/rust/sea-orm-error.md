@@ -4,7 +4,6 @@ description: "Fix SeaORM entity errors. Handle database operations, model querie
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sea-orm", "orm", "database"]
 weight: 5
 ---
 

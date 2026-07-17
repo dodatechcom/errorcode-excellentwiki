@@ -4,7 +4,6 @@ description: "Fix lapin AMQP errors. Handle connection, channel, and message ack
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["lapin", "amqp", "message-queue"]
 weight: 5
 ---
 

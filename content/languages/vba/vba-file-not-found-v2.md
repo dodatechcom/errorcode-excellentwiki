@@ -4,7 +4,6 @@ description: "Fix VBA Run-time error 53 when a file path doesn't exist or the fi
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime-error", "file", "not-found", "path", "directory", "vba"]
 weight: 5
 ---
 

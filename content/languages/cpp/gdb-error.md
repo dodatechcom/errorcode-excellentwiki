@@ -4,7 +4,6 @@ description: "Fix C++ GDB debugging errors. Debug crash and assertion failures w
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["gdb", "debugger", "backtrace", "segfault", "core-dump"]
 weight: 5
 ---
 

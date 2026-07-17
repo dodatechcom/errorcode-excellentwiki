@@ -4,7 +4,6 @@ description: "Fix Scala NoSuchElementException. Learn why calling .next() or .he
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nosuchelement", "iterator", "collection", "empty", "runtime"]
 weight: 5
 ---
 

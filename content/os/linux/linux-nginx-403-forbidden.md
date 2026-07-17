@@ -4,7 +4,6 @@ description: "Fix Linux nginx 403 Forbidden errors. Resolve file permission issu
 platforms: ["linux"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["nginx", "403", "forbidden", "permission", "access-denied"]
 weight: 5
 ---
 

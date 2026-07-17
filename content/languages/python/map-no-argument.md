@@ -4,7 +4,6 @@ description: "Fix Python TypeError: map() missing required argument when calling
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "map", "function", "argument"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux KEYREVOKED (errno 85) Key has been revoked error. Soluti
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["keyrevoked", "key", "errno-85", "revoked", "security"]
 weight: 5
 ---
 

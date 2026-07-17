@@ -4,7 +4,6 @@ description: "Fix Blue Screen ATTEMPTED_EXECUTE_OF_NOEXECUTE_MEMORY error on Win
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "noexecute", "dep", "memory-protection", "stop-code"]
 weight: 5
 ---
 

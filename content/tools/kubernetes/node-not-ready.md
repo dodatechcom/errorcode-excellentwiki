@@ -4,7 +4,6 @@ description: "Fix Kubernetes node not ready error. Diagnose and recover unhealth
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["node-not-ready", "node", "ready", "cluster", "kubernetes"]
 weight: 5
 ---
 

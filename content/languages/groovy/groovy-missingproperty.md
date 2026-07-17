@@ -4,7 +4,6 @@ description: "A MissingPropertyException occurs when Groovy cannot find a proper
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["property", "missing", "groovy", "scope"]
 weight: 5
 ---
 

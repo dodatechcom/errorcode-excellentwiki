@@ -4,7 +4,6 @@ description: "A GHC compilation error occurs when the Glasgow Haskell Compiler e
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ghc", "compilation", "compiler", "haskell"]
 weight: 5
 ---
 

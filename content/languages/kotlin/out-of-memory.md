@@ -4,7 +4,6 @@ description: "Fix Kotlin OutOfMemoryError when the JVM runs out of heap memory. 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["outofmemoryerror", "heap", "memory", "oom", "gc"]
 weight: 5
 ---
 

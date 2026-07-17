@@ -4,7 +4,6 @@ description: "Fix Git SSH permission denied error. Resolve authentication issues
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["permission-denied", "ssh", "publickey", "authentication", "git"]
 weight: 5
 ---
 

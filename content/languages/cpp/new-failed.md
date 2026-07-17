@@ -4,7 +4,6 @@ description: "Fix C++ operator new failure when memory allocation fails. Handle 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["new-failed", "operator-new", "memory", "allocation"]
 weight: 5
 ---
 

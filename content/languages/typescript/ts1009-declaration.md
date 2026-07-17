@@ -4,7 +4,6 @@ description: "Fix TypeScript TS1009: Declaration or statement expected. Resolve 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts1009", "declaration", "statement", "syntax-error", "parser"]
 weight: 5
 ---
 

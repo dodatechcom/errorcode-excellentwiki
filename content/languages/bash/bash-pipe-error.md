@@ -4,7 +4,6 @@ description: "Fix bash pipe errors when commands in a pipeline fail, return unex
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pipe", "pipeline", "broken-pipe", "exit-code", "signal"]
 weight: 5
 ---
 

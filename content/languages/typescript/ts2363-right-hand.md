@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2363: The right-hand side of arithmetic must be a
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2363", "arithmetic", "right-hand-side", "number", "bigint"]
 weight: 5
 ---
 

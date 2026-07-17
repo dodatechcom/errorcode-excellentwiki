@@ -4,7 +4,6 @@ description: "Fix Python TypeError related to memoryview objects. Learn how to u
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "memoryview", "buffer", "bytes"]
 weight: 5
 ---
 

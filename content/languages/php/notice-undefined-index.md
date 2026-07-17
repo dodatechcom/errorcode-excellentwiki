@@ -4,7 +4,6 @@ description: "Fix PHP Notice: Undefined Index error in your scripts with this gu
 languages: ["php"]
 severities: ["notice"]
 error_types: ["runtime"]
-tags: ["undefined-index", "array", "isset", "null-coalescing"]
 weight: 80
 ---
 

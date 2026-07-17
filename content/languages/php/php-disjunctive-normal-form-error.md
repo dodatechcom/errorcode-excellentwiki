@@ -4,7 +4,6 @@ description: "Fix PHP Disjunctive Normal Form (DNF) type syntax errors. Learn PH
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dnf", "disjunctive-normal-form", "type", "php", "intersection"]
 weight: 5
 ---
 

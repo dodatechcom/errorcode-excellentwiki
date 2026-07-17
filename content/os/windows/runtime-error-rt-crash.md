@@ -4,7 +4,6 @@ description: "Fix runtime library crashes on Windows when the C runtime library 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-library", "crt", "startup", "r6024", "r6025", "r6026", "r6027", "r6028"]
 weight: 5
 ---
 

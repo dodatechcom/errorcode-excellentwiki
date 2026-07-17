@@ -4,7 +4,6 @@ description: "Fix PHP Fatal error: Call to undefined function. Learn why PHP can
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fatal-error", "undefined-function", "call-to-undefined", "function"]
 weight: 5
 ---
 

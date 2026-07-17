@@ -4,7 +4,6 @@ description: "Index out of range errors in Pascal occur when accessing array ele
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "range", "array", "bounds", "pascal"]
 weight: 5
 ---
 

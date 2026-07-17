@@ -4,7 +4,6 @@ description: "Fix Swift URLError network errors. Learn why network requests fail
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["urlerror", "network", "urlsession", "swift"]
 weight: 5
 ---
 

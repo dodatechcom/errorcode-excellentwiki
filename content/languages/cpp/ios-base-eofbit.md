@@ -4,7 +4,6 @@ description: "Fix C++ std::ios_base::eofbit end of file. Handle end-of-file cond
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ios-base", "eofbit", "end-of-file", "stream", "eof"]
 weight: 5
 ---
 

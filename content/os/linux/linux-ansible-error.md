@@ -4,7 +4,6 @@ description: "Fix Linux 'ansible: playbook error' and Ansible failures. Resolve 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ansible", "playbook-error", "automation", "configuration-management", "ssh", "module"]
 weight: 5
 ---
 

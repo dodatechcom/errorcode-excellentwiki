@@ -4,7 +4,6 @@ description: "Fix Swift HealthKit errors. Learn why HealthKit operations fail an
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["healthkit", "health", "fitness", "swift"]
 weight: 5
 ---
 

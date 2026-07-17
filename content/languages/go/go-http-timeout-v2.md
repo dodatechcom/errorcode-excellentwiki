@@ -4,7 +4,6 @@ description: "Fix Go context deadline exceeded errors in HTTP clients. Handle ti
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["context", "timeout", "http", "deadline", "client"]
 weight: 5
 ---
 

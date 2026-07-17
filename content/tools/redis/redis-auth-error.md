@@ -4,7 +4,6 @@ description: "Redis client fails to authenticate with the Redis server."
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "authentication", "password", "acl", "credential"]
 weight: 5
 ---
 

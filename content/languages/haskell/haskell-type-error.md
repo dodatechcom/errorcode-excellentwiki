@@ -4,7 +4,6 @@ description: "Haskell compiler raises type errors when expressions don't match e
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "inference", "mismatch", "typeerror", "compilation"]
 weight: 5
 ---
 

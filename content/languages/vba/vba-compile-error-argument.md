@@ -4,7 +4,6 @@ description: "Fix VBA compile error when calling a function or Sub with incorrec
 languages: ["vba"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["compile-error", "argument", "parameter", "function", "vba"]
 weight: 5
 ---
 

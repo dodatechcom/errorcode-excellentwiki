@@ -4,7 +4,6 @@ description: "Fix Rust 'use of moved value' error. Understand ownership transfer
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["move", "ownership", "copy", "clone", "compiler", "value"]
 weight: 5
 ---
 

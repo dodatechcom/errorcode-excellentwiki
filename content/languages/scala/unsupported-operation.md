@@ -4,7 +4,6 @@ description: "An UnsupportedOperationException occurs when an operation is not s
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unsupported", "operation", "collection", "unsupportedoperationexception"]
 weight: 5
 ---
 

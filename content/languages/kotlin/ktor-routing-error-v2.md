@@ -4,7 +4,6 @@ description: "Fix Ktor routing errors when route definitions conflict or overlap
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ktor", "routing", "conflict", "route", "kotlin"]
 weight: 5
 ---
 

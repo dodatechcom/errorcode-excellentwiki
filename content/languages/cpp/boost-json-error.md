@@ -4,7 +4,6 @@ description: "Fix C++ Boost.JSON parse errors. Handle malformed JSON input."
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["boost", "json", "parse", "syntax", "malformed"]
 weight: 5
 ---
 

@@ -6,7 +6,6 @@ replacement_function: "strlcat"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["strcat", "strlcat", "buffer-overflow", "string", "c"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix bash heredoc delimiter errors when the closing delimiter is mi
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["heredoc", "delimiter", "here-document", "bash"]
 weight: 5
 ---
 

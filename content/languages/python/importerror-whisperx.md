@@ -4,7 +4,6 @@ description: "Fix Python ImportError: whisperx not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "whisperx", "module-not-found", "pip", "speech"]
 weight: 5
 ---
 

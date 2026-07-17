@@ -4,7 +4,6 @@ description: "Fix Scala StackOverflowError. Learn about stack depth issues and t
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stackoverflow", "recursion", "stack", "tail-recursive", "stackover"]
 weight: 5
 ---
 

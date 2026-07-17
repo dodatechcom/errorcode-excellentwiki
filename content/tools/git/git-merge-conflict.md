@@ -4,7 +4,6 @@ description: "Fix Git merge conflict errors. Resolve CONFLICT: Merge conflict in
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["merge-conflict", "conflict", "merge", "git"]
 weight: 5
 ---
 

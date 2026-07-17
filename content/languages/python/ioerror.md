@@ -4,7 +4,6 @@ description: "Fix Python IOError when file operations fail. This is an alias for
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ioerror", "io", "file", "oserror", "read", "write"]
 weight: 5
 ---
 

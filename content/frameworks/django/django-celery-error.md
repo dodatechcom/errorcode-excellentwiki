@@ -4,7 +4,6 @@ description: "Fix Django Celery task errors. Resolve Celery worker and task exec
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["celery", "task", "worker", "broker", "django"]
 weight: 5
 ---
 

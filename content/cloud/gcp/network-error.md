@@ -1,10 +1,8 @@
 ---
 title: "GCP Network Error: The Network Has Been Lost"
 description: "Network error: The network has been lost — Fix Google Cloud network connectivity errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "network", "vpc", "connectivity", "firewall", "cloud-run", "gke"]
 weight: 5
 ---
 

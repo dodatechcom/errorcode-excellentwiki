@@ -4,7 +4,6 @@ description: "Fix Perl runtime errors when subroutines are not found or called i
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "subroutine", "undefined", "call", "perl"]
 weight: 5
 ---
 

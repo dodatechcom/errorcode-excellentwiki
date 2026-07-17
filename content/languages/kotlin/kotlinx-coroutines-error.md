@@ -4,7 +4,6 @@ description: "Fix kotlinx.coroutines errors. Learn why coroutine operations fail
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kotlinx-coroutines", "coroutines", "async", "kotlin"]
 weight: 5
 ---
 

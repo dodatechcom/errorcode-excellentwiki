@@ -4,7 +4,6 @@ description: "MongoDB write operation fails due to write concern, validation, or
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "write", "insert", "update", "write-concern"]
 weight: 5
 ---
 

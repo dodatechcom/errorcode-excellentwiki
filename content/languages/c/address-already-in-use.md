@@ -4,7 +4,6 @@ description: "Fix C address already in use (EADDRINUSE). Use SO_REUSEADDR or wai
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eaddrinuse", "address-already-in-use", "bind", "socket", "reuseaddr"]
 weight: 5
 ---
 

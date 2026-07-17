@@ -4,7 +4,6 @@ description: "Fix Rust division by zero panic. Learn why integer division by zer
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "math", "arithmetic", "panic"]
 weight: 5
 ---
 

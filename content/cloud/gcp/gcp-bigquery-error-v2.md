@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP BigQuery — dataset not found"
 description: "Fix BigQuery dataset not found. Resolve dataset access and resource location issues."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "bigquery", "dataset", "not-found", "table", "query", "location"]
 weight: 5
 ---
 

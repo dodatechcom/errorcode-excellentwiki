@@ -4,7 +4,6 @@ description: "Fix Fortran I/O errors when file operations fail, including file n
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["i-o", "file", "open", "read", "write", "fortran"]
 weight: 5
 ---
 

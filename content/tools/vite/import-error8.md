@@ -4,7 +4,6 @@ description: "Fix Vite import resolution errors. Resolve module not found and al
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "import", "resolve", "module", "alias"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_TIMEOUT (1460). Resolve timeout errors, increase
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-1460", "timeout", "wait"]
 weight: 5
 ---
 

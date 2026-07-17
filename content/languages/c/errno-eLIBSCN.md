@@ -4,7 +4,6 @@ description: "Fix C ELIBSCN (.lib section in a.out corrupted) by rebuilding shar
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["elibscn", "lib-section-corrupted", "a-out", "binary-integrity"]
 weight: 5
 ---
 

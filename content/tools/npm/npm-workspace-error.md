@@ -4,7 +4,6 @@ description: "Fix npm workspace link errors. Resolve workspace dependency linkin
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["workspace", "link", "monorepo", "symlink", "npm"]
 weight: 5
 ---
 

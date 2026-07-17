@@ -4,7 +4,6 @@ description: "Fix 'bash: unbound variable' when referencing variables that haven
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unbound-variable", "set-u", "unset", "variable"]
 weight: 5
 ---
 

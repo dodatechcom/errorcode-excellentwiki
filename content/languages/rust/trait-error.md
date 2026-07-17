@@ -4,7 +4,6 @@ description: "Fix Rust 'the trait X is not implemented' errors. Understand trait
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["trait", "not-implemented", "derive", "bound", "generic", "compiler", "display"]
 weight: 5
 ---
 

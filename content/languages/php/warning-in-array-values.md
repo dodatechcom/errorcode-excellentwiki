@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_values() expects exactly 1 argument. Learn 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-values", "array", "arguments"]
 weight: 5
 ---
 

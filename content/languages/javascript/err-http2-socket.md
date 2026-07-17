@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_SOCKET when an HTTP/2 socket operation fails
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-socket", "http2", "socket", "connection", "nodejs"]
 weight: 5
 ---
 

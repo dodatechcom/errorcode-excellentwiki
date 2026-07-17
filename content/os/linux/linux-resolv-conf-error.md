@@ -4,7 +4,6 @@ description: "Fix Linux DNS resolution errors in /etc/resolv.conf. Resolve 'Temp
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["resolv-conf", "dns", "name-resolution", "network", "resolver"]
 weight: 5
 ---
 

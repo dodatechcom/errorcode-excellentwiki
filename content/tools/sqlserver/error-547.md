@@ -4,7 +4,6 @@ description: "Fix SQL Server Error 547 CHECK constraint violations. Resolve data
 tools: ["sqlserver"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlserver", "547", "check", "constraint", "validation"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: snowflake.connector not found or ModuleNot
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "snowflake", "module-not-found", "pip", "data-warehouse"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix JavaScript TypeError: Cannot read properties of undefined. Add
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "cannot-read-properties", "undefined", "null", "optional-chaining"]
 weight: 5
 ---
 

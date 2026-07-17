@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS IAM — Access Denied policy denied"
 description: "Fix AWS IAM Access Denied policy denied. Resolve IAM policy permission issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "iam", "access-denied", "policy", "permission", "denied"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS NSFileError file system errors. Causes and solutions for
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nsfileerror", "file-system", "foundation", "permission", "io-error"]
 weight: 5
 ---
 

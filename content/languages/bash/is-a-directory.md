@@ -4,7 +4,6 @@ description: "Fix 'Is a directory' in Bash when a directory is encountered where
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["is-a-directory", "directory-error", "path-error"]
 weight: 5
 ---
 

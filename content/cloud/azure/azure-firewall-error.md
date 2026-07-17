@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Firewall Error"
 description: "Fix Azure Firewall errors. Resolve firewall configuration and rule issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "firewall", "network", "rules", "security"]
 weight: 5
 ---
 

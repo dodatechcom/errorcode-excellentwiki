@@ -4,7 +4,6 @@ description: "Fix Lua nil errors. Learn why nil access causes crashes and how to
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nil", "null", "access", "lua"]
 weight: 5
 ---
 

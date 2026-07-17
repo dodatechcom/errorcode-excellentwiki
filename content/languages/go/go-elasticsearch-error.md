@@ -4,7 +4,6 @@ description: "Fix Elasticsearch Go client connection errors. Handle cluster conn
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["elasticsearch", "search", "database"]
 weight: 5
 ---
 

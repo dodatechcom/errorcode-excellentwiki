@@ -4,7 +4,6 @@ description: "Fix 'msvcp140.dll not found' error on Windows 10 and 11. Install t
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["msvcp140", "dll", "visual-cpp", "c-plus-plus", "standard-library"]
 weight: 5
 ---
 

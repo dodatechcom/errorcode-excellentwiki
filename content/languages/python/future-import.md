@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when __future__ import is not at the top of
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "future", "import", "first"]
 weight: 5
 ---
 

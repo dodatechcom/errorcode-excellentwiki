@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP IAM Permission Denied"
 description: "Fix GCP IAM permission denied errors. Resolve Google Cloud IAM access issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "iam", "permission", "denied", "access"]
 weight: 5
 ---
 

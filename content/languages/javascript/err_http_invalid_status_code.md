@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP_INVALID_STATUS_CODE when setting an invalid H
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http-invalid-status-code", "http", "status-code", "response", "express", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP error code 128 SIGTERM script termination. Learn to handle
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["error-128", "SIGTERM", "signal", "terminated"]
 weight: 5
 ---
 

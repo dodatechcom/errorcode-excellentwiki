@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Storage Error"
 description: "Fix Azure Storage errors. Resolve Blob, Table, Queue, and File storage issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "storage", "blob", "table", "queue"]
 weight: 5
 ---
 

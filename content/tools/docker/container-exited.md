@@ -4,7 +4,6 @@ description: "Fix Docker container exited error. Diagnose why containers stop an
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["container-exited", "exit-code", "stopped", "restart", "docker"]
 weight: 5
 ---
 

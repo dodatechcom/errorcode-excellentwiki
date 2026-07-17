@@ -4,7 +4,6 @@ description: "Fix Linux 'Read-only file system' errors. Remount filesystems as r
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["read-only", "filesystem", "remount", "mount", "erofs"]
 weight: 5
 ---
 

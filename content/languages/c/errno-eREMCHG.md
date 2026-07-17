@@ -4,7 +4,6 @@ description: "Fix C EREMCHG (Remote address changed) by handling mobile hosts, r
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eremchg", "remote-address-changed", "mobile-host", "reconnection"]
 weight: 5
 ---
 

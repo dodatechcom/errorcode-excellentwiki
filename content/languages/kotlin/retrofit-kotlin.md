@@ -4,7 +4,6 @@ description: "Fix Retrofit errors in Kotlin. Learn why Retrofit requests fail an
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["retrofit", "http", "api", "kotlin"]
 weight: 5
 ---
 

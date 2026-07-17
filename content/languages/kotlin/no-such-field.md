@@ -4,7 +4,6 @@ description: "Fix Kotlin NoSuchFieldException when accessing a field via reflect
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nosuchfieldexception", "reflection", "field", "property"]
 weight: 5
 ---
 

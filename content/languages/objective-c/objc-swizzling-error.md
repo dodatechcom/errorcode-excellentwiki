@@ -4,7 +4,6 @@ description: "Fix Objective-C method swizzling errors and runtime method replace
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "method-swizzling", "runtime"]
 weight: 5
 ---
 

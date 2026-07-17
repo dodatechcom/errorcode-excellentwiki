@@ -4,7 +4,6 @@ description: "Flask-Babel raises errors when internationalization or translation
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["babel", "i18n", "translation", "locale", "flask"]
 weight: 5
 ---
 

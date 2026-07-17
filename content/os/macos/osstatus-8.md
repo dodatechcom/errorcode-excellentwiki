@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -66 (osLogicError). Resolve logic errors in Cor
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["oslogicerror", "osstatus-66", "logic-error", "core-services", "carbon", "internal-error"]
 weight: 5
 ---
 

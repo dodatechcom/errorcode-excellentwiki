@@ -4,7 +4,6 @@ description: "Fix Objective-C runtime errors including message-sent-to-deallocat
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "memory-management", "objective-c-runtime"]
 weight: 5
 ---
 

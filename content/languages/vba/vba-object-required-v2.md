@@ -4,7 +4,6 @@ description: "Fix VBA Run-time error 424 when an object is required but a value 
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime-error", "object", "required", "reference", "vba"]
 weight: 5
 ---
 

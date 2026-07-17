@@ -4,7 +4,6 @@ description: "Fix R deprecation warnings when using outdated functions. Learn wh
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["warning"]
-tags: ["deprecated", "warning", "lifecycle", "update", "r"]
 weight: 5
 ---
 

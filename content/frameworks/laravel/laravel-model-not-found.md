@@ -4,7 +4,6 @@ description: "Laravel throws ModelNotFoundException when an Eloquent model is no
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["model", "eloquent", "not-found", "database", "query"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix ActionController::RoutingError in Rails. Learn why routes don'
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["routing-error"]
-tags: ["routing", "actioncontroller", "routes", "rails", "ruby"]
 weight: 5
 ---
 

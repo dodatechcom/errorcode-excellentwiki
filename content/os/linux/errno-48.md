@@ -4,7 +4,6 @@ description: "Fix Linux ENOSR (errno 48) No STREAMS buffers available error. Sol
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOSR", "streams", "errno-48", "buffers"]
 weight: 5
 ---
 

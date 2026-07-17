@@ -4,7 +4,6 @@ description: "Webpack compilation fails during module building."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "build", "compilation", "module", "bundler"]
 weight: 5
 ---
 

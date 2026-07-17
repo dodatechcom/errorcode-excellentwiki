@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Functions — host not started"
 description: "Fix Azure Functions host not started. Resolve Functions host startup and initialization errors."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "functions", "host", "not-started", "runtime", "cold-start"]
 weight: 5
 ---
 

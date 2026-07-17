@@ -4,7 +4,6 @@ description: "Fix Linux EFBIG (errno 27) File too large error. Solutions for fil
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enFBIG", "file", "errno-27", "size"]
 weight: 5
 ---
 

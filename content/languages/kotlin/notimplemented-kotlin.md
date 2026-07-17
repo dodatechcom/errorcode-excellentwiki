@@ -4,7 +4,6 @@ description: "Fix Kotlin NotImplementedError when calling unimplemented function
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["notimplementederror", "abstract", "interface", "placeholder", "kotlin"]
 weight: 5
 ---
 

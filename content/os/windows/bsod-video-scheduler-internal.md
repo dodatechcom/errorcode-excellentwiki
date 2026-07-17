@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_SCHEDULER_INTERNAL_ERROR stop code 0x119 on 
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "video-scheduler", "gpu", "display", "stop-0x119"]
 weight: 5
 ---
 

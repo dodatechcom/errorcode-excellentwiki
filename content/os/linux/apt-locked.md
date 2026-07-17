@@ -4,7 +4,6 @@ description: "Fix Linux 'Unable to acquire the dpkg frontend lock' error. Remove
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["apt", "dpkg", "frontend-lock", "lock", "package-manager"]
 weight: 5
 ---
 

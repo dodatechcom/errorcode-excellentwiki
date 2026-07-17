@@ -4,7 +4,6 @@ description: "Fix C ECONNABORTED (Connection aborted) by handling peer aborts, i
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["econnaborted", "connection-aborted", "tcp", "peer-abort", "reconnection"]
 weight: 5
 ---
 

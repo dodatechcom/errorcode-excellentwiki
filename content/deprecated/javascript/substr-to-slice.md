@@ -6,7 +6,6 @@ replacement_function: "slice"
 languages: ["javascript"]
 deprecated_since: "ES2015"
 error_message: "substr is deprecated"
-tags: ["substr", "slice", "substring", "string"]
 weight: 100
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C ENOMEM (Cannot allocate memory) by checking malloc return, a
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enomem", "memory-allocation", "malloc", "out-of-memory"]
 weight: 5
 ---
 

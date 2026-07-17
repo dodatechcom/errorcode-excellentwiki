@@ -4,7 +4,6 @@ description: "An EXC_BAD_ACCESS occurs when accessing memory that has been freed
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["exc-bad-access", "memory", "crash", "objc"]
 weight: 5
 ---
 

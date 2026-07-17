@@ -4,7 +4,6 @@ description: "Fix Scala NoSuchElementException. Learn why accessing a missing ke
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nosuchelement", "map", "key", "access", "collection"]
 weight: 5
 ---
 

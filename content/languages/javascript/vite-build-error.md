@@ -4,7 +4,6 @@ description: "Fix Vite build error when rollup fails to resolve imports. Handle 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "build", "rollup", "import", "bundle", "esm"]
 weight: 5
 ---
 

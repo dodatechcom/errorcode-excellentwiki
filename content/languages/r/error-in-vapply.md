@@ -4,7 +4,6 @@ description: "Fix R 'error in vapply' when return type doesn't match expected ty
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vapply", "type-check", "apply", "return-type"]
 weight: 5
 ---
 

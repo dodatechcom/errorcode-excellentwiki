@@ -4,7 +4,6 @@ description: "Fix Linux EDEADLK (errno 35) Resource deadlock avoided error. Solu
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["edeadlk", "deadlock", "errno-35", "locking", "fcntl"]
 weight: 5
 ---
 

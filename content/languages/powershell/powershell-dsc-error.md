@@ -4,7 +4,6 @@ description: "Fix PowerShell DSC errors when configurations fail to apply, compi
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["DSC", "desired-state", "configuration", "MOF", "compliance"]
 weight: 5
 ---
 

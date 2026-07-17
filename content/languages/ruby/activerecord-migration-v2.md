@@ -4,7 +4,6 @@ description: "Fix ActiveRecord migration errors when running or creating Rails m
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["activerecord", "migration", "database", "rails", "ruby"]
 weight: 5
 ---
 

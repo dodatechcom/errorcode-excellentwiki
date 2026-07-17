@@ -4,7 +4,6 @@ description: "Oracle operation fails because the user does not have the required
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "privileges", "permission", "grants", "ora-01031", "role"]
 weight: 5
 ---
 

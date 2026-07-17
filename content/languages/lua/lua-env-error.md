@@ -4,7 +4,6 @@ description: "Fix Lua environment errors. Learn why setfenv/getfenv fails and ho
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["environment", "setfenv", "scope", "lua"]
 weight: 5
 ---
 

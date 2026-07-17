@@ -4,7 +4,6 @@ description: "Fix C segmentation fault from NULL pointer dereference. Learn to d
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["segfault", "null-pointer", "dereference", "sigsegv", "core-dumped"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_alloc exception when memory allocation fails with
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-alloc", "memory", "allocation", "new"]
 weight: 50
 ---
 

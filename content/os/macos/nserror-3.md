@@ -4,7 +4,6 @@ description: "Fix macOS NSFileReadNoPermission (NSCocoaErrorDomain Code 257). Re
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilereadnopermission", "nscocoaerrordomain", "code-257", "file-read", "permission-denied", "cocoa", "foundation"]
 weight: 5
 ---
 

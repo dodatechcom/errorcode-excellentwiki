@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x80240017 (not applicable to this comput
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["windows-update", "0x80240017", "not-applicable", "compatibility", "wsus"]
 weight: 5
 ---
 

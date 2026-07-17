@@ -4,7 +4,6 @@ description: "Fix Java NoSuchFieldError by recompiling all dependent classes, re
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nosuchfielderror", "field", "linkage", "classpath", "resolution"]
 weight: 5
 ---
 

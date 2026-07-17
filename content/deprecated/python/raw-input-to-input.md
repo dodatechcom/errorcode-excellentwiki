@@ -7,7 +7,6 @@ languages: ["python"]
 deprecated_since: "Python 3.0"
 removed_in: "Python 3.0"
 error_message: "NameError: name 'raw_input' is not defined"
-tags: ["raw_input", "input", "python2", "python3"]
 weight: 70
 ---
 

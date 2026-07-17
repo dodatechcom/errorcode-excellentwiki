@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_LOGON_FAILURE (1326). Resolve authentication fai
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-1326", "logon-failure", "authentication"]
 weight: 5
 ---
 

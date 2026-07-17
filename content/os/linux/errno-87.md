@@ -4,7 +4,6 @@ description: "Fix Linux EOWNERDEAD (errno 87) Owner died error. Solutions for ro
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eownerdead", "mutex", "errno-87", "robust", "recovery"]
 weight: 5
 ---
 

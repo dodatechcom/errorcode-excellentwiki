@@ -4,7 +4,6 @@ description: "Fix PHP named argument errors. Learn how PHP 8.0 named arguments w
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["named-arguments", "php", "syntax", "parameters"]
 weight: 5
 ---
 

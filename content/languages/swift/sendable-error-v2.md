@@ -4,7 +4,6 @@ description: "Fix Swift Sendable protocol warnings when accessing shared mutable
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sendable", "concurrency", "thread-safety", "actor", "swift"]
 weight: 5
 ---
 

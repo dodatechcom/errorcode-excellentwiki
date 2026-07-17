@@ -4,7 +4,6 @@ description: "Fix Blue Screen NTFS_FILE_SYSTEM error on Windows 10 and 11. Resol
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "ntfs", "file-system", "disk", "storage"]
 weight: 5
 ---
 

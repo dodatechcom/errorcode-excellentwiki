@@ -4,7 +4,6 @@ description: "Fix TypeORM EntityNotFoundError when querying entities that don't 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["typeorm", "database", "orm", "entity", "postgresql"]
 weight: 5
 ---
 

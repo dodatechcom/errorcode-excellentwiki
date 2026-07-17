@@ -4,7 +4,6 @@ description: "Fix bash unary operator expected errors when test expressions are 
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unary-operator", "test", "-z", "-n", "bash"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_TDR_FAILURE stop code 0x116 caused by dxgkrn
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "video-tdr", "dxgkrnl", "directx", "gpu", "stop-0x116"]
 weight: 5
 ---
 

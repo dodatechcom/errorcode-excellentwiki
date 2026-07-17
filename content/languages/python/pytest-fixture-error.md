@@ -4,7 +4,6 @@ description: "Fix Pytest fixture errors. Resolve fixture not found, scope mismat
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pytest", "fixture", "testing", "conftest", "scope"]
 weight: 5
 ---
 

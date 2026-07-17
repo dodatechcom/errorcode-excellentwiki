@@ -4,7 +4,6 @@ description: "Fix 'Undefined function or variable' when MATLAB cannot find a fun
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undefined", "variable", "function", "not-found", "matlab"]
 weight: 5
 ---
 

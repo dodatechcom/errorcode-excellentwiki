@@ -6,7 +6,6 @@ replacement_function: "proper error handling"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["abort", "error-handling", "crash", "debug", "c"]
 weight: 5
 ---
 

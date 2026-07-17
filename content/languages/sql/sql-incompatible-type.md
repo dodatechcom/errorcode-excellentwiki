@@ -4,7 +4,6 @@ description: "Fix 'Incompatible type comparison' when comparing values of differ
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type-comparison", "incompatible", "collation", "implicit-conversion"]
 weight: 5
 ---
 

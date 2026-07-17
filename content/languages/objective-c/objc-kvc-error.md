@@ -4,7 +4,6 @@ description: "Fix Objective-C Key-Value Coding errors including undefined keys a
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "kvc", "key-value-coding"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix AirDrop not working on Mac when you can't send or receive file
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["airdrop", "file-transfer", "bluetooth", "wifi", "nearby"]
 weight: 5
 ---
 

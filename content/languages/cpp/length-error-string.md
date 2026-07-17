@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error from string exceeding maximum length. Pr
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["length-error", "string", "max-size", "too-long", "capacity"]
 weight: 5
 ---
 

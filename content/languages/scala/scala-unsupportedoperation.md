@@ -4,7 +4,6 @@ description: "Fix Scala UnsupportedOperationException. Learn about immutable col
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unsupported", "operation", "collection", "immutable", "mutable"]
 weight: 5
 ---
 

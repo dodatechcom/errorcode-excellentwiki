@@ -4,7 +4,6 @@ description: "Fix Go type assertion panic: interface {} is X, not Y. Use comma-o
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type-assertion", "interface", "comma-ok", "panic", "type-switch"]
 weight: 5
 ---
 

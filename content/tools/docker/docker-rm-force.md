@@ -4,7 +4,6 @@ description: "Fix Docker cannot remove container resource busy error. Resolve st
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["docker-rm", "resource-busy", "container", "remove", "force"]
 weight: 5
 ---
 

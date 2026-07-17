@@ -4,7 +4,6 @@ description: "Spring Batch throws JobExecutionException when a batch job fails d
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["batch", "job", "chunk", "reader", "writer"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "systemd service unit fails to start with error code."
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "unit", "start", "failed", "service"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux EIDSEQ (errno 43) Identifier removed error. Solutions fo
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enIDSEQ", "identifier", "errno-43", "ipc"]
 weight: 5
 ---
 

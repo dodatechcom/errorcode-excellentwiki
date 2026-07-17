@@ -4,7 +4,6 @@ description: "Fix ResourceAccessException when RestTemplate connection or read t
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "rest-template", "timeout", "connection", "resource-access"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes OOMKilled errors. Learn why containers are killed f
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["oomkilled", "memory", "resource-limits", "container", "eviction"]
 weight: 5
 ---
 

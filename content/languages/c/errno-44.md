@@ -4,7 +4,6 @@ description: "Fix C errno 44 ERMSR (No STREAMS resources) by reducing STREAMS us
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ermsr", "errno-44", "streams", "resources", "no-resources"]
 weight: 5
 ---
 

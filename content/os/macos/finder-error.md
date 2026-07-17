@@ -4,7 +4,6 @@ description: "Fix macOS Finder error: 'The operation can't be completed.' Resolv
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["finder", "operation-not-completed", "file-manager", "copy", "move", "delete"]
 weight: 5
 ---
 

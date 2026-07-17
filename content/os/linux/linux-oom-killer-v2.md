@@ -4,7 +4,6 @@ description: "Fix Linux 'Out of memory: Kill process' errors. Diagnose OOM kille
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["runtime-error"]
-tags: ["oom-killer", "kill-process", "out-of-memory", "memory-pressure", "swap"]
 weight: 5
 ---
 

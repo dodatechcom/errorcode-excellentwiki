@@ -4,7 +4,6 @@ description: "Fix Python BrokenPipeError when writing to a pipe or socket that t
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["brokenpipeerror", "pipe", "socket", "network", "signal"]
 weight: 5
 ---
 

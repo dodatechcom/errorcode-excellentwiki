@@ -4,7 +4,6 @@ description: "Fix C++ std::bind issues including argument mismatch, placeholder 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["std-bind", "bind", "functional", "placeholder"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Laravel throws QueryException when a database migration fails due 
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["migration", "database", "query-exception", "schema", "eloquent"]
 weight: 5
 ---
 

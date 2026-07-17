@@ -4,7 +4,6 @@ description: "Fix C errno 12 ENOMEM (Cannot allocate memory) by checking malloc 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enomem", "errno-12", "memory-allocation", "malloc", "out-of-memory"]
 weight: 5
 ---
 

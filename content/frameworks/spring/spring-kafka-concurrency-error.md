@@ -4,7 +4,6 @@ description: "Spring Kafka throws IllegalContainerGroupIdException when the cons
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kafka", "consumer-group", "concurrency", "spring-kafka"]
 weight: 5
 ---
 

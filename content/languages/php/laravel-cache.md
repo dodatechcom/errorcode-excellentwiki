@@ -4,7 +4,6 @@ description: "Fix cache store not found errors in Laravel. Handle driver configu
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "cache", "store"]
 weight: 5
 ---
 

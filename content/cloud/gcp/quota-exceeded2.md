@@ -1,10 +1,8 @@
 ---
 title: "GCP Quota Exceeded: Quota Exceeded for Quota"
 description: "Quota exceeded: Quota exceeded for quota — Fix Google Cloud resource quota limits."
-cloud: ["gcp"]
 error-types: ["quota-error"]
 severities: ["error"]
-tags: ["gcp", "quota", "limit", "compute", "cpus", "resource", "exceeded"]
 weight: 5
 ---
 

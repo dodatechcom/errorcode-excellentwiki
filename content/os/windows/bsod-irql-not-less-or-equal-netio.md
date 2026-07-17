@@ -4,7 +4,6 @@ description: "Fix Blue Screen IRQL_NOT_LESS_OR_EQUAL caused by NETIO.SYS on Wind
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "netio", "network", "irql", "driver"]
 weight: 5
 ---
 

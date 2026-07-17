@@ -4,7 +4,6 @@ description: "Fix R 'cannot coerce type' error when type conversion fails. Learn
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type-error", "coercion", "conversion", "type-mismatch", "r"]
 weight: 5
 ---
 

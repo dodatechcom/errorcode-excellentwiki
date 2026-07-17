@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_ASSERTION when an assertion expression evaluates t
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-assertion", "assertion", "nodejs", "validation", "runtime"]
 weight: 5
 ---
 

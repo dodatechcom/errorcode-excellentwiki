@@ -4,7 +4,6 @@ description: "Fix rdkafka Kafka errors. Handle broker connectivity, consumer gro
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rdkafka", "kafka", "message-queue"]
 weight: 5
 ---
 

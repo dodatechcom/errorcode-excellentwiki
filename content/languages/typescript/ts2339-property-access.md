@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2339: Property 'X' is a type-only import. Use imp
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2339", "type-only", "import", "property-access", "verbatim-module-syntax"]
 weight: 5
 ---
 

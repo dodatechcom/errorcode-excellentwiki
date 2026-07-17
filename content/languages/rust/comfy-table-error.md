@@ -4,7 +4,6 @@ description: "Fix comfy-table errors. Handle table construction, styling, and co
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["comfy-table", "terminal", "table"]
 weight: 5
 ---
 

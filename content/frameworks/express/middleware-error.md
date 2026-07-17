@@ -4,7 +4,6 @@ description: "Express raises this TypeError when a value used as middleware or a
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["middleware", "routes", "typescript", "node"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix integer divide by zero runtime errors on Windows. Resolve R600
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["divide-by-zero", "integer", "r6003", "runtime-error", "arithmetic"]
 weight: 5
 ---
 

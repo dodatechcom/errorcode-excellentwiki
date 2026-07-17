@@ -4,7 +4,6 @@ description: "Fix ResponseStatusException 502 Bad Gateway in Spring Cloud Gatewa
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-cloud", "gateway", "502", "bad-gateway", "load-balancer"]
 weight: 5
 ---
 

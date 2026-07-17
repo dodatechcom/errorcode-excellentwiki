@@ -4,7 +4,6 @@ description: "Fix sha2 hash errors. Handle algorithm selection, input processing
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sha2", "hash", "crypto"]
 weight: 5
 ---
 

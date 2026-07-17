@@ -4,7 +4,6 @@ description: "Fix RestTemplate timeout errors. Configure connection and read tim
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["resttemplate", "http-client", "timeout", "network", "spring"]
 weight: 5
 ---
 

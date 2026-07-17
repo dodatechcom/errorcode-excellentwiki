@@ -4,7 +4,6 @@ description: "Flutter Desktop fails to manage application windows due to platfor
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "desktop", "window", "linux", "macos", "windows", "manager"]
 weight: 5
 ---
 

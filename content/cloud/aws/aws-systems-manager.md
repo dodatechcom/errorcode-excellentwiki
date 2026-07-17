@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS Systems Manager Error"
 description: "Fix AWS Systems Manager errors. Resolve SSM parameter and patch issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "systems-manager", "ssm", "parameter-store", "patch"]
 weight: 5
 ---
 

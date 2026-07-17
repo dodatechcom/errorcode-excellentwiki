@@ -4,7 +4,6 @@ description: "Fix Groovy closure errors when closures fail to execute, have scop
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["closure", "delegate", "scope", "groovy"]
 weight: 5
 ---
 

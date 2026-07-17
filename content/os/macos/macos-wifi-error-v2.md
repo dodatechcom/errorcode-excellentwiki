@@ -4,7 +4,6 @@ description: "Fix macOS Wi-Fi not connecting, dropping, or showing no Internet. 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["wifi", "network", "connection", "internet", "wireless", "macos"]
 weight: 5
 ---
 

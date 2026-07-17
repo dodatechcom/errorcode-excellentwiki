@@ -4,7 +4,6 @@ description: "Fix Java SQLException: table not found, connection refused, and ot
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["sqlexception", "table-not-found", "connection-refused", "jdbc", "database"]
 weight: 5
 ---
 

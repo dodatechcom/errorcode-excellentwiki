@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when using await outside an async function.
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "await", "async", "coroutine"]
 weight: 5
 ---
 

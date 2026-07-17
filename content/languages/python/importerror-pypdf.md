@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pypdf not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pypdf", "module-not-found", "pip", "pdf"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error by checking container size limits, using
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["length-error", "exception", "vector", "reserve", "container"]
 weight: 62
 ---
 

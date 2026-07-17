@@ -4,7 +4,6 @@ description: "Fix Python DeprecationWarning when using deprecated features. Upda
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["deprecationwarning", "deprecated", "migration", "api", "compatibility"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix R 'error in write' when writing data to files. Check file perm
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["write", "output", "file", "save"]
 weight: 5
 ---
 

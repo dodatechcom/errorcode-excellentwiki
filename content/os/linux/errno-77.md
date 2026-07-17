@@ -4,7 +4,6 @@ description: "Fix Linux EHOSTUNREACH (errno 77) No route to host error. Solution
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ehostunreach", "host", "errno-77", "routing", "unreachable"]
 weight: 5
 ---
 

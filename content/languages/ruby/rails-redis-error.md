@@ -4,7 +4,6 @@ description: "Fix Redis::CannotConnectError in Rails. Learn why Redis connection
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["connection-error"]
-tags: ["redis", "cannot-connect", "connection", "rails", "ruby"]
 weight: 5
 ---
 

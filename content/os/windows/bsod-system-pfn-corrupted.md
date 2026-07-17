@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_PFN_LIST_CORRUPTED on Windows 10 and 11. Re
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "pfn", "memory", "ram", "page-frame"]
 weight: 5
 ---
 

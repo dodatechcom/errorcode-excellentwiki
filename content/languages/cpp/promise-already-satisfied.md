@@ -4,7 +4,6 @@ description: "Fix C++ std::promise already satisfied error when calling set_valu
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["promise", "already-satisfied", "future", "concurrency"]
 weight: 5
 ---
 

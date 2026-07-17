@@ -4,7 +4,6 @@ description: "Fix Start-Transcript errors in PowerShell when session transcripti
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["transcript", "logging", "session", "Start-Transcript", "audit"]
 weight: 5
 ---
 

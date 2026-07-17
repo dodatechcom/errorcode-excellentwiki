@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_PING when an HTTP/2 PING frame operation fai
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-ping", "http2", "ping", "keepalive", "nodejs"]
 weight: 5
 ---
 

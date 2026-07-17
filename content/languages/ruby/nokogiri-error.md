@@ -4,7 +4,6 @@ description: "Fix Nokogiri XML parsing errors. Learn why XML parsing fails and h
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["parse-error"]
-tags: ["nokogiri", "xml", "parse-error", "ruby"]
 weight: 5
 ---
 

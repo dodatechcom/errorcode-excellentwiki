@@ -4,7 +4,6 @@ description: "Fix Kubernetes ConfigMap errors. Resolve mount failures, missing k
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "configmap", "config", "mount", "volume"]
 weight: 5
 ---
 

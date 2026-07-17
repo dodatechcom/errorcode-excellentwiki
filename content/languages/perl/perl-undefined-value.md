@@ -4,7 +4,6 @@ description: "Fix Perl undefined value warnings. Learn why undefined values caus
 languages: ["perl"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["undefined", "undef", "warning", "perl"]
 weight: 5
 ---
 

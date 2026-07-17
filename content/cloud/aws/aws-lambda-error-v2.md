@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS Lambda — Runtime.ExitError"
 description: "Fix AWS Lambda Runtime.ExitError. Resolve Lambda function runtime exit and crash issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "lambda", "runtime", "exit", "error", "function", "crash"]
 weight: 5
 ---
 

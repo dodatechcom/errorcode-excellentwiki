@@ -4,7 +4,6 @@ description: "Fix SSD errors on Mac when the SSD shows S.M.A.R.T. errors, fails 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssd", "nvme", "storage", "smart", "disk-health"]
 weight: 5
 ---
 

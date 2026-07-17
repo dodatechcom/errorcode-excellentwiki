@@ -4,7 +4,6 @@ description: "Gradle Kotlin DSL script fails with unresolved reference errors."
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "kotlin", "dsl", "unresolved", "buildscript"]
 weight: 5
 ---
 

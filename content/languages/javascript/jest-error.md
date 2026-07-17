@@ -4,7 +4,6 @@ description: "Fix Jest test failures and assertion errors. Handle snapshot misma
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jest", "testing", "assertion"]
 weight: 5
 ---
 

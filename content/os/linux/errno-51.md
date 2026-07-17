@@ -4,7 +4,6 @@ description: "Fix Linux ENOPKG (errno 51) No package found error. Solutions for 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enopkg", "package", "errno-51", "dependency"]
 weight: 5
 ---
 

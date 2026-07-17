@@ -4,7 +4,6 @@ description: "Fix Warp filter errors. Handle filter composition, rejection handl
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warp", "web", "filter"]
 weight: 5
 ---
 

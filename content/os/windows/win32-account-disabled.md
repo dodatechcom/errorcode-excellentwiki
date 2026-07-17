@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_ACCOUNT_DISABLED (1331). Enable disabled user ac
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-1331", "account-disabled", "account"]
 weight: 5
 ---
 

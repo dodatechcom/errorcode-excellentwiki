@@ -4,7 +4,6 @@ description: "Fix 'Recursive CTE maximum recursion exceeded' when a CTE recursio
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["recursive-cte", "recursion", "common-table-expression", "hierarchy"]
 weight: 5
 ---
 

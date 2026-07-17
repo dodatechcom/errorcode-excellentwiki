@@ -4,7 +4,6 @@ description: "Fix Go OAuth2 token expired errors. Handle token refresh, credenti
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["oauth2", "token", "auth"]
 weight: 5
 ---
 

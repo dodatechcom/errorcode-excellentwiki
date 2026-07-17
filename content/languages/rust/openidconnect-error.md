@@ -4,7 +4,6 @@ description: "Fix OpenID Connect discovery errors. Handle provider metadata, JWK
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["openidconnect", "oidc", "auth"]
 weight: 5
 ---
 

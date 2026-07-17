@@ -4,7 +4,6 @@ description: "Fix Kotlin inline class errors. Learn why inline classes fail and 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["inline-class", "value-class", "wrapper", "kotlin"]
 weight: 5
 ---
 

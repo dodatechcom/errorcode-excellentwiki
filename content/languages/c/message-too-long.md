@@ -4,7 +4,6 @@ description: "Fix C message too long (EMSGSIZE). Split large messages or increas
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["emsgsize", "message-too-long", "socket", "buffer", "errno"]
 weight: 5
 ---
 

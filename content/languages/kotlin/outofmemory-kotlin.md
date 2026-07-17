@@ -4,7 +4,6 @@ description: "Fix Kotlin OutOfMemoryError when heap memory is exhausted. Learn h
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["outofmemoryerror", "heap-memory", "memory-leak", "kotlin"]
 weight: 5
 ---
 

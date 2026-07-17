@@ -4,7 +4,6 @@ description: "Express throws this error when you attempt to set response headers
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "response", "headers", "node"]
 weight: 5
 ---
 

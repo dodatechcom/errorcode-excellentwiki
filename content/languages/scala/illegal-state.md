@@ -4,7 +4,6 @@ description: "An IllegalStateException occurs when a method is invoked at an ill
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["illegal", "state", "operation", "illegalstateexception"]
 weight: 5
 ---
 

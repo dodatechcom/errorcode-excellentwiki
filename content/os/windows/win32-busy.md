@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_BUSY (170). Resolve device busy errors, fix reso
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-170", "busy", "device-busy"]
 weight: 5
 ---
 

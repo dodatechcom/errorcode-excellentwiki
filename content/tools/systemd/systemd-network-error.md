@@ -4,7 +4,6 @@ description: "systemd-networkd service fails to manage network interfaces."
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "network", "networkd", "interface", "dhcp"]
 weight: 5
 ---
 

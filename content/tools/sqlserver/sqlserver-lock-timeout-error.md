@@ -4,7 +4,6 @@ description: "SQL Server lock wait exceeds the configured timeout."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "lock", "timeout", "blocking", "wait"]
 weight: 5
 ---
 

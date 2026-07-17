@@ -4,7 +4,6 @@ description: "Fix Nginx 502 Bad Gateway upstream prematurely closed connection. 
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "502", "bad-gateway", "upstream", "connection", "closed"]
 weight: 5
 ---
 

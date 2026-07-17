@@ -4,7 +4,6 @@ description: "Fix fan speed errors on Mac when fans run at full speed constantly
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["fan", "cooling", "thermal", "smc", "temperature"]
 weight: 5
 ---
 

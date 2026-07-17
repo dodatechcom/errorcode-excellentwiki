@@ -4,7 +4,6 @@ description: "Fix Swift file not found errors. Learn why POSIX ENOENT occurs and
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["posix", "file", "not-found", "directory", "filesystem"]
 weight: 5
 ---
 

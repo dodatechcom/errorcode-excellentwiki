@@ -4,7 +4,6 @@ description: "Fix Docker COPY failed error during build. Resolve file not found 
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["build-failed", "copy", "dockerfile", "build", "docker"]
 weight: 5
 ---
 

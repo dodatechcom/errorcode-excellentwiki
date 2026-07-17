@@ -4,7 +4,6 @@ description: "Fix Gorilla Mux route mismatch errors. Handle route patterns, vari
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mux", "router", "web"]
 weight: 5
 ---
 

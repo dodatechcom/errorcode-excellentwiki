@@ -4,7 +4,6 @@ description: "Fix Lua coroutine errors. Learn why coroutine operations fail and 
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["coroutine", "yield", "resume", "lua"]
 weight: 5
 ---
 

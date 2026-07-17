@@ -4,7 +4,6 @@ description: "Fix Blue Screen IRQL_NOT_LESS_OR_EQUAL stop code 0xA caused by ntf
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "irql", "ntfs", "filesystem", "stop-0xa"]
 weight: 5
 ---
 

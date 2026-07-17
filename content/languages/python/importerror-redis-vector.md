@@ -4,7 +4,6 @@ description: "Fix Python ImportError: redis with vector search. Configure Redis 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "redis", "vector-search", "module-not-found", "pip"]
 weight: 5
 ---
 

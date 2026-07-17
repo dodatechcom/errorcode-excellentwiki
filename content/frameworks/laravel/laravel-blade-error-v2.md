@@ -4,7 +4,6 @@ description: "Laravel throws TemplateNotFoundException or compilation errors whe
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["blade", "template", "compilation", "view", "syntax"]
 weight: 5
 ---
 

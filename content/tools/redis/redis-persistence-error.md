@@ -4,7 +4,6 @@ description: "Redis fails to save data to disk (RDB or AOF persistence)."
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "persistence", "rdb", "aof", "snapshot"]
 weight: 5
 ---
 

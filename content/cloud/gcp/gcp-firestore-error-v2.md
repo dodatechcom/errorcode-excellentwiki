@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Firestore — permission denied"
 description: "Fix Firestore permission denied. Resolve Firestore access and IAM issues."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "firestore", "permission", "denied", "access", "database", "security"]
 weight: 5
 ---
 

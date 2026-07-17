@@ -4,7 +4,6 @@ description: "Next.js App Router raises errors when layouts, pages, or loading s
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["app-router", "layout", "page", "routing", "nextjs"]
 weight: 5
 ---
 

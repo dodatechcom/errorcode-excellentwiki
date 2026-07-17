@@ -4,7 +4,6 @@ description: "Maven BUILD FAILURE due to compilation errors in source code."
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "build", "compilation", "compile", "error"]
 weight: 5
 ---
 

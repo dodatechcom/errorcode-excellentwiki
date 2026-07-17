@@ -4,7 +4,6 @@ description: "Spring MVC logs this warning when no controller handler method mat
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-mvc", "routing", "request-mapping", "controllers"]
 weight: 5
 ---
 

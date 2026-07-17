@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure VM — allocation failed"
 description: "Fix Azure VM allocation failed. Resolve VM quota and allocation issues in Azure."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "vm", "allocation", "failed", "quota", "capacity", "sku"]
 weight: 5
 ---
 

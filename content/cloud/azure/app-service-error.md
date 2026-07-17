@@ -1,10 +1,8 @@
 ---
 title: "Azure App Service: The Process Has Exited with Code"
 description: "App Service: The process has exited with code — Fix Azure App Service startup and crash errors."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "app-service", "web-app", "startup", "crash", "exit-code", "kudu"]
 weight: 5
 ---
 

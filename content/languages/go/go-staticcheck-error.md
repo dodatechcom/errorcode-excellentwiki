@@ -4,7 +4,6 @@ description: "Fix Staticcheck analysis errors. Handle lint violations, code qual
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["staticcheck", "linting", "analysis"]
 weight: 5
 ---
 

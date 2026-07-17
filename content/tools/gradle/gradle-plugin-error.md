@@ -4,7 +4,6 @@ description: "Gradle fails to apply a plugin due to version conflicts, missing d
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "plugin", "application", "version", "buildscript"]
 weight: 5
 ---
 

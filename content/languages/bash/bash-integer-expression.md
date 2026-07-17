@@ -4,7 +4,6 @@ description: "Fix 'bash: integer expression expected' when a string is used wher
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["integer", "expression", "number", "comparison", "type"]
 weight: 5
 ---
 

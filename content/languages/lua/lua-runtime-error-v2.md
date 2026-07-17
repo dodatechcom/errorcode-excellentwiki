@@ -4,7 +4,6 @@ description: "Fix Lua runtime errors during function execution. Handle nil acces
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "function", "error", "exception", "lua"]
 weight: 5
 ---
 

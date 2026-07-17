@@ -4,7 +4,6 @@ description: "Flutter throws Navigator pop error when trying to pop a route from
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "navigator", "pop", "navigation", "route", "stack"]
 weight: 5
 ---
 

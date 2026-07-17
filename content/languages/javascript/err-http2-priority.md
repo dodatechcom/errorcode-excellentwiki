@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_PRIORITY when an HTTP/2 stream priority oper
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-priority", "http2", "priority", "stream", "dependency", "nodejs"]
 weight: 5
 ---
 

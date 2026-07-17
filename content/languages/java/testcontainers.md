@@ -4,7 +4,6 @@ description: "Fix Testcontainers container startup failures. Check Docker daemon
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "docker", "containers", "integration-test", "startup"]
 weight: 5
 ---
 

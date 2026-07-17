@@ -4,7 +4,6 @@ description: "Fix readonly class errors in PHP 8.2+. Handle class-level readonly
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "readonly-class", "oop"]
 weight: 5
 ---
 

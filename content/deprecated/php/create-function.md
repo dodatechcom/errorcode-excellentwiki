@@ -7,7 +7,6 @@ languages: ["php"]
 deprecated_since: "PHP 7.2"
 removed_in: "PHP 8.0"
 error_message: "Deprecated: create_function() is deprecated"
-tags: ["create-function", "anonymous", "closure", "lambda"]
 weight: 50
 ---
 

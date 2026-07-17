@@ -4,7 +4,6 @@ description: "Fix assembly out of memory errors when malloc fails to allocate re
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "malloc", "allocation", "heap", "brk", "assembly"]
 weight: 5
 ---
 

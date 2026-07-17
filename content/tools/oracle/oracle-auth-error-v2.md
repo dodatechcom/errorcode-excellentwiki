@@ -4,7 +4,6 @@ description: "Oracle rejects login attempt because the username or password is i
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "auth", "login", "password", "ora-01017", "credentials"]
 weight: 5
 ---
 

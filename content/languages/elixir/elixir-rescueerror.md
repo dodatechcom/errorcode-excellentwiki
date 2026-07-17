@@ -4,7 +4,6 @@ description: "Elixir rescue blocks catch exceptions and handle errors from code 
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rescue", "exception", "try", "catch", "error-handling"]
 weight: 5
 ---
 

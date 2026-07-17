@@ -4,7 +4,6 @@ description: "Fix Playwright browser page crash errors. Handle OOM kills, render
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["playwright", "browser", "testing", "crash", "automation"]
 weight: 5
 ---
 

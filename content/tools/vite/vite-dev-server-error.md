@@ -4,7 +4,6 @@ description: "Vite development server fails to start or serve the application."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "dev-server", "development", "serve", "port"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_PFN_LIST_CORRUPTED stop code 0x1A caused by
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "pfn-list", "memory", "page-frame", "stop-0x1a"]
 weight: 5
 ---
 

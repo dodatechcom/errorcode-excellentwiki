@@ -4,7 +4,6 @@ description: "Fix Rust arithmetic overflow panics. Use checked, wrapping, and sa
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "panic", "arithmetic", "integer", "checked", "wrapping", "saturating"]
 weight: 5
 ---
 

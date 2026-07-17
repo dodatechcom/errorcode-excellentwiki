@@ -4,7 +4,6 @@ description: "Fix R 'error in mapply' when multi-input apply function fails. Che
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mapply", "apply", "multi-input", "vectorized"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix assembly page fault errors when accessing unmapped or protecte
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sigsegv", "page-fault", "memory", "virtual", "mmap", "assembly"]
 weight: 5
 ---
 

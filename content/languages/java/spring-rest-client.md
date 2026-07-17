@@ -4,7 +4,6 @@ description: "Fix ResourceAccessException when Spring REST client times out. Con
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "rest-client", "timeout", "http-client", "resource-access"]
 weight: 5
 ---
 

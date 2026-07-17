@@ -4,7 +4,6 @@ description: "Fix React error boundary catches in component trees. Handle render
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "error-boundary", "component-tree", "recovery", "fallback"]
 weight: 5
 ---
 

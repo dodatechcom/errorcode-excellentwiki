@@ -4,7 +4,6 @@ description: "Fix Git stash pop conflict. Resolve merge conflicts when applying 
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["stash", "pop", "conflict", "merge", "git"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Vite build failure when Rollup encounters errors during produc
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "rollup", "build", "bundle", "production"]
 weight: 5
 ---
 

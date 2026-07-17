@@ -4,7 +4,6 @@ description: "Gradle daemon process fails to start or crashes during build execu
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "daemon", "process", "crash", "startup"]
 weight: 5
 ---
 

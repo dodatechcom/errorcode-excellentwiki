@@ -4,7 +4,6 @@ description: "Fix Haskell ambiguous type variable errors. Add type annotations a
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ambiguous", "type-variable", "annotation", "polymorphic", "haskell"]
 weight: 5
 ---
 

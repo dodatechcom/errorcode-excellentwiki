@@ -4,7 +4,6 @@ description: "Fix JWT (JsonWebToken) errors including invalid signature, expired
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jwt", "jsonwebtoken", "token", "auth", "signature", "expired"]
 weight: 5
 ---
 

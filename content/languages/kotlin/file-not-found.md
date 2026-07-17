@@ -4,7 +4,6 @@ description: "Fix Kotlin FileNotFoundException when a file cannot be found. Veri
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["filenotfoundexception", "file", "path", "read", "write"]
 weight: 5
 ---
 

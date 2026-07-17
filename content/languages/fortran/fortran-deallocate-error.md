@@ -4,7 +4,6 @@ description: "Deallocation errors in Fortran occur when DEALLOCATE fails, often 
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["deallocate", "memory", "pointer", "dangling", "fortran"]
 weight: 5
 ---
 

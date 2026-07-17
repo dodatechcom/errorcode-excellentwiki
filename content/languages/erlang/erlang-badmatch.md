@@ -4,7 +4,6 @@ description: "Erlang raises badmatch when pattern matching fails on the right-ha
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["badmatch", "pattern", "match", "binding", "="]
 weight: 5
 ---
 

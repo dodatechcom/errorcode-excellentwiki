@@ -4,7 +4,6 @@ description: "Fix VBA Excel automation errors including 0x800a03ec, COM automati
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["excel", "automation", "com", "0x800a03ec", "error", "vba"]
 weight: 5
 ---
 

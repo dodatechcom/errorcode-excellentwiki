@@ -4,7 +4,6 @@ description: "Fix C heap corruption. Prevent heap metadata damage from buffer ov
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["heap-corruption", "heap", "metadata", "buffer-overflow", "glibc"]
 weight: 5
 ---
 

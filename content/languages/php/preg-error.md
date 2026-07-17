@@ -4,7 +4,6 @@ description: "Fix PHP PREG compilation failed PCRE error. Learn to resolve regex
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["preg", "regex", "pcre", "pattern", "compilation-failed"]
 weight: 5
 ---
 

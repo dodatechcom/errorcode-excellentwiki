@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Key Vault — ForbiddenByPolicy"
 description: "Fix Azure Key Vault ForbiddenByPolicy. Resolve Key Vault access policy and RBAC issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "key-vault", "forbidden", "policy", "access", "rbac", "secret"]
 weight: 5
 ---
 

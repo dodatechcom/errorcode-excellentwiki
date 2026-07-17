@@ -4,7 +4,6 @@ description: "Fix Socket.IO connection errors, authentication failures, and real
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["socketio", "websocket", "realtime", "connection", "namespace"]
 weight: 5
 ---
 

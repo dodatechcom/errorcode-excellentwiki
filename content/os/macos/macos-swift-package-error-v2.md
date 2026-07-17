@@ -4,7 +4,6 @@ description: "Fix Swift Package Manager errors when SPM fails to resolve depende
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["swift", "package-manager", "spm", "dependency", "resolving", "macos"]
 weight: 5
 ---
 

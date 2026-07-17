@@ -4,7 +4,6 @@ description: "Fix 'Not unique table or alias in query' when the same table appea
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["alias", "unique-table", "self-join", "ambiguous-reference"]
 weight: 5
 ---
 

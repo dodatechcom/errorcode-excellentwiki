@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error when mathematical functions receive inpu
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["domain-error", "math", "domain", "exception"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS Wi-Fi and AirPort errors. Causes and solutions for wirel
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["wifi", "airport", "wireless", "network", "airdrop"]
 weight: 5
 ---
 

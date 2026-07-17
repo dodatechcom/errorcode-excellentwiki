@@ -4,7 +4,6 @@ description: "Fix Go index out of range panic when accessing slices, arrays, or 
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["index", "range", "slice", "array", "panic", "runtime"]
 weight: 5
 ---
 

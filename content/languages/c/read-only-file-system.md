@@ -4,7 +4,6 @@ description: "Fix C read-only file system (EROFS). Mount filesystem as read-writ
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["erofs", "read-only-file-system", "mount", "filesystem", "errno"]
 weight: 5
 ---
 

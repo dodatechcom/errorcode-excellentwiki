@@ -4,7 +4,6 @@ description: "Fix Rust address already in use error. Learn why binding to a port
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["address", "in-use", "port", "bind", "socket", "reuse"]
 weight: 5
 ---
 

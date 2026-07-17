@@ -4,7 +4,6 @@ description: "Spring Integration throws MessageHandlingException when a message 
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["integration", "messaging", "channel", "gateway", "handler"]
 weight: 5
 ---
 

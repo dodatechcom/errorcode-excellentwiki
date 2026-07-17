@@ -4,7 +4,6 @@ description: "Fix Multer file upload errors. Handle file size limits, type valid
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["multer", "upload", "file"]
 weight: 5
 ---
 

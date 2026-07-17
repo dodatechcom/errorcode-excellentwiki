@@ -4,7 +4,6 @@ description: "Fix Blue Screen CRITICAL_PROCESS_DIED stop code 0xEF caused by sto
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "critical-process-died", "storport", "storage", "stop-0xef"]
 weight: 5
 ---
 

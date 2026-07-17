@@ -4,7 +4,6 @@ description: "Fix Groovy XmlSlurper parse errors when parsing malformed XML. Han
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["xml", "parse", "xmlslurper", "malformed", "groovy"]
 weight: 5
 ---
 

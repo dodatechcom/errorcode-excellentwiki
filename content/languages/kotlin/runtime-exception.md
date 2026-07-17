@@ -4,7 +4,6 @@ description: "Fix Kotlin RuntimeException for unexpected runtime failures. Debug
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtimeexception", "exception", "error", "debug"]
 weight: 5
 ---
 

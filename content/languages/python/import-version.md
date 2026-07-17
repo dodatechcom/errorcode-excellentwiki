@@ -4,7 +4,6 @@ description: "Fix Python ImportError when trying to import a specific name that 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["importerror", "import", "name", "module"]
 weight: 5
 ---
 

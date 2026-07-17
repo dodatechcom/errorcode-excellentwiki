@@ -4,7 +4,6 @@ description: "Fix Git detached HEAD state. Learn what detached HEAD means, how t
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["detached-head", "head", "checkout", "branch"]
 weight: 5
 ---
 

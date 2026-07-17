@@ -4,7 +4,6 @@ description: "An IndexOutOfRangeException occurs when accessing an array or coll
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "out-of-range", "array", "indexoutofrangeexception"]
 weight: 5
 ---
 

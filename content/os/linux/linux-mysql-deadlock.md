@@ -4,7 +4,6 @@ description: "Fix Linux MySQL 'Deadlock found when trying to get lock' errors. R
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["mysql", "deadlock", "lock", "innodb", "transaction", "database"]
 weight: 5
 ---
 

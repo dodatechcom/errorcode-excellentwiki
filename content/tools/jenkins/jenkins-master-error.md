@@ -4,7 +4,6 @@ description: "Jenkins controller/master node encounters critical errors."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "master", "controller", "critical", "system"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Next.js build fails with ModuleNotFoundError when a required modul
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["build", "module", "import", "compilation", "nextjs"]
 weight: 5
 ---
 

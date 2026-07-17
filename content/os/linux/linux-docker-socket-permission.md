@@ -4,7 +4,6 @@ description: "Fix 'permission denied' on docker.sock on Linux. Resolve Docker so
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "docker.sock", "permission", "socket", "unix", "daemon"]
 weight: 5
 ---
 

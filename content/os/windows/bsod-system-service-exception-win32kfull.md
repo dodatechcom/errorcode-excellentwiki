@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_SERVICE_EXCEPTION caused by win32kfull.sys 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "system-service-exception", "win32kfull", "graphics", "kernel"]
 weight: 5
 ---
 

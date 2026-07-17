@@ -4,7 +4,6 @@ description: "Fix 'UnauthorizedAccess' when PowerShell lacks permission to perfo
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["UnauthorizedAccess", "permission", "access-denied"]
 weight: 5
 ---
 

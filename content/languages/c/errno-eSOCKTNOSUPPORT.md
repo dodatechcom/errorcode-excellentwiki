@@ -4,7 +4,6 @@ description: "Fix C ESOCKTNOSUPPORT (Socket type not supported) by checking kern
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["esocktnosupport", "socket-type-not-supported", "socket", "af-inet"]
 weight: 5
 ---
 

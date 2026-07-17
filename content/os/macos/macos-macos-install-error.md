@@ -4,7 +4,6 @@ description: "Fix macOS installation errors when upgrading or fresh installing m
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["macos-install", "upgrade", "fresh-install", "installation-failed"]
 weight: 5
 ---
 

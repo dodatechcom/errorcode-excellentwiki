@@ -4,7 +4,6 @@ description: "Fix Python pickle.PicklingError when serializing objects. Learn wh
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["pickle", "picklingerror", "serialization", "marshal"]
 weight: 5
 ---
 

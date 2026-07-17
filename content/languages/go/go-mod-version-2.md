@@ -4,7 +4,6 @@ description: "Fix Go go.mod requires go >= X error. Update your Go installation,
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["go", "mod", "version", "toolchain", "compatibility", "runtime"]
 weight: 5
 ---
 

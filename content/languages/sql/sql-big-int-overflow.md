@@ -4,7 +4,6 @@ description: "Fix 'BIGINT UNSIGNED value is out of range' when arithmetic exceed
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bigint", "overflow", "unsigned", "arithmetic", "numeric-range"]
 weight: 5
 ---
 

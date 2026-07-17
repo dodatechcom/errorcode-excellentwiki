@@ -4,7 +4,6 @@ description: "Maven fails to download artifacts from a remote repository."
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "repository", "transfer", "network", "remote"]
 weight: 5
 ---
 

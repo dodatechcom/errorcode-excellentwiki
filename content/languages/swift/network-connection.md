@@ -4,7 +4,6 @@ description: "Fix Swift URLError:notConnectedToInternet. Learn how to handle no 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["network", "no-internet", "connectivity", "reachability", "offline"]
 weight: 5
 ---
 

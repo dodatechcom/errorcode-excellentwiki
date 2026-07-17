@@ -4,7 +4,6 @@ description: "Fix npm publish failed error. Resolve authentication, package name
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["publish-error", "publish", "registry", "authentication", "npm"]
 weight: 5
 ---
 

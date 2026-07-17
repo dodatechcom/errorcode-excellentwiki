@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2618: A class may only extend another class or nu
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2618", "extends", "class", "inheritance", "only-class"]
 weight: 5
 ---
 

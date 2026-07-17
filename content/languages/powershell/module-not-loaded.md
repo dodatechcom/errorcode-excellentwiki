@@ -4,7 +4,6 @@ description: "Fix 'ModuleNotFound' when PowerShell cannot find or load a module.
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ModuleNotFound", "module", "not-loaded"]
 weight: 5
 ---
 

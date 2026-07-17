@@ -4,7 +4,6 @@ description: "Fix C errno 28 ENOSPC (No space left on device) by freeing disk sp
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enospc", "errno-28", "disk-full", "no-space", "storage"]
 weight: 5
 ---
 

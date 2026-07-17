@@ -4,7 +4,6 @@ description: "Fix bash while loop redirect errors when file descriptors or pipes
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["while", "loop", "redirect", "pipe", "bash"]
 weight: 5
 ---
 

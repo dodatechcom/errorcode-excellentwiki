@@ -4,7 +4,6 @@ description: "Fix Pydantic validation errors. Define proper field constraints, u
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pydantic", "validation", "model", "schema", "field"]
 weight: 5
 ---
 

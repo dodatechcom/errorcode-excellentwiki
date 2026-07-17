@@ -4,7 +4,6 @@ description: "Fix JavaScript RangeError: Maximum call stack size exceeded. Diagn
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["rangeerror", "maximum-call-stack", "stack-overflow", "recursion", "infinite-loop"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'Registry is write protected' errors on Windows 10 and 11. Rem
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "write-protected", "read-only", "readonly"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'Invalid graphics handle' when trying to access or modify a de
 languages: ["matlab"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["graphics-handle", "figure-error", "invalid-handle"]
 weight: 5
 ---
 

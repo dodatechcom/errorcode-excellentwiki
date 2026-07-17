@@ -4,7 +4,6 @@ description: "Fix VBA Word automation errors when Word documents fail to save, W
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["word", "automation", "document", "save", "com", "vba"]
 weight: 5
 ---
 

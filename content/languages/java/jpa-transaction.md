@@ -4,7 +4,6 @@ description: "Fix UnexpectedRollbackException when a transaction is rolled back 
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jpa", "transaction", "rollback", "spring", "propagation"]
 weight: 5
 ---
 

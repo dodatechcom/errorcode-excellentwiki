@@ -4,7 +4,6 @@ description: "Fix C EOPNOTSUPP (Operation not supported) by checking feature ava
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eopnotsupp", "operation-not-supported", "socket-options", "feature-availability"]
 weight: 5
 ---
 

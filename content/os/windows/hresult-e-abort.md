@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_ABORT (0x80004004) operation aborted error. 
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-abort", "0x80004004", "operation-aborted", "cancelled"]
 weight: 5
 ---
 

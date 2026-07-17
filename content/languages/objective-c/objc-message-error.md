@@ -4,7 +4,6 @@ description: "Fix Objective-C unrecognized-selector and message-sent-to-dealloca
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "memory-management", "message-passing"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Functions — deployment error"
 description: "Fix Cloud Functions deployment error. Resolve function deployment and build failures."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-functions", "deployment", "error", "build", "deploy"]
 weight: 5
 ---
 

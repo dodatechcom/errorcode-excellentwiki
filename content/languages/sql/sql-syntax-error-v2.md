@@ -4,7 +4,6 @@ description: "Fix SQL syntax errors when a query has malformed syntax near an un
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["syntax-error", "unexpected-token", "parse", "sql"]
 weight: 5
 ---
 

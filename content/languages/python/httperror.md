@@ -4,7 +4,6 @@ description: "Fix Python requests.HTTPError, ConnectionError, and TimeoutError. 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["httperror", "connectionerror", "timeouterror", "requests", "network", "http"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Next.js throws an error when a required environment variable is mi
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["env", "environment", "configuration", "next.config"]
 weight: 5
 ---
 

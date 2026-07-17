@@ -4,7 +4,6 @@ description: "Fix Docker volume mount permission denied errors. Resolve containe
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["volume", "mount", "permission", "denied", "docker"]
 weight: 5
 ---
 

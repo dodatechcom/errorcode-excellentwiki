@@ -4,7 +4,6 @@ description: "Fix Perl regex compilation errors. Learn why regex patterns fail t
 languages: ["perl"]
 severities: ["error"]
 error-types: ["syntax-error"]
-tags: ["regex", "compilation", "pattern", "perl"]
 weight: 5
 ---
 

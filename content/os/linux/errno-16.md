@@ -4,7 +4,6 @@ description: "Fix Linux EBUSY (errno 16) Device or Resource Busy error. Find loc
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["ebusy", "errno-16", "device-busy", "resource-busy", "umount"]
 weight: 60
 ---
 

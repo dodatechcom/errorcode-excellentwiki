@@ -4,7 +4,6 @@ description: "Fix C++ std::underflow_error from arithmetic underflow. Prevent lo
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["underflow-error", "arithmetic", "underflow", "numeric", "stdexcept"]
 weight: 5
 ---
 

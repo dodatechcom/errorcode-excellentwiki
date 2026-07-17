@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -2 (dsBusError). Resolve bus errors in Core Ser
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["dsbuserror", "osstatus-2", "bus-error", "core-services", "carbon", "memory-access"]
 weight: 5
 ---
 

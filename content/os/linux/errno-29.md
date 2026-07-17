@@ -4,7 +4,6 @@ description: "Fix Linux ESPIPE (errno 29) Illegal seek error. Solutions for seek
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enSPIPE", "seek", "errno-29", "pipe"]
 weight: 5
 ---
 

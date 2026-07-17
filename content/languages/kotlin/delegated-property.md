@@ -4,7 +4,6 @@ description: "Fix Kotlin delegated property errors. Implement operator functions
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["delegated-property", "delegate", "observable", "vetoable", "lazy"]
 weight: 5
 ---
 

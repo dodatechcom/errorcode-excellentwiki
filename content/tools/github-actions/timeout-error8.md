@@ -4,7 +4,6 @@ description: "Fix GitHub Actions timeout errors. Resolve jobs that exceed the co
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "timeout", "job", "runner", "limit"]
 weight: 5
 ---
 

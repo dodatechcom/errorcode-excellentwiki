@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS SQS Message Send Failed"
 description: "Fix AWS SQS message send failures. Resolve SQS queue issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "sqs", "queue", "message", "send"]
 weight: 5
 ---
 

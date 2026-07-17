@@ -4,7 +4,6 @@ description: "Fix serde_json unexpected end of input errors. Handle truncated JS
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["serde", "json", "parsing", "truncated", "stream"]
 weight: 5
 ---
 

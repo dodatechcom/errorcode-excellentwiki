@@ -4,7 +4,6 @@ description: "Fix esbuild bundling errors. Handle build failures, plugin issues,
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["esbuild", "bundler", "build"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix MATLAB script errors — general runtime errors that occur whe
 languages: ["matlab"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["script-error", "runtime", "execution"]
 weight: 5
 ---
 

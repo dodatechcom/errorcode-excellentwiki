@@ -4,7 +4,6 @@ description: "Fix C '*** stack smashing detected ***' buffer overflow errors. Un
 languages: ["c"]
 severities: ["critical"]
 error-types: ["runtime-error", "memory-error"]
-tags: ["stack-smashing", "buffer-overflow", "stack-canary", "security", "fortify-source"]
 weight: 5
 ---
 

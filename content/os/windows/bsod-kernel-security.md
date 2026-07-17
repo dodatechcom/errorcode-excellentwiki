@@ -4,7 +4,6 @@ description: "Fix Blue Screen KERNEL_SECURITY_CHECK_FAILURE on Windows 10 and 11
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "kernel-security", "security-check", "driver", "integrity"]
 weight: 5
 ---
 

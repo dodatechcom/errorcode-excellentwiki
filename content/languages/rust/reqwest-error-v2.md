@@ -4,7 +4,6 @@ description: "Fix reqwest TLS certificate errors. Handle certificate validation,
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["reqwest", "http", "tls", "certificate", "ssl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "An NSError occurs when an operation fails and provides detailed er
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nserror", "domain", "error", "objc"]
 weight: 5
 ---
 

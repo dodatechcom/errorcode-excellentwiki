@@ -4,7 +4,6 @@ description: "A Vite plugin fails during the build or dev server process."
 tools: ["vite"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["vite", "plugin", "rollup", "transform", "build"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Time Machine backup errors on Mac including 'backup not comple
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["time-machine", "backup", "disk", "restore", "snapshot"]
 weight: 5
 ---
 

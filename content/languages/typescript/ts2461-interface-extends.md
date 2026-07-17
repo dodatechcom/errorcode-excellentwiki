@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2461: Interface 'X' incorrectly extends 'Y'. Fix 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2461", "interface", "extends", "incorrectly-extends", "inheritance"]
 weight: 5
 ---
 

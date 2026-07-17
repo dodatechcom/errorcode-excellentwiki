@@ -4,7 +4,6 @@ description: "Fix Blue Screen MUP_FILE_SYSTEM error on Windows 10 and 11. Update
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "mup-file-system", "network", "stop-code"]
 weight: 5
 ---
 

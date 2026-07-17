@@ -4,7 +4,6 @@ description: "Fix C++ std::logic_error length error. Prevent objects from exceed
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["logic-error", "length", "max-size", "stdexcept", "container"]
 weight: 5
 ---
 

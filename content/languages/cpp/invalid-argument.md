@@ -4,7 +4,6 @@ description: "Fix C++ std::invalid_argument by validating parameters, using prop
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["invalid-argument", "exception", "parameter-validation", "stoi"]
 weight: 58
 ---
 

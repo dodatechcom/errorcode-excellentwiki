@@ -4,7 +4,6 @@ description: "Redis client times out waiting for a response from the server duri
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "timeout", "command", "latency", "slow"]
 weight: 5
 ---
 

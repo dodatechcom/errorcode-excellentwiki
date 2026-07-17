@@ -4,7 +4,6 @@ description: "Fix C EKEYREVOKED (Key has been revoked) by obtaining new keys and
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ekeyrevoked", "key-has-been-revoked", "keyring", "key-revocation", "keyctl"]
 weight: 5
 ---
 

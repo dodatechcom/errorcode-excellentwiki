@@ -4,7 +4,6 @@ description: "Fix Git shallow clone errors. Resolve issues with limited history 
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["shallow-clone", "depth", "history", "fetch", "git"]
 weight: 5
 ---
 

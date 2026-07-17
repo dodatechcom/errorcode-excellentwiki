@@ -4,7 +4,6 @@ description: "Fix Express middleware errors. Resolve middleware execution failur
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["middleware", "error", "next", "handler", "express"]
 weight: 5
 ---
 

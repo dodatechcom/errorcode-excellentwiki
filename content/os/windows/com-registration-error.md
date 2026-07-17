@@ -4,7 +4,6 @@ description: "Fix 'COM registration error' on Windows 10 and 11. Register COM co
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "registration", "regsvr32", "inprocserver"]
 weight: 5
 ---
 

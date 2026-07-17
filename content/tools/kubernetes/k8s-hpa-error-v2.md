@@ -4,7 +4,6 @@ description: "Fix Kubernetes HPA metrics not available. Resolve HorizontalPodAut
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "hpa", "metrics", "autoscaler", "scaling", "horizontal"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "A StackOverflowException occurs when the call stack overflows due 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursion", "stackoverflowexception"]
 weight: 5
 ---
 

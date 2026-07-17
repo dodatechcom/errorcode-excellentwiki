@@ -4,7 +4,6 @@ description: "Fix Ruby NoMemoryError. Handle memory exhaustion in Ruby programs 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["memory"]
-tags: ["no_memory_error", "memory", "oom", "out_of_memory", "gc"]
 weight: 330
 ---
 

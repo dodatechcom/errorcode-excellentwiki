@@ -4,7 +4,6 @@ description: "Fix golang-migrate migration errors. Handle schema changes, versio
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["migrate", "migration", "database"]
 weight: 5
 ---
 

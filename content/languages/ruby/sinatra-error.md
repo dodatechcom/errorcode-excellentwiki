@@ -4,7 +4,6 @@ description: "Fix Sinatra application errors in Ruby. Learn why Sinatra routes f
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sinatra", "web", "route", "ruby"]
 weight: 5
 ---
 

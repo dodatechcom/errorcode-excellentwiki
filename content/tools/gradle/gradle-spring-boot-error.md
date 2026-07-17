@@ -4,7 +4,6 @@ description: "Gradle fails with Spring Boot plugin configuration or execution er
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "spring-boot", "plugin", "boot", "configuration"]
 weight: 5
 ---
 

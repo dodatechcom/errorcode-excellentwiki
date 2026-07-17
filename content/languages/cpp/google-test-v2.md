@@ -4,7 +4,6 @@ description: "Fix Google Test assertion failures. Handle EXPECT_EQ, ASSERT_TRUE 
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gtest", "google-test", "testing", "assertion", "unit-test"]
 weight: 5
 ---
 

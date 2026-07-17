@@ -4,7 +4,6 @@ description: "Fix C NULL pointer dereference. Prevent crashes from null pointer 
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["null-pointer", "dereference", "segfault", "sigsegv", "core-dumped"]
 weight: 5
 ---
 

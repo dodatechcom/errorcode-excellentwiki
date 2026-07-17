@@ -4,7 +4,6 @@ description: "Fix PHPUnit test failures. Handle assertion errors, configuration 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["phpunit", "testing", "unit-test"]
 weight: 5
 ---
 

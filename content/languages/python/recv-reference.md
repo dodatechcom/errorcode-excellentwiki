@@ -4,7 +4,6 @@ description: "Fix Python UnboundLocalError when a local variable is referenced b
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unboundlocalerror", "local", "variable", "scope", "reference"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Jenkins credential not found errors. Resolve credential ID and
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "credentials", "not-found", "secret", "scope"]
 weight: 5
 ---
 

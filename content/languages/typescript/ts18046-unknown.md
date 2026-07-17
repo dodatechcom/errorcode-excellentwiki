@@ -4,7 +4,6 @@ description: "Fix TypeScript TS18046: Variable is of type 'unknown'. Handle unkn
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts18046", "unknown", "type-guard", "assertion", "safety"]
 weight: 5
 ---
 

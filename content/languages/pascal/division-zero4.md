@@ -4,7 +4,6 @@ description: "A division by zero error occurs when attempting to divide an integ
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "arithmetic", "pascal"]
 weight: 5
 ---
 

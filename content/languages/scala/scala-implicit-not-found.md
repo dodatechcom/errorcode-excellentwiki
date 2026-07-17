@@ -4,7 +4,6 @@ description: "Fix Scala 'implicit not found' error. Learn about implicit resolut
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["implicit", "typeclass", "resolution", "evidence", "implicitnotfound"]
 weight: 5
 ---
 

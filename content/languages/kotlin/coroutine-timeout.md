@@ -4,7 +4,6 @@ description: "Fix Kotlin coroutine timeout errors. Increase timeouts, use withTi
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["coroutine-timeout", "timeout", "withTimeout", "delay"]
 weight: 5
 ---
 

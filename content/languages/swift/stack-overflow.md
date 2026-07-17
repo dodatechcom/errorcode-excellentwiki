@@ -4,7 +4,6 @@ description: "Fix Swift stack overflow errors. Learn why infinite recursion and 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stack-overflow", "recursion", "exc-bad-access", "call-stack", "infinite-loop"]
 weight: 5
 ---
 

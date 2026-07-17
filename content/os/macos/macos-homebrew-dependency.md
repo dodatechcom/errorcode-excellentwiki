@@ -4,7 +4,6 @@ description: "Fix Homebrew dependency errors when packages fail to install due t
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["homebrew", "dependency", "formula", "conflict", "brew"]
 weight: 5
 ---
 

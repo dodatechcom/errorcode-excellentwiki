@@ -4,7 +4,6 @@ description: "Fix Python UnicodeEncodeError when encoding strings with ASCII cod
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unicodeencodeerror", "ascii", "encode", "unicode"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C errno 46 ENOSTR (No stream head) by ensuring file descriptor
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enostr", "errno-46", "stream-head", "streams", "not-a-stream"]
 weight: 5
 ---
 

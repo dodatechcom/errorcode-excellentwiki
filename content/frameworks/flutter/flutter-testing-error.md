@@ -4,7 +4,6 @@ description: "Flutter test fails when the test expectation does not match the ac
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "testing", "test", "expectation", "widget-test", "matcher"]
 weight: 5
 ---
 

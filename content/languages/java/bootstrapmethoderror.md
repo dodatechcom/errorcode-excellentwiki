@@ -4,7 +4,6 @@ description: "Fix Java BootstrapMethodError by resolving method handle issues, e
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bootstrapmethoderror", "invokedynamic", "lambdas", "methodhandle", "linkage"]
 weight: 5
 ---
 

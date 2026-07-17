@@ -4,7 +4,6 @@ description: "Fix PHP Enum errors when a case is not handled in a match or switc
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["enum", "enum-case", "match", "php", "exhaustive"]
 weight: 5
 ---
 

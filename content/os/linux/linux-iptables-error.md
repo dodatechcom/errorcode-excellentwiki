@@ -4,7 +4,6 @@ description: "Fix Linux iptables rule application errors. Resolve syntax errors,
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["iptables", "rule-error", "firewall", "netfilter", "network"]
 weight: 5
 ---
 

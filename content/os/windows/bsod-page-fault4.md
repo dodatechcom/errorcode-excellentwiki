@@ -4,7 +4,6 @@ description: "Fix Blue Screen PAGE_FAULT_IN_NONPAGED_AREA stop code 0x50 caused 
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "page-fault", "win32kfull", "graphics", "stop-0x50"]
 weight: 5
 ---
 

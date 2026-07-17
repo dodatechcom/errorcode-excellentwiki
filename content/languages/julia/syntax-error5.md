@@ -4,7 +4,6 @@ description: "A SyntaxError occurs when Julia encounters code that violates the 
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["syntax", "parser", "token", "syntaxerror"]
 weight: 5
 ---
 

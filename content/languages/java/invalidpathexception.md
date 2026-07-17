@@ -4,7 +4,6 @@ description: "Fix Java InvalidPathException by validating file paths, handling p
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["invalidpathexception", "path", "filesystem", "nio", "security"]
 weight: 5
 ---
 

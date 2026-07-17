@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2552: Cannot find name 'X'. Did you mean 'Y'? Fix
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2552", "cannot-find-name", "did-you-mean", "typo", "suggestion"]
 weight: 5
 ---
 

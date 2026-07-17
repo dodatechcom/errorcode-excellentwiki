@@ -4,7 +4,6 @@ description: "Fix Python ImportError: influxdb_client not found or ModuleNotFoun
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "influxdb", "module-not-found", "pip", "time-series"]
 weight: 5
 ---
 

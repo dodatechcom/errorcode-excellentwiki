@@ -4,7 +4,6 @@ description: "Fix keyring credential store errors. Handle platform keyring acces
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["keyring", "credentials", "security"]
 weight: 5
 ---
 

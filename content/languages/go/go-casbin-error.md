@@ -4,7 +4,6 @@ description: "Fix Casbin authorization denied errors. Handle policy evaluation, 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["casbin", "authorization", "rbac"]
 weight: 5
 ---
 

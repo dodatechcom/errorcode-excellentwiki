@@ -4,7 +4,6 @@ description: "Vite fails to load or instantiate a WebAssembly module."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "wasm", "webassembly", "instantiate", "module"]
 weight: 5
 ---
 

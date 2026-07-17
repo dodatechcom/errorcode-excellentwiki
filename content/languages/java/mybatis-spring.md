@@ -4,7 +4,6 @@ description: "Fix Spring Boot MyBatis configuration issues. Configure mapper sca
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mybatis", "spring-boot", "configuration", "mapper", "auto-configuration"]
 weight: 5
 ---
 

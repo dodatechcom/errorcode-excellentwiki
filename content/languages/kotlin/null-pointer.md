@@ -4,7 +4,6 @@ description: "Fix Kotlin NullPointerException when accessing null references. Us
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nullpointerexception", "null", "nullable", "npe"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS ECS — CannotPullContainerError"
 description: "Fix AWS ECS CannotPullContainerError. Resolve ECS container image pull failures."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "ecs", "cannot-pull", "container", "image", "pull", "ecr"]
 weight: 5
 ---
 

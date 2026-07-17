@@ -4,7 +4,6 @@ description: "React Native fails to link a native module during build, causing m
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["native-module", "linking", "autolink", "ios", "android", "pod"]
 weight: 5
 ---
 

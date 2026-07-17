@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2349: This expression is not callable. Resolve fu
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2349", "not-callable", "function-call", "expression"]
 weight: 5
 ---
 

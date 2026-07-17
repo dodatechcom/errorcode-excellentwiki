@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS KMS Key Error"
 description: "Fix AWS KMS key errors. Resolve KMS encryption and key management issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "kms", "key", "encryption", "decrypt"]
 weight: 5
 ---
 

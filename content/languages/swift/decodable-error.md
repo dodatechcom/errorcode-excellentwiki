@@ -4,7 +4,6 @@ description: "Fix Swift Decodable and JSONDecoder errors. Learn how to handle JS
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["decodable", "json-decoding", "json", "codable", "swift"]
 weight: 5
 ---
 

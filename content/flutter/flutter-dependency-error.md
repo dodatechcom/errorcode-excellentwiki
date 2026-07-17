@@ -4,7 +4,6 @@ description: "Flutter throws a dependency resolution error when pub cannot find 
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dependency", "resolution", "version-conflict", "pubspec", "package"]
 weight: 5
 ---
 

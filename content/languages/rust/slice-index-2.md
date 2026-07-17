@@ -4,7 +4,6 @@ description: "Fix Rust slice index out of bounds. Learn why creating a slice wit
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["slice", "index", "bounds", "range", "vec", "panic"]
 weight: 5
 ---
 

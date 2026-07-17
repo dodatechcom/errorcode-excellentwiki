@@ -4,7 +4,6 @@ description: "Fix Windows Update corrupted files errors on Windows 10 and 11. Re
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["windows-update", "corrupt", "corrupted-files", "repair"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Homebrew installation errors on Mac when 'brew install' fails,
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["homebrew", "brew", "package-manager", "installation", "xcode-cli"]
 weight: 5
 ---
 

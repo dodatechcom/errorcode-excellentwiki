@@ -4,7 +4,6 @@ description: "Fix PowerShell background job failures when Start-Job or Invoke-Co
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["job", "Start-Job", "background", "PSJobFailedError", "powershell"]
 weight: 5
 ---
 

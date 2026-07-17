@@ -4,7 +4,6 @@ description: "Fix Docker container OOM killed errors. Resolve out-of-memory issu
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["oom", "killed", "memory", "limit", "docker"]
 weight: 5
 ---
 

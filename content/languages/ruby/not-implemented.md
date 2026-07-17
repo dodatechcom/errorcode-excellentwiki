@@ -4,7 +4,6 @@ description: "Fix Ruby NotImplementedError. Implement abstract methods in subcla
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["not_implemented"]
-tags: ["not_implemented_error", "abstract", "inheritance", "interface"]
 weight: 350
 ---
 

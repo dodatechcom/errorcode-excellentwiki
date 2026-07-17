@@ -4,7 +4,6 @@ description: "Fix Express Multer file upload errors when files are too large, in
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["multer", "upload", "file", "multipart", "express"]
 weight: 5
 ---
 

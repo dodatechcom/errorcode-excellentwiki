@@ -4,7 +4,6 @@ description: "Fix node-schedule job errors. Handle scheduling failures, timezone
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["node-schedule", "scheduler", "cron"]
 weight: 5
 ---
 

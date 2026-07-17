@@ -4,7 +4,6 @@ description: "Webpack chunk fails to load at runtime, causing application errors
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "chunk", "loading", "runtime", "code-splitting"]
 weight: 5
 ---
 

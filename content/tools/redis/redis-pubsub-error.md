@@ -4,7 +4,6 @@ description: "Redis publish/subscribe messaging encounters errors."
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "pubsub", "publish", "subscribe", "channel"]
 weight: 5
 ---
 

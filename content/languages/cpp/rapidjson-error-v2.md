@@ -4,7 +4,6 @@ description: "Fix RapidJSON SAX parse errors. Handle handler errors, incomplete 
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rapidjson", "json", "sax", "parsing", "handler"]
 weight: 5
 ---
 

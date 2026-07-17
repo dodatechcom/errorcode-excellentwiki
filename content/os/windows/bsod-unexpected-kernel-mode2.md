@@ -4,7 +4,6 @@ description: "Fix Blue Screen UNEXPECTED_KERNEL_MODE_TRAP stop code 0x7F caused 
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "unexpected-kernel-mode", "trap", "whea", "hardware", "stop-0x7f"]
 weight: 5
 ---
 

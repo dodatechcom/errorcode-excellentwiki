@@ -4,7 +4,6 @@ description: "An invalid pointer operation occurs when dereferencing or freeing 
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pointer", "invalid", "memory", "pascal"]
 weight: 5
 ---
 

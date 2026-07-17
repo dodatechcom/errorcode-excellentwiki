@@ -4,7 +4,6 @@ description: "Oracle view fails to compile or query."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "view", "query", "compile", "select"]
 weight: 5
 ---
 

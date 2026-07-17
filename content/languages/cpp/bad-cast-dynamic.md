@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_cast from failed dynamic_cast. Use correct type h
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-cast", "bad_cast", "dynamic-cast", "polymorphism", "type-cast"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'ParseException' when PowerShell cannot parse a script or comm
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ParseException", "parse", "syntax"]
 weight: 5
 ---
 

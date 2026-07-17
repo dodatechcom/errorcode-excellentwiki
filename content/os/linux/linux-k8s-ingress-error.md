@@ -4,7 +4,6 @@ description: "Fix Kubernetes Ingress controller errors. Resolve Ingress routing 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "ingress", "nginx", "traefik", "tls", "routing"]
 weight: 5
 ---
 

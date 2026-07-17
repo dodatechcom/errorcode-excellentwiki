@@ -4,7 +4,6 @@ description: "Fix Gradle Kotlin DSL errors. Learn why Gradle build scripts fail 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["gradle", "kotlin-dsl", "build", "kotlin"]
 weight: 5
 ---
 

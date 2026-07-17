@@ -4,7 +4,6 @@ description: "Express session middleware fails because the session store or sess
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["session", "cookie", "store", "middleware"]
 weight: 5
 ---
 

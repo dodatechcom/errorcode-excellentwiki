@@ -4,7 +4,6 @@ description: "Fix C++ MemorySanitizer uninitialized memory read errors. Initiali
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["msan", "memory-sanitizer", "uninitialized", "memory", "debug"]
 weight: 5
 ---
 

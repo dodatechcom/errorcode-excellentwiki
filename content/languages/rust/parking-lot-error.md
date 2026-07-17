@@ -4,7 +4,6 @@ description: "Fix parking_lot lock errors. Handle mutex poisoning, deadlock dete
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["parking_lot", "lock", "concurrency"]
 weight: 5
 ---
 

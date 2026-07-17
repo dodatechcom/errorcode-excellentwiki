@@ -4,7 +4,6 @@ description: "Fix Java ServletException and IllegalStateException in servlet app
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["servlet-exception", "illegalstateexception", "servlet", "spring", "web"]
 weight: 5
 ---
 

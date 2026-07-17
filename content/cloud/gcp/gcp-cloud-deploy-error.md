@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Deploy Error"
 description: "Fix GCP Cloud Deploy errors. Resolve Cloud Deploy pipeline and release issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-deploy", "delivery", "pipeline", "release"]
 weight: 5
 ---
 

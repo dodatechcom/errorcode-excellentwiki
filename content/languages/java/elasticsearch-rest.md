@@ -4,7 +4,6 @@ description: "Fix Elasticsearch ResponseException when REST client receives erro
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["elasticsearch", "rest-client", "response-exception", "search", "http"]
 weight: 5
 ---
 

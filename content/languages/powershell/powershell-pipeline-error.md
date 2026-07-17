@@ -4,7 +4,6 @@ description: "Fix PowerShell PipelineStoppedException when a pipeline is forcibl
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pipeline", "PipelineStoppedException", "terminating-error", "stop"]
 weight: 5
 ---
 

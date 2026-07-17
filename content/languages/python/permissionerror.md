@@ -4,7 +4,6 @@ description: "Fix Python PermissionError when accessing files without proper per
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["permissionerror", "permission", "file-access", "chmod"]
 weight: 70
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP E_USER_NOTICE non-fatal notices triggered by user code via
 languages: ["php"]
 severities: ["notice"]
 error-types: ["runtime-error"]
-tags: ["e-user-notice", "user-notice", "trigger-error"]
 weight: 5
 ---
 

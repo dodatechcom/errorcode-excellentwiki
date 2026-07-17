@@ -4,7 +4,6 @@ description: "Fix Linux ENXIO (errno 6) No Such Device or Address error. Solutio
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enXIO", "device", "errno-6", "address"]
 weight: 5
 ---
 

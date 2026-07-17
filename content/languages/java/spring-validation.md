@@ -4,7 +4,6 @@ description: "Fix MethodArgumentNotValidException when @Valid request body fails
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "spring-boot", "validation", "bean-validation", "method-argument-not-valid"]
 weight: 5
 ---
 

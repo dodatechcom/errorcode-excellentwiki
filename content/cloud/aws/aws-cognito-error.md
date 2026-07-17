@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS Cognito Authentication Error"
 description: "Fix AWS Cognito authentication errors. Resolve Cognito user pool issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "cognito", "authentication", "user-pool", "login"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift Core Location errors. Learn about CLError codes, locatio
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["corelocation", "location", "gps", "authorization", "cllocation"]
 weight: 5
 ---
 

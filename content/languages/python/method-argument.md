@@ -4,7 +4,6 @@ description: "Fix Python TypeError related to method argument mismatches. Learn 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "method", "argument", "self"]
 weight: 5
 ---
 

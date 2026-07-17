@@ -4,7 +4,6 @@ description: "Fix Maven repository errors. Resolve dependency resolution and rep
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "repository", "dependency", "resolution", "network"]
 weight: 5
 ---
 

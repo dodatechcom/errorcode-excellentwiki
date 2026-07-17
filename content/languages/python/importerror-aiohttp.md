@@ -4,7 +4,6 @@ description: "Fix Python ImportError: aiohttp not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "aiohttp", "module-not-found", "pip", "async"]
 weight: 5
 ---
 

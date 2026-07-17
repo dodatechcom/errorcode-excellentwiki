@@ -4,7 +4,6 @@ description: "Fix sqlx named query errors. Handle named parameters, struct bindi
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlx", "database", "query"]
 weight: 5
 ---
 

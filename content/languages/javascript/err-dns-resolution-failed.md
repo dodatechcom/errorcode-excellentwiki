@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_DNS_RESOLUTION_FAILED when a domain name cannot be
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-dns-resolution-failed", "dns", "network", "nodejs", "resolution"]
 weight: 5
 ---
 

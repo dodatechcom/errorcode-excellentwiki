@@ -4,7 +4,6 @@ description: "Fix Symfony form validation errors. Handle constraints, custom val
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "form", "validation"]
 weight: 5
 ---
 

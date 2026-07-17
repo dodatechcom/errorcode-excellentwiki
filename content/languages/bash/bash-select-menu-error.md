@@ -4,7 +4,6 @@ description: "Fix bash select command errors when the menu list is empty or the 
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["select", "menu", "interactive", "bash"]
 weight: 5
 ---
 

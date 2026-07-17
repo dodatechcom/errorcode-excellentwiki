@@ -4,7 +4,6 @@ description: "Fix macOS System Integrity Protection (SIP) 'operation not permitt
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["sip", "system-integrity-protection", "csrutil", "rootless", "permission"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Koin dependency injection errors when modules fail to load."
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["koin", "module", "dependency-injection", "kotlin"]
 weight: 5
 ---
 

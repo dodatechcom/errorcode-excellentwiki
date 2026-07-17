@@ -4,7 +4,6 @@ description: "Fix Ktor routing errors. Learn why Ktor routes fail and how to con
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["routing-error"]
-tags: ["ktor", "routing", "server", "kotlin"]
 weight: 5
 ---
 

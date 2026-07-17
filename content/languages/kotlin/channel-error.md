@@ -4,7 +4,6 @@ description: "Fix Kotlin Channel errors when sending or receiving. Learn why Cha
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["channel", "coroutine", "communication", "kotlin"]
 weight: 5
 ---
 

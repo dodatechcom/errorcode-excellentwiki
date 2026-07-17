@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error from allocator exceeding maximum size. U
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["length-error", "allocator", "max-size", "memory", "container"]
 weight: 5
 ---
 

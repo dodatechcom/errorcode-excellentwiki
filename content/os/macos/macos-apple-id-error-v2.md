@@ -4,7 +4,6 @@ description: "Fix Apple ID verification errors on macOS when sign-in fails, two-
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["apple-id", "icloud", "authentication", "verification", "sign-in", "macos"]
 weight: 5
 ---
 

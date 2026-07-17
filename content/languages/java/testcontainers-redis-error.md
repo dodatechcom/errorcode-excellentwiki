@@ -4,7 +4,6 @@ description: "Fix Testcontainers Redis container startup failures. Resolve image
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "redis", "docker", "integration-test", "cache"]
 weight: 5
 ---
 

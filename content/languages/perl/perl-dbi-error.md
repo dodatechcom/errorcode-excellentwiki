@@ -4,7 +4,6 @@ description: "Fix Perl DBI database errors. Learn why DBI operations fail and ho
 languages: ["perl"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["dbi", "database", "dbd", "perl"]
 weight: 5
 ---
 

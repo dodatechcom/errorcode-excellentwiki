@@ -4,7 +4,6 @@ description: "Fix Express file upload errors. Resolve Multer and file upload iss
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file-upload", "multer", "multipart", "upload", "express"]
 weight: 5
 ---
 

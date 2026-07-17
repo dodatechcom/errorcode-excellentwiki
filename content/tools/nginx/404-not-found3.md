@@ -4,7 +4,6 @@ description: "Fix Nginx 404 Not Found error. Resolve missing files, incorrect ro
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["404", "not-found", "missing-file", "root", "nginx"]
 weight: 5
 ---
 

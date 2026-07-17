@@ -4,7 +4,6 @@ description: "Fix R 'error in read.table' when importing data files. Check file 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["read.table", "import", "file", "separator"]
 weight: 5
 ---
 

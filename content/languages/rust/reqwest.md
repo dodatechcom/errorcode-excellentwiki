@@ -4,7 +4,6 @@ description: "Fix Rust reqwest error. Learn why HTTP requests fail with reqwest 
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["reqwest", "http", "request", "network", "tls", "async"]
 weight: 5
 ---
 

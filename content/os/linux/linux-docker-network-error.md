@@ -4,7 +4,6 @@ description: "Fix Docker network bridge errors on Linux. Resolve bridge creation
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "network", "bridge", "docker0", "iptables", "subnet"]
 weight: 5
 ---
 

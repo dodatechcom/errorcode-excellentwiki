@@ -4,7 +4,6 @@ description: "Fix redis.ConnectionError connection refused. Verify Redis server 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redis", "connection", "cache", "connectionerror", "server"]
 weight: 5
 ---
 

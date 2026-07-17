@@ -4,7 +4,6 @@ description: "Fix C no space left on device (ENOSPC). Free disk space and handle
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enospc", "no-space-left", "disk-full", "quota", "errno"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes ConfigMap key not found. Resolve missing ConfigMap 
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "configmap", "key", "not-found", "configuration", "volume"]
 weight: 5
 ---
 

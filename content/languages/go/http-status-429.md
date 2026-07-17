@@ -4,7 +4,6 @@ description: "Fix Go HTTP 429 too many requests errors. Handle rate limiting, ba
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "429", "rate-limit"]
 weight: 5
 ---
 

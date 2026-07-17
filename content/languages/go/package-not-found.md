@@ -4,7 +4,6 @@ description: "Fix Go no required module provides package error. Check import pat
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["package", "import", "module", "dependency", "not-found"]
 weight: 5
 ---
 

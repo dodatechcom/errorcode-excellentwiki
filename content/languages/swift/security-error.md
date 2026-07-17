@@ -4,7 +4,6 @@ description: "Fix Swift OSStatus security errors. Learn about Security framework
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["security", "osstatus", "certificate", "ssl", "keychain"]
 weight: 5
 ---
 

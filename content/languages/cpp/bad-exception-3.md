@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_exception thrown when an unexpected exception esc
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-exception", "bad_exception", "dynamic-exception-spec", "unexpected", "noexcept"]
 weight: 5
 ---
 

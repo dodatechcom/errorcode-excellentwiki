@@ -4,7 +4,6 @@ description: "Record errors in COBOL occur when record layout mismatches, record
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["record", "layout", "size", "file", "cobol"]
 weight: 5
 ---
 

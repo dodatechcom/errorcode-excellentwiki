@@ -4,7 +4,6 @@ description: "Fix Java IndexOutOfBoundsException by checking list.size(), using 
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["indexoutofboundsexception", "bounds-checking", "list", "array", "iteration"]
 date: 2026-07-15
 ---
 

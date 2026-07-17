@@ -4,7 +4,6 @@ description: "Oracle trigger fails during execution."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "trigger", "event", "before", "after", "row"]
 weight: 5
 ---
 

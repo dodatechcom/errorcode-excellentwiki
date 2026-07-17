@@ -4,7 +4,6 @@ description: "Fix C is a directory (EISDIR). Don't use directory paths for file 
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eisdir", "is-a-directory", "directory", "errno", "filesystem"]
 weight: 5
 ---
 

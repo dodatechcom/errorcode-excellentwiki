@@ -4,7 +4,6 @@ description: "Flutter Android build fails with Gradle errors due to configuratio
 frameworks: ["flutter"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["flutter", "android", "gradle", "build", "sdk", "kotlin"]
 weight: 5
 ---
 

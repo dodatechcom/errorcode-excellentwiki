@@ -4,7 +4,6 @@ description: "Fix WebClientRequestException when WebClient connection or read ti
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "webclient", "reactive", "timeout", "webclient-request"]
 weight: 5
 ---
 

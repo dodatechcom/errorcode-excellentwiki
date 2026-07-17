@@ -4,7 +4,6 @@ description: "Fix Kotlin extension function resolution errors. Learn why extensi
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["extension", "function", "resolution", "kotlin"]
 weight: 5
 ---
 

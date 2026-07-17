@@ -4,7 +4,6 @@ description: "Fix JavaScript TypeError: Failed to fetch network error. Handle CO
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["failed-to-fetch", "network-error", "fetch", "cors", "connectivity"]
 weight: 5
 ---
 

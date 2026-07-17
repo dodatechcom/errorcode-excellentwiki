@@ -4,7 +4,6 @@ description: "Fix 'ExecutionPolicy' when PowerShell blocks script execution due 
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ExecutionPolicy", "policy", "restricted"]
 weight: 5
 ---
 

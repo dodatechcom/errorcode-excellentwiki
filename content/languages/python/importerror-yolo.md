@@ -4,7 +4,6 @@ description: "Fix Python ImportError: ultralytics not found or ModuleNotFoundErr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "ultralytics", "yolo", "module-not-found", "pip", "vision"]
 weight: 5
 ---
 

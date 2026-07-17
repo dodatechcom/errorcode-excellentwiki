@@ -4,7 +4,6 @@ description: "Fix rustls-webpki verification errors. Handle certificate validati
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rustls-webpki", "certificate", "security"]
 weight: 5
 ---
 

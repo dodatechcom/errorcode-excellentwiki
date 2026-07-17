@@ -4,7 +4,6 @@ description: "Fix Kotlin IndexOutOfBoundsException when accessing invalid indice
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["indexoutofboundsexception", "index", "array", "list", "bounds"]
 weight: 5
 ---
 

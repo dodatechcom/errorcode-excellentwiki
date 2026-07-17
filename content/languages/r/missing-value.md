@@ -4,7 +4,6 @@ description: "Fix R 'missing value where TRUE/FALSE needed' error when using NA 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["missing-value", "na", "logical", "condition"]
 weight: 5
 ---
 

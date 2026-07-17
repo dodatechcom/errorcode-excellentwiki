@@ -4,7 +4,6 @@ description: "Fix Scala type mismatch errors when the compiler finds incompatibl
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "mismatch", "inference", "generic", "variance", "scala"]
 weight: 5
 ---
 

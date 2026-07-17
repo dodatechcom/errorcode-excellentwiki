@@ -4,7 +4,6 @@ description: "Fix C++ std::ios_base::badbit stream error. Handle critical I/O st
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ios-base", "badbit", "stream", "critical-error", "io"]
 weight: 5
 ---
 

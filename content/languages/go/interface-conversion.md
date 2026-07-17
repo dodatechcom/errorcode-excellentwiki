@@ -4,7 +4,6 @@ description: "Fix Go interface conversion panic. Use type assertions with ok pat
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["interface", "conversion", "type-assertion", "panic", "runtime"]
 weight: 5
 ---
 

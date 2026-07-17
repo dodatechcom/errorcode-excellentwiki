@@ -4,7 +4,6 @@ description: "Fix Python GeneratorExit when a generator or coroutine is closed p
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["generatorexit", "generator", "coroutine", "close", "cleanup"]
 weight: 5
 ---
 

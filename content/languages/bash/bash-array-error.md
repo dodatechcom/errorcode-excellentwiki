@@ -4,7 +4,6 @@ description: "Fix bash array errors when creating, accessing, or iterating over 
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["array", "index", "elements", "subscript", "declaration"]
 weight: 5
 ---
 

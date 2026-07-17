@@ -4,7 +4,6 @@ description: "Fix React 'Invalid hook call' and 'Rules of Hooks' errors. Underst
 languages: ["javascript"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["react", "hooks", "rules-of-hooks", "invalid-hook-call", "useState", "useEffect"]
 weight: 5
 ---
 

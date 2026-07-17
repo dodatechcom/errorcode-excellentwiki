@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2551: Property 'X' does not exist - did you mean 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2551", "property-access", "typo", "did-you-mean", "suggestion"]
 weight: 5
 ---
 

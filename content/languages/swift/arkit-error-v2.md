@@ -4,7 +4,6 @@ description: "Fix ARKit session interruption and error handling in iOS augmented
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ARKit", "session", "interruption", "augmented-reality", "swift"]
 weight: 5
 ---
 

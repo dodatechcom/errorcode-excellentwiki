@@ -4,7 +4,6 @@ description: "Fix Swift arithmetic overflow errors. Learn why integer overflow c
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["overflow", "arithmetic", "integer", "bitwise", "max", "min"]
 weight: 5
 ---
 

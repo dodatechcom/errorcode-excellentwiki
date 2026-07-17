@@ -4,7 +4,6 @@ description: "Fix npm node_modules issues. Resolve module resolution and depende
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["node-modules-error", "node-modules", "module", "resolution", "npm"]
 weight: 5
 ---
 

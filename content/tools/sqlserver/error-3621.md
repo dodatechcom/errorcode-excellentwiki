@@ -4,7 +4,6 @@ description: "Fix SQL Server Error 3621 statement terminated errors. Understand 
 tools: ["sqlserver"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlserver", "3621", "terminated", "statement", "constraint", "cascade"]
 weight: 5
 ---
 

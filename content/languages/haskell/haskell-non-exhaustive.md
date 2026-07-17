@@ -4,7 +4,6 @@ description: "Haskell warns or errors on non-exhaustive patterns that may fail a
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["non-exhaustive", "pattern", "warning", "incomplete", "coverage"]
 weight: 5
 ---
 

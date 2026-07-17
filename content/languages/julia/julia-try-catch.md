@@ -4,7 +4,6 @@ description: "Learn about error handling patterns in Julia using try-catch-final
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["try", "catch", "finally", "exception", "error-handling"]
 weight: 5
 ---
 

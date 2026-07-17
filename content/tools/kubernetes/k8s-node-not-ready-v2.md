@@ -4,7 +4,6 @@ description: "Fix Kubernetes Node NotReady. Resolve kubelet failures and node he
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "nodenotready", "kubelet", "node", "health", "unhealthy"]
 weight: 5
 ---
 

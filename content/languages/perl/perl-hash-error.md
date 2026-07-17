@@ -4,7 +4,6 @@ description: "Fix Perl hash key errors. Learn why hash key operations fail and h
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["hash", "key", "lookup", "perl"]
 weight: 5
 ---
 

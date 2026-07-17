@@ -4,7 +4,6 @@ description: "Fix Python KeyError when accessing dictionary keys. Use .get(), di
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["keyerror", "dictionary", "key", "lookup"]
 weight: 30
 ---
 

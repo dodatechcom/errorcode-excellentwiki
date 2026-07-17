@@ -6,7 +6,6 @@ replacement_function: "try-with-resources / Cleaner"
 languages: ["java"]
 deprecated_since: "JDK 9"
 error_message: "Finalizers are deprecated"
-tags: ["finalize", "cleaner", "try-with-resources", "autocloseable", "memory"]
 weight: 130
 ---
 

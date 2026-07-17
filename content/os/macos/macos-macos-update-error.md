@@ -4,7 +4,6 @@ description: "Fix macOS software update errors when System Preferences shows 'Up
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["software-update", "system-update", "macos-update", "upgrade", "installation"]
 weight: 5
 ---
 

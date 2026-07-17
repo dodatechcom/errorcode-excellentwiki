@@ -4,7 +4,6 @@ description: "Fix PowerShell type errors when converting between incompatible ty
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type", "conversion", "cast", "mismatch", "PSTypeException"]
 weight: 5
 ---
 

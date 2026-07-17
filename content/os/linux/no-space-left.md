@@ -4,7 +4,6 @@ description: "Fix Linux 'No space left on device' (ENOSPC) error. Find and remov
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["no-space-left", "enospc", "disk-full", "disk-space"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Ruby LoadError: cannot load such file. Learn why require/load 
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["load-error"]
-tags: ["loaderror", "require", "load-path", "ruby"]
 weight: 5
 ---
 

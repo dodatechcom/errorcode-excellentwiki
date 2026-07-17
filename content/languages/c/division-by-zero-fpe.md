@@ -4,7 +4,6 @@ description: "Fix C floating point exception from division by zero. Prevent divi
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["division-by-zero", "fpe", "floating-point", "sigfpe", "arithmetic"]
 weight: 5
 ---
 

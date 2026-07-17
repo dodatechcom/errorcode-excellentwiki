@@ -4,7 +4,6 @@ description: "Fix Swift APNS (Apple Push Notification service) errors. Learn abo
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["apns", "push-notification", "remote-notification", "token", "notification"]
 weight: 5
 ---
 

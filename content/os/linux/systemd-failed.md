@@ -4,7 +4,6 @@ description: "Fix Linux systemd 'Failed to start X.service' errors. Diagnose uni
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["systemd", "failed-to-start", "service", "unit-failed", "journalctl"]
 weight: 5
 ---
 

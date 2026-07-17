@@ -4,7 +4,6 @@ description: "Fix npm ERESOLVE unable to resolve dependency tree error. Resolve 
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["eresolve", "peer-deps", "dependency-tree", "conflict"]
 weight: 5
 ---
 

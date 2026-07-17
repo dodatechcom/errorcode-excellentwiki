@@ -4,7 +4,6 @@ description: "Fix EAGAIN (errno 11) in C — resource temporarily unavailable on
 languages: ["c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["errno-11", "EAGAIN", "EWOULDBLOCK", "non-blocking", "sockets", "pthreads"]
 weight: 5
 ---
 

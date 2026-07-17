@@ -4,7 +4,6 @@ description: "Fix C++ std::runtime_error when runtime conditions prevent normal 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["runtime-error", "exception", "error-handling"]
 weight: 50
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Playwright page crash and navigation errors. Handle browser co
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["playwright", "browser", "testing"]
 weight: 5
 ---
 

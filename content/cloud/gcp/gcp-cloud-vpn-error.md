@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud VPN Error"
 description: "Fix GCP Cloud VPN errors. Resolve VPN tunnel connectivity issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-vpn", "vpn", "tunnel", "networking"]
 weight: 5
 ---
 

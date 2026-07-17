@@ -4,7 +4,6 @@ description: "Fix npm peer dependency conflict errors. Resolve incompatible peer
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["peer-dep", "peer-dependency", "conflict", "version", "npm"]
 weight: 5
 ---
 

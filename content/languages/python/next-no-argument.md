@@ -4,7 +4,6 @@ description: "Fix Python TypeError when calling next() without required argument
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "next", "iterator", "argument"]
 weight: 5
 ---
 

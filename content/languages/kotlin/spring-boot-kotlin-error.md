@@ -4,7 +4,6 @@ description: "Fix Spring Boot Kotlin null safety errors when Java interop causes
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-boot", "kotlin", "null-safety", "nullable", "jvm"]
 weight: 5
 ---
 

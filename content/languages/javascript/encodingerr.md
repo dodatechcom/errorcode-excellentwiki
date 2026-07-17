@@ -4,7 +4,6 @@ description: "Fix JavaScript EncodingError when encoding or decoding text. Handl
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["encodingerror", "encoding", "decoding", "utf-8", "textdecoder", "textencoder"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Run — container failed to start"
 description: "Fix Cloud Run container failed to start. Resolve container startup and runtime errors."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-run", "container", "failed", "start", "startup", "runtime"]
 weight: 5
 ---
 

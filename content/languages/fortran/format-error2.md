@@ -4,7 +4,6 @@ description: "A format error occurs when a Fortran I/O statement encounters a mi
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["format", "io", "read", "write", "descriptor"]
 weight: 5
 ---
 

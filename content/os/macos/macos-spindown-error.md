@@ -4,7 +4,6 @@ description: "Fix macOS spindown errors when internal or external disks fail to 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["spindown", "disk", "eject", "hdd", "sleep", "power"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Composer platform requirement errors. Handle PHP version, exte
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["composer", "platform", "php"]
 weight: 5
 ---
 

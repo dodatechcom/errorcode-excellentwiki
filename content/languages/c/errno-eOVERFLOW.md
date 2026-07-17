@@ -4,7 +4,6 @@ description: "Fix C EOVERFLOW (Value too large for defined data type) by using l
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eoverflow", "value-too-large", "large-file", "off_t", "file-offset"]
 weight: 5
 ---
 

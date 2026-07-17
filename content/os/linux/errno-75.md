@@ -4,7 +4,6 @@ description: "Fix Linux ECONNREFUSED (errno 75) Connection refused error. Soluti
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["econnrefused", "connection", "errno-75", "refused", "server"]
 weight: 5
 ---
 

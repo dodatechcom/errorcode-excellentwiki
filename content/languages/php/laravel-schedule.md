@@ -4,7 +4,6 @@ description: "Fix scheduled task failures in Laravel. Handle cron configuration,
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "schedule", "cron"]
 weight: 5
 ---
 

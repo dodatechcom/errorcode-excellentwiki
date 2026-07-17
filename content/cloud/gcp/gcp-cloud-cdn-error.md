@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud CDN Error"
 description: "Fix GCP Cloud CDN errors. Resolve CDN caching and delivery issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-cdn", "cdn", "cache", "delivery"]
 weight: 5
 ---
 

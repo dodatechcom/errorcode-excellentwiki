@@ -4,7 +4,6 @@ description: "Fix Go reflect call of reflect.Value.Type on zero Value error. Ens
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["reflect", "type", "zero", "value", "runtime", "meta"]
 weight: 5
 ---
 

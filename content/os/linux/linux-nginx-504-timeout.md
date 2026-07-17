@@ -4,7 +4,6 @@ description: "Fix Linux nginx 504 Gateway Timeout errors. Resolve upstream timeo
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nginx", "504", "gateway-timeout", "upstream", "proxy", "timeout"]
 weight: 5
 ---
 

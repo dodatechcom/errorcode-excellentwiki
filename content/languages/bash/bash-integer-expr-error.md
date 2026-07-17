@@ -4,7 +4,6 @@ description: "Fix bash integer expression expected errors when using arithmetic 
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["integer", "expression", "arithmetic", "test", "bash"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Flask-Login raises errors related to user authentication, session 
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["login", "authentication", "session", "user", "flask"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_POOL_CORRUPTION error on Windows 10 and 11.
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "pool-corruption", "kernel-memory", "stop-code"]
 weight: 5
 ---
 

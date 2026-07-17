@@ -4,7 +4,6 @@ description: "Fix Sprockets asset pipeline errors in Rails. Learn why Sprockets 
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["sprockets", "asset-pipeline", "compilation", "rails", "ruby"]
 weight: 5
 ---
 

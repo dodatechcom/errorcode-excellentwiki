@@ -4,7 +4,6 @@ description: "Fix Express SSL/TLS errors. Resolve HTTPS and certificate issues."
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ssl", "tls", "https", "certificate", "express"]
 weight: 5
 ---
 

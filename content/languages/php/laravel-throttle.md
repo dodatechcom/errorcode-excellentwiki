@@ -4,7 +4,6 @@ description: "Fix rate limit exceeded errors in Laravel. Handle throttle middlew
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "throttle", "rate-limit"]
 weight: 5
 ---
 

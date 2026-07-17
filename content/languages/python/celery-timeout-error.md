@@ -4,7 +4,6 @@ description: "Fix Celery task timeout when tasks exceed time limit. Optimize slo
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["celery", "timeout", "task", "worker", "performance"]
 weight: 5
 ---
 

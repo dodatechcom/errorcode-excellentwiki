@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_map() argument #2 is not an array. Learn to
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-map", "array", "callback"]
 weight: 5
 ---
 

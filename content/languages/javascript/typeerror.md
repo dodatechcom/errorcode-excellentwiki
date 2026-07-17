@@ -4,7 +4,6 @@ description: "Fix JavaScript TypeError: Cannot read properties of null or undefi
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "undefined", "null", "optional-chaining"]
 weight: 70
 ---
 

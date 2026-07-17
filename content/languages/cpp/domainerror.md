@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error when calling functions with mathematical
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["domain-error", "math", "numeric", "exception"]
 weight: 50
 ---
 

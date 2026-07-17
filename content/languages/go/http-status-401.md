@@ -4,7 +4,6 @@ description: "Fix Go HTTP 401 unauthorized errors. Handle authentication failure
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "401", "unauthorized"]
 weight: 5
 ---
 

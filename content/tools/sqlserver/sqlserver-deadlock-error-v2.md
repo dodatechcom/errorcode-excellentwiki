@@ -4,7 +4,6 @@ description: "SQL Server detects a deadlock between two or more sessions and ter
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "deadlock", "victim", "lock", "graph", "transaction"]
 weight: 5
 ---
 

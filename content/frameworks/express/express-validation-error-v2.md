@@ -4,7 +4,6 @@ description: "Fix Express-validator errors when request data fails validation ru
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["validation", "sanitization", "input", "sanitize", "express"]
 weight: 5
 ---
 

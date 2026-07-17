@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_SERVICE_EXCEPTION with win32kfull.sys on Wi
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "system-service", "win32kfull", "graphics"]
 weight: 5
 ---
 

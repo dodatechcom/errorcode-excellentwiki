@@ -4,7 +4,6 @@ description: "A StackOverflowError occurs when the call stack exceeds its maximu
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursion", "stackoverflowerror"]
 weight: 5
 ---
 

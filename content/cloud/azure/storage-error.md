@@ -1,10 +1,8 @@
 ---
 title: "Azure StorageAccount: The Specified Container Does Not Exist"
 description: "StorageAccount: The specified container does not exist — Fix Azure Blob Storage container errors."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "storage", "blob", "container", "not-found", "account"]
 weight: 5
 ---
 

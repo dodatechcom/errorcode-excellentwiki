@@ -4,7 +4,6 @@ description: "Fix Rust tokio runtime error. Learn why tokio async runtime fails 
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["tokio", "async", "runtime", "thread", "block"]
 weight: 5
 ---
 

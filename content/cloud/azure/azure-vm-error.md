@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure VM Deployment Error"
 description: "Fix Azure VM deployment errors. Resolve virtual machine provisioning issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "vm", "virtual-machine", "deployment", "compute"]
 weight: 5
 ---
 

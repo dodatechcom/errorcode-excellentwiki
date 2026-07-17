@@ -4,7 +4,6 @@ description: "A syntax error occurs when the COBOL compiler encounters code that
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["syntax", "compiler", "compilation", "cobol"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2720: Class defines instance member but abstract 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2720", "class", "extends", "abstract", "instance-member", "static"]
 weight: 5
 ---
 

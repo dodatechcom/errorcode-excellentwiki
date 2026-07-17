@@ -4,7 +4,6 @@ description: "Fix C++ template instantiation errors including missing type decla
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["template", "instantiation", "sfinae", "compilation"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "GitHub Actions artifact action fails to upload or download artifac
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "artifact", "upload", "download", "storage"]
 weight: 5
 ---
 

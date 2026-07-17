@@ -4,7 +4,6 @@ description: "Fix TLS certificate verification errors. Handle SSL certificates, 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tls", "ssl", "certificate"]
 weight: 5
 ---
 

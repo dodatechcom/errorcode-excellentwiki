@@ -4,7 +4,6 @@ description: "Fix Docker network bridge creation errors. Resolve network creatio
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["network", "bridge", "connectivity", "driver", "docker"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Propshaft compilation errors in Rails. Learn why Propshaft fai
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["propshaft", "asset-pipeline", "compilation", "rails", "ruby"]
 weight: 5
 ---
 

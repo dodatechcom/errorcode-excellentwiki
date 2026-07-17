@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_INVALID_NAME (123). Resolve invalid filename, ex
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-123", "invalid-name", "filename"]
 weight: 5
 ---
 

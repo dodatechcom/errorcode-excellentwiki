@@ -4,7 +4,6 @@ description: "Fix rocket launch configuration errors. Handle figment configurati
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rocket", "web", "framework", "configuration", "launch"]
 weight: 5
 ---
 

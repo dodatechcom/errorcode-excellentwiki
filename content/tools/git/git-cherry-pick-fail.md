@@ -4,7 +4,6 @@ description: "Fix Git cherry-pick failures. Resolve conflicts when cherry-pickin
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["cherry-pick", "conflict", "apply", "git"]
 weight: 5
 ---
 

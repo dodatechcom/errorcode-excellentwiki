@@ -4,7 +4,6 @@ description: "Fix R 'error in purrr' when using map functions. Check package loa
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["purrr", "tidyverse", "map", "functional"]
 weight: 5
 ---
 

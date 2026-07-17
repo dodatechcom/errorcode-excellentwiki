@@ -4,7 +4,6 @@ description: "Fix Gradle version incompatibility errors. Resolve wrapper and API
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "version", "incompatible", "wrapper", "upgrade"]
 weight: 5
 ---
 

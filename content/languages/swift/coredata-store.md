@@ -4,7 +4,6 @@ description: "Fix Swift NSPersistentStore errors. Learn about persistent store l
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["coredata", "persistent-store", "sqlite", "migration", "store"]
 weight: 5
 ---
 

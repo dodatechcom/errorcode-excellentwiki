@@ -4,7 +4,6 @@ description: "Fix Git LFS pointer file mismatch errors. Resolve LFS content and 
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["lfs", "pointer", "mismatch", "large-files", "git"]
 weight: 5
 ---
 

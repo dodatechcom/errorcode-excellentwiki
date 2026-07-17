@@ -4,7 +4,6 @@ description: "Handle Ruby Interrupt (SignalException). Catch Ctrl+C and manage g
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["signal"]
-tags: ["interrupt", "signal", "ctrl_c", "shutdown", "signal_exception"]
 weight: 160
 ---
 

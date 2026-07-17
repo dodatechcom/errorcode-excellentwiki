@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS SQS — InvalidSecurity token"
 description: "Fix AWS SQS InvalidSecurity token. Resolve SQS authentication and token issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "sqs", "invalid", "security", "token", "authentication", "credentials"]
 weight: 5
 ---
 

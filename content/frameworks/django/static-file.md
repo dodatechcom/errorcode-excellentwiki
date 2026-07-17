@@ -4,7 +4,6 @@ description: "Django raises an error when a template requests a static file that
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["static", "404", "staticfiles", "css", "javascript"]
 weight: 5
 ---
 

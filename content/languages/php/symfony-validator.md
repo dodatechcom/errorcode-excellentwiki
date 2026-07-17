@@ -4,7 +4,6 @@ description: "Fix Symfony component validator errors. Handle constraints, groups
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "validator", "validation"]
 weight: 5
 ---
 

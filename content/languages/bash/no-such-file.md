@@ -4,7 +4,6 @@ description: "Fix 'No such file or directory' in Bash when a file, command, or p
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["no-such-file", "file-not-found", "missing-path"]
 weight: 5
 ---
 

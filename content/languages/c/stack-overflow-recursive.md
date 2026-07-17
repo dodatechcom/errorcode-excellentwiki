@@ -4,7 +4,6 @@ description: "Fix C stack overflow from infinite recursion. Add base cases to pr
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stack-overflow", "recursion", "infinite-recursion", "stack", "base-case"]
 weight: 5
 ---
 

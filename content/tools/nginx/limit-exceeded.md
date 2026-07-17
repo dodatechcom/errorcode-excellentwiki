@@ -4,7 +4,6 @@ description: "Fix Nginx rate limiting errors. Resolve 429 Too Many Requests and 
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rate-limit", "429", "limit-req", "throttle", "nginx"]
 weight: 5
 ---
 

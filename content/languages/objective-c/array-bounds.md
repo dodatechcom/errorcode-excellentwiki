@@ -4,7 +4,6 @@ description: "An array bounds error occurs when accessing an array element with 
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["array", "bounds", "index", "objc"]
 weight: 5
 ---
 

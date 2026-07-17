@@ -4,7 +4,6 @@ description: "Fix AxiosError when HTTP requests fail with error status codes. Ha
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["axios", "http", "request", "status-code", "network"]
 weight: 5
 ---
 

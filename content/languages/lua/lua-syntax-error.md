@@ -4,7 +4,6 @@ description: "Fix Lua syntax errors. Learn why Lua scripts fail to parse and how
 languages: ["lua"]
 severities: ["error"]
 error-types: ["syntax-error"]
-tags: ["syntax", "parse", "lua"]
 weight: 5
 ---
 

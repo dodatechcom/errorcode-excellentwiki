@@ -4,7 +4,6 @@ description: "Fix Linux systemd 'Dependency failed for multi-user.target' errors
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["systemd", "dependency-failed", "multi-user-target", "boot", "target"]
 weight: 5
 ---
 

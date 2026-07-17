@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2580: Cannot find name 'require'. Switch to ES mo
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2580", "require", "import", "commonjs", "esm", "module-system"]
 weight: 5
 ---
 

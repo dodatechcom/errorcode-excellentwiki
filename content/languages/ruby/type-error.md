@@ -4,7 +4,6 @@ description: "Fix Ruby TypeError: no implicit conversion. Ensure correct types a
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["type"]
-tags: ["typeerror", "type", "conversion", "implicit"]
 weight: 30
 ---
 

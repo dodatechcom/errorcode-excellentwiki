@@ -4,7 +4,6 @@ description: "Fix Java NumberFormatException by validating input before parsing,
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["numberformatexception", "parsing", "input-validation", "integer"]
 date: 2026-07-15
 ---
 

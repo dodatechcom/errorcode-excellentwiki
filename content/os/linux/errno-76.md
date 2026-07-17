@@ -4,7 +4,6 @@ description: "Fix Linux EHOSTDOWN (errno 76) Host is down error. Solutions for u
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ehostdown", "host", "errno-76", "down", "unreachable"]
 weight: 5
 ---
 

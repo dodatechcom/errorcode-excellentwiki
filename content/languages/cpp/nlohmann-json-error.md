@@ -4,7 +4,6 @@ description: "Fix C++ nlohmann/json parse errors. Handle malformed JSON input wi
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nlohmann-json", "json", "parse", "syntax", "exception"]
 weight: 5
 ---
 

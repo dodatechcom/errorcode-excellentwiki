@@ -4,7 +4,6 @@ description: "Fix systemd permission denied errors. Resolve access control and c
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["permission", "denied", "systemd", "user", "capability"]
 weight: 5
 ---
 

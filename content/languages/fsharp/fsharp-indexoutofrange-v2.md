@@ -4,7 +4,6 @@ description: "Fix F# IndexOutOfRangeException when accessing elements beyond val
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "out-of-range", "bounds", "array", "list", "fsharp"]
 weight: 5
 ---
 

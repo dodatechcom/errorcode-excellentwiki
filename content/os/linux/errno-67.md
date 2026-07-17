@@ -4,7 +4,6 @@ description: "Fix Linux ECONNABORTED (errno 67) Software caused connection abort
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["econnaborted", "connection", "errno-67", "abort", "timeout"]
 weight: 5
 ---
 

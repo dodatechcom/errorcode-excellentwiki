@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2464: Circular definition of import alias. Break 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2464", "circular", "import", "alias", "cycle", "dependency"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -108 (memFullErr). Resolve memory full errors i
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["memfullerr", "osstatus-108", "memory", "core-services", "carbon", "out-of-memory"]
 weight: 5
 ---
 

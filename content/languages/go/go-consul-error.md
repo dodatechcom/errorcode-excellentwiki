@@ -4,7 +4,6 @@ description: "Fix Consul agent unreachable errors. Handle service discovery, hea
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["consul", "discovery", "service-mesh"]
 weight: 5
 ---
 

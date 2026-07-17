@@ -4,7 +4,6 @@ description: "Fix Express template engine errors. Resolve template rendering iss
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["template", "engine", "ejs", "pug", "handlebars", "express"]
 weight: 5
 ---
 

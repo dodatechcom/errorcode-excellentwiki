@@ -4,7 +4,6 @@ description: "Fix bash associative array errors. Learn how associative arrays wo
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["associative-array", "hash", "declare", "bash"]
 weight: 5
 ---
 

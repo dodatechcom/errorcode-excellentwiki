@@ -4,7 +4,6 @@ description: "Fix Python ImportError: oracledb not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "oracledb", "module-not-found", "pip", "oracle"]
 weight: 5
 ---
 

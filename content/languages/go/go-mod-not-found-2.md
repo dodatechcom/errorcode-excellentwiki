@@ -4,7 +4,6 @@ description: "Fix Go go.mod file not found error. Initialize Go modules, run go 
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["go", "mod", "module", "init", "dependency", "runtime"]
 weight: 5
 ---
 

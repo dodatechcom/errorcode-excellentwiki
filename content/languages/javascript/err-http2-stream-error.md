@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_STREAM_ERROR when an HTTP/2 stream encounter
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-stream-error", "http2", "stream", "error", "nodejs"]
 weight: 5
 ---
 

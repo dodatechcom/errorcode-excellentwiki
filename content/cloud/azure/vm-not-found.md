@@ -1,10 +1,8 @@
 ---
 title: "Azure ResourceNotFound: Virtual Machine Not Found"
 description: "ResourceNotFound: The Virtual Machine was not found — Fix Azure VM resource lookup errors."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "vm", "virtual-machine", "resource-not-found", "arm", "management"]
 weight: 5
 ---
 

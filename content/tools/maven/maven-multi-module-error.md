@@ -4,7 +4,6 @@ description: "Maven multi-module reactor build fails during configuration or exe
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "multi-module", "reactor", "aggregator", "parent"]
 weight: 5
 ---
 

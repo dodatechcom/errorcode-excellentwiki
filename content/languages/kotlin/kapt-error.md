@@ -4,7 +4,6 @@ description: "Fix KAPT annotation processing errors. Learn why KAPT fails and ho
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["kapt", "annotation-processing", "compile", "kotlin"]
 weight: 5
 ---
 

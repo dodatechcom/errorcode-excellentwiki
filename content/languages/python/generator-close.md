@@ -4,7 +4,6 @@ description: "Fix Python GeneratorExit when a generator is closed unexpectedly. 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["generatorexit", "generator", "close", "iteration"]
 weight: 5
 ---
 

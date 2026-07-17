@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_shift() expects exactly 1 argument. Learn t
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-shift", "array", "arguments"]
 weight: 5
 ---
 

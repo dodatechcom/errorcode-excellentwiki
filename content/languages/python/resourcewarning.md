@@ -4,7 +4,6 @@ description: "Fix Python ResourceWarning when resources are not properly cleaned
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["resourcewarning", "resource", "leak", "file", "connection", "cleanup"]
 weight: 5
 ---
 

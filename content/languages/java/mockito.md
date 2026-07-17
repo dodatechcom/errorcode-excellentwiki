@@ -4,7 +4,6 @@ description: "Fix common Mockito misuse: strict stubbing, unstubbed method calls
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mockito", "testing", "mock", "stubbing", "unit-test"]
 weight: 5
 ---
 

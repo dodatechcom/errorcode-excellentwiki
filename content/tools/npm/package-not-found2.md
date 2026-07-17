@@ -4,7 +4,6 @@ description: "Fix npm 404 not found error. Resolve missing package issues in npm
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["package-not-found", "404", "not-found", "package", "npm"]
 weight: 5
 ---
 

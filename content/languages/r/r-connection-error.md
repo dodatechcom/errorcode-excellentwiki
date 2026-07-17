@@ -4,7 +4,6 @@ description: "Fix R 'cannot open connection' error when reading or writing files
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["connection", "file", "path", "permission", "url", "r"]
 weight: 5
 ---
 

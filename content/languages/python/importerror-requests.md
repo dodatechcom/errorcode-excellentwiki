@@ -4,7 +4,6 @@ description: "Fix Python ImportError: requests not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "requests", "module-not-found", "pip", "http"]
 weight: 5
 ---
 

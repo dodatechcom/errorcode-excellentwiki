@@ -4,7 +4,6 @@ description: "Error: Cannot find module 'X' — Fix Node.js module resolution fa
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "cannot-find-module", "module", "require", "import", "node_modules"]
 weight: 5
 ---
 

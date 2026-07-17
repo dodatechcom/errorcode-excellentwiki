@@ -4,7 +4,6 @@ description: "Fix SQLite I/O errors. Resolve disk read/write failures and filesy
 tools: ["sqlite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlite", "io", "disk", "filesystem", "read-write"]
 weight: 5
 ---
 

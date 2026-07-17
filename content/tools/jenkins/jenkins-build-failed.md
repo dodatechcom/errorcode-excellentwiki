@@ -4,7 +4,6 @@ description: "Jenkins build step returns a non-zero exit code or marks the build
 tools: ["jenkins"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["jenkins", "build", "failure", "pipeline", "stage"]
 weight: 5
 ---
 

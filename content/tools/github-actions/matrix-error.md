@@ -4,7 +4,6 @@ description: "Fix GitHub Actions matrix configuration errors. Resolve invalid ma
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "matrix", "strategy", "configuration", "parallel"]
 weight: 5
 ---
 

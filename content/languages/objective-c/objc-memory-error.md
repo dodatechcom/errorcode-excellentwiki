@@ -4,7 +4,6 @@ description: "Fix Objective-C memory errors including EXC_BAD_ACCESS and memory 
 languages: ["objective-c"]
 error-types: ["memory-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "memory-management", "arc", "mrc"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ Catch2 test errors. Resolve test assertion failures."
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["catch2", "unit-test", "assertion", "test", "testing"]
 weight: 5
 ---
 

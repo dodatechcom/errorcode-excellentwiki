@@ -4,7 +4,6 @@ description: "Fix regex pattern compilation errors. Handle invalid patterns, cap
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["regex", "pattern", "parsing", "search"]
 weight: 5
 ---
 

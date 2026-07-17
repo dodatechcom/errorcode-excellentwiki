@@ -4,7 +4,6 @@ description: "Fix Windows Update stuck at downloading or installing on Windows 1
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["windows-update", "stuck", "frozen", "downloading", "installing", "hang"]
 weight: 5
 ---
 

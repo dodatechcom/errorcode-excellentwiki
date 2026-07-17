@@ -4,7 +4,6 @@ description: "F# raises FormatException when parsing a string into a specific ty
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["format", "parse", "string", "conversion", "invalid"]
 weight: 5
 ---
 

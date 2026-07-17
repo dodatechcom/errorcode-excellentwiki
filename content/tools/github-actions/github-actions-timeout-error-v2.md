@@ -4,7 +4,6 @@ description: "GitHub Actions workflow job exceeds the configured timeout limit."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "timeout", "job", "limit", "duration"]
 weight: 5
 ---
 

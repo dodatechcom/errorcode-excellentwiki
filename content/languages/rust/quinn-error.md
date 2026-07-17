@@ -4,7 +4,6 @@ description: "Fix quinn QUIC protocol errors. Handle connection establishment, s
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["quinn", "quic", "protocol"]
 weight: 5
 ---
 

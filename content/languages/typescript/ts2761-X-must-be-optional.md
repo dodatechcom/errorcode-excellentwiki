@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2761: X can only be declared as optional property
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2761", "optional", "property", "must-be-optional"]
 weight: 5
 ---
 

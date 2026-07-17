@@ -1,10 +1,8 @@
 ---
 title: "Azure QuotaExceeded: Request Quota Exceeded"
 description: "QuotaExceeded: The request quota has been exceeded — Fix Azure subscription quota limits."
-cloud: ["azure"]
 error-types: ["quota-error"]
 severities: ["error"]
-tags: ["azure", "quota", "limit", "subscription", "vm", "cpu", "core"]
 weight: 5
 ---
 

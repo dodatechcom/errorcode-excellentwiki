@@ -4,7 +4,6 @@ description: "Fix Kotlin JsonDecodingException when parsing JSON. Validate JSON 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["jsondecodingexception", "json", "parse", "decode", "deserialization"]
 weight: 5
 ---
 

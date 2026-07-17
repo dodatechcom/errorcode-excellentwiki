@@ -4,7 +4,6 @@ description: "A function_clause error occurs when calling a function with argume
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["function", "clause", "pattern", "no-match"]
 weight: 5
 ---
 

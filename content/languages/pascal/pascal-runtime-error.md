@@ -4,7 +4,6 @@ description: "General runtime errors in Pascal occur during program execution du
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "exception", "execution", "error-handling", "pascal"]
 weight: 5
 ---
 

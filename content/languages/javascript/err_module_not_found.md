@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_MODULE_NOT_FOUND for ES module imports. Add file e
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-module-not-found", "esm", "import", "module-resolution", "nodejs"]
 weight: 5
 ---
 

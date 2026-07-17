@@ -4,7 +4,6 @@ description: "Fix go-redis connection refused errors. Handle Redis server unavai
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redis", "connection", "cache", "pool", "cluster"]
 weight: 5
 ---
 

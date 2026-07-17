@@ -4,7 +4,6 @@ description: "Fix npm run script errors. Resolve script execution failures in np
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["run", "script", "execution", "package.json", "npm"]
 weight: 5
 ---
 

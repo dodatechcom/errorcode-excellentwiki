@@ -4,7 +4,6 @@ description: "Fix Dart 'Null check operator used on a null value' error. Learn w
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "null-check", "operator", "nullable", "runtime", "dart"]
 weight: 5
 ---
 

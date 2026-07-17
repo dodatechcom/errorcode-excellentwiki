@@ -4,7 +4,6 @@ description: "Fix Groovy closure errors when calling closures with wrong argumen
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["closure", "arguments", "arity", "call", "groovy"]
 weight: 5
 ---
 

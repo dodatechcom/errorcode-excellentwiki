@@ -4,7 +4,6 @@ description: "Fix 'You have an error in your SQL syntax' when a SQL statement is
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["syntax-error", "sql", "parse"]
 weight: 5
 ---
 

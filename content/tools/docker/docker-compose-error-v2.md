@@ -4,7 +4,6 @@ description: "Fix Docker Compose up failures. Resolve service startup, dependenc
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["docker-compose", "compose", "up", "services", "startup", "docker"]
 weight: 5
 ---
 

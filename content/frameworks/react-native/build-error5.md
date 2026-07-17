@@ -4,7 +4,6 @@ description: "React Native project fails to compile due to native build tool err
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["build", "gradle", "xcode", "compile", "native"]
 weight: 5
 ---
 

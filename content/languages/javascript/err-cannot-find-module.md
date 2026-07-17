@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_MODULE_NOT_FOUND when a required module cannot be 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-cannot-find-module", "module", "require", "import", "nodejs"]
 weight: 5
 ---
 

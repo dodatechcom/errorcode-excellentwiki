@@ -1,10 +1,8 @@
 ---
 title: "AWS InvalidInstanceID.NotFound"
 description: "InvalidInstanceID.NotFound — Fix AWS EC2 instance not found errors."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "ec2", "instance", "not-found", "invalid-instance"]
 weight: 5
 ---
 

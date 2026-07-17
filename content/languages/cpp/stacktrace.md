@@ -4,7 +4,6 @@ description: "Fix C++ std::stacktrace issues including missing debug info, platf
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["stacktrace", "debugging", "c++23", "diagnostics"]
 weight: 5
 ---
 

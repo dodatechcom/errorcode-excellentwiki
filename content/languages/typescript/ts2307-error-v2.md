@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2307 when module resolution fails. Handle missing
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2307", "module-resolution", "import", "types", "tsconfig"]
 weight: 5
 ---
 

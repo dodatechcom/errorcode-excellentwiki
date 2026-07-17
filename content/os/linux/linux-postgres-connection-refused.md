@@ -4,7 +4,6 @@ description: "Fix Linux PostgreSQL 'connection refused' errors. Resolve PostgreS
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["postgresql", "postgres", "connection-refused", "pg_hba", "database"]
 weight: 5
 ---
 

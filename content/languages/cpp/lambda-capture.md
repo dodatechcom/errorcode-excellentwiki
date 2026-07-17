@@ -4,7 +4,6 @@ description: "Fix C++ lambda capture errors including dangling references, missi
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["lambda", "capture", "closure", "dangling"]
 weight: 5
 ---
 

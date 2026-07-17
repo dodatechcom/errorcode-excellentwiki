@@ -4,7 +4,6 @@ description: "Fix Linux kernel compilation errors caused by missing headers. Res
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kernel", "compile", "headers", "build", "make", "gcc"]
 weight: 5
 ---
 

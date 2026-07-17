@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x80070005 (Access Denied) on Windows 10 
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["update-error"]
-tags: ["windows-update", "access-denied", "permissions", "TrustedInstaller"]
 weight: 5
 ---
 

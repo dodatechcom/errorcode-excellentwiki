@@ -4,7 +4,6 @@ description: "Fix C ENETRESET (Network connection reset) by handling TCP resets,
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enetreset", "network-connection-reset", "tcp-reset", "connection-loss"]
 weight: 5
 ---
 

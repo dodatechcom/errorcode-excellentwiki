@@ -4,7 +4,6 @@ description: "Fix h2 HTTP/2 errors. Handle connection preface, stream management
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["h2", "http2", "protocol"]
 weight: 5
 ---
 

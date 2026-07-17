@@ -4,7 +4,6 @@ description: "Fix Cells renderer errors in Ruby. Learn why Cells rendering fails
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cells", "renderer", "rendering", "ruby"]
 weight: 5
 ---
 

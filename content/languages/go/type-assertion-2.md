@@ -4,7 +4,6 @@ description: "Fix Go type assertion panic when asserting interface {} to a concr
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type", "assertion", "interface", "panic", "runtime", "empty-interface"]
 weight: 5
 ---
 

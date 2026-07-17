@@ -4,7 +4,6 @@ description: "Dart throws a type casting error when attempting to use a value as
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dart", "type", "casting", "subtype", "json", "dynamic"]
 weight: 5
 ---
 

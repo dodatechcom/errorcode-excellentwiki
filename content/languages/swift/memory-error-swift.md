@@ -4,7 +4,6 @@ description: "Fix Swift memory errors and heap corruption. Learn how to identify
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["memory-error", "heap-corruption", "memory-management", "swift"]
 weight: 5
 ---
 

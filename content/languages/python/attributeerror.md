@@ -4,7 +4,6 @@ description: "Fix Python AttributeError when accessing non-existent attributes. 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["attributeerror", "attribute", "object", "method"]
 weight: 50
 ---
 

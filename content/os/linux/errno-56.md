@@ -4,7 +4,6 @@ description: "Fix Linux EBADFD (errno 56) File descriptor in bad state error. So
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ebadfd", "file-descriptor", "errno-56", "corrupt"]
 weight: 5
 ---
 

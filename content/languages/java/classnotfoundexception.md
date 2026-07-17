@@ -4,7 +4,6 @@ description: "Fix Java ClassNotFoundException when a class cannot be found at ru
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["classnotfoundexception", "classpath", "dependency", "reflection"]
 weight: 20
 ---
 

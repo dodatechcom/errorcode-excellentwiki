@@ -1,10 +1,8 @@
 ---
 title: "Azure KeyVault: Access Denied to Key or Secret"
 description: "KeyVault: Access denied to key/secret — Fix Azure Key Vault authorization errors."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "keyvault", "key-vault", "secret", "access-denied", "rbac", "policy"]
 weight: 5
 ---
 

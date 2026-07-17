@@ -4,7 +4,6 @@ description: "Fix C++ std::invalid_argument when stod receives non-numeric strin
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-argument", "stod", "conversion", "double", "numeric"]
 weight: 5
 ---
 

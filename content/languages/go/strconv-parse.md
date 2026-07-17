@@ -4,7 +4,6 @@ description: "Fix Go strconv parsing error. Validate input before converting, ha
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["strconv", "parse", "conversion", "integer", "float"]
 weight: 5
 ---
 

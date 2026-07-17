@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_SESSION when an HTTP/2 session encounters an
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-session", "http2", "session", "connection", "nodejs"]
 weight: 5
 ---
 

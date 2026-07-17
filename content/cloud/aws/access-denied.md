@@ -1,10 +1,8 @@
 ---
 title: "AWS AccessDeniedException"
 description: "AccessDeniedException / UnauthorizedAccess — Fix AWS API access denied errors."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "iam", "access-denied", "unauthorized", "permissions"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix diesel database query errors. Handle diesel QueryResult failur
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["diesel", "database", "orm", "query", "postgresql"]
 weight: 5
 ---
 

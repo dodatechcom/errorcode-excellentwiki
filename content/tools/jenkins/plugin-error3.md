@@ -4,7 +4,6 @@ description: "Fix Jenkins plugin errors. Resolve plugin installation, compatibil
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "plugin", "installation", "compatibility", "dependency"]
 weight: 5
 ---
 

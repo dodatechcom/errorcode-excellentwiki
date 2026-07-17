@@ -4,7 +4,6 @@ description: "Fix Docker image pull failed error. Resolve network, authenticatio
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["pull-failed", "image", "registry", "network", "docker"]
 weight: 5
 ---
 

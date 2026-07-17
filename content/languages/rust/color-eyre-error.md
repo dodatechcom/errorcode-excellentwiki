@@ -4,7 +4,6 @@ description: "Fix color-eyre error report errors. Handle error section attachmen
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["color-eyre", "error-handling", "report"]
 weight: 5
 ---
 

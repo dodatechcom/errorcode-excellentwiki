@@ -4,7 +4,6 @@ description: "Fix readr parsing errors when importing delimited files. Handle co
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["readr", "parsing", "read-csv", "delimiter", "tidyverse", "r"]
 weight: 5
 ---
 

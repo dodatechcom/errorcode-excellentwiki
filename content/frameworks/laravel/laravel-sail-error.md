@@ -4,7 +4,6 @@ description: "Laravel Sail throws container errors when the Docker development e
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sail", "docker", "container", "development", "compose"]
 weight: 5
 ---
 

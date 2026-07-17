@@ -4,7 +4,6 @@ description: "Fix Mongoose CastError when invalid values are used for ObjectId f
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mongoose", "mongodb", "cast-error", "objectid", "database"]
 weight: 5
 ---
 

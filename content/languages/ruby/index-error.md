@@ -4,7 +4,6 @@ description: "Fix Ruby IndexError: index X out of range. Check array/string boun
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["index"]
-tags: ["indexerror", "index", "array", "range", "bounds"]
 weight: 90
 ---
 

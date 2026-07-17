@@ -4,7 +4,6 @@ description: "Fix Go net/http TLS handshake timeout error. Configure TLS setting
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["tls", "handshake", "timeout", "https", "certificate", "runtime"]
 weight: 5
 ---
 

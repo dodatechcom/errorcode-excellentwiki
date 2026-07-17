@@ -4,7 +4,6 @@ description: "Fix Pascal runtime errors when performing invalid pointer operatio
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pointer", "invalid", "nil", "dereference", "memory", "pascal"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Ruby SyntaxError: syntax error. Correct Ruby syntax including 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "syntax", "parse", "ruby"]
 weight: 60
 ---
 

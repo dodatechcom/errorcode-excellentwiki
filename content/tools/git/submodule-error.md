@@ -4,7 +4,6 @@ description: "Fix Git submodule not initialized error. Resolve missing or uninit
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["submodule", "not-initialized", "missing", "git"]
 weight: 5
 ---
 

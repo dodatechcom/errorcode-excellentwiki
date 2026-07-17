@@ -4,7 +4,6 @@ description: "Fix C++ std::ios_base::failure when stream operations fail. Handle
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["ios-failure", "iostream", "stream", "file-io"]
 weight: 50
 ---
 

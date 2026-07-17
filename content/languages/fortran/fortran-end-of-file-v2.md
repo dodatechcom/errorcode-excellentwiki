@@ -4,7 +4,6 @@ description: "Fix Fortran errors when encountering unexpected end of file during
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["end-of-file", "eof", "read", "file", "record", "fortran"]
 weight: 5
 ---
 

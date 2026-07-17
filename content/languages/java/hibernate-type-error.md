@@ -4,7 +4,6 @@ description: "Fix Hibernate type mapping errors. Resolve entity attribute type m
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hibernate", "jpa", "type", "mapping", "entity"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C ETIMEDOUT (Connection timed out) by checking network connect
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["etimedout", "connection-timed-out", "tcp-timeout", "keepalive", "reconnect"]
 weight: 5
 ---
 

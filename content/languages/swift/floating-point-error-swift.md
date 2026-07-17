@@ -4,7 +4,6 @@ description: "Fix Swift floating point precision errors. Learn why floating poin
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["floating-point", "precision", "decimal", "swift"]
 weight: 5
 ---
 

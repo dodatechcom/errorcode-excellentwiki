@@ -4,7 +4,6 @@ description: "Fix npm invalid semver error. Resolve semantic versioning issues i
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["version-error", "semver", "invalid", "version", "npm"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PowerShell execution policy errors when scripts cannot run due
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["execution-policy", "PSSecurityException", "security", "unsigned", "restricted"]
 weight: 5
 ---
 

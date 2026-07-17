@@ -4,7 +4,6 @@ description: "Fix Siri errors on Mac when Siri doesn't activate, shows 'Somethin
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["siri", "voice-assistant", "voice-control", "dictation", "ai"]
 weight: 5
 ---
 

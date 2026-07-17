@@ -4,7 +4,6 @@ description: "An attempt to index nil occurs when trying to access a field or in
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nil", "index", "table", "lua"]
 weight: 5
 ---
 

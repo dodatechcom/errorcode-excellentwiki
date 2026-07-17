@@ -4,7 +4,6 @@ description: "Fix Python ImportError: dspy not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "dspy", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

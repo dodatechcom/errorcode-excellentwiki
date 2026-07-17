@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_DLOPEN_DISABLED when native addon loading is restr
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-dlopen-disabled", "dlopen", "security", "policy", "native", "nodejs"]
 weight: 5
 ---
 

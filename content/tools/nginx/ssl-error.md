@@ -4,7 +4,6 @@ description: "Fix Nginx SSL certificate errors. Resolve certificate verification
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ssl", "certificate", "tls", "handshake", "nginx"]
 weight: 5
 ---
 

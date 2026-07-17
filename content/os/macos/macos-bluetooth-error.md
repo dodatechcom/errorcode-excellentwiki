@@ -4,7 +4,6 @@ description: "Fix macOS Bluetooth errors when devices won't pair, connect, or ke
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bluetooth", "pairing", "connection", "peripherals", "wireless"]
 weight: 5
 ---
 

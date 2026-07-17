@@ -4,7 +4,6 @@ description: "Fix Linux 'Connection refused' errors. Resolve issues with service
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["connection-refused", "econnrefused", "port", "firewall", "service"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'logstash: pipeline error' and Logstash failures. Resolv
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["logstash", "pipeline-error", "elk", "ingest", "grok", "filter"]
 weight: 5
 ---
 

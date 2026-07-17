@@ -4,7 +4,6 @@ description: "Fix C too many links (EMLINK). Reduce hard links or increase files
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["emlink", "too-many-links", "hard-link", "filesystem", "errno"]
 weight: 5
 ---
 

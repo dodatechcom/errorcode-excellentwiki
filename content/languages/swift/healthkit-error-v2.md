@@ -4,7 +4,6 @@ description: "Fix HealthKit authorization errors when requesting health data acc
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["HealthKit", "authorization", "health", "HKObjectType", "swift"]
 weight: 5
 ---
 

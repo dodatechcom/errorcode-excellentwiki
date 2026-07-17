@@ -4,7 +4,6 @@ description: "Fix C++ std::invalid_argument when stoi receives a non-numeric str
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-argument", "stoi", "conversion", "string", "stdexcept"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux NFS 'server not responding' errors. Resolve NFS timeouts
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["nfs", "server-not responding", "timeout", "network", "mount"]
 weight: 5
 ---
 

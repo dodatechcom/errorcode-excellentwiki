@@ -4,7 +4,6 @@ description: "Fix MyBatis invalid bound statement not found. Verify mapper XML n
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mybatis", "mapper", "sql", "binding", "xml"]
 weight: 5
 ---
 

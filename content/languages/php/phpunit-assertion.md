@@ -4,7 +4,6 @@ description: "Fix PHPUnit assertion errors. Handle expected vs actual values, cu
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["phpunit", "assertion", "testing"]
 weight: 5
 ---
 

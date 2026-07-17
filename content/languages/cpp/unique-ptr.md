@@ -4,7 +4,6 @@ description: "Fix C++ std::unique_ptr errors including use-after-move, double de
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unique-ptr", "smart-pointer", "raii", "ownership"]
 weight: 5
 ---
 

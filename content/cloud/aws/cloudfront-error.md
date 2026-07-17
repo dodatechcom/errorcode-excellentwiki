@@ -1,10 +1,8 @@
 ---
 title: "AWS CloudFront Error: The Request Could Not Be Satisfied (403)"
 description: "CloudFront: The request could not be satisfied (403) — Fix CloudFront access denied errors."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "cloudfront", "cdn", "403", "forbidden", "origin", "distribution"]
 weight: 5
 ---
 

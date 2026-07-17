@@ -4,7 +4,6 @@ description: "Next.js server component errors occur when server-only code fails 
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["server-component", "rsc", "react", "rendering", "nextjs"]
 weight: 5
 ---
 

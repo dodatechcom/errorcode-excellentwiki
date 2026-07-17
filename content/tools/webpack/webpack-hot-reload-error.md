@@ -4,7 +4,6 @@ description: "Webpack HMR fails to update modules in the development server."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "hmr", "hot-module", "development", "reload"]
 weight: 5
 ---
 

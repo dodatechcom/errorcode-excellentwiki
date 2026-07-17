@@ -4,7 +4,6 @@ description: "Fix ROM (Ruby Object Mapper) repository errors. Learn why ROM oper
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["rom", "repository", "orm", "ruby"]
 weight: 5
 ---
 

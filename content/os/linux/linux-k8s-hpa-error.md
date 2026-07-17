@@ -4,7 +4,6 @@ description: "Fix Kubernetes HPA (Horizontal Pod Autoscaler) errors. Resolve met
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "hpa", "autoscaling", "metrics", "scaling"]
 weight: 5
 ---
 

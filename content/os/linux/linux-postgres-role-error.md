@@ -4,7 +4,6 @@ description: "Fix Linux PostgreSQL 'role not found' errors. Create missing roles
 platforms: ["linux"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["postgresql", "postgres", "role", "authentication", "pg_hba", "database"]
 weight: 5
 ---
 

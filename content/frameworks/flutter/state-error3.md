@@ -4,7 +4,6 @@ description: "Flutter throws an error when state is inconsistent or not properly
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["state", "bloc", "provider", "change-notifier", "riverpod"]
 weight: 5
 ---
 

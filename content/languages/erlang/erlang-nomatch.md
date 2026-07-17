@@ -4,7 +4,6 @@ description: "Erlang raises nomatch when a pattern match assertion fails"
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nomatch", "pattern", "match", "assertion", "="]
 weight: 5
 ---
 

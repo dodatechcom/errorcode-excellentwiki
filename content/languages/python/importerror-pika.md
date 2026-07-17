@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pika not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pika", "module-not-found", "pip", "amqp"]
 weight: 5
 ---
 

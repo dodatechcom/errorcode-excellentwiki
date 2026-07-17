@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_CONNECT when an HTTP/2 CONNECT request fails
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-connect", "http2", "connect", "tunnel", "proxy", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux X11 'display error' and 'cannot open display' issues. Re
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["x11", "display-error", "x-server", "display-variable", "graphics"]
 weight: 5
 ---
 

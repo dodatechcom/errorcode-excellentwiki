@@ -4,7 +4,6 @@ description: "Fix Objective-C and Swift bridging errors including type conversio
 languages: ["objective-c", "swift"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "swift-objc-interop", "bridging"]
 weight: 5
 ---
 

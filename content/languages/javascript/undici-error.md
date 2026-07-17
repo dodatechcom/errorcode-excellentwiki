@@ -4,7 +4,6 @@ description: "Fix undici HTTP client errors. Handle connection issues, request f
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undici", "http", "request"]
 weight: 5
 ---
 

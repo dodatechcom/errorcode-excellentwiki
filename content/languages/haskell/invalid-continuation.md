@@ -4,7 +4,6 @@ description: "An invalid character error occurs when using characters that aren'
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["character", "identifier", "syntax", "haskell"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Gradle configuration errors. Resolve build script parsing and 
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "configuration", "build-script", "evaluation", "groovy"]
 weight: 5
 ---
 

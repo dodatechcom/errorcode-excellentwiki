@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS IAM Access Denied — not authorized to perform"
 description: "Fix AWS IAM access denied errors. Resolve IAM permission and authorization issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "iam", "access-denied", "not-authorized", "policy"]
 weight: 5
 ---
 

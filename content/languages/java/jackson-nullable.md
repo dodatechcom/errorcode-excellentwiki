@@ -4,7 +4,6 @@ description: "Fix Jackson NullPointerException when serializing maps with null k
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "null-key", "map", "serialization"]
 weight: 5
 ---
 

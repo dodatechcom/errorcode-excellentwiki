@@ -4,7 +4,6 @@ description: "Fix Go JSON unmarshal errors. Handle invalid JSON, type mismatches
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "encoding", "parse"]
 weight: 5
 ---
 

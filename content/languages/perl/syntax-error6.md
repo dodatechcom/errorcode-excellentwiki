@@ -4,7 +4,6 @@ description: "A syntax error occurs when Perl encounters code that violates the 
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["syntax", "parser", "compilation", "perl"]
 weight: 5
 ---
 

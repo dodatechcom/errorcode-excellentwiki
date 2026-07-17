@@ -4,7 +4,6 @@ description: "Fix PHPMailer SMTP errors. Handle connection, authentication, and 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["phpmailer", "mail", "smtp"]
 weight: 5
 ---
 

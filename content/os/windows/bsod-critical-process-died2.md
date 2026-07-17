@@ -4,7 +4,6 @@ description: "Fix Blue Screen CRITICAL_PROCESS_DIED stop code 0xEF caused by dis
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "critical-process-died", "disk", "storage", "stop-0xef"]
 weight: 5
 ---
 

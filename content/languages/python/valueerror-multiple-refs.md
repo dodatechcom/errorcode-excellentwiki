@@ -4,7 +4,6 @@ description: "Fix Python ValueError: too many values to unpack (expected N). Use
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["valueerror", "unpacking", "tuple", "multiple-assignment", "star-expression"]
 weight: 5
 ---
 

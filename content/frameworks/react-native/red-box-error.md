@@ -4,7 +4,6 @@ description: "React Native displays a red box error when it cannot resolve a mod
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["module", "import", "bundler", "metro"]
 weight: 5
 ---
 

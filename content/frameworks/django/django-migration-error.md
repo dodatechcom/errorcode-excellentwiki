@@ -4,7 +4,6 @@ description: "Fix Django migration errors. Resolve database migration failures."
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["migrations", "database", "migrate", "schema", "django"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'sudo: not in sudoers' errors. Add users to sudo group, 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sudo", "not-in-sudoers", "privilege", "sudoers", "permission", "wheel"]
 weight: 5
 ---
 

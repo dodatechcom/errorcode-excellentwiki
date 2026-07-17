@@ -4,7 +4,6 @@ description: "Fix 'api-ms-win-crt-runtime-l1-1-0.dll not found' error on Windows
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["api-ms-win-crt", "universal-crt", "dll", "windows-update", "vc-runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Ruby LoadError when using require_relative. Ensure correct rel
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["load"]
-tags: ["loaderror", "require_relative", "path", "relative"]
 weight: 80
 ---
 

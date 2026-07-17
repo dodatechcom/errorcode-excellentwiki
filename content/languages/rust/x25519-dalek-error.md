@@ -4,7 +4,6 @@ description: "Fix x25519-dalek key exchange errors. Handle key generation, share
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["x25519-dalek", "key-exchange", "crypto"]
 weight: 5
 ---
 

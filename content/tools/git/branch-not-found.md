@@ -4,7 +4,6 @@ description: "Fix Git branch not found error. Resolve pathspec did not match any
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["branch-not-found", "pathspec", "branch", "git"]
 weight: 5
 ---
 

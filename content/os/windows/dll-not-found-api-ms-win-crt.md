@@ -4,7 +4,6 @@ description: "Fix 'api-ms-win-crt-runtime-l1-1-0.dll is missing' error on Window
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "api-ms-win-crt", "ucrt", "api-set", "missing"]
 weight: 5
 ---
 

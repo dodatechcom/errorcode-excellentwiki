@@ -4,7 +4,6 @@ description: "Jenkins agent node cannot connect to the master/controller."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "agent", "node", "connection", "slave"]
 weight: 5
 ---
 

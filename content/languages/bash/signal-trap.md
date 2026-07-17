@@ -4,7 +4,6 @@ description: "Fix signal handling and trap errors in Bash when signals aren't ca
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["signal-trap", "trap", "signal-handling"]
 weight: 5
 ---
 

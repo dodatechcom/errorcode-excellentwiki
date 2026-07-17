@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range exceptions from vector::at(), string::at
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["out-of-range", "vector", "string", "at", "bounds-check", "stdexcept"]
 weight: 5
 ---
 

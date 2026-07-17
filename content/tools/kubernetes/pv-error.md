@@ -4,7 +4,6 @@ description: "Fix Kubernetes persistent volume errors. Resolve PV and PVC bindin
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["pv-error", "persistent-volume", "pvc", "storage", "kubernetes"]
 weight: 5
 ---
 

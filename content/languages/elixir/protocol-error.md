@@ -4,7 +4,6 @@ description: "A Protocol.UndefinedError occurs when calling a protocol function 
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["protocol", "undefined", "not-implemented", "protocolerror"]
 weight: 5
 ---
 

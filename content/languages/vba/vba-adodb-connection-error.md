@@ -4,7 +4,6 @@ description: "Fix VBA ADO/DAO connection errors when database connections fail, 
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ado", "dao", "database", "connection", "odbc", "provider", "vba"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Shiny reactive errors including reactive expression failures, 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["shiny", "reactive", "observer", "web-app", "r"]
 weight: 5
 ---
 

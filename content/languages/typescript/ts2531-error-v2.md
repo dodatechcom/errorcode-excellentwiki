@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2531 when accessing properties on values that may
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2531", "null-check", "strict-null", "dom", "optional-chaining"]
 weight: 5
 ---
 

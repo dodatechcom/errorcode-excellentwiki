@@ -4,7 +4,6 @@ description: "Fix 'case syntax error' in Bash when case/esac statements have inc
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["case", "esac", "pattern-match", "switch", "syntax"]
 weight: 5
 ---
 

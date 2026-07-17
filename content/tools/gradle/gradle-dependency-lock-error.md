@@ -4,7 +4,6 @@ description: "Gradle dependency lock file prevents resolution of updated or new 
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "dependency", "lock", "resolution", "constraint"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Maven dependency tree reveals version conflicts between transitive
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "dependency", "tree", "conflict", "transitive"]
 weight: 5
 ---
 

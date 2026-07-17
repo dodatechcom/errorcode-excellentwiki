@@ -4,7 +4,6 @@ description: "Fix systemd 'unit not found' error. Resolve missing service files 
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["not-found", "systemd", "missing", "unit", "install"]
 weight: 5
 ---
 

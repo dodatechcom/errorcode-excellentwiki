@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2459: Type 'X' has no property 'Y'. Resolve prope
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2459", "no-property", "type-mismatch", "property-access"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Perl XS compilation errors. Learn why XS modules fail to compi
 languages: ["perl"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["xs", "compilation", "c", "perl"]
 weight: 5
 ---
 

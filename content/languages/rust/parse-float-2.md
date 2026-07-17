@@ -4,7 +4,6 @@ description: "Fix Rust parse float error. Learn why string to float parsing fail
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["parse", "float", "f64", "f32", "decimal", "conversion"]
 weight: 5
 ---
 

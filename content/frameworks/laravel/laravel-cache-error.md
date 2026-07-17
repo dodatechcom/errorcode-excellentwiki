@@ -4,7 +4,6 @@ description: "Laravel throws InvalidArgumentException when the configured cache 
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cache", "store", "redis", "memcached", "configuration"]
 weight: 5
 ---
 

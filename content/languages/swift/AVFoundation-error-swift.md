@@ -4,7 +4,6 @@ description: "Fix Swift AVFoundation recording errors. Learn why audio/video rec
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["avfoundation", "recording", "audio", "swift"]
 weight: 5
 ---
 

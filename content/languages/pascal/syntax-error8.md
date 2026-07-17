@@ -4,7 +4,6 @@ description: "A syntax error occurs when the Pascal compiler encounters code tha
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["syntax", "compiler", "compilation", "pascal"]
 weight: 5
 ---
 

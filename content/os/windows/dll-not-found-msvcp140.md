@@ -4,7 +4,6 @@ description: "Fix 'msvcp140.dll is missing' error on Windows 10 and 11. Resolve 
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "msvcp140", "missing", "visual-cpp", "redistributable"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error from vector resize exceeding limits. Che
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["length-error", "vector", "resize", "max-size", "capacity"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix termion terminal errors. Handle cursor, color, and terminal si
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["termion", "terminal", "tui"]
 weight: 5
 ---
 

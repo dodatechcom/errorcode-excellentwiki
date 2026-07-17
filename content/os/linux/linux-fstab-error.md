@@ -4,7 +4,6 @@ description: "Fix Linux '/etc/fstab: mount failed' errors. Recover from boot-tim
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["fstab", "mount-failed", "boot", "emergency-mode", "filesystem"]
 weight: 5
 ---
 

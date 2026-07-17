@@ -4,7 +4,6 @@ description: "Fix Terminal.app errors on Mac when Terminal won't open, shows bla
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["terminal", "command-line", "shell", "zsh", "bash"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen FAT_FILE_SYSTEM error on Windows 10 and 11. Repair
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "fat-file-system", "storage", "stop-code"]
 weight: 5
 ---
 

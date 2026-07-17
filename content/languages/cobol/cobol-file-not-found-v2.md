@@ -4,7 +4,6 @@ description: "Fix COBOL errors when files cannot be found, including status code
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "not-found", "status", "allocation", "open", "cobol"]
 weight: 5
 ---
 

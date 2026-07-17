@@ -4,7 +4,6 @@ description: "Fix Kubernetes pod stuck in Pending status. Resolve scheduling and
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["pending-pod", "pending", "scheduling", "resources", "kubernetes"]
 weight: 5
 ---
 

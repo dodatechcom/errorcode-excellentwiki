@@ -4,7 +4,6 @@ description: "Fix JavaScript Uncaught (in promise) TypeError: rejected promise w
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["uncaught-promise", "promise", "rejection", "catch", "async", "async-await"]
 weight: 5
 ---
 

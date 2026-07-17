@@ -4,7 +4,6 @@ description: "Fix AirPlay errors on Mac when you can't stream to Apple TV, AirPl
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["airplay", "streaming", "apple-tv", "screen-mirroring", "wireless"]
 weight: 5
 ---
 

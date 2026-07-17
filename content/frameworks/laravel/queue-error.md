@@ -4,7 +4,6 @@ description: "Laravel queue worker encounters an unhandled exception while proce
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["queue", "job", "worker", "failed", "horizon"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix systemd 'Dependency failed' errors. Resolve service startup or
 tools: ["systemd"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["dependency-failed", "systemd", "requires", "wants", "after"]
 weight: 5
 ---
 

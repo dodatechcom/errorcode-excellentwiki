@@ -4,7 +4,6 @@ description: "Fix Xcode archive errors when archiving for distribution. Resolve 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["xcode", "archive", "distribution", "app-store", "export"]
 weight: 5
 ---
 

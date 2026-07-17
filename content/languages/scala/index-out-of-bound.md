@@ -4,7 +4,6 @@ description: "An IndexOutOfBoundsException occurs when accessing a collection wi
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "out-of-bounds", "collection", "indexoutofboundsexception"]
 weight: 5
 ---
 

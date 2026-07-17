@@ -4,7 +4,6 @@ description: "Fix go-redis connection errors. Handle Redis server connectivity, 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redis", "connection", "cache"]
 weight: 5
 ---
 

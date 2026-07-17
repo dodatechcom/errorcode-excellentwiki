@@ -4,7 +4,6 @@ description: "Fix Python RuntimeError with these debugging steps. Check error me
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["runtimeerror", "runtime", "generic", "debugging"]
 weight: 105
 ---
 

@@ -4,7 +4,6 @@ description: "Fix SQL data truncation errors when a value doesn't fit the column
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["data-truncation", "incorrect-value", "varchar", "overflow", "sql"]
 weight: 5
 ---
 

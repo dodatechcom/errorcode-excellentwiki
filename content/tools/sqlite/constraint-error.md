@@ -4,7 +4,6 @@ description: "Fix SQLite UNIQUE constraint failed errors. Resolve duplicate valu
 tools: ["sqlite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlite", "unique", "constraint", "duplicate", "insert"]
 weight: 5
 ---
 

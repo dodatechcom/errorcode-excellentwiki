@@ -4,7 +4,6 @@ description: "Flask raises ConfigurationError when application configuration is 
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["configuration", "config", "settings", "environment", "flask"]
 weight: 5
 ---
 

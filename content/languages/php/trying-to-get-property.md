@@ -4,7 +4,6 @@ description: "Fix PHP Trying to get property of non-object warning. Learn why th
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "non-object", "property-access", "null"]
 weight: 5
 ---
 

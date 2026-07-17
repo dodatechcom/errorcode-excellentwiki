@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_TDR_FAILURE error on Windows 10 and 11. Upda
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "video-tdr", "gpu", "graphics", "stop-code"]
 weight: 5
 ---
 

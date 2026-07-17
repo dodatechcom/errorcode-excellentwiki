@@ -4,7 +4,6 @@ description: "Fix Swift Realm database errors. Learn why Realm operations fail a
 languages: ["swift"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["realm", "database", "mobile", "swift"]
 weight: 5
 ---
 

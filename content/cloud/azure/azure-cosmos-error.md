@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Cosmos DB Error"
 description: "Fix Azure Cosmos DB errors. Resolve Cosmos DB connectivity and configuration issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "cosmos", "cosmosdb", "nosql", "database"]
 weight: 5
 ---
 

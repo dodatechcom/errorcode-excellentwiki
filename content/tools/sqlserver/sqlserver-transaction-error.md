@@ -4,7 +4,6 @@ description: "SQL Server transaction fails due to errors or rollback."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "transaction", "commit", "rollback", "begin"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C errno 29 ESPIPE (Illegal seek) by avoiding lseek on pipes, s
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["espipe", "errno-29", "seek", "illegal-seek", "pipe"]
 weight: 5
 ---
 

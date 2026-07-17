@@ -4,7 +4,6 @@ description: "Fix union type errors in PHP 8.0+. Handle type declarations, type 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "union-types", "typing"]
 weight: 5
 ---
 

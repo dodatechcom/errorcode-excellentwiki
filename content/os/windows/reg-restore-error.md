@@ -4,7 +4,6 @@ description: "Fix 'Registry restore failed' errors on Windows 10 and 11. Resolve
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "restore", "restore-failed", "recovery"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Dart RangeError when accessing elements beyond valid indices i
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["range-error", "index", "out-of-range", "list", "runtime", "dart"]
 weight: 5
 ---
 

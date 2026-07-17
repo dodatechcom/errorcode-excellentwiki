@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError: invalid syntax. Common causes and solution
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "syntax", "parse"]
 weight: 80
 ---
 

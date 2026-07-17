@@ -4,7 +4,6 @@ description: "Fix Lua file errors. Learn why file operations fail and how to han
 languages: ["lua"]
 severities: ["error"]
 error-types: ["io-error"]
-tags: ["file", "io", "open", "lua"]
 weight: 5
 ---
 

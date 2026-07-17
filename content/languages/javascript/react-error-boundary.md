@@ -4,7 +4,6 @@ description: "Fix React error boundary caught errors. Implement proper error bou
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "error-boundary", "component-error", "fallback", "catch"]
 weight: 5
 ---
 

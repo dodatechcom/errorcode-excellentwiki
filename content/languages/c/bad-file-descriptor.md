@@ -4,7 +4,6 @@ description: "Fix C bad file descriptor (EBADF). Use valid file descriptors for 
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-file-descriptor", "ebadf", "file-descriptor", "errno", "io"]
 weight: 5
 ---
 

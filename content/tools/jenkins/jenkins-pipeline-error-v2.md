@@ -4,7 +4,6 @@ description: "Jenkins pipeline DSL syntax error in Jenkinsfile."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "pipeline", "dsl", "jenkinsfile", "syntax"]
 weight: 5
 ---
 

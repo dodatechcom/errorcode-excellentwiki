@@ -4,7 +4,6 @@ description: "Fix C errno 50 ENOPKG (No package found) by installing required pa
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enopkg", "errno-50", "package", "not-found", "missing-package"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "AWS S3 AccessDenied"
 description: "AccessDenied — Fix Amazon S3 access denied errors for bucket and object operations."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "s3", "access-denied", "bucket", "object", "iam", "policy"]
 weight: 5
 ---
 

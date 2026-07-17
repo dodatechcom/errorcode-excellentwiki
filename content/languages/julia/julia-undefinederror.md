@@ -4,7 +4,6 @@ description: "Julia raises UndefVarError when referencing an undefined variable 
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undef", "variable", "undefined", "symbol", "undefvarerror"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2769 when function overloads or generic calls don
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2769", "overload", "generic", "function-call", "discriminated-union"]
 weight: 5
 ---
 

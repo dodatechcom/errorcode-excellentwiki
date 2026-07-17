@@ -4,7 +4,6 @@ description: "Example of std::overflow_error in C++. Handle integer and floating
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["overflow-error", "arithmetic", "integer", "bounds"]
 weight: 50
 ---
 

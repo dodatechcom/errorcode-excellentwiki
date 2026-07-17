@@ -4,7 +4,6 @@ description: "Fix ConfigDataException when Spring Cloud Config cannot load confi
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-cloud", "config", "configuration", "config-data", "property-source"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go concurrent map writes panic. Use sync.Map, sync.RWMutex, or
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["concurrent", "map", "write", "goroutine", "race", "sync"]
 weight: 5
 ---
 

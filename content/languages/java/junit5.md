@@ -4,7 +4,6 @@ description: "Fix JUnit Platform launcher errors, test discovery failures, and i
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["junit5", "testing", "junit-platform", "launcher", "test"]
 weight: 5
 ---
 

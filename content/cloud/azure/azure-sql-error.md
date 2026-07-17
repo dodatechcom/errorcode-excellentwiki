@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure SQL Connection Error"
 description: "Fix Azure SQL connection errors. Resolve Azure SQL Database connectivity issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "sql", "database", "connection", "firewall"]
 weight: 5
 ---
 

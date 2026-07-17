@@ -4,7 +4,6 @@ description: "Fix Kubernetes DNS CoreDNS resolution failed. Resolve DNS lookup f
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "dns", "coredns", "resolution", "nameservice", "lookup"]
 weight: 5
 ---
 

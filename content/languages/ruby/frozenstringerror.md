@@ -4,7 +4,6 @@ description: "Fix Ruby FrozenError: can't modify frozen String. Learn why string
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["frozenerror", "frozen-string", "string", "immutable", "ruby"]
 weight: 5
 ---
 

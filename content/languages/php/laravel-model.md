@@ -4,7 +4,6 @@ description: "Fix Eloquent ModelNotFoundException when a model record is not fou
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "model", "eloquent"]
 weight: 5
 ---
 

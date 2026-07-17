@@ -4,7 +4,6 @@ description: "Fix Go unsafe pointer arithmetic errors. Avoid unsafe.Pointer when
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unsafe", "pointer", "arithmetic", "memory", "conversion"]
 weight: 5
 ---
 

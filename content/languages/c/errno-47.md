@@ -4,7 +4,6 @@ description: "Fix C errno 47 ETIME (Stream ioctl timeout) by adjusting timeout v
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["etime", "errno-47", "stream", "ioctl", "timeout"]
 weight: 5
 ---
 

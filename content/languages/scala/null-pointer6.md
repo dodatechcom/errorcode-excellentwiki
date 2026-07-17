@@ -4,7 +4,6 @@ description: "A NullPointerException occurs when attempting to access a method o
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "pointer", "npe", "scala"]
 weight: 5
 ---
 

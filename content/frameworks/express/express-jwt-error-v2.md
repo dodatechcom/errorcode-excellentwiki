@@ -4,7 +4,6 @@ description: "Fix Express JWT errors when token verification fails due to expira
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jwt", "token", "auth", "verify", "express"]
 weight: 5
 ---
 

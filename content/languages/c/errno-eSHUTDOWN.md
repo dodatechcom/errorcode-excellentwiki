@@ -4,7 +4,6 @@ description: "Fix C ESHUTDOWN (Cannot send after shutdown) by handling socket sh
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eshutdown", "cannot-send-after-shutdown", "socket", "shutdown", "send"]
 weight: 5
 ---
 

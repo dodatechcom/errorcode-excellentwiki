@@ -4,7 +4,6 @@ description: "Example of std::length_error in C++. Handle container size limits 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["length-error", "exception", "vector", "container"]
 weight: 50
 ---
 

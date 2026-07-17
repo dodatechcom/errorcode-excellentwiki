@@ -4,7 +4,6 @@ description: "Fix Swift URLError bad server response. Learn why servers return u
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["urlerror", "bad-response", "server", "swift"]
 weight: 5
 ---
 

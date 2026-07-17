@@ -4,7 +4,6 @@ description: "Fix TypeScript TS1002: Unterminated string literal. Resolve unclos
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts1002", "string", "unterminated", "syntax-error", "scanner"]
 weight: 5
 ---
 

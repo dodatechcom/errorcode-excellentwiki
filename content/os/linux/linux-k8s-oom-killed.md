@@ -4,7 +4,6 @@ description: "Fix Kubernetes OOMKilled errors. Resolve container memory limit ex
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "oom", "oomkilled", "memory", "limits"]
 weight: 5
 ---
 

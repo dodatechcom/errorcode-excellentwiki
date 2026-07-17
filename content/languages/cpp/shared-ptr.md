@@ -4,7 +4,6 @@ description: "Fix C++ std::shared_ptr errors including circular references, dang
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["shared-ptr", "smart-pointer", "memory", "reference-counting"]
 weight: 5
 ---
 

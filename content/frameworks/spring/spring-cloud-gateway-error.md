@@ -4,7 +4,6 @@ description: "Spring Cloud Gateway throws ResponseStatusException when a route c
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gateway", "cloud-gateway", "routing", "proxy", "downstream"]
 weight: 5
 ---
 

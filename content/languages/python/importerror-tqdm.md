@@ -4,7 +4,6 @@ description: "Fix Python ImportError: tqdm not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "tqdm", "module-not-found", "pip", "progress-bar"]
 weight: 5
 ---
 

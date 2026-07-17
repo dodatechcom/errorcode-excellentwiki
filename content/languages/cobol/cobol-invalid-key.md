@@ -4,7 +4,6 @@ description: "Invalid key errors in COBOL occur when referencing a record key th
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["invalid-key", "key", "indexed", "access", "cobol"]
 weight: 5
 ---
 

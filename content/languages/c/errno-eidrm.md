@@ -4,7 +4,6 @@ description: "Fix C EIDRM (Identifier removed) by checking IPC resource existenc
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eidrm", "identifier-removed", "ipc", "shared-memory", "semaphore"]
 weight: 5
 ---
 

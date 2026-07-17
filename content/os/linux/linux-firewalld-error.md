@@ -4,7 +4,6 @@ description: "Fix Linux firewalld configuration errors. Resolve zone, service, r
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["firewalld", "firewall", "configuration-error", "firewall-cmd", "network"]
 weight: 5
 ---
 

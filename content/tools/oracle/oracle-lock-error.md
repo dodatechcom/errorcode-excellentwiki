@@ -4,7 +4,6 @@ description: "Oracle operation fails because the requested resource is locked by
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "lock", "busy", "nowait", "ora-00054", "contention"]
 weight: 5
 ---
 

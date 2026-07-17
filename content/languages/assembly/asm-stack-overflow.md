@@ -4,7 +4,6 @@ description: "A stack overflow in Assembly occurs when the call stack exceeds it
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursive", "memory", "rsp"]
 weight: 5
 ---
 

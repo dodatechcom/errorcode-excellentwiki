@@ -4,7 +4,6 @@ description: "Fix Linux EALREADY (errno 78) Operation already in progress error.
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ealready", "socket", "errno-78", "non-blocking", "in-progress"]
 weight: 5
 ---
 

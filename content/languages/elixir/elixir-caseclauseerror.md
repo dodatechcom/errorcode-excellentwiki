@@ -4,7 +4,6 @@ description: "Elixir raises CaseClauseError when no clause in a case expression 
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["case", "clause", "match", "caseclauseerror", "pattern"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'COM access denied' errors on Windows 10 and 11. Configure DCO
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "access-denied", "dcom-permissions", "launch-permissions"]
 weight: 5
 ---
 

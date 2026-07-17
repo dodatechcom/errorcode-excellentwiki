@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_STATUS_CODE when an invalid status code is u
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-status-code", "http2", "status-code", "pseudo-header", "nodejs"]
 weight: 5
 ---
 

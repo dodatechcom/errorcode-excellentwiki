@@ -4,7 +4,6 @@ description: "Handle Python Warning base class. Understand warning categories, c
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["warning", "warnings", "diagnostic", "filter", "deprecated"]
 weight: 5
 ---
 

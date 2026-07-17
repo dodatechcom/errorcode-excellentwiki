@@ -4,7 +4,6 @@ description: "Fix C ENOKEY (Required key not available) by managing kernel keyri
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enokey", "required-key-not-available", "keyring", "kernel-keyring", "keyctl"]
 weight: 5
 ---
 

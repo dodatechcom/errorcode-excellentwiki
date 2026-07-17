@@ -4,7 +4,6 @@ description: "Fix Spring GraphQL data fetching errors. Resolve DataLoader N+1 pr
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "graphql", "datafetching", "dataloader", "schema"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux ENOLCK (errno 36) No record locks available error. Solut
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOLCK", "lock", "errno-36", "nfs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Passport.js authentication failures. Handle strategy errors, c
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["passport", "authentication", "strategy", "login", "session"]
 weight: 5
 ---
 

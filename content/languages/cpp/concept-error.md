@@ -4,7 +4,6 @@ description: "Fix C++20 concept constraint errors when template arguments don't 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["concept", "c++20", "constraint", "template"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix VBA Type Mismatch error (Error 13) when assigning or comparing
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type-mismatch", "error-13", "conversion", "variant", "vba"]
 weight: 5
 ---
 

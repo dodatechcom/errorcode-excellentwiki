@@ -4,7 +4,6 @@ description: "Fix Kubernetes RBAC forbidden errors. Resolve ClusterRole and Clus
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "rbac", "forbidden", "clusterrole", "permission", "authorization"]
 weight: 5
 ---
 

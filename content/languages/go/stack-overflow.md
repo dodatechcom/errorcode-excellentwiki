@@ -4,7 +4,6 @@ description: "Fix Go runtime stack overflow panic. Eliminate infinite recursion,
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stack", "overflow", "recursion", "goroutine", "panic"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix npm token authentication errors. Resolve npm login and token i
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["token", "authentication", "login", "auth", "npm"]
 weight: 5
 ---
 

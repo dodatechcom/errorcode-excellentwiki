@@ -4,7 +4,6 @@ description: "Fix MyBatis BindingException with dynamic SQL. Check XML mapper co
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mybatis", "dynamic-sql", "xml", "binding-exception", "sql"]
 weight: 5
 ---
 

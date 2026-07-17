@@ -4,7 +4,6 @@ description: "Fix Swift throws errors. Learn why error throwing and catching fai
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["throws", "catch", "error", "swift"]
 weight: 5
 ---
 

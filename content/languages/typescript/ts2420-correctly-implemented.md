@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2420: Class incorrectly implements interface. Ens
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2420", "class", "implements", "interface", "incorrectly-implements"]
 weight: 5
 ---
 

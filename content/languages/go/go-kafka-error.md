@@ -4,7 +4,6 @@ description: "Fix Kafka Go client errors when no brokers are available. Handle b
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kafka", "sarama", "message-queue"]
 weight: 5
 ---
 

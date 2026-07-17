@@ -4,7 +4,6 @@ description: "Fix Python ImportError caused by circular imports. Learn why circu
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["importerror", "circular", "import", "module"]
 weight: 5
 ---
 

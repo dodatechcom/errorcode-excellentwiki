@@ -4,7 +4,6 @@ description: "Fix Python UnicodeDecodeError when decoding bytes fails. Specify e
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unicodedecodeerror", "unicode", "encoding", "bytes", "utf-8"]
 weight: 72
 ---
 

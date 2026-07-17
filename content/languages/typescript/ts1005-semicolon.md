@@ -4,7 +4,6 @@ description: "Fix TypeScript TS1005: ';' expected. Resolve missing semicolon syn
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts1005", "semicolon", "syntax-error", "expected"]
 weight: 5
 ---
 

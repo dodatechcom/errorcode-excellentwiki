@@ -4,7 +4,6 @@ description: "Fix Python ImportError: boto3 bedrock not found. Install boto3 and
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "boto3", "bedrock", "module-not-found", "pip", "aws"]
 weight: 5
 ---
 

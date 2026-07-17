@@ -4,7 +4,6 @@ description: "Fix Express static file serving errors. Resolve static file access
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["static", "files", "public", "css", "express"]
 weight: 5
 ---
 

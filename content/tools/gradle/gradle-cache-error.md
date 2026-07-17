@@ -4,7 +4,6 @@ description: "Gradle build cache is corrupted, causing build failures or incorre
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "cache", "corrupted", "build-cache", "clean"]
 weight: 5
 ---
 

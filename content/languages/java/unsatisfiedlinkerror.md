@@ -4,7 +4,6 @@ description: "Fix Java UnsatisfiedLinkError by placing native libraries on java.
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unsatisfiedlinkerror", "jni", "native", "library", "so"]
 weight: 5
 ---
 

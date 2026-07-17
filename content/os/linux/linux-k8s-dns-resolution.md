@@ -4,7 +4,6 @@ description: "Fix Kubernetes DNS resolution failures. Resolve 'could not resolve
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "dns", "coredns", "service", "resolution", "ndots"]
 weight: 5
 ---
 

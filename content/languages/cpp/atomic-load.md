@@ -4,7 +4,6 @@ description: "Fix C++ std::atomic load issues including data races, memory order
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["atomic", "memory-ordering", "concurrency", "data-race"]
 weight: 5
 ---
 

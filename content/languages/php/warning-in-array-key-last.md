@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_key_last() expects exactly 1 argument. Lear
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-key-last", "array", "arguments"]
 weight: 5
 ---
 

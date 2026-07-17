@@ -4,7 +4,6 @@ description: "Fix Kubernetes config.load_incluster_config failed. Verify in-clus
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "k8s", "config", "incluster", "serviceaccount"]
 weight: 5
 ---
 

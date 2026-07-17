@@ -4,7 +4,6 @@ description: "SQL Server replication fails to distribute changes from publisher 
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "replication", "distribution", "agent", "publisher", "subscriber"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'docker compose' volume mount errors. Resolve bind mount
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "docker-compose", "volume", "mount", "bind-mount", "permission"]
 weight: 5
 ---
 

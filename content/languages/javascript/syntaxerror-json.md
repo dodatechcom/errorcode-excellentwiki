@@ -4,7 +4,6 @@ description: "Fix JavaScript SyntaxError: Unexpected token in JSON at position 0
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["syntaxerror", "json", "unexpected-token", "parse", "json-parse"]
 weight: 5
 ---
 

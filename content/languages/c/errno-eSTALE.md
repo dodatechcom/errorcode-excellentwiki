@@ -4,7 +4,6 @@ description: "Fix C ESTALE (Stale file handle) by handling NFS stale handles, re
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["estale", "stale-file-handle", "nfs", "file-handle", "reconnect"]
 weight: 5
 ---
 

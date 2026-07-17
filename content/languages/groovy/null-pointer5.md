@@ -4,7 +4,6 @@ description: "A NullPointerException occurs when attempting to access a method o
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "pointer", "null-pointer", "groovy"]
 weight: 5
 ---
 

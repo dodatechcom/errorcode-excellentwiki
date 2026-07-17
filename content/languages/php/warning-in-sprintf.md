@@ -4,7 +4,6 @@ description: "Fix PHP Warning: sprintf() too few arguments. Learn to provide mat
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "sprintf", "format-string", "arguments"]
 weight: 5
 ---
 

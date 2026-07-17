@@ -4,7 +4,6 @@ description: "Fix Face ID errors when Face ID stops working, shows 'Face Not Rec
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["face-id", "biometric", "iphone", "true-depth", "authentication"]
 weight: 5
 ---
 

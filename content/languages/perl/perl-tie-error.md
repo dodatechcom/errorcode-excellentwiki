@@ -4,7 +4,6 @@ description: "Fix Perl Tie errors. Learn why tied variables fail and how to use 
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["tie", "variable", "overload", "perl"]
 weight: 5
 ---
 

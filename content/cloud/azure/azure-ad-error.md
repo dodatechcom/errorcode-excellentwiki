@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure AD Authentication Error"
 description: "Fix Azure AD authentication errors. Resolve Entra ID login failures."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "ad", "entra-id", "authentication", "login"]
 weight: 5
 ---
 

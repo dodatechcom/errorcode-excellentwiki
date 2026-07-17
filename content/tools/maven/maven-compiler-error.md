@@ -4,7 +4,6 @@ description: "Maven compiler plugin fails during Java source code compilation."
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "compiler", "compile", "java", "syntax"]
 weight: 5
 ---
 

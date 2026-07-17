@@ -4,7 +4,6 @@ description: "Fix Linux 'scp: permission denied' errors. Resolve file transfer p
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["scp", "permission-denied", "file-transfer", "ssh", "remote-copy"]
 weight: 5
 ---
 

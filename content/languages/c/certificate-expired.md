@@ -4,7 +4,6 @@ description: "Fix C certificate has expired. Update expired SSL/TLS certificates
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["certificate", "expired", "ssl", "tls", "x509"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix systemd 'failed to reload' error. Resolve configuration reload
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["reload", "systemd", "signal", "configuration", "failed"]
 weight: 5
 ---
 

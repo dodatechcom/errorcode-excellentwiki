@@ -4,7 +4,6 @@ description: "Fix Python ImportError: paramiko not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "paramiko", "module-not-found", "pip", "ssh"]
 weight: 5
 ---
 

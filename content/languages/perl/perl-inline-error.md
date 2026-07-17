@@ -4,7 +4,6 @@ description: "Fix Perl Inline::C errors. Learn why Inline::C fails and how to co
 languages: ["perl"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["inline-c", "c", "compilation", "perl"]
 weight: 5
 ---
 

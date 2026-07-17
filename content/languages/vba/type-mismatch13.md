@@ -4,7 +4,6 @@ description: "Fix VBA 'Run-time error 13: Type mismatch' when a value is assigne
 languages: ["vba"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-error-13", "type-mismatch", "vba"]
 weight: 5
 ---
 

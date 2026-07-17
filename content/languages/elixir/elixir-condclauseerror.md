@@ -4,7 +4,6 @@ description: "Elixir raises CondClauseError when no condition in a cond expressi
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cond", "condition", "clause", "condclauseerror", "boolean"]
 weight: 5
 ---
 

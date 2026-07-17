@@ -4,7 +4,6 @@ description: "Fix 'bash: arithmetic syntax error' when performing integer arithm
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["arithmetic", "syntax", "integer", "math", "evaluation"]
 weight: 5
 ---
 

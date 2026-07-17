@@ -4,7 +4,6 @@ description: "Fix Rust index out of bounds panic. Learn why indexing a Vec or sl
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "bounds", "vec", "slice", "panic"]
 weight: 5
 ---
 

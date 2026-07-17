@@ -4,7 +4,6 @@ description: "Fix PHP error code 8192 E_DEPRECATED deprecation notices. Learn to
 languages: ["php"]
 severities: ["notice"]
 error-types: ["runtime-error"]
-tags: ["error-8192", "e-deprecated", "deprecated"]
 weight: 5
 ---
 

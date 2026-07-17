@@ -4,7 +4,6 @@ description: "Fix Ruby NameError: undefined local variable or method. Check vari
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["name"]
-tags: ["nameerror", "variable", "undefined", "scope"]
 weight: 40
 ---
 

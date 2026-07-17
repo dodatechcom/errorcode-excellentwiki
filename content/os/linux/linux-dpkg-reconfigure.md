@@ -4,7 +4,6 @@ description: "Fix Linux 'dpkg-reconfigure' configuration errors. Resolve package
 platforms: ["linux"]
 severities: ["warning"]
 error-types: ["system-error"]
-tags: ["dpkg", "reconfigure", "debconf", "configuration", "package-manager"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C ETOOMANYREFS (Too many references variant) by managing file 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["etoomanyrefs", "too-many-references-variant", "fd-passing", "scm-rights"]
 weight: 5
 ---
 

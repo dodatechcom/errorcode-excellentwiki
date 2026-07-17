@@ -4,7 +4,6 @@ description: "Fix TypeScript TS7006: Parameter 'X' implicitly has 'any' type. En
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts7006", "implicit-any", "noImplicitAny", "parameter", "type-inference"]
 weight: 5
 ---
 

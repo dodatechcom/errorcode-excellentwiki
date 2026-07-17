@@ -4,7 +4,6 @@ description: "Fix kotlinx.coroutines cancellation propagation errors when corout
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kotlinx-coroutines", "cancellation", "coroutine", "structured-concurrency", "kotlin"]
 weight: 5
 ---
 

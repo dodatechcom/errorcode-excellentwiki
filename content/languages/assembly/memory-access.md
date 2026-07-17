@@ -4,7 +4,6 @@ description: "An invalid memory access error occurs when a program attempts to r
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "access", "permission", "mapping"]
 weight: 5
 ---
 

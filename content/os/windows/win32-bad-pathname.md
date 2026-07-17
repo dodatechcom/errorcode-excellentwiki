@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_BAD_PATHNAME (161). Resolve malformed path error
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-161", "bad-pathname", "invalid-path"]
 weight: 5
 ---
 

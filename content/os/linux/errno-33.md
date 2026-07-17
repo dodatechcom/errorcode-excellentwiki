@@ -4,7 +4,6 @@ description: "Fix Linux EDOM (errno 33) Math argument out of domain of func erro
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enDOM", "math", "errno-33", "domain"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PowerShell module loading errors when Import-Module fails."
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["Import-Module", "module", "load", "PSModule", "powershell"]
 weight: 5
 ---
 

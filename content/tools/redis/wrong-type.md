@@ -4,7 +4,6 @@ description: "Redis command used on a key whose stored data type does not match 
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["type", "wrongtype", "redis", "data-type"]
 weight: 5
 ---
 

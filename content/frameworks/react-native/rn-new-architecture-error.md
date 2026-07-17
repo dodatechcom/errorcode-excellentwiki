@@ -4,7 +4,6 @@ description: "React Native New Architecture fails when Turbo Module specificatio
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["new-architecture", "turbo-module", "fabric", "codegen", "c++", "jni"]
 weight: 5
 ---
 

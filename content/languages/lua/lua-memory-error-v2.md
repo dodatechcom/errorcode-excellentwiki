@@ -4,7 +4,6 @@ description: "Fix Lua out-of-memory errors. Handle memory allocation failures, o
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "allocation", "oom", "table", "gc", "lua"]
 weight: 5
 ---
 

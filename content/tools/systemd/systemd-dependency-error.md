@@ -4,7 +4,6 @@ description: "systemd service fails because a required dependency failed to star
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "dependency", "requires", "after", "ordering"]
 weight: 5
 ---
 

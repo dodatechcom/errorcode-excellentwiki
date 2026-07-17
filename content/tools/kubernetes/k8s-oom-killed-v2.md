@@ -4,7 +4,6 @@ description: "Fix Kubernetes OOMKilled. Resolve container out-of-memory kills by
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "oomkilled", "memory", "limits", "container", "resource"]
 weight: 5
 ---
 

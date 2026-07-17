@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_UNKNOWN_FILE_EXTENSION by using tsx, configuring -
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-unknown-file-extension", "extension", "typescript", "loader", "nodejs"]
 weight: 5
 ---
 

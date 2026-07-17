@@ -4,7 +4,6 @@ description: "Fix Docker daemon socket connection errors. Resolve Docker daemon 
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["docker-socket", "daemon", "permission", "unix-socket", "connection"]
 weight: 5
 ---
 

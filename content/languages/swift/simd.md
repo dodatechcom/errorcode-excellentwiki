@@ -4,7 +4,6 @@ description: "Fix Swift SIMD errors. Learn about SIMD vector operations, alignme
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["simd", "vector", "numeric", "alignment", "performance"]
 weight: 5
 ---
 

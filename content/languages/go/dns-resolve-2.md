@@ -4,7 +4,6 @@ description: "Fix Go dial tcp lookup no such host error. Configure DNS servers, 
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dns", "resolve", "lookup", "network", "tcp", "runtime"]
 weight: 5
 ---
 

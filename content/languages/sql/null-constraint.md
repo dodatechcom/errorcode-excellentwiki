@@ -4,7 +4,6 @@ description: "Fix 'Column X cannot be null' when inserting or updating a NOT NUL
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["null-constraint", "not-null", "column-cannot-be-null"]
 weight: 5
 ---
 

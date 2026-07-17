@@ -4,7 +4,6 @@ description: "Fix Go out of memory panic. Identify excessive allocations, use st
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["memory", "oom", "allocation", "panic", "runtime", "gc"]
 weight: 5
 ---
 

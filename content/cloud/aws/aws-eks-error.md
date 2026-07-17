@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS EKS Cluster Error"
 description: "Fix AWS EKS cluster errors. Resolve EKS cluster and node group issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "eks", "kubernetes", "cluster", "node"]
 weight: 5
 ---
 

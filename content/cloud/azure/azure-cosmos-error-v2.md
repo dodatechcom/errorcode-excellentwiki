@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Cosmos DB — request rate too large"
 description: "Fix Azure Cosmos DB request rate too large. Resolve Cosmos DB throttling and RU issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "cosmos", "db", "request", "rate", "throttling", "ru", "throughput"]
 weight: 5
 ---
 

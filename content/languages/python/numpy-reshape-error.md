@@ -4,7 +4,6 @@ description: "Fix NumPy ValueError cannot reshape array of size X into shape Y. 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["numpy", "reshape", "valueerror", "array", "dimensions"]
 weight: 5
 ---
 

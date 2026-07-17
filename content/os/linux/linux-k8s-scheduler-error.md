@@ -4,7 +4,6 @@ description: "Fix Kubernetes scheduler errors. Resolve kube-scheduler crashes, s
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "scheduler", "scheduling", "filter", "score", "control-plane"]
 weight: 5
 ---
 

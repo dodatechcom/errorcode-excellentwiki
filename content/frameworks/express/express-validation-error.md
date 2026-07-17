@@ -4,7 +4,6 @@ description: "Fix Express validation errors. Resolve request data validation fai
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["validation", "joi", "express-validator", "sanitize", "express"]
 weight: 5
 ---
 

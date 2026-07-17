@@ -4,7 +4,6 @@ description: "Fix 'vcruntime140.dll is missing' error on Windows 10 and 11. Reso
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "vcruntime140", "missing", "visual-cpp", "redistributable"]
 weight: 5
 ---
 

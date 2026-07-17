@@ -4,7 +4,6 @@ description: "Fix Java IllegalAccessException by using setAccessible, opening mo
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["illegalaccessexception", "reflection", "access", "private", "module"]
 weight: 5
 ---
 

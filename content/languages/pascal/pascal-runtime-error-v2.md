@@ -4,7 +4,6 @@ description: "Fix Pascal runtime errors when files cannot be found or opened dur
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "file", "not-found", "open", "exception", "pascal"]
 weight: 5
 ---
 

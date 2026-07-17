@@ -4,7 +4,6 @@ description: "Fix Haskell 'variable not in scope' error when names aren't access
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["not-in-scope", "variable", "import", "module", "scope", "haskell"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C no route to host (EHOSTUNREACH). Fix routing and DNS resolut
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ehostunreach", "no-route-to-host", "routing", "dns", "errno"]
 weight: 5
 ---
 

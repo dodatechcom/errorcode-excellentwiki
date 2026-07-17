@@ -4,7 +4,6 @@ description: "Webpack development server fails to start or serve the application
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "dev-server", "development", "serve", "hmr"]
 weight: 5
 ---
 

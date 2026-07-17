@@ -4,7 +4,6 @@ description: "Fix Go gob decode errors. Handle encoding/decoding issues, type re
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gob", "encoding", "binary"]
 weight: 5
 ---
 

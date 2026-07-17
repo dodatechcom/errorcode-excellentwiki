@@ -4,7 +4,6 @@ description: "Fix JavaScript InvalidStateError when an object is not in the corr
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["invalidstateerror", "state", "lifecycle", "ready", "dom"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift string index out of bounds errors. Learn why string inde
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["string", "index", "character", "substring", "utf16"]
 weight: 5
 ---
 

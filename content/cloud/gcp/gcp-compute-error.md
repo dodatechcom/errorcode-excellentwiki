@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Compute Engine Error"
 description: "Fix GCP Compute Engine errors. Resolve VM creation and management issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "compute", "engine", "vm", "instance"]
 weight: 5
 ---
 

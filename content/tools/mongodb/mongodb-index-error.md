@@ -4,7 +4,6 @@ description: "MongoDB index operation fails due to index creation issues or perf
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "index", "performance", "query", "create-index"]
 weight: 5
 ---
 

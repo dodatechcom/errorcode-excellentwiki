@@ -4,7 +4,6 @@ description: "Fix time crate formatting errors. Handle format strings, timezone 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["time", "datetime", "format"]
 weight: 5
 ---
 

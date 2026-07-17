@@ -4,7 +4,6 @@ description: "Fix Java CloneNotSupportedException by implementing Cloneable, ove
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["clonenotsupportedexception", "clone", "cloneable", "copy"]
 weight: 5
 ---
 

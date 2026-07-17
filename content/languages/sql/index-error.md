@@ -4,7 +4,6 @@ description: "Fix 'Duplicate key name' when creating an index that already exist
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["index-error", "duplicate-key-name", "create-index", "index-exists"]
 weight: 5
 ---
 

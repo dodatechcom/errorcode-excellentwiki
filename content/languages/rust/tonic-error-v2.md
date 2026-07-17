@@ -4,7 +4,6 @@ description: "Fix tonic gRPC transport errors. Handle connection failures, chann
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tonic", "grpc", "protobuf", "transport", "network"]
 weight: 5
 ---
 

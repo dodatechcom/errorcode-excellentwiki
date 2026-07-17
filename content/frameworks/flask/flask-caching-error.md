@@ -4,7 +4,6 @@ description: "Flask-Caching raises errors when cache operations fail due to back
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["caching", "cache", "redis", "memcached", "flask"]
 weight: 5
 ---
 

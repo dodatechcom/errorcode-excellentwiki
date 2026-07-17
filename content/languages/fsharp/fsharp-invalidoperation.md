@@ -4,7 +4,6 @@ description: "F# raises InvalidOperationException when a method call is invalid 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["invalidoperation", "state", "sequence", " enumerator"]
 weight: 5
 ---
 

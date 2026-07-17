@@ -4,7 +4,6 @@ description: "Fix C++ std::logic_error by validating preconditions, using assert
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["logic-error", "exception", "precondition", "assert"]
 weight: 55
 ---
 

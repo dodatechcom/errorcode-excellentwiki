@@ -4,7 +4,6 @@ description: "Duplicate key errors in COBOL occur when attempting to write a rec
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["duplicate-key", "indexed", "write", "file-status", "cobol"]
 weight: 5
 ---
 

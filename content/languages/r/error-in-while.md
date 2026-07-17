@@ -4,7 +4,6 @@ description: "Fix R error in while loop when condition is not interpretable as l
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["while-loop", "loop-condition", "logical"]
 weight: 5
 ---
 

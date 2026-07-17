@@ -4,7 +4,6 @@ description: "Fix Linux 'yum: repository error' and YUM installation failures. R
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["yum", "repository-error", "repo", "gpg-key", "package-manager", "centos"]
 weight: 5
 ---
 

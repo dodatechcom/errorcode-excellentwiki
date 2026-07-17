@@ -4,7 +4,6 @@ description: "Fix Gin framework middleware errors. Handle middleware chain, erro
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gin", "web", "framework"]
 weight: 5
 ---
 

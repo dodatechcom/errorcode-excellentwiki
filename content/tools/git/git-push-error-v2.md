@@ -4,7 +4,6 @@ description: "Fix Git push rejected non-fast-forward errors. Resolve remote repo
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["push", "rejected", "non-fast-forward", "remote", "git"]
 weight: 5
 ---
 

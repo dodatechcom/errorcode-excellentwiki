@@ -4,7 +4,6 @@ description: "Flask-Talisman raises errors when Content Security Policy or HTTPS
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["talisman", "security", "csp", "https", "flask"]
 weight: 5
 ---
 

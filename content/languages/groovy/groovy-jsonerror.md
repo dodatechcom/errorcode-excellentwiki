@@ -4,7 +4,6 @@ description: "Fix JsonSlurper errors when Groovy fails to parse malformed or inv
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "JsonSlurper", "parse", "malformed", "groovy"]
 weight: 5
 ---
 

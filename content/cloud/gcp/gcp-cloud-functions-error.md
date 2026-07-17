@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Functions Error"
 description: "Fix GCP Cloud Functions errors. Resolve function deployment and execution issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-functions", "serverless", "function", "trigger"]
 weight: 5
 ---
 

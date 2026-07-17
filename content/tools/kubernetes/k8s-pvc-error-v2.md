@@ -4,7 +4,6 @@ description: "Fix Kubernetes PVC no PersistentVolume available. Resolve persiste
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "pvc", "persistentvolume", "storage", "binding", "claim"]
 weight: 5
 ---
 

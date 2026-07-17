@@ -4,7 +4,6 @@ description: "Fix Swift CoreData save errors. Learn why CoreData save operations
 languages: ["swift"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["coredata", "save", "database", "swift"]
 weight: 5
 ---
 

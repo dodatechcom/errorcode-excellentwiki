@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2304: Cannot find name 'X'. Resolve undefined ide
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2304", "cannot-find-name", "undefined-identifier", "not-defined"]
 weight: 5
 ---
 

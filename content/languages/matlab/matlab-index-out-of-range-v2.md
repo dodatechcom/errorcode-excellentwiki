@@ -4,7 +4,6 @@ description: "Fix MATLAB errors when array indexing goes beyond the array dimens
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "array", "bounds", "dimensions", "subscript", "matlab"]
 weight: 5
 ---
 

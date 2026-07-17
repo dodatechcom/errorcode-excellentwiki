@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud NAT Error"
 description: "Fix GCP Cloud NAT errors. Resolve Cloud NAT connectivity issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-nat", "nat", "networking", "egress"]
 weight: 5
 ---
 

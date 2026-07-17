@@ -4,7 +4,6 @@ description: "Fix sqlc code generation errors. Handle query validation, type map
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlc", "codegen", "database"]
 weight: 5
 ---
 

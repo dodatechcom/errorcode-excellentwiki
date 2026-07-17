@@ -4,7 +4,6 @@ description: "Spring throws UnexpectedRollbackException or TransactionSystemExce
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["transaction", "@transactional", "rollback", "jpa"]
 weight: 5
 ---
 

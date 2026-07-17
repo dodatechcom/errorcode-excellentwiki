@@ -4,7 +4,6 @@ description: "TypeError: X is not a function — Fix Node.js function invocation
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "typeerror", "not-a-function", "invoke", "undefined-function"]
 weight: 5
 ---
 

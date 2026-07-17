@@ -4,7 +4,6 @@ description: "Fix x509-cert parsing errors. Handle DER/PEM decoding, extension p
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["x509-cert", "certificate", "parsing"]
 weight: 5
 ---
 

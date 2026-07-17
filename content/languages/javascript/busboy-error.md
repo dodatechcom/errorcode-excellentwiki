@@ -4,7 +4,6 @@ description: "Fix Busboy multipart form parsing errors. Handle file upload issue
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["busboy", "multipart", "upload"]
 weight: 5
 ---
 

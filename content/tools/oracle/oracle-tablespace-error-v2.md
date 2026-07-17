@@ -4,7 +4,6 @@ description: "Oracle cannot extend a table segment because the tablespace has no
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "tablespace", "extend", "storage", "ora-01653", "space"]
 weight: 5
 ---
 

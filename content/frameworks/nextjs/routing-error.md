@@ -4,7 +4,6 @@ description: "Next.js encounters an error during client-side or file-system base
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["routing", "pages", "navigation", "file-system"]
 weight: 5
 ---
 

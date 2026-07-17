@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error when thread name exceeds platform limits
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["length-error", "thread", "name", "pthread", "platform"]
 weight: 5
 ---
 

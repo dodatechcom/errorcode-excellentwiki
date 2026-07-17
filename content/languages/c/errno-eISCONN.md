@@ -4,7 +4,6 @@ description: "Fix C EISCONN (Already connected) by checking connection state bef
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eisconn", "already-connected", "socket", "connect", "connection-state"]
 weight: 5
 ---
 

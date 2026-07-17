@@ -4,7 +4,6 @@ description: "Fix C ENETDOWN (Network is down) by checking network interface sta
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enetdown", "network-is-down", "network-interface", "connectivity"]
 weight: 5
 ---
 

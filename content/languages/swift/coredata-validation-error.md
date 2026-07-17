@@ -4,7 +4,6 @@ description: "Fix Swift CoreData validation errors. Learn why CoreData validatio
 languages: ["swift"]
 severities: ["error"]
 error-types: ["validation-error"]
-tags: ["coredata", "validation", "database", "swift"]
 weight: 5
 ---
 

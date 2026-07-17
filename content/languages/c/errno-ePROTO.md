@@ -4,7 +4,6 @@ description: "Fix C EPROTO (Protocol error) by verifying protocol compatibility,
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eproto", "protocol-error", "socket-protocol", "protocol-mismatch"]
 weight: 5
 ---
 

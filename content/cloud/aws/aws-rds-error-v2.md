@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS RDS — Can't connect to MySQL server"
 description: "Fix AWS RDS MySQL connection error. Resolve RDS connectivity and access issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "rds", "mysql", "connection", "database", "connect"]
 weight: 5
 ---
 

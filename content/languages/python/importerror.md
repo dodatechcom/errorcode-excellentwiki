@@ -4,7 +4,6 @@ description: "Fix Python ImportError and ModuleNotFoundError. Install missing pa
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["importerror", "module", "import", "pip"]
 weight: 60
 ---
 

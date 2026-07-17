@@ -4,7 +4,6 @@ description: "Fix Express compression middleware errors when response encoding f
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["compression", "gzip", "deflate", "encoding", "express"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHPUnit mock object errors. Handle mock creation, expectation 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["phpunit", "mock", "testing"]
 weight: 5
 ---
 

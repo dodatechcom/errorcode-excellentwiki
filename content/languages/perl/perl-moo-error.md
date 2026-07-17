@@ -4,7 +4,6 @@ description: "Fix Perl Moo/Moose attribute errors. Learn why object attribute op
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["moose", "moo", "oo", "object", "perl"]
 weight: 5
 ---
 

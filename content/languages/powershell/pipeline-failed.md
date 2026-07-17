@@ -4,7 +4,6 @@ description: "Fix 'PipelineStoppedException' when a PowerShell pipeline is forci
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["PipelineStoppedException", "pipeline", "stopped"]
 weight: 5
 ---
 

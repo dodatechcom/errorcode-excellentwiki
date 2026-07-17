@@ -4,7 +4,6 @@ description: "Fix System Integrity Protection (SIP) errors when you cannot modif
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["sip", "system-integrity", "protection", "system-files", "kernel-extension", "macos"]
 weight: 5
 ---
 

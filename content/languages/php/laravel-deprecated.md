@@ -4,7 +4,6 @@ description: "Fix Laravel deprecated feature usage. Handle version migration, AP
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "deprecated", "upgrade"]
 weight: 5
 ---
 

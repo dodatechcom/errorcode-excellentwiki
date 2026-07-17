@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Property X is missing in type' errors. Understand 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["missing-property", "structural-type", "interface", "optional-property", "type-error"]
 weight: 5
 ---
 

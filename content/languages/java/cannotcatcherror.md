@@ -4,7 +4,6 @@ description: "Fix Java CannotCatchError (InternalError) by avoiding catching Err
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["internalerror", "cannotcatcherror", "jvm", "virtualmachine"]
 weight: 5
 ---
 

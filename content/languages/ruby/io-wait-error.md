@@ -4,7 +4,6 @@ description: "Fix Ruby IO::WaitReadable. Handle non-blocking I/O operations and 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["io"]
-tags: ["io_wait_readable", "non_blocking", "select", "io", "socket"]
 weight: 210
 ---
 

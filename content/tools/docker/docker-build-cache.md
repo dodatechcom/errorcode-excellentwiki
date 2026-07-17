@@ -4,7 +4,6 @@ description: "Fix Docker build cache errors. Resolve cache-related issues during
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["build", "cache", "layer", "docker", "buildkit"]
 weight: 5
 ---
 

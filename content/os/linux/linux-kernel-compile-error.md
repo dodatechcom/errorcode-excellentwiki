@@ -4,7 +4,6 @@ description: "Fix Linux kernel compilation errors. Resolve build failures, missi
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kernel-compile", "build-error", "compilation", "kernel-build", "make"]
 weight: 5
 ---
 

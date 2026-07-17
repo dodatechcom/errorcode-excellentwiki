@@ -4,7 +4,6 @@ description: "Maven enforcer plugin detects dependency convergence violations."
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "enforcer", "convergence", "dependency", "rule"]
 weight: 5
 ---
 

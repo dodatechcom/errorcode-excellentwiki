@@ -4,7 +4,6 @@ description: "Fix Boost.Asio async connect errors. Handle connection timeouts, r
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["boost", "asio", "async", "network", "connect"]
 weight: 5
 ---
 

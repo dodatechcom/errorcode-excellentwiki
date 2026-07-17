@@ -4,7 +4,6 @@ description: "Fix Rust borrow checker error: cannot borrow as mutable because it
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["borrow", "mutable", "immutable", "ownership", "reference", "borrow-checker"]
 weight: 5
 ---
 

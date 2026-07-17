@@ -4,7 +4,6 @@ description: "A script error occurs when a Lua script encounters an unhandled er
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["script", "runtime", "error", "lua"]
 weight: 5
 ---
 

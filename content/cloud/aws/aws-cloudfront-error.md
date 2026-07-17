@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS CloudFront Distribution Error"
 description: "Fix AWS CloudFront distribution errors. Resolve CloudFront configuration issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "cloudfront", "cdn", "distribution", "cache"]
 weight: 5
 ---
 

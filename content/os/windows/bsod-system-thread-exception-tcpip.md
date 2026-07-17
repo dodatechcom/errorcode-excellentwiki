@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_THREAD_EXCEPTION_NOT_HANDLED caused by tcpi
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "tcpip", "network", "tcp-ip", "driver"]
 weight: 5
 ---
 

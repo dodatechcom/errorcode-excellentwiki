@@ -4,7 +4,6 @@ description: "Fix MATLAB Table errors when variable names don't exist, data type
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["table", "variable", "data", "struct", "table", "matlab"]
 weight: 5
 ---
 

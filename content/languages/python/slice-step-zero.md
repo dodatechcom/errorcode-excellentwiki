@@ -4,7 +4,6 @@ description: "Fix Python ValueError when using a slice with step=0. Learn why sl
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["valueerror", "slice", "step", "range"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS USB errors when devices are not recognized, not powering
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["usb", "device", "not-recognized", "thunderbolt", "peripheral", "hub"]
 weight: 5
 ---
 

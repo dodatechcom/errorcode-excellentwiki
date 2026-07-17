@@ -4,7 +4,6 @@ description: "Fix Java LinkageError by resolving class dependency conflicts, avo
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["linkageerror", "classpath", "classloader", "dependency"]
 weight: 5
 ---
 

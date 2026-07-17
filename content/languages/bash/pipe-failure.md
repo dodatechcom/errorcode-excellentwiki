@@ -4,7 +4,6 @@ description: "Fix pipe failures in Bash when commands in a pipeline don't succee
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pipe-failure", "pipefail", "pipeline"]
 weight: 5
 ---
 

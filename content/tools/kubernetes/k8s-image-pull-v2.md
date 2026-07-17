@@ -4,7 +4,6 @@ description: "Fix Kubernetes ImagePullBackOff. Resolve container image pull fail
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "imagepullbackoff", "image", "pull", "registry", "container"]
 weight: 5
 ---
 

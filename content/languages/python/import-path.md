@@ -4,7 +4,6 @@ description: "Fix Python ModuleNotFoundError when a module cannot be found. Lear
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["modulenotfounderror", "import", "module", "package"]
 weight: 5
 ---
 

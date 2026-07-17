@@ -4,7 +4,6 @@ description: "Fix Go error parsing regexp error. Validate regex patterns, escape
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["regexp", "compile", "regex", "pattern", "parse"]
 weight: 5
 ---
 

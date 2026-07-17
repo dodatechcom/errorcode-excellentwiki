@@ -4,7 +4,6 @@ description: "Fix C ECONNREFUSED (Connection refused) by verifying server availa
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["econnrefused", "connection-refused", "tcp", "server-unavailable", "listen"]
 weight: 5
 ---
 

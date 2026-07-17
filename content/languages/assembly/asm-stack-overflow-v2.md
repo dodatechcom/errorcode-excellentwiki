@@ -4,7 +4,6 @@ description: "Fix assembly stack overflow when the stack pointer exceeds allocat
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "stack-pointer", "rsp", "recursion", "assembly"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin ConcurrentModificationException when modifying a collec
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["concurrentmodificationexception", "collection", "iterator", "thread-safe"]
 weight: 5
 ---
 

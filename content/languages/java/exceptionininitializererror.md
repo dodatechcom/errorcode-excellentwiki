@@ -4,7 +4,6 @@ description: "Fix Java ExceptionInInitializerError by handling exceptions in sta
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["exceptionininitializererror", "static", "initializer", "clinit"]
 weight: 5
 ---
 

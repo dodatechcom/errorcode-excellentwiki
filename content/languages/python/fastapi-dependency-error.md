@@ -4,7 +4,6 @@ description: "Fix FastAPI dependency injection errors. Resolve circular dependen
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fastapi", "dependency-injection", "di", "api", "inject"]
 weight: 5
 ---
 

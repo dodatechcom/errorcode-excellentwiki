@@ -4,7 +4,6 @@ description: "Laravel (via PHP) throws this error when the autoloader cannot loc
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["autoloading", "composer", "namespaces", "php"]
 weight: 5
 ---
 

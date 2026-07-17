@@ -4,7 +4,6 @@ description: "Fix code signing errors on Mac when building, archiving, or distri
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["code-signing", "developer-id", "certificate", "provisioning", "xcode"]
 weight: 5
 ---
 

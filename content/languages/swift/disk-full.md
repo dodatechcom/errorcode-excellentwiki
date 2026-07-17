@@ -4,7 +4,6 @@ description: "Fix Swift disk full errors. Learn why ENOSPC occurs and how to han
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["posix", "disk", "space", "enosp", "storage"]
 weight: 5
 ---
 

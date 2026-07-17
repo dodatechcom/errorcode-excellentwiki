@@ -4,7 +4,6 @@ description: "Fix COBOL FILE-STATUS 39 (record length mismatch). Learn why the p
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file-status", "record-length", "39", "open", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C connection aborted (ECONNABORTED). Handle aborted connection
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["econnaborted", "connection-aborted", "tcp", "keepalive", "errno"]
 weight: 5
 ---
 

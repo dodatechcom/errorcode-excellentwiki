@@ -4,7 +4,6 @@ description: "Fix PHP E_DEPRECATED notices about deprecated functions and featur
 languages: ["php"]
 severities: ["notice"]
 error-types: ["runtime-error"]
-tags: ["e-deprecated", "deprecated", "legacy"]
 weight: 5
 ---
 

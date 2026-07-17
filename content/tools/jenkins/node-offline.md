@@ -4,7 +4,6 @@ description: "Fix Jenkins node offline errors. Resolve agent connectivity and wo
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "node", "offline", "agent", "connection"]
 weight: 5
 ---
 

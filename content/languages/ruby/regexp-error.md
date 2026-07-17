@@ -4,7 +4,6 @@ description: "Fix Ruby RegexpError: regular expression syntax error. Debug and c
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["regexp"]
-tags: ["regexp_error", "regexp", "regex", "pattern", "syntax"]
 weight: 310
 ---
 

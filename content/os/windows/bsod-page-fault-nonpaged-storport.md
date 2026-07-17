@@ -4,7 +4,6 @@ description: "Fix Blue Screen PAGE_FAULT_IN_NONPAGED_AREA caused by storport.sys
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "storport", "storage", "page-fault", "disk"]
 weight: 5
 ---
 

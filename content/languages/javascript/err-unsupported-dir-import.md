@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_UNSUPPORTED_DIR_IMPORT when importing directories 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-unsupported-dir-import", "directory-import", "esm", "import", "index"]
 weight: 5
 ---
 

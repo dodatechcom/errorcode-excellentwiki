@@ -4,7 +4,6 @@ description: "An Enum.EmptyError occurs when calling a function that requires at
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["enum", "empty", "enumerable", "enumemptyerror"]
 weight: 5
 ---
 

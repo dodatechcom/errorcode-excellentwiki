@@ -4,7 +4,6 @@ description: "Fix GORM record not found errors. Handle query results, associatio
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gorm", "orm", "database"]
 weight: 5
 ---
 

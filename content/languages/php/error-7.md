@@ -4,7 +4,6 @@ description: "Fix PHP error code 7 ENOMEM out of memory fatal error. Learn to in
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["error-7", "ENOMEM", "out-of-memory", "memory"]
 weight: 5
 ---
 

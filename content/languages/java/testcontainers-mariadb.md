@@ -4,7 +4,6 @@ description: "Fix MariaDBContainer startup failure in Testcontainers. Check Dock
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "mariadb", "docker", "container", "database"]
 weight: 5
 ---
 

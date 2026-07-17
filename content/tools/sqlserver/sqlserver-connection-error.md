@@ -4,7 +4,6 @@ description: "SQL Server client cannot establish a connection to the database."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "connection", "network", "tcp", "instance"]
 weight: 5
 ---
 

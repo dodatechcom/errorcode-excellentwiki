@@ -4,7 +4,6 @@ description: "Laravel queue worker fails to connect to the queue broker such as 
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["queue", "worker", "redis", "sqs", "horizon", "connection"]
 weight: 5
 ---
 

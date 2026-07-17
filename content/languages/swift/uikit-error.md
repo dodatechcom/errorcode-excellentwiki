@@ -4,7 +4,6 @@ description: "Fix Swift UIKit lifecycle errors. Learn why UIKit view controllers
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["uikit", "lifecycle", "view-controller", "swift"]
 weight: 5
 ---
 

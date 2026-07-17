@@ -4,7 +4,6 @@ description: "Fix serde deserialization errors. Handle missing fields, type mism
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["serde", "serialization", "json", "deserialization"]
 weight: 5
 ---
 

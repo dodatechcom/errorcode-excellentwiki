@@ -4,7 +4,6 @@ description: "Fix Mac battery errors when you see 'Service Recommended,' battery
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["battery", "charging", "power", "health", "service"]
 weight: 5
 ---
 

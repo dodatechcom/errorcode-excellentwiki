@@ -4,7 +4,6 @@ description: "A die error occurs when the die function is called, typically to i
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["die", "fatal", "exception", "perl"]
 weight: 5
 ---
 

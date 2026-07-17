@@ -4,7 +4,6 @@ description: "Flask raises ValueError when two blueprints define the same endpoi
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["blueprint", "conflict", "endpoint", "route"]
 weight: 5
 ---
 

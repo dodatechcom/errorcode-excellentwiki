@@ -4,7 +4,6 @@ description: "Fix Symfony kernel errors. Handle bootstrap failures, environment 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "kernel", "framework"]
 weight: 5
 ---
 

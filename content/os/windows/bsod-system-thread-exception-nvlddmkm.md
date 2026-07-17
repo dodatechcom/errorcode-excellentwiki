@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_THREAD_EXCEPTION_NOT_HANDLED caused by nvld
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "nvidia", "nvlddmkm", "gpu", "driver"]
 weight: 5
 ---
 

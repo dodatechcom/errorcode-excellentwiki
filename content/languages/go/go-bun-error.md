@@ -4,7 +4,6 @@ description: "Fix bun query builder errors. Handle query construction, model bin
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bun", "orm", "database"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "SQLite encounters an I/O error while reading or writing the databa
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "io", "disk", "read", "write", "filesystem"]
 weight: 5
 ---
 

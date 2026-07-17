@@ -4,7 +4,6 @@ description: "Fix ElasticsearchException in Spring Data Elasticsearch. Resolve m
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-data", "elasticsearch", "search", "mapping", "index"]
 weight: 5
 ---
 

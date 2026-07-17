@@ -4,7 +4,6 @@ description: "Fix Rust lifetime mismatch and missing lifetime specifier errors. 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["lifetime", "borrow", "reference", "annotation", "elision", "compile-time"]
 weight: 5
 ---
 

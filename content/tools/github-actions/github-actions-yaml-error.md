@@ -4,7 +4,6 @@ description: "GitHub Actions workflow file has invalid YAML syntax."
 tools: ["github-actions"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["github-actions", "yaml", "syntax", "workflow", "ci"]
 weight: 5
 ---
 

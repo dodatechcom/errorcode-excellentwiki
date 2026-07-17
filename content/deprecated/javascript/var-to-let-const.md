@@ -6,7 +6,6 @@ replacement_function: "let/const"
 languages: ["javascript"]
 deprecated_since: "ES6"
 error_message: "Consider using let or const instead of var"
-tags: ["var", "let", "const", "block-scope", "hoisting", "es6"]
 weight: 95
 ---
 

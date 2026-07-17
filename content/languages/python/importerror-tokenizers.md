@@ -4,7 +4,6 @@ description: "Fix Python ImportError: tokenizers not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "tokenizers", "module-not-found", "pip", "nlp"]
 weight: 5
 ---
 

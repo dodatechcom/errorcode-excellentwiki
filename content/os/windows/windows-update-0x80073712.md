@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x80073712 (component store corrupted) on
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["update-error"]
-tags: ["windows-update", "component-store", "corrupted", "DISM", "CBS"]
 weight: 5
 ---
 

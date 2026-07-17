@@ -4,7 +4,6 @@ description: "Fix Go invalid memory address panic. Avoid accessing freed memory,
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["memory", "address", "invalid", "pointer", "panic", "runtime", "unsafe"]
 weight: 5
 ---
 

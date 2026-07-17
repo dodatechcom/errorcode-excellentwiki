@@ -4,7 +4,6 @@ description: "Fix RestClientResponseException when RestTemplate receives HTTP er
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "rest-template", "http-client", "rest-api", "restclient-response"]
 weight: 5
 ---
 

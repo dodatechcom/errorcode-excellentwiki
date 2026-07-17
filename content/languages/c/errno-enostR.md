@@ -4,7 +4,6 @@ description: "Fix C ENOSTR (No stream head associated) by ensuring file descript
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enostr", "no-stream-head", "streams", "stream-head", "ioctl"]
 weight: 5
 ---
 

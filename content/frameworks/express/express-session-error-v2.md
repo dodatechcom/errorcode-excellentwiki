@@ -4,7 +4,6 @@ description: "Fix Express session errors when the session store (Redis, MongoDB,
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["session", "store", "redis", "mongodb", "express"]
 weight: 5
 ---
 

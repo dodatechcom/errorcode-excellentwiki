@@ -4,7 +4,6 @@ description: "Fix Blue Screen DPC_WATCHDOG_VIOLATION caused by iaStorA.sys on Wi
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "dpc", "watchdog", "iastora", "intel-rst", "storage"]
 weight: 5
 ---
 

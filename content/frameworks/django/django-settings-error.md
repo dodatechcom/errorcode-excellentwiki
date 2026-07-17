@@ -4,7 +4,6 @@ description: "Fix Django ImproperlyConfigured errors. Resolve settings configura
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["settings", "improperlyconfigured", "configuration", "setup", "django"]
 weight: 5
 ---
 

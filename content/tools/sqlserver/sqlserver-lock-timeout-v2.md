@@ -4,7 +4,6 @@ description: "SQL Server session times out waiting to acquire a lock held by ano
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "lock", "timeout", "contention", "wait"]
 weight: 5
 ---
 

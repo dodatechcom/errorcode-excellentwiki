@@ -4,7 +4,6 @@ description: "Fix Linux PAM 'module error' and authentication failures. Resolve 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pam", "module-error", "authentication", "login", "pam_unix", "pam_deny"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "systemd-resolved DNS resolution service fails to resolve domain na
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "resolved", "dns", "resolution", "nameserver"]
 weight: 5
 ---
 

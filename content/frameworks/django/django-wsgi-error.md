@@ -4,7 +4,6 @@ description: "Fix Django WSGI configuration errors. Resolve WSGI deployment issu
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["wsgi", "gunicorn", "deployment", "server", "django"]
 weight: 5
 ---
 

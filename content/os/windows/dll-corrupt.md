@@ -4,7 +4,6 @@ description: "Fix corrupt or missing DLL files on Windows 10/11. Use SFC, DISM, 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dll", "corrupt", "missing", "sfc", "dism", "repair"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'conditional expression expected' in Bash when a test conditio
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["conditional-expr", "test-expression", "if-statement"]
 weight: 5
 ---
 

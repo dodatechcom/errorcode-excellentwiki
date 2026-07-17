@@ -4,7 +4,6 @@ description: "Fix Pascal runtime errors when array or string indices exceed thei
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "out-of-range", "array", "bounds", "string", "pascal"]
 weight: 5
 ---
 

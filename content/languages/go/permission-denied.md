@@ -4,7 +4,6 @@ description: "Fix Go permission denied error. Check file permissions, run with a
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["permission", "denied", "chmod", "file", "access"]
 weight: 5
 ---
 

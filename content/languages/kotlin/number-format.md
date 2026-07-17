@@ -4,7 +4,6 @@ description: "Fix Kotlin NumberFormatException when parsing strings to numbers. 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["numberformatexception", "parse", "int", "double", "string"]
 weight: 5
 ---
 

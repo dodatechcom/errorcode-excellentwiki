@@ -4,7 +4,6 @@ description: "Webpack rejects the configuration object due to invalid options."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "config", "configuration", "schema", "validation"]
 weight: 5
 ---
 

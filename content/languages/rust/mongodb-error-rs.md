@@ -4,7 +4,6 @@ description: "Fix MongoDB driver connection errors. Handle server selection, rep
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mongodb", "database", "connection"]
 weight: 5
 ---
 

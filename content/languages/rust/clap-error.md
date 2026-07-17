@@ -4,7 +4,6 @@ description: "Fix clap argument parsing errors. Handle argument validation, subc
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["clap", "cli", "arguments"]
 weight: 5
 ---
 

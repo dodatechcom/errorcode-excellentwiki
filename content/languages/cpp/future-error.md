@@ -4,7 +4,6 @@ description: "Fix C++ std::future_error when promise is already satisfied or fut
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["future-error", "future_error", "promise", "async", "concurrency"]
 weight: 5
 ---
 

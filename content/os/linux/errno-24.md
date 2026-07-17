@@ -4,7 +4,6 @@ description: "Fix Linux EMFILE (errno 24) Too many open files error. Solutions f
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enMFILE", "files", "errno-24", "file-descriptor"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Flutter throws PlatformException when a platform channel call to n
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["platform-channel", "native", "android", "ios", "method-channel"]
 weight: 5
 ---
 

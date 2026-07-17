@@ -4,7 +4,6 @@ description: "A MissingMethodException occurs when calling a method that does no
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["method", "missing", "signature", "groovy"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Next.js Image component fails to optimize or serve the image"
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["image", "optimization", "next-image", "loader"]
 weight: 5
 ---
 

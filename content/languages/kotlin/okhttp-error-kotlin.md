@@ -4,7 +4,6 @@ description: "Fix OkHttp connection errors in Kotlin. Learn why OkHttp requests 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["okhttp", "connection", "http", "kotlin"]
 weight: 5
 ---
 

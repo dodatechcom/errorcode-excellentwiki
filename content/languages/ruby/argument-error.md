@@ -4,7 +4,6 @@ description: "Fix Ruby ArgumentError: wrong number of arguments. Correct method 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["argument"]
-tags: ["argumenterror", "arguments", "method", "parameters"]
 weight: 10
 ---
 

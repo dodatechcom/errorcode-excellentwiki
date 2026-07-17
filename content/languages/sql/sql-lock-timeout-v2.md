@@ -4,7 +4,6 @@ description: "Fix SQL lock wait timeout errors when a transaction waits too long
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["lock-timeout", "innodb-lock", "wait-timeout", "sql"]
 weight: 5
 ---
 

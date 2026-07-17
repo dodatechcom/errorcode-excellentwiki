@@ -4,7 +4,6 @@ description: "Spring fails to start because the requested active profile does no
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["profile", "configuration", "properties", "active-profile"]
 weight: 5
 ---
 

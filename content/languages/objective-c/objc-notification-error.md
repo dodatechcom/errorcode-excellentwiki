@@ -4,7 +4,6 @@ description: "Fix Objective-C NSNotificationCenter errors and observer issues"
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["low"]
-tags: ["cocoa-touch", "notifications", "nsnotificationcenter"]
 weight: 5
 ---
 

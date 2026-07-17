@@ -4,7 +4,6 @@ description: "Redis MULTI/EXEC transaction fails due to WATCH conflict, command 
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "transaction", "multi", "exec", "watch", "optimistic-lock"]
 weight: 5
 ---
 

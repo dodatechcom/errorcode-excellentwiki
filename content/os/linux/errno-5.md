@@ -4,7 +4,6 @@ description: "Fix Linux EIO (errno 5) Input/Output Error. Diagnose disk failures
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["eio", "errno-5", "io-error", "disk", "filesystem"]
 weight: 50
 ---
 

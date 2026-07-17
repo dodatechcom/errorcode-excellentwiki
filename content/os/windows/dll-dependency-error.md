@@ -4,7 +4,6 @@ description: "Fix Windows DLL dependency errors when a program fails to load bec
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dll", "dependency", "missing-dll", "load-library", "entry-point"]
 weight: 5
 ---
 

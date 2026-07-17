@@ -4,7 +4,6 @@ description: "Laravel throws Swift_TransportException or ConnectionException whe
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mail", "smtp", "email", "notification", "queue"]
 weight: 5
 ---
 

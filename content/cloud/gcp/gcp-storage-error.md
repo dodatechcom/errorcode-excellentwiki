@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Storage Error"
 description: "Fix GCP Cloud Storage errors. Resolve bucket and object access issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "storage", "bucket", "gcs", "object"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux EINVAL (errno 22) Invalid Argument error. Resolve malfor
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["einval", "errno-22", "invalid-argument", "parameter-error"]
 weight: 60
 ---
 

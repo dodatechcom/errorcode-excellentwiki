@@ -4,7 +4,6 @@ description: "Next.js dynamic import errors occur when components fail to load a
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dynamic", "import", "lazy", "loading", "nextjs"]
 weight: 5
 ---
 

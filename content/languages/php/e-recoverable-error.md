@@ -4,7 +4,6 @@ description: "Fix PHP E_RECOVERABLE_ERROR fatal errors that can be caught. Learn
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["e-recoverable-error", "recoverable", "type-hint"]
 weight: 5
 ---
 

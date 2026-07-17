@@ -4,7 +4,6 @@ description: "Webpack cannot resolve a module import, indicating a missing file 
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "module", "resolve", "import", "not-found"]
 weight: 5
 ---
 

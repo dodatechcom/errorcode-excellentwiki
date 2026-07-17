@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pyspark not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pyspark", "module-not-found", "pip", "spark"]
 weight: 5
 ---
 

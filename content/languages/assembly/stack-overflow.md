@@ -4,7 +4,6 @@ description: "A stack overflow occurs when the call stack exceeds its allocated 
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "segmentation-fault"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift range errors where the lower bound exceeds the upper bou
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["range", "lowerbound", "upperbound", "crash", "half-open"]
 weight: 5
 ---
 

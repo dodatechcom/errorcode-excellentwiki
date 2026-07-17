@@ -4,7 +4,6 @@ description: "Fix Kotlin UninitializedPropertyAccessException when lateinit prop
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["uninitializedproperty", "lateinit", "property", "kotlin"]
 weight: 5
 ---
 

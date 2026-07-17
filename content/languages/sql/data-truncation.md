@@ -4,7 +4,6 @@ description: "Fix 'Data truncation' when a value is too long or doesn't fit the 
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["data-truncation", "value-too-long", "incorrect-value"]
 weight: 5
 ---
 

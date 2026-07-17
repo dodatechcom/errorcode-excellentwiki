@@ -4,7 +4,6 @@ description: "Fix PHP E_USER_WARNING non-fatal warnings triggered by user code v
 languages: ["php"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["e-user-warning", "user-warning", "trigger-error"]
 weight: 5
 ---
 

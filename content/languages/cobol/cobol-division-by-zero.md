@@ -4,7 +4,6 @@ description: "Division by zero in COBOL occurs when a DIVIDE statement has a div
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "abend", "arithmetic", "cobol"]
 weight: 5
 ---
 

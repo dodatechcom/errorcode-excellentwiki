@@ -4,7 +4,6 @@ description: "Fix MATLAB errors when functions or variables are undefined, inclu
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undefined", "function", "variable", "path", "scope", "matlab"]
 weight: 5
 ---
 

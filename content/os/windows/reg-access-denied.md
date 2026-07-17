@@ -4,7 +4,6 @@ description: "Fix 'Registry access denied' errors on Windows 10 and 11. Resolve 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "access-denied", "permissions", "regedit"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "An attempt to concatenate nil occurs when trying to use the concat
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["concatenate", "nil", "string", "lua"]
 weight: 5
 ---
 

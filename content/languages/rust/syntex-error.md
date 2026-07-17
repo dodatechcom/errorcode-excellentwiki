@@ -4,7 +4,6 @@ description: "Fix syntex syntax errors. Handle code parsing, macro expansion, an
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["syntex", "syntax", "parse"]
 weight: 5
 ---
 

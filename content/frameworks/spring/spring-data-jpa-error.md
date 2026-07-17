@@ -4,7 +4,6 @@ description: "Spring Data JPA throws DataAccessException when a JPA query or dat
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jpa", "hibernate", "database", "query", "spring-data"]
 weight: 5
 ---
 

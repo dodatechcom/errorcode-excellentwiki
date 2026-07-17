@@ -4,7 +4,6 @@ description: "Fix C++ Ninja build errors. Resolve build.ninja generation and com
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ninja", "build-system", "compilation", "build-ninja"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen IRQL_NOT_LESS_OR_EQUAL stop code 0xA caused by nto
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "irql", "ntoskrnl", "kernel", "stop-0xa"]
 weight: 5
 ---
 

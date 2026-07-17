@@ -4,7 +4,6 @@ description: "Flask-WTF raises validation errors when form data fails validation
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["wtf", "form", "validation", "csrf", "flask"]
 weight: 5
 ---
 

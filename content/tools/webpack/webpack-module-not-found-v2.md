@@ -4,7 +4,6 @@ description: "Webpack cannot resolve a module or import path."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "module", "resolve", "import", "path"]
 weight: 5
 ---
 

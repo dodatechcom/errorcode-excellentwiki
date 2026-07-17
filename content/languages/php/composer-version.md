@@ -4,7 +4,6 @@ description: "Fix Composer version conflict errors. Handle dependency constraint
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["composer", "version", "dependency"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes Ingress controller errors. Resolve Ingress routing 
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["ingress", "controller", "routing", "loadbalancer", "kubernetes"]
 weight: 5
 ---
 

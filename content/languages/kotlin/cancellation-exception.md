@@ -4,7 +4,6 @@ description: "Fix Kotlin CancellationException in coroutines. Learn how to prope
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cancellationexception", "coroutine", "structured-concurrency", "kotlin"]
 weight: 5
 ---
 

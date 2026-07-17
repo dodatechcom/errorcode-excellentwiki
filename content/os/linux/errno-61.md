@@ -4,7 +4,6 @@ description: "Fix Linux ENOPROTOOPT (errno 61) Protocol not available error. Sol
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enoprotoopt", "socket", "errno-61", "protocol", "option"]
 weight: 5
 ---
 

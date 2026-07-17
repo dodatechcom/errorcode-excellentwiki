@@ -4,7 +4,6 @@ description: "Fix Python ImportError: semantic_kernel not found or ModuleNotFoun
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "semantic-kernel", "semantic_kernel", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

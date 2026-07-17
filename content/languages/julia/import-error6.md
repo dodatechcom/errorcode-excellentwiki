@@ -4,7 +4,6 @@ description: "An ArgumentError occurs when attempting to import a name that does
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["import", "module", "argument", "argumenterror"]
 weight: 5
 ---
 

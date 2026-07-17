@@ -4,7 +4,6 @@ description: "Fix tower service errors. Handle service composition, layer config
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tower", "service", "middleware"]
 weight: 5
 ---
 

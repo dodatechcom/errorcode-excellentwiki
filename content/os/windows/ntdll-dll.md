@@ -4,7 +4,6 @@ description: "Fix ntdll.dll errors and crashes on Windows 10/11. Resolve access 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ntdll", "dll", "crash", "heap-corruption", "nt-layer", "access-violation"]
 weight: 5
 ---
 

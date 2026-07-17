@@ -4,7 +4,6 @@ description: "Fix ws2_32.dll errors on Windows 10/11. Resolve Winsock DLL load f
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ws2_32", "winsock", "dll", "network", "socket", "tcp-ip"]
 weight: 5
 ---
 

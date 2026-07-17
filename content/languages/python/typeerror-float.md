@@ -4,7 +4,6 @@ description: "Fix Python TypeError: unsupported operand type(s) for float. Under
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["typeerror", "float", "arithmetic", "type-conversion"]
 weight: 5
 ---
 

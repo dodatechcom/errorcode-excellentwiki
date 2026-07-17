@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2683: Implicitly has type 'any'. Fix 'this' conte
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2683", "this", "implicit-any", "noImplicitThis", "context"]
 weight: 5
 ---
 

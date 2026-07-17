@@ -4,7 +4,6 @@ description: "Fix macOS NSFileReadUnsupportedEncoding (NSCocoaErrorDomain Code 2
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilereadunsupportedencoding", "nscocoaerrordomain", "code-261", "file-read", "encoding", "cocoa", "foundation"]
 weight: 5
 ---
 

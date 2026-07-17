@@ -4,7 +4,6 @@ description: "Fix nodemon crashes when the application fails to start."
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodemon", "dev-server", "watch"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS NSFileWriteFileExists (NSCocoaErrorDomain Code 516). Res
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilewritefileexists", "nscocoaerrordomain", "code-516", "file-write", "file-already-exists", "cocoa", "foundation"]
 weight: 5
 ---
 

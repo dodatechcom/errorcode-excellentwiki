@@ -4,7 +4,6 @@ description: "Fix Python EnvironmentError when an OS-related operation fails. Th
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["environmenterror", "oserror", "io", "system", "file"]
 weight: 5
 ---
 

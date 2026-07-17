@@ -4,7 +4,6 @@ description: "Fix Express CORS errors. Resolve Cross-Origin Resource Sharing iss
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cors", "cross-origin", "access-control", "browser", "express"]
 weight: 5
 ---
 

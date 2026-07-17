@@ -4,7 +4,6 @@ description: "Fix Jaeger collector errors in Go. Handle trace collection, span r
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jaeger", "tracing", "observability"]
 weight: 5
 ---
 

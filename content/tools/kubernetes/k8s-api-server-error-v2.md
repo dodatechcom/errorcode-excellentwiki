@@ -4,7 +4,6 @@ description: "Fix Kubernetes API server request timeout. Resolve kube-apiserver 
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "api-server", "timeout", "kube-apiserver", "control-plane", "request"]
 weight: 5
 ---
 

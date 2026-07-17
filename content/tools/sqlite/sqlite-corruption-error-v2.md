@@ -4,7 +4,6 @@ description: "SQLite detects corruption in the database file, indicating data in
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "corruption", "malformed", "integrity", "recovery", "backup"]
 weight: 5
 ---
 

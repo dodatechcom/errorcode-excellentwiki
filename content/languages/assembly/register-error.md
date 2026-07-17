@@ -4,7 +4,6 @@ description: "A register allocation error occurs when code corrupts or misuses r
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["register", "allocation", "corruption", "convention"]
 weight: 5
 ---
 

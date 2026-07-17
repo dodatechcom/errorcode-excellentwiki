@@ -4,7 +4,6 @@ description: "A badfun error occurs when attempting to call a value that is not 
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["function", "badfun", "callable", "type-error"]
 weight: 5
 ---
 

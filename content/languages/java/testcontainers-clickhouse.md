@@ -4,7 +4,6 @@ description: "Fix ClickHouseContainer startup failure in Testcontainers. Check D
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "clickhouse", "docker", "container", "olap"]
 weight: 5
 ---
 

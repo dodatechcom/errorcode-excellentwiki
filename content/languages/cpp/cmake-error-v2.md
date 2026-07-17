@@ -4,7 +4,6 @@ description: "Fix CMake find_package not found errors. Handle missing packages, 
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cmake", "find_package", "build-system", "dependency"]
 weight: 5
 ---
 

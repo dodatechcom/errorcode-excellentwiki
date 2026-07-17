@@ -4,7 +4,6 @@ description: "Fix Nginx 403 Forbidden error. Diagnose permission and access issu
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["403", "forbidden", "permission", "access", "nginx"]
 weight: 5
 ---
 

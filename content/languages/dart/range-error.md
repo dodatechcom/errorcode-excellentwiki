@@ -4,7 +4,6 @@ description: "A RangeError occurs when accessing a list or string with an index 
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["range", "index", "out-of-bounds", "dart"]
 weight: 5
 ---
 

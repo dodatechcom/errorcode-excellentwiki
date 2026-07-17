@@ -4,7 +4,6 @@ description: "Fix Scala 'X is not a type' error when using invalid type annotati
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "not-a-type", "annotation", "existential", "path-dependent", "scala"]
 weight: 5
 ---
 

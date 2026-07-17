@@ -4,7 +4,6 @@ description: "Fix Rust thread panic. Learn why threads panic, how panic propagat
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["thread", "panic", "spawn", "catch_unwind", "panic-hook"]
 weight: 5
 ---
 

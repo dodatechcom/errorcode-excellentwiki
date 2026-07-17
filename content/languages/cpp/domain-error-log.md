@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error from log of zero or negative. Validate a
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["domain-error", "log", "logarithm", "zero", "negative"]
 weight: 5
 ---
 

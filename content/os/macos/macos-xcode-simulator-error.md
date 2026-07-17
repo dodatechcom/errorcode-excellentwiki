@@ -4,7 +4,6 @@ description: "Fix Xcode simulator errors when iOS Simulator fails to boot, gets 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["xcode", "simulator", "ios", "boot", "runtime", "macos"]
 weight: 5
 ---
 

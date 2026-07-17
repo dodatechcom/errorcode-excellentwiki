@@ -4,7 +4,6 @@ description: "Fix Python json.JSONDecodeError when parsing invalid JSON. Learn c
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["json", "decode", "jsondecodeerror", "parse"]
 weight: 5
 ---
 

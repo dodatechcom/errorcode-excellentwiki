@@ -4,7 +4,6 @@ description: "Fix C stack overflow errors caused by infinite recursion quickly u
 languages: ["c"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["stack-overflow", "recursion", "stack"]
 weight: 30
 ---
 

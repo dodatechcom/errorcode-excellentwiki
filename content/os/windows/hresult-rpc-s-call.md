@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT RPC_S_CALL_FAILED (0x800706BE) RPC call failed
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "rpc-s-call-failed", "0x800706be", "rpc-error", "remote-call"]
 weight: 5
 ---
 

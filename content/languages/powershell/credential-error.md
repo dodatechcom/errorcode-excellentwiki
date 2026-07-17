@@ -4,7 +4,6 @@ description: "Fix 'Credential' errors when PowerShell cannot authenticate with p
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["credential", "authentication", "login"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP Deprecated filter extension warnings. Migrate from ereg an
 languages: ["php"]
 severities: ["warning"]
 error_types: ["runtime"]
-tags: ["deprecated", "filter", "filter_input", "filter_var", "migration"]
 date: 2026-07-15
 ---
 

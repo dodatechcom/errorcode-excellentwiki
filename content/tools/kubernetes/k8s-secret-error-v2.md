@@ -4,7 +4,6 @@ description: "Fix Kubernetes Secret decode errors. Resolve base64 encoding and s
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "secret", "decode", "base64", "encoding", "mount"]
 weight: 5
 ---
 

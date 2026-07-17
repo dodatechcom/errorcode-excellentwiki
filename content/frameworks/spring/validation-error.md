@@ -4,7 +4,6 @@ description: "Spring throws ConstraintViolationException or MethodArgumentNotVal
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["validation", "constraint", "bean-validation", "request"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_REQUIRE_ESM when using require() on ES modules. Co
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-require-esm", "esm", "commonjs", "import", "require", "module"]
 weight: 5
 ---
 

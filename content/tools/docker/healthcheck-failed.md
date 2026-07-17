@@ -4,7 +4,6 @@ description: "Fix Docker health check failed error. Diagnose and resolve contain
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["healthcheck-failed", "health-check", "unhealthy", "probe", "docker"]
 weight: 5
 ---
 

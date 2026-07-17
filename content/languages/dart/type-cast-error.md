@@ -4,7 +4,6 @@ description: "A type cast error occurs when attempting to cast a value to an inc
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type-cast", "type-error", "casting", "dart"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix MATLAB Signal Processing Toolbox errors when designing filters
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["signal-processing", "filter", "fft", "design", "toolbox", "matlab"]
 weight: 5
 ---
 

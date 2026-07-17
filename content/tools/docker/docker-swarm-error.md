@@ -4,7 +4,6 @@ description: "Fix Docker Swarm operation errors. Resolve swarm init, join, servi
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["swarm", "cluster", "service", "node", "orchestration", "docker"]
 weight: 5
 ---
 

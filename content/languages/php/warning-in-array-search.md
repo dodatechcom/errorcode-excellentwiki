@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_search() needle cannot be empty. Learn to v
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-search", "needle", "empty-string"]
 weight: 5
 ---
 

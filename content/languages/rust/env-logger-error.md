@@ -4,7 +4,6 @@ description: "Fix env_logger initialization errors. Handle environment variable 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["env_logger", "logging", "environment"]
 weight: 5
 ---
 

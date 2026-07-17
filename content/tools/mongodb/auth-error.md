@@ -4,7 +4,6 @@ description: "MongoDB rejects a client connection because SCRAM-SHA authenticati
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["authentication", "scram", "security", "access"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix bash exec command not found errors when trying to replace the 
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["exec", "process", "replace", "command-not-found", "bash"]
 weight: 5
 ---
 

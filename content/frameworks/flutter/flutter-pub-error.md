@@ -4,7 +4,6 @@ description: "Flutter throws a pub get error when it cannot resolve or download 
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pub", "packages", "dependency", "pubspec", "registry"]
 weight: 5
 ---
 

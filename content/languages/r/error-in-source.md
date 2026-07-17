@@ -4,7 +4,6 @@ description: "Fix R 'error in source' when sourcing R files. Check file path, en
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["source", "file", "script", "loading"]
 weight: 5
 ---
 

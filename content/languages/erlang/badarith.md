@@ -4,7 +4,6 @@ description: "A badarith error occurs when performing arithmetic operations on n
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["arithmetic", "badarith", "math", "type-error"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift string interpolation errors. Learn why string interpolat
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["string", "interpolation", "formatting", "swift"]
 weight: 5
 ---
 

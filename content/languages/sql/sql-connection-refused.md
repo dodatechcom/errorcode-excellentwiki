@@ -4,7 +4,6 @@ description: "Fix 'Can't connect to MySQL server' when the database server is un
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["connection-refused", "connect", "mysql", "server", "network"]
 weight: 5
 ---
 

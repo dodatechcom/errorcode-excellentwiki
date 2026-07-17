@@ -4,7 +4,6 @@ description: "Fix tracing subscriber errors. Handle layer configuration, span co
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tracing", "logging", "subscriber"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::regex_error when constructing or matching invalid reg
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["regex-error", "std-regex", "regular-expression", "exception"]
 weight: 50
 ---
 

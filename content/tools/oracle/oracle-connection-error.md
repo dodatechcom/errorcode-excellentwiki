@@ -4,7 +4,6 @@ description: "Oracle client cannot establish a connection to the database."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "connection", "tns", "listener", "network"]
 weight: 5
 ---
 

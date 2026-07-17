@@ -4,7 +4,6 @@ description: "Fix evmap event map errors. Handle multiple reader-single writer p
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["evmap", "concurrent", "map"]
 weight: 5
 ---
 

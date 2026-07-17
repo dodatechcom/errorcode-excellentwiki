@@ -4,7 +4,6 @@ description: "Example of std::logic_error in C++. Learn to identify and fix logi
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["logic-error", "exception", "precondition", "assert"]
 weight: 50
 ---
 

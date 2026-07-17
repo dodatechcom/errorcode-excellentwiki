@@ -4,7 +4,6 @@ description: "MongoDB cannot route a write operation to a shard because the targ
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "shard", "replica-set", "write", "shard-key", "chunk"]
 weight: 5
 ---
 

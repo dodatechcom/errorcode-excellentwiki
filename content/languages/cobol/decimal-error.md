@@ -4,7 +4,6 @@ description: "A decimal precision error occurs when a numeric operation loses pr
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["decimal", "precision", "numeric", "cobol"]
 weight: 5
 ---
 

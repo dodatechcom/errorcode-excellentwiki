@@ -4,7 +4,6 @@ description: "Fix JavaScript SystemError: an operating system error occurred. Ch
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemerror", "errno", "os", "linux", "windows", "nodejs"]
 weight: 5
 ---
 

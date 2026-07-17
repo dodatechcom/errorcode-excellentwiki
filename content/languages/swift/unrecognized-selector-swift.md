@@ -4,7 +4,6 @@ description: "Fix Swift unrecognized selector crashes. Learn why this Objective-
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unrecognized-selector", "objective-c", "objc", "swift"]
 weight: 5
 ---
 

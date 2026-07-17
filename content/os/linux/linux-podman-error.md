@@ -4,7 +4,6 @@ description: "Fix Linux 'podman: namespace error' and container failures. Resolv
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["podman", "namespace", "rootless", "container", "storage", "uid-map"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -41 (errNoSuchName). Resolve no such name error
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["errnosuchname", "osstatus-41", "no-such-name", "core-services", "carbon", "not-found"]
 weight: 5
 ---
 

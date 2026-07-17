@@ -4,7 +4,6 @@ description: "Fix KSP symbol processing errors. Learn why KSP fails and how to r
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["build-error"]
-tags: ["ksp", "symbol-processing", "compile", "kotlin"]
 weight: 5
 ---
 

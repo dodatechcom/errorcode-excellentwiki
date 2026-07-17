@@ -4,7 +4,6 @@ description: "Fix C ESHUTDOWN (Cannot send after shutdown variant) by checking s
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eshutdown", "cannot-send-after-shutdown-variant", "socket", "half-close"]
 weight: 5
 ---
 

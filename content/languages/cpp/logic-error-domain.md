@@ -4,7 +4,6 @@ description: "Fix C++ std::logic_error domain error. Ensure function arguments a
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["logic-error", "domain", "argument", "stdexcept", "precondition"]
 weight: 5
 ---
 

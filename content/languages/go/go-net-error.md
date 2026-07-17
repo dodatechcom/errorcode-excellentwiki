@@ -4,7 +4,6 @@ description: "Fix Go net dial connection refused errors. Handle TCP/UDP connecti
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["net", "dial", "connection"]
 weight: 5
 ---
 

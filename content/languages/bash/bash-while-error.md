@@ -4,7 +4,6 @@ description: "Fix while loop errors in Bash when loops don't terminate, have syn
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["while", "loop", "infinite", "read", "pipe"]
 weight: 5
 ---
 

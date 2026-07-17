@@ -4,7 +4,6 @@ description: "Elixir raises File.Error when a file operation fails due to missin
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "io", "filesystem", "fileerror", "enoent"]
 weight: 5
 ---
 

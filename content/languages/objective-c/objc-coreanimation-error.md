@@ -4,7 +4,6 @@ description: "Fix Objective-C Core Animation layer and rendering errors"
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "core-animation", "rendering", "calayer"]
 weight: 5
 ---
 

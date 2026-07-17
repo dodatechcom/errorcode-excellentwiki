@@ -4,7 +4,6 @@ description: "Overflow error in Pascal occurs when an arithmetic result exceeds 
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "integer", "arithmetic", "max-value", "pascal"]
 weight: 5
 ---
 

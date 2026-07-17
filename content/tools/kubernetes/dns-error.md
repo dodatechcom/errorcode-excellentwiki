@@ -4,7 +4,6 @@ description: "Fix Kubernetes DNS resolution failures. Resolve CoreDNS issues and
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["dns", "coredns", "name-resolution", "service", "networking"]
 weight: 5
 ---
 

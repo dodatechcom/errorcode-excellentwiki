@@ -4,7 +4,6 @@ description: "Fix Django CSRF verification failed errors. Resolve CSRF token iss
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["csrf", "token", "forbidden", "middleware", "django"]
 weight: 5
 ---
 

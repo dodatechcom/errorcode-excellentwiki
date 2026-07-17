@@ -4,7 +4,6 @@ description: "Fix ed25519-dalek signature errors. Handle key generation, signing
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ed25519-dalek", "signature", "crypto"]
 weight: 5
 ---
 

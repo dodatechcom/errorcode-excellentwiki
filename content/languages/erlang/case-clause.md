@@ -4,7 +4,6 @@ description: "A case_clause error occurs when no clause in a case expression mat
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["case", "clause", "pattern", "no-match"]
 weight: 5
 ---
 

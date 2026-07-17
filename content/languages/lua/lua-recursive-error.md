@@ -4,7 +4,6 @@ description: "Fix Lua infinite recursion errors. Learn why recursive functions c
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["recursion", "infinite", "stack", "lua"]
 weight: 5
 ---
 

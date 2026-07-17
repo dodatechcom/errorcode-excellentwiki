@@ -4,7 +4,6 @@ description: "Fix Kubernetes Secret errors. Resolve Secret mount failures, missi
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "secret", "base64", "tls", "registry"]
 weight: 5
 ---
 

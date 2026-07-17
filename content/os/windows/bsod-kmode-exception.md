@@ -4,7 +4,6 @@ description: "Fix Blue Screen KMODE_EXCEPTION_NOT_HANDLED error on Windows 10 an
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "kmode", "driver-error", "stop-code"]
 weight: 5
 ---
 

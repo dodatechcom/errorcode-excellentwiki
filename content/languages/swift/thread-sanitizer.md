@@ -4,7 +4,6 @@ description: "Fix Swift Thread Sanitizer data race errors. Learn how to identify
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["thread-sanitizer", "data-race", "concurrency", "threading", "swift"]
 weight: 5
 ---
 

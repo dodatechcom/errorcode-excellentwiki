@@ -4,7 +4,6 @@ description: "Fix C 'double free or corruption' errors. Learn why freeing the sa
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error", "memory-error"]
-tags: ["double-free", "heap-corruption", "memory-management", "free", "malloc"]
 weight: 5
 ---
 

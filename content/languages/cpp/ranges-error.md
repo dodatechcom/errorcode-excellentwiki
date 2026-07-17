@@ -4,7 +4,6 @@ description: "Fix C++ std::ranges errors including iterator requirements, range 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["ranges", "c++20", "algorithm", "iterator"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rust mismatched types error. Learn why Rust's strong type syst
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "mismatch", "conversion", "inference", "casting"]
 weight: 5
 ---
 

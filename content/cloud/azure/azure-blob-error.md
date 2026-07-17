@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Blob Storage Error"
 description: "Fix Azure Blob Storage errors. Resolve blob upload, download, and access issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "blob", "blob-storage", "upload", "download"]
 weight: 5
 ---
 

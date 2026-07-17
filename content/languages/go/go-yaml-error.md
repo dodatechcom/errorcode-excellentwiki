@@ -4,7 +4,6 @@ description: "Fix Go YAML unmarshal errors. Handle malformed YAML, type conversi
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["yaml", "encoding", "parse"]
 weight: 5
 ---
 

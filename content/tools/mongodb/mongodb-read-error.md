@@ -4,7 +4,6 @@ description: "MongoDB read operation fails due to network issues, timeouts, or q
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "read", "query", "find", "timeout"]
 weight: 5
 ---
 

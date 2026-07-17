@@ -4,7 +4,6 @@ description: "Fix PHP Warning: in_array() needle cannot be empty. Learn to valid
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "in-array", "needle", "empty-string"]
 weight: 5
 ---
 

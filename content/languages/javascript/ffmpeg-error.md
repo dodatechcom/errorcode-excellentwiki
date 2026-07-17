@@ -4,7 +4,6 @@ description: "Fix FFmpeg processing errors when encoding, transcoding, or manipu
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ffmpeg", "video", "audio"]
 weight: 5
 ---
 

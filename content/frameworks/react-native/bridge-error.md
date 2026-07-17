@@ -4,7 +4,6 @@ description: "React Native throws an error when the JS bridge cannot communicate
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bridge", "native", "module", "communication", "jsi"]
 weight: 5
 ---
 

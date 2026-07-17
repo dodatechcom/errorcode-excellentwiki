@@ -4,7 +4,6 @@ description: "Fix Room database errors in Kotlin. Learn why Room operations fail
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["room", "database", "android", "kotlin"]
 weight: 5
 ---
 

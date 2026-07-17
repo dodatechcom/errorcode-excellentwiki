@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_TDR_FAILURE caused by igdkmd64.sys on Window
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "intel", "igdkmd64", "gpu", "tdr", "integrated-graphics"]
 weight: 5
 ---
 

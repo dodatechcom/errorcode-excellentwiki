@@ -4,7 +4,6 @@ description: "Fix glob expansion issues in Bash when wildcard patterns are expan
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["glob-expand", "filename-expansion", "wildcards"]
 weight: 5
 ---
 

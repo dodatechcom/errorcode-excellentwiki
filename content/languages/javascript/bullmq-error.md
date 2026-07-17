@@ -4,7 +4,6 @@ description: "Fix BullMQ worker errors when job processing fails. Handle worker 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bullmq", "queue", "worker"]
 weight: 5
 ---
 

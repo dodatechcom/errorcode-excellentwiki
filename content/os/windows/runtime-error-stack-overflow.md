@@ -4,7 +4,6 @@ description: "Fix stack overflow runtime errors on Windows. Resolve infinite rec
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stack-overflow", "recursion", "thread", "stack-size", "memory"]
 weight: 5
 ---
 

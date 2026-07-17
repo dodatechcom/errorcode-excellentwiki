@@ -4,7 +4,6 @@ description: "Fix Ruby ZeroDivisionError: divided by 0. Add input validation and
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["division"]
-tags: ["zerodivisionerror", "division", "zero", "math"]
 weight: 120
 ---
 

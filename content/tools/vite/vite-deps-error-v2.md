@@ -4,7 +4,6 @@ description: "Vite pre-bundling (optimizeDeps) fails for dependencies."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "optimize", "deps", "pre-bundle", "dependency"]
 weight: 5
 ---
 

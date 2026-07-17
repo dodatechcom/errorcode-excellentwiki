@@ -4,7 +4,6 @@ description: "Fix R 'argument is missing, with no default' error in paste() and 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["paste", "paste0", "missing-argument", "concatenation"]
 weight: 5
 ---
 

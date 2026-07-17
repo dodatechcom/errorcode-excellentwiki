@@ -4,7 +4,6 @@ description: "Fix iMessage activation errors on Mac when iMessage won't activate
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["imessage", "activation", "facetime", "apple-id", "communication"]
 weight: 5
 ---
 

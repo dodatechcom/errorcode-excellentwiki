@@ -4,7 +4,6 @@ description: "Flask-Migrate raises errors during database migration operations s
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["migrate", "alembic", "migration", "database", "flask"]
 weight: 5
 ---
 

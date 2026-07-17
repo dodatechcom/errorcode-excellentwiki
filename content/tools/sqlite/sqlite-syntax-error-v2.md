@@ -4,7 +4,6 @@ description: "SQLite parser fails to parse a SQL statement due to syntax errors 
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "syntax", "sql", "parser", "query", "parse"]
 weight: 5
 ---
 

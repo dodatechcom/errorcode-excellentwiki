@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure DevOps — pipeline YAML error"
 description: "Fix Azure DevOps pipeline YAML error. Resolve pipeline syntax and configuration issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "devops", "pipeline", "yaml", "error", "build", "release"]
 weight: 5
 ---
 

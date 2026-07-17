@@ -4,7 +4,6 @@ description: "Laravel Horizon throws worker errors when queue workers fail to pr
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["horizon", "queue", "worker", "redis", "supervisor"]
 weight: 5
 ---
 

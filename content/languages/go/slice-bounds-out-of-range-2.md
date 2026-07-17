@@ -4,7 +4,6 @@ description: "Fix Go slice bounds out of range panic when using slice expression
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["slice", "bounds", "range", "panic", "runtime"]
 weight: 5
 ---
 

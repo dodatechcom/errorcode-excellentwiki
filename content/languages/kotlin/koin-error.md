@@ -4,7 +4,6 @@ description: "Fix Koin dependency injection errors in Kotlin. Learn why Koin inj
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["koin", "dependency-injection", "di", "kotlin"]
 weight: 5
 ---
 

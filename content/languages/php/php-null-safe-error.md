@@ -4,7 +4,6 @@ description: "Fix null safe operator (?->) errors in PHP 8.0+. Handle null chain
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "null-safe", "operator"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "MongoDB operation fails because it exceeded the configured timeout
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "timeout", "slow-query", "performance", "operation"]
 weight: 5
 ---
 

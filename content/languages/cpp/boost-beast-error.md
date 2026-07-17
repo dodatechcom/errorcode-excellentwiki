@@ -4,7 +4,6 @@ description: "Fix C++ Boost.Beast HTTP errors. Handle HTTP request and response 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["boost", "beast", "http", "request", "response", "web"]
 weight: 5
 ---
 

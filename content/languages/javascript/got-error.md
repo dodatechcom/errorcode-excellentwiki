@@ -4,7 +4,6 @@ description: "Fix got HTTP client errors. Handle request failures, retry logic, 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["got", "http", "request"]
 weight: 5
 ---
 

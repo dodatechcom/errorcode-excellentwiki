@@ -4,7 +4,6 @@ description: "Fix actix-web handler panic errors. Handle panics during request p
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["actix", "web", "framework", "panic", "handler"]
 weight: 5
 ---
 

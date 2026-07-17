@@ -4,7 +4,6 @@ description: "Fix Ruby ThreadError. Handle thread-related errors including deadl
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["thread"]
-tags: ["thread_error", "thread", "concurrency", "mutex", "deadlock"]
 weight: 380
 ---
 

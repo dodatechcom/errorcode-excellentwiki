@@ -4,7 +4,6 @@ description: "Fix Selenium::WebDriver errors in Ruby. Learn why WebDriver comman
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["selenium", "webdriver", "browser", "automation", "ruby"]
 weight: 5
 ---
 

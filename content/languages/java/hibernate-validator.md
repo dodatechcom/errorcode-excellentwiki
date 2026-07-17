@@ -4,7 +4,6 @@ description: "Fix ConstraintViolationException from Hibernate Validator. Handle 
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hibernate", "validator", "bean-validation", "constraint", "validation"]
 weight: 5
 ---
 

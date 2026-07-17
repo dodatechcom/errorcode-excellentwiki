@@ -4,7 +4,6 @@ description: "Fix VBA Subscript Out of Range error (Error 9) when accessing arra
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["subscript", "out-of-range", "error-9", "array", "collection"]
 weight: 5
 ---
 

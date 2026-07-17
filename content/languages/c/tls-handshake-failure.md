@@ -4,7 +4,6 @@ description: "Fix C TLS handshake failure. Resolve SSL/TLS certificate and proto
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["tls", "ssl", "handshake", "openssl", "certificate"]
 weight: 5
 ---
 

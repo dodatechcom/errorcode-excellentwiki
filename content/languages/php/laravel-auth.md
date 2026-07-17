@@ -4,7 +4,6 @@ description: "Fix Laravel AuthenticationException when a user is not authenticat
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "auth", "login"]
 weight: 5
 ---
 

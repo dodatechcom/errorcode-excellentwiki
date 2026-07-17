@@ -4,7 +4,6 @@ description: "Fix VBA Object Variable Not Set error (Error 91) when using an obj
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["object-variable", "not-set", "error-91", "nothing", "vba"]
 weight: 5
 ---
 

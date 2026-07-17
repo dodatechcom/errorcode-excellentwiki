@@ -4,7 +4,6 @@ description: "Fix Swift Unicode errors. Learn why Unicode string operations fail
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unicode", "string", "encoding", "swift"]
 weight: 5
 ---
 

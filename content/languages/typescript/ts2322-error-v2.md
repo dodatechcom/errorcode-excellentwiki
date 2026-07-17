@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2322 when complex types, generics, or union types
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2322", "type-assignability", "generic", "union", "strict"]
 weight: 5
 ---
 

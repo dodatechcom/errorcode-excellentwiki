@@ -4,7 +4,6 @@ description: "SQLite operation violates a constraint (PRIMARY KEY, UNIQUE, NOT N
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "constraint", "unique", "primary-key", "not-null"]
 weight: 5
 ---
 

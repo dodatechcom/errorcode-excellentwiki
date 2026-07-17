@@ -4,7 +4,6 @@ description: "Fix Jackson UnrecognizedPropertyException when JSON contains field
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "unrecognized-property", "unknown-field", "deserialization"]
 weight: 5
 ---
 

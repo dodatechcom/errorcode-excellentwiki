@@ -4,7 +4,6 @@ description: "Fix Linux 'dpkg: error processing package' errors. Resolve broken 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dpkg", "error-processing", "package", "broken-packages", "apt"]
 weight: 5
 ---
 

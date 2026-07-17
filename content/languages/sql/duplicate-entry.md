@@ -4,7 +4,6 @@ description: "Fix 'Duplicate entry for key' when inserting a value that violates
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["duplicate-entry", "unique-constraint", "primary-key"]
 weight: 5
 ---
 

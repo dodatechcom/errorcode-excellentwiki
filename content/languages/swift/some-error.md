@@ -4,7 +4,6 @@ description: "Fix Swift some Protocol errors. Learn why some Protocol fails and 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["some", "protocol", "opaque", "return-type", "swift"]
 weight: 5
 ---
 

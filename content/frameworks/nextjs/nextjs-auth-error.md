@@ -4,7 +4,6 @@ description: "NextAuth.js raises authentication errors when provider configurati
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextauth", "authentication", "session", "oauth", "nextjs"]
 weight: 5
 ---
 

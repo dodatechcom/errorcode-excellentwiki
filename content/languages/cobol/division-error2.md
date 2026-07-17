@@ -4,7 +4,6 @@ description: "A division error occurs when performing division by zero or an ari
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "arithmetic", "zero", "cobol"]
 weight: 5
 ---
 

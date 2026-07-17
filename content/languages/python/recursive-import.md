@@ -4,7 +4,6 @@ description: "Fix Python RecursionError caused by infinite or excessive recursio
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["recursionerror", "recursion", "stack", "depth"]
 weight: 5
 ---
 

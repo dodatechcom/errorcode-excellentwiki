@@ -4,7 +4,6 @@ description: "Fix C++ std::ofstream output file errors. Handle file write failur
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ofstream", "output-file", "write", "permission", "io"]
 weight: 5
 ---
 

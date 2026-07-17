@@ -4,7 +4,6 @@ description: "Fix Git worktree errors. Resolve worktree add, remove, and list fa
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["worktree", "add", "remove", "multi-worktree", "git"]
 weight: 5
 ---
 

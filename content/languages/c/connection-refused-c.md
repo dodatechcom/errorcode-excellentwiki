@@ -4,7 +4,6 @@ description: "Fix C connection refused (ECONNREFUSED). Ensure server is listenin
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["econnrefused", "connection-refused", "socket", "connect", "errno"]
 weight: 5
 ---
 

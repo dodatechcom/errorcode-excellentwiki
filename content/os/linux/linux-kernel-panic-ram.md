@@ -4,7 +4,6 @@ description: "Fix Linux kernel panic caused by RAM memory errors. Diagnose memor
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["kernel-panic", "memory", "ram", "memtest", "hardware", "ecc"]
 weight: 5
 ---
 

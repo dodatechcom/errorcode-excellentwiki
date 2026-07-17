@@ -4,7 +4,6 @@ description: "Fix C blocked by firewall (EACCES). Configure firewall rules to al
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["firewall", "eacces", "blocked", "iptables", "network"]
 weight: 5
 ---
 

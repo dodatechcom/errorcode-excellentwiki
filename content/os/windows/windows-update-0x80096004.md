@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x80096004 (certificate trust failure) on
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["windows-update", "0x80096004", "certificate", "signature", "trust"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Spring throws CacheAccessException when a cache operation fails"
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cache", "spring-cache", "redis", "caffeine", "eviction"]
 weight: 5
 ---
 

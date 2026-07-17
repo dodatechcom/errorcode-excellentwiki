@@ -4,7 +4,6 @@ description: "Fix npm 'Cannot find module' error. Resolve missing Node.js module
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["module-not-found", "cannot-find-module", "missing-module", "node-modules"]
 weight: 5
 ---
 

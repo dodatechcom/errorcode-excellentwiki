@@ -4,7 +4,6 @@ description: "PostgreSQL refuses client connections due to authentication or con
 tools: ["postgresql"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["connection", "authentication", "pg_hba", "network"]
 weight: 5
 ---
 

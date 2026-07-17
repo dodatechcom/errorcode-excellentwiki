@@ -4,7 +4,6 @@ description: "Fix VBA Permission Denied error (Error 70) when VBA cannot access 
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["permission-denied", "error-70", "file", "access", "vba"]
 weight: 5
 ---
 

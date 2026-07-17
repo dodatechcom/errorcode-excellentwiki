@@ -4,7 +4,6 @@ description: "Fix SQL deadlock errors when two or more transactions are waiting 
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["deadlock", "wait-for", "lock", "transaction", "sql"]
 weight: 5
 ---
 

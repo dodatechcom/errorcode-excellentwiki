@@ -4,7 +4,6 @@ description: "Fix Rust use of moved value error. Learn why Rust moves ownership 
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["move", "ownership", "clone", "copy", "reference", "value"]
 weight: 5
 ---
 

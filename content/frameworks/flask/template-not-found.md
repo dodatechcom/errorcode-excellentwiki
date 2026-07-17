@@ -4,7 +4,6 @@ description: "Flask raises TemplateNotFound when Jinja2 cannot locate the reques
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["templates", "jinja2", "file-not-found"]
 weight: 5
 ---
 

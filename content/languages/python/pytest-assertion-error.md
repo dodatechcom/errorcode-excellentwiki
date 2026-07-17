@@ -4,7 +4,6 @@ description: "Fix Pytest assertion errors. Use proper assertion patterns, levera
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pytest", "assertion", "testing", "unittest", "debug"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Ktor WebSocket errors. Learn why Ktor WebSocket connections fa
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["ktor", "websocket", "real-time", "kotlin"]
 weight: 5
 ---
 

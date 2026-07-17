@@ -4,7 +4,6 @@ description: "MongoDB rejects a write operation because fewer data-bearing nodes
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["write-concern", "replica-set", "write", "availability"]
 weight: 5
 ---
 

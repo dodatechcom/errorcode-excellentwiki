@@ -1,10 +1,8 @@
 ---
 title: "GCP Cloud Run: Container Failed to Start"
 description: "Cloud Run: Container failed to start — Fix Google Cloud Run startup and deployment errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-run", "serverless", "container", "startup", "docker", "crash"]
 weight: 5
 ---
 

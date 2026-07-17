@@ -4,7 +4,6 @@ description: "Fix iterator out of range errors in C++. Handle invalid iterator a
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["iterator", "out_of_range", "container", "vector", "bounds"]
 weight: 5
 ---
 

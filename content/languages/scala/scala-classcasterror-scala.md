@@ -4,7 +4,6 @@ description: "Fix Scala ClassCastException. Learn about invalid type casting and
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["classcast", "type", "cast", "runtime", "asInstanceOf"]
 weight: 5
 ---
 

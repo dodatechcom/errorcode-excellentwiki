@@ -4,7 +4,6 @@ description: "Fix native-tls handshake errors. Handle certificate validation, SN
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["native-tls", "tls", "security"]
 weight: 5
 ---
 

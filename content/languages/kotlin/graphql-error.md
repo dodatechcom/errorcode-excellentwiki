@@ -4,7 +4,6 @@ description: "Fix Kotlin GraphQL errors including query validation, execution er
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["graphql-error", "graphql", "query", "mutation", "schema"]
 weight: 5
 ---
 

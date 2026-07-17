@@ -4,7 +4,6 @@ description: "Fix Linux KEYREJECTED (errno 86) Key was rejected by service error
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["keyrejected", "key", "errno-86", "rejected", "auth"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go HTTP 403 forbidden errors. Handle authorization failures, a
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "403", "forbidden"]
 weight: 5
 ---
 

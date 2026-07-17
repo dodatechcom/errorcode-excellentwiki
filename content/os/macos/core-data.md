@@ -4,7 +4,6 @@ description: "Fix macOS Core Data errors. Causes and solutions for persistence, 
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["core-data", "persistence", "migration", "sqlite", "xcdatamodel"]
 weight: 5
 ---
 

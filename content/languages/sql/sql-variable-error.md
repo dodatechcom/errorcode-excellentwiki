@@ -4,7 +4,6 @@ description: "Fix 'Unknown system variable X' when referencing a non-existent or
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["system-variable", "session", "global", "configuration"]
 weight: 5
 ---
 

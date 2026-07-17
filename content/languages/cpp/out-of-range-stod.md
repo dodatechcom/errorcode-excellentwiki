@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range when stod receives value outside double 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["out-of-range", "stod", "conversion", "double", "floating-point"]
 weight: 5
 ---
 

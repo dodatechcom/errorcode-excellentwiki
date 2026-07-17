@@ -4,7 +4,6 @@ description: "Fix DataFetchingException when Spring GraphQL cannot fetch data. H
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-graphql", "graphql", "data-fetching", "resolver", "argument"]
 weight: 5
 ---
 

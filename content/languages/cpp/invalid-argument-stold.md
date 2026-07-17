@@ -4,7 +4,6 @@ description: "Fix C++ std::invalid_argument when stold receives non-numeric stri
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-argument", "stold", "conversion", "long-double", "numeric"]
 weight: 5
 ---
 

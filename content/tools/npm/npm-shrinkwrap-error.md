@@ -4,7 +4,6 @@ description: "Fix npm-shrinkwrap.json errors. Resolve shrinkwrap file issues."
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["shrinkwrap", "lockfile", "lock", "package-lock", "npm"]
 weight: 5
 ---
 

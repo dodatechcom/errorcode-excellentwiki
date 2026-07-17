@@ -4,7 +4,6 @@ description: "Fix COBOL errors when array subscripts or table indices exceed the
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "subscript", "table", "array", "bounds", "cobol"]
 weight: 5
 ---
 

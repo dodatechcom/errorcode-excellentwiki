@@ -4,7 +4,6 @@ description: "Flutter Android build fails with Gradle build errors caused by con
 frameworks: ["flutter"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["flutter", "gradle", "android", "build", "dependency", "kotlin"]
 weight: 5
 ---
 

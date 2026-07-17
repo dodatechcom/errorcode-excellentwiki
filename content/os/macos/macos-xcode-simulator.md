@@ -4,7 +4,6 @@ description: "Fix Xcode Simulator errors including simulator not launching, app 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["xcode", "simulator", "ios", "development", "debugging"]
 weight: 5
 ---
 

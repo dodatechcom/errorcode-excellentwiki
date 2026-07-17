@@ -4,7 +4,6 @@ description: "A Groovy parse error occurs when the Groovy compiler encounters sy
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["parse", "syntax", "compilation", "groovy"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Run Deployment Error"
 description: "Fix GCP Cloud Run deployment errors. Resolve Cloud Run service issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-run", "serverless", "container", "deploy"]
 weight: 5
 ---
 

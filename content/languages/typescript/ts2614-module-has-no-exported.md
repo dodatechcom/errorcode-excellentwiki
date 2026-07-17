@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2614: Module has no exported member. Import only 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2614", "module", "exported-member", "import", "not-exported"]
 weight: 5
 ---
 

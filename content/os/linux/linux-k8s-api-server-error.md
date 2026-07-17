@@ -4,7 +4,6 @@ description: "Fix Kubernetes API server errors. Resolve apiserver crashes, certi
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "api-server", "apiserver", "certificate", "latency"]
 weight: 5
 ---
 

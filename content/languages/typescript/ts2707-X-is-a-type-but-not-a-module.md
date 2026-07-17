@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2707: X is a type but not a module. Use import ty
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2707", "type-not-module", "import-type", "type-only", "module"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Celery task execution failed errors. Handle task exceptions, c
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["celery", "task", "worker", "queue", "execution-error"]
 weight: 5
 ---
 

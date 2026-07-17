@@ -4,7 +4,6 @@ description: "Fix Linux ESRCH (errno 3) No Such Process error. Resolve missing P
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["esrch", "no-such-process", "errno-3", "pid", "process"]
 weight: 30
 ---
 

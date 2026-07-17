@@ -4,7 +4,6 @@ description: "Fix Lua type errors. Learn why type mismatches occur and how to ha
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type", "mismatch", "conversion", "lua"]
 weight: 5
 ---
 

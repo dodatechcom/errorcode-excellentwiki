@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS SNS — Topic does not exist"
 description: "Fix AWS SNS Topic does not exist. Resolve SNS topic ARN and access issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "sns", "topic", "not-found", "arn", "publish", "subscribe"]
 weight: 5
 ---
 

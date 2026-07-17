@@ -4,7 +4,6 @@ description: "Fix PyTorch RuntimeError: CUDA out of memory. Free GPU memory, red
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pytorch", "cuda", "gpu", "out-of-memory", "torch"]
 weight: 5
 ---
 

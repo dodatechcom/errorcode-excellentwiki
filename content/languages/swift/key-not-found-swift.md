@@ -4,7 +4,6 @@ description: "Fix Swift dictionary key not found errors. Learn how to safely acc
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["key-not-found", "dictionary", "hashmap", "swift"]
 weight: 5
 ---
 

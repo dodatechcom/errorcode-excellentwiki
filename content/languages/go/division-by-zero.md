@@ -4,7 +4,6 @@ description: "Fix Go integer divide by zero panic. Check denominators before div
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["division", "zero", "integer", "math", "panic"]
 weight: 5
 ---
 

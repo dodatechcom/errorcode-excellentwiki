@@ -4,7 +4,6 @@ description: "Fix Haskell type mismatch errors when the compiler can't unify dif
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type-error", "mismatch", "inference", "unify", "haskell"]
 weight: 5
 ---
 

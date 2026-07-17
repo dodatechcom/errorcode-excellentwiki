@@ -4,7 +4,6 @@ description: "Fix Docker network bridge creation errors. Resolve Docker networki
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["network", "bridge", "docker", "networking", "connectivity"]
 weight: 5
 ---
 

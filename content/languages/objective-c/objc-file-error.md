@@ -4,7 +4,6 @@ description: "Fix Objective-C file system errors including file not found and pe
 languages: ["objective-c"]
 error-types: ["io-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "file-system", "foundation"]
 weight: 5
 ---
 

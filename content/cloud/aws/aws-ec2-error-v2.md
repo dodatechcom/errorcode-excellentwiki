@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS EC2 — InstanceLimitExceeded"
 description: "Fix AWS EC2 InstanceLimitExceeded. Resolve instance launch quota exceeded errors."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "ec2", "instance", "limit", "exceeded", "quota", "launch"]
 weight: 5
 ---
 

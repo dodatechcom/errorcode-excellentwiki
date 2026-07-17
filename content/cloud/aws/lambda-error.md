@@ -1,10 +1,8 @@
 ---
 title: "AWS Lambda Error: Unable to Import Module / Task Timed Out"
 description: "Lambda error: Unable to import module / Task timed out — Fix AWS Lambda function errors."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "lambda", "serverless", "timeout", "import", "module", "cold-start"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS display errors when external monitors aren't detected, s
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["display", "monitor", "resolution", "external", "thunderbolt", "hdmi"]
 weight: 5
 ---
 

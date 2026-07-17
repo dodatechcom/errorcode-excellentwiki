@@ -4,7 +4,6 @@ description: "Fix C++ std::variant errors including bad_variant_access, valueles
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["variant", "bad-variant-access", "c++17", "type-safety"]
 weight: 5
 ---
 

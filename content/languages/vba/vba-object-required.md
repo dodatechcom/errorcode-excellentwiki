@@ -4,7 +4,6 @@ description: "Fix VBA Object Required error (Error 424) when code references an 
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["object-required", "error-424", "set-keyword", "nothing", "vba"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin ClassCastException when an object cannot be cast to the
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["classcastexception", "cast", "type", "is", "as"]
 weight: 5
 ---
 

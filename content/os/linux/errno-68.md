@@ -4,7 +4,6 @@ description: "Fix Linux ECONNRESET (errno 68) Connection reset by peer error. So
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["econnreset", "connection", "errno-68", "reset", "peer"]
 weight: 5
 ---
 

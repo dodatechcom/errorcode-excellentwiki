@@ -4,7 +4,6 @@ description: "Fix C++ std::overflow_error from stoul when value exceeds unsigned
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["overflow-error", "stoul", "conversion", "unsigned-long", "range"]
 weight: 5
 ---
 

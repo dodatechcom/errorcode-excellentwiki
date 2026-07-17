@@ -4,7 +4,6 @@ description: "Fix Kubernetes no endpoints available error. Resolve service endpo
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["service-error", "no-endpoints", "service", "selector", "kubernetes"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix GitHub Actions cache restore errors. Resolve cache miss and ca
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "cache", "restore", "key", "dependency"]
 weight: 5
 ---
 

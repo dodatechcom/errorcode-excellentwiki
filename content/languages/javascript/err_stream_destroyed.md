@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_STREAM_DESTROYED when reading or writing to a dest
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-stream-destroyed", "stream", "readable", "writable", "pipe", "nodejs"]
 weight: 5
 ---
 

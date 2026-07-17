@@ -4,7 +4,6 @@ description: "Fix NATS Go client connection errors. Handle server connectivity, 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nats", "messaging", "connection"]
 weight: 5
 ---
 

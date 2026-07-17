@@ -4,7 +4,6 @@ description: "Fix TypeScript TS6133: Variable 'X' is declared but never used. Re
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts6133", "unused", "variable", "parameter", "never-used", "dead-code"]
 weight: 5
 ---
 

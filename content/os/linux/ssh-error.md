@@ -4,7 +4,6 @@ description: "Fix Linux SSH 'Permission denied' and 'Connection reset by peer' e
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssh", "permission-denied", "connection-reset", "authentication", "sshd"]
 weight: 5
 ---
 

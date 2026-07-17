@@ -4,7 +4,6 @@ description: "Fix SQLite 'database disk image is malformed' error. Recover corru
 tools: ["sqlite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlite", "malformed", "corruption", "recovery", "integrity"]
 weight: 5
 ---
 

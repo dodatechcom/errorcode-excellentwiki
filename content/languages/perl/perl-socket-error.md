@@ -4,7 +4,6 @@ description: "Fix Perl socket errors. Learn why socket operations fail and how t
 languages: ["perl"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["socket", "network", "io", "perl"]
 weight: 5
 ---
 

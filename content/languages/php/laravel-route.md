@@ -4,7 +4,6 @@ description: "Fix Laravel RouteNotFoundException when a route is not defined. Ha
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "route", "routing"]
 weight: 5
 ---
 

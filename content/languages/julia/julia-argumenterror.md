@@ -4,7 +4,6 @@ description: "Julia raises ArgumentError when a function receives an invalid or 
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "validation", "argumenterror", "runtime"]
 weight: 5
 ---
 

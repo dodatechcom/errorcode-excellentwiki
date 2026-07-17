@@ -4,7 +4,6 @@ description: "Fix C SSL hostname mismatch. Ensure certificate matches the connec
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["hostname-mismatch", "ssl", "tls", "certificate", "cn", "sni"]
 weight: 5
 ---
 

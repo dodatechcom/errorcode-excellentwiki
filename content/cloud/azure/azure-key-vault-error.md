@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Key Vault Access Error"
 description: "Fix Azure Key Vault access errors. Resolve Key Vault permission issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "key-vault", "keyvault", "secret", "access-policy"]
 weight: 5
 ---
 

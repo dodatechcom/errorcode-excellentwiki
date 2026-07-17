@@ -4,7 +4,6 @@ description: "Fix Docker load errors. Resolve tar image import failures and corr
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["load", "import", "tar", "image", "archive", "docker"]
 weight: 5
 ---
 

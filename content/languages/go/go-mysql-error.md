@@ -4,7 +4,6 @@ description: "Fix MySQL driver connection errors. Handle invalid connections, ti
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mysql", "driver", "database"]
 weight: 5
 ---
 

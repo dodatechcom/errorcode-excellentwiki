@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS Route53 DNS Error"
 description: "Fix AWS Route53 DNS errors. Resolve DNS resolution and routing issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "route53", "dns", "domain", "hosted-zone"]
 weight: 5
 ---
 

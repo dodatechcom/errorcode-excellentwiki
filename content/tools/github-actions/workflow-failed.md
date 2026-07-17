@@ -4,7 +4,6 @@ description: "A GitHub Actions workflow is invalid or a specific job within the 
 tools: ["github-actions"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["github-actions", "workflow", "job", "ci"]
 weight: 5
 ---
 

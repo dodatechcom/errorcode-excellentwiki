@@ -4,7 +4,6 @@ description: "Fix Linux 'docker compose' network creation errors. Resolve networ
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "docker-compose", "network", "bridge", "overlay", "ipam"]
 weight: 5
 ---
 

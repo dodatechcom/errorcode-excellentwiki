@@ -4,7 +4,6 @@ description: "Fix Fortran runtime errors when end-of-file is encountered unexpec
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "end-of-file", "read", "eof", "i-o", "fortran"]
 weight: 5
 ---
 

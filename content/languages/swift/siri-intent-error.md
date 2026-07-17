@@ -4,7 +4,6 @@ description: "Fix Swift SiriKit intent errors. Learn why Siri intents fail and h
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["siri", "sirikit", "intent", "assistant", "swift"]
 weight: 5
 ---
 

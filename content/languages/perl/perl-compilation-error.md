@@ -4,7 +4,6 @@ description: "Fix Perl compilation errors. Learn why Perl scripts fail to compil
 languages: ["perl"]
 severities: ["error"]
 error-types: ["syntax-error"]
-tags: ["compilation", "syntax", "perl"]
 weight: 5
 ---
 

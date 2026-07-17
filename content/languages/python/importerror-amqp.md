@@ -4,7 +4,6 @@ description: "Fix Python ImportError: amqp not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "amqp", "module-not-found", "pip", "messaging"]
 weight: 5
 ---
 

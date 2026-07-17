@@ -4,7 +4,6 @@ description: "Fix Pascal compile-time and runtime errors when types don't match 
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "mismatch", "conversion", "assignment", "comparison", "pascal"]
 weight: 5
 ---
 

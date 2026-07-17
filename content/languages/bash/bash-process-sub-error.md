@@ -4,7 +4,6 @@ description: "Fix bash process substitution errors when <() or >() fails."
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["process-substitution", "fd", "temporary", "bash"]
 weight: 5
 ---
 

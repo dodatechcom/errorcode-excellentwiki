@@ -4,7 +4,6 @@ description: "Fix Dry::Validation errors in Ruby. Learn why validation contracts
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["validation-error"]
-tags: ["dry-validation", "validation", "contract", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "systemd timer unit fails to trigger or execute the associated serv
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "timer", "cron", "schedule", "periodic"]
 weight: 5
 ---
 

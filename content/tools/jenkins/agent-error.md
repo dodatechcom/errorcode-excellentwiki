@@ -4,7 +4,6 @@ description: "Jenkins cannot connect to a build agent because it is offline, unr
 tools: ["jenkins"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["jenkins", "agent", "node", "connection"]
 weight: 5
 ---
 

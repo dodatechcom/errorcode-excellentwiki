@@ -4,7 +4,6 @@ description: "Fix window function errors when using OVER, PARTITION BY, or windo
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["window-function", "over", "partition-by", "row-number", "rank"]
 weight: 5
 ---
 

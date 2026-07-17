@@ -4,7 +4,6 @@ description: "Fix Linux 'openssl: certificate error' and verification failures. 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["openssl", "certificate-error", "ssl", "tls", "x509", "ca-certificate"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_NO_CWD when the current working directory is missi
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-no-cwd", "cwd", "working-directory", "process", "nodejs"]
 weight: 5
 ---
 

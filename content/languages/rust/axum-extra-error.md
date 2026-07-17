@@ -4,7 +4,6 @@ description: "Fix axum-extra typed header errors. Handle header extraction, pars
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["axum-extra", "headers", "web"]
 weight: 5
 ---
 

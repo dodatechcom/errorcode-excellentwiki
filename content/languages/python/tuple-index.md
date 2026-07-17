@@ -4,7 +4,6 @@ description: "Fix Python IndexError: tuple index out of range. Learn why tuple i
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["indexerror", "tuple", "index", "sequence"]
 weight: 5
 ---
 

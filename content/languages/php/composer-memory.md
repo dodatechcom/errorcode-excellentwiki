@@ -4,7 +4,6 @@ description: "Fix Composer out of memory errors. Handle PHP memory limit, large 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["composer", "memory", "php"]
 weight: 5
 ---
 

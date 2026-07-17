@@ -4,7 +4,6 @@ description: "Fix AMQP (RabbitMQ) Go client connection errors. Handle connection
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["amqp", "rabbitmq", "message-queue"]
 weight: 5
 ---
 

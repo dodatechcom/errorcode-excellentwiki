@@ -4,7 +4,6 @@ description: "Fix Linux 'Error connecting to dbus' errors. Start the dbus servic
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["dbus", "d-bus", "ipc", "message-bus", "systemd"]
 weight: 5
 ---
 

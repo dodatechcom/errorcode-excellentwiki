@@ -4,7 +4,6 @@ description: "Redis rejects an AUTH command because the server was not started w
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["authentication", "password", "security", "auth"]
 weight: 5
 ---
 

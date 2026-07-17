@@ -4,7 +4,6 @@ description: "Fix JavaScript SyntaxError: unexpected token. Find and fix syntax 
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "syntax", "parse", "token"]
 weight: 80
 ---
 

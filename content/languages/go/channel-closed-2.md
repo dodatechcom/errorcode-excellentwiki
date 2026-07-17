@@ -4,7 +4,6 @@ description: "Fix Go send on closed channel panic. Use sync mechanisms to track 
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["channel", "closed", "send", "panic", "concurrency", "runtime"]
 weight: 5
 ---
 

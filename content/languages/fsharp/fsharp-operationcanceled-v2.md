@@ -4,7 +4,6 @@ description: "Fix F# OperationCanceledException in async workflows. Handle cance
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["operation", "canceled", "async", "cancellation", "token", "fsharp"]
 weight: 5
 ---
 

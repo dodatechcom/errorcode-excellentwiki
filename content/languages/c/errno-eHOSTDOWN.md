@@ -4,7 +4,6 @@ description: "Fix C EHOSTDOWN (Host is down) by detecting unreachable hosts, imp
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ehostdown", "host-is-down", "unreachable-host", "network-failure"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Gradle invalid Java version errors. Resolve JDK compatibility 
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "java", "version", "jdk", "toolchain", "compatibility"]
 weight: 5
 ---
 

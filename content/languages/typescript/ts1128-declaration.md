@@ -4,7 +4,6 @@ description: "Fix TypeScript TS1128: Declaration or statement expected. Resolve 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts1128", "declaration", "statement", "syntax-error", "expected"]
 weight: 5
 ---
 

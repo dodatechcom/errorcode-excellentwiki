@@ -4,7 +4,6 @@ description: "Fix GraphQL 'Cannot return null for non-nullable field' errors. Ha
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["graphql", "null", "resolver", "schema", "non-nullable"]
 weight: 5
 ---
 

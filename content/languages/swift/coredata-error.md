@@ -4,7 +4,6 @@ description: "Fix Swift CoreData persistence errors. Learn why CoreData operatio
 languages: ["swift"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["coredata", "persistence", "database", "swift"]
 weight: 5
 ---
 

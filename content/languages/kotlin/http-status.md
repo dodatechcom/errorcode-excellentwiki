@@ -4,7 +4,6 @@ description: "Fix Kotlin HttpStatusCodeException when HTTP requests return error
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["httpstatusexception", "http", "status", "404", "500", "request"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Sail Docker container errors in Laravel. Handle port conflicts
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "sail", "docker"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin InterruptedException when a thread is interrupted durin
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["interruptedexception", "thread", "interrupt", "blocking", "sleep"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Puppeteer navigation timeout and page crash errors. Handle bro
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["puppeteer", "browser", "automation"]
 weight: 5
 ---
 

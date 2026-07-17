@@ -4,7 +4,6 @@ description: "Fix Go HTTP 500 internal server error. Handle unhandled errors, pa
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "500", "server-error"]
 weight: 5
 ---
 

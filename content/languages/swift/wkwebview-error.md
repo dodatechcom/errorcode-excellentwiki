@@ -4,7 +4,6 @@ description: "Fix Swift WKWebView JavaScript errors. Learn why JavaScript execut
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["wkwebview", "javascript", "webview", "swift"]
 weight: 5
 ---
 

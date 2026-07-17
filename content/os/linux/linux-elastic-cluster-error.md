@@ -4,7 +4,6 @@ description: "Fix Linux Elasticsearch cluster health RED errors. Resolve unassig
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["elasticsearch", "cluster", "health-red", "shards", "unassigned", "search"]
 weight: 5
 ---
 

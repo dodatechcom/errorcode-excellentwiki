@@ -4,7 +4,6 @@ description: "Fix Kubernetes Service unavailable errors. Resolve no endpoints is
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["service", "endpoints", "unavailable", "kubernetes"]
 weight: 5
 ---
 

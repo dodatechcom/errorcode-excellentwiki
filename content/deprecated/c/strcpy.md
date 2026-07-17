@@ -6,7 +6,6 @@ replacement_function: "strncpy"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["strcpy", "strncpy", "strlcpy", "buffer-overflow", "c"]
 weight: 5
 ---
 

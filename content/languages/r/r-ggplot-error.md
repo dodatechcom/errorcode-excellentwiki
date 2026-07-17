@@ -4,7 +4,6 @@ description: "Fix ggplot2 aesthetic mapping errors. Handle 'Cannot find object',
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ggplot2", "aesthetic", "aes", "plotting", "tidyverse", "r"]
 weight: 5
 ---
 

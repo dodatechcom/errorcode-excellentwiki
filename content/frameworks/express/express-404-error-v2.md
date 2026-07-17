@@ -4,7 +4,6 @@ description: "Fix Express 404 errors when routes are not registered or the clien
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["404", "route", "not-found", "routing", "express"]
 weight: 5
 ---
 

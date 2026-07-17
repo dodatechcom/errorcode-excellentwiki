@@ -4,7 +4,6 @@ description: "Fix Swift URLError in URLSession. Learn about URLSession error cod
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["urlsession", "networking", "urlerror", "http", "request"]
 weight: 5
 ---
 

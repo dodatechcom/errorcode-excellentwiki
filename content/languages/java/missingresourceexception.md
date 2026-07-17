@@ -4,7 +4,6 @@ description: "Fix Java MissingResourceException by ensuring resource bundles exi
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["missingresourceexception", "resourcebundle", "i18n", "localization", "properties"]
 weight: 5
 ---
 

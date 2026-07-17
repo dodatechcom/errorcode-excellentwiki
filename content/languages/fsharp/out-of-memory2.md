@@ -4,7 +4,6 @@ description: "An OutOfMemoryException occurs when the system runs out of memory 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "out-of-memory", "allocation", "outofmemoryexception"]
 weight: 5
 ---
 

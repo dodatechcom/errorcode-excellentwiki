@@ -4,7 +4,6 @@ description: "Fix PHP E_WARNING runtime errors. Learn common causes and solution
 languages: ["php"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["e-warning", "runtime", "warning"]
 weight: 5
 ---
 

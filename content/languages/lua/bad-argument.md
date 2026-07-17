@@ -4,7 +4,6 @@ description: "A bad argument error occurs when a function receives an argument o
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "type", "invalid", "lua"]
 weight: 5
 ---
 

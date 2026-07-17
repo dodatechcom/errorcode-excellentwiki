@@ -4,7 +4,6 @@ description: "Spring throws NoSuchBeanDefinitionException when no bean matching 
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bean", "dependency-injection", "autowired", "component-scan", "spring-context"]
 weight: 5
 ---
 

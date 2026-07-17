@@ -4,7 +4,6 @@ description: "Fix Linux EISCONN (errno 70) Already connected error. Solutions fo
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eisconn", "socket", "errno-70", "connected", "already"]
 weight: 5
 ---
 

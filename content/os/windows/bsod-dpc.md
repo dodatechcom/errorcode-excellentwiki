@@ -4,7 +4,6 @@ description: "Fix Blue Screen DPC_WATCHDOG_VIOLATION error on Windows 10 and 11.
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "dpc-watchdog", "storage", "ssd", "stop-code"]
 weight: 5
 ---
 

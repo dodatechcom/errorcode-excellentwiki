@@ -4,7 +4,6 @@ description: "Spring throws AccessDeniedException when a user lacks the required
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["security", "access-denied", "authorization", "spring-security", "role"]
 weight: 5
 ---
 

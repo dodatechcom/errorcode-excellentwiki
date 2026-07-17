@@ -4,7 +4,6 @@ description: "Fix Python SystemExit when sys.exit() is called. Understand how Sy
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["systemexit", "sys", "exit", "program"]
 weight: 5
 ---
 

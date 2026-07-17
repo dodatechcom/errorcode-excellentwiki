@@ -4,7 +4,6 @@ description: "Fix Linux desktop environment startup failures. Resolve display ma
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["desktop", "desktop-environment", "display-manager", "gdm", "startup"]
 weight: 5
 ---
 

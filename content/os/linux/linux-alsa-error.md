@@ -4,7 +4,6 @@ description: "Fix Linux ALSA 'device not found' errors. Detect sound cards, load
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["alsa", "device-not-found", "sound", "audio", "sound-card"]
 weight: 5
 ---
 

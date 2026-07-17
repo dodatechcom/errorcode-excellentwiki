@@ -4,7 +4,6 @@ description: "Fix PHP Warning: Cannot modify header info headers already sent. L
 languages: ["php"]
 severities: ["warning"]
 error_types: ["runtime"]
-tags: ["headers", "redirects", "output-buffering", "session-start", "ob_start"]
 date: 2026-07-15
 ---
 

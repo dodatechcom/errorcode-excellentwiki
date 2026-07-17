@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Member not found in enum' errors. Understand enum 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["enum-error", "enum", "member-not-found", "string-enum", "reverse-mapping"]
 weight: 5
 ---
 

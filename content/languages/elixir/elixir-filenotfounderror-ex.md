@@ -4,7 +4,6 @@ description: "Elixir File.Error occurs when file read, write, or delete operatio
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "io", "operation", "fileerror", "filesystem"]
 weight: 5
 ---
 

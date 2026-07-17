@@ -4,7 +4,6 @@ description: "Fix Go CSV record errors. Handle malformed CSV, field count mismat
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["csv", "encoding", "parse"]
 weight: 5
 ---
 

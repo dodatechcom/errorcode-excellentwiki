@@ -4,7 +4,6 @@ description: "A reference error occurs when attempting to use a value as a refer
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["reference", "hash", "type-error", "perl"]
 weight: 5
 ---
 

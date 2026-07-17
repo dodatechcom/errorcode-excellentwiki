@@ -4,7 +4,6 @@ description: "F# raises OutOfMemoryException when the system runs out of memory"
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["out-of-memory", "memory", "heap", "oom", "allocation"]
 weight: 5
 ---
 

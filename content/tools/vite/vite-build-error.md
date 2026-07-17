@@ -4,7 +4,6 @@ description: "Vite production build fails during Rollup bundling."
 tools: ["vite"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["vite", "build", "rollup", "production", "bundle"]
 weight: 5
 ---
 

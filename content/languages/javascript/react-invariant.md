@@ -4,7 +4,6 @@ description: "Fix React Invariant Violation errors. Understand React internal as
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "invariant", "violation", "internal", "render", "hooks", "reconciliation"]
 weight: 5
 ---
 

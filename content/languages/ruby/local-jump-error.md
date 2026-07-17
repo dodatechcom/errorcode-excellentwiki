@@ -4,7 +4,6 @@ description: "Fix Ruby LocalJumpError: block missing. Pass blocks to methods tha
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["block"]
-tags: ["local_jump_error", "block", "yield", "missing_block"]
 weight: 360
 ---
 

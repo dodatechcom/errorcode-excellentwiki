@@ -4,7 +4,6 @@ description: "Fix 'Invalid function handle' when creating or calling function ha
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["function-handle", "anonymous", "feval", "matlab"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Haskell raises MonadFail errors when pattern matching fails inside
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["monad", "fail", "do-notation", "pattern", "bind"]
 weight: 5
 ---
 

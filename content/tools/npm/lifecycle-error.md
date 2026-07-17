@@ -4,7 +4,6 @@ description: "Fix npm lifecycle script error. Resolve issues with preinstall, po
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["lifecycle-error", "script", "preinstall", "postinstall", "npm"]
 weight: 5
 ---
 

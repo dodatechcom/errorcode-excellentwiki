@@ -4,7 +4,6 @@ description: "Fix Docker exec errors. Resolve issues running commands inside con
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["exec", "container", "command", "interactive", "docker"]
 weight: 5
 ---
 

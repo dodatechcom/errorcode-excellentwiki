@@ -4,7 +4,6 @@ description: "Fix PowerShell credential errors when authentication fails, creden
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["credential", "authentication", "password", "PSCredential", "login"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rails mailer delivery errors when email fails to send."
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ActionMailer", "delivery", "email", "smtp", "rails", "ruby"]
 weight: 5
 ---
 

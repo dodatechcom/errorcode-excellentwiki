@@ -4,7 +4,6 @@ description: "Fix Rust timed out error. Learn why network operations time out an
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["timeout", "timed-out", "network", "connection", "io"]
 weight: 5
 ---
 

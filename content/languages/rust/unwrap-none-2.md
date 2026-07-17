@@ -4,7 +4,6 @@ description: "Fix Rust unwrap() on None panic. Learn why calling unwrap on a Non
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["unwrap", "option", "none", "panic", "result", "match"]
 weight: 5
 ---
 

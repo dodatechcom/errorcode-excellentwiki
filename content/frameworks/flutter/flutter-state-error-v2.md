@@ -4,7 +4,6 @@ description: "Flutter throws setState() called after dispose error when attempti
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "setstate", "dispose", "lifecycle", "widget", "state"]
 weight: 5
 ---
 

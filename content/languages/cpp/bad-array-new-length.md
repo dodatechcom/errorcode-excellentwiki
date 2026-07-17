@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_array_new_length when new[] receives invalid arra
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-array-new-length", "new", "array", "length", "allocation"]
 weight: 5
 ---
 

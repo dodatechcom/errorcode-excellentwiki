@@ -4,7 +4,6 @@ description: "Fix Linux 'docker build no space left on device' errors. Free disk
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "build", "no-space", "disk", "image", "layer"]
 weight: 5
 ---
 

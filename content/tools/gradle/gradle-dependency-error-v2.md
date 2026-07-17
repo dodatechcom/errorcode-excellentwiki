@@ -4,7 +4,6 @@ description: "Gradle fails to resolve a dependency due to version conflict or mi
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "dependency", "resolution", "version", "conflict"]
 weight: 5
 ---
 

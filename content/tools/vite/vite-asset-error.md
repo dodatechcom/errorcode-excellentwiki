@@ -4,7 +4,6 @@ description: "Vite fails to resolve or process asset file imports."
 tools: ["vite"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["vite", "asset", "import", "static", "file"]
 weight: 5
 ---
 

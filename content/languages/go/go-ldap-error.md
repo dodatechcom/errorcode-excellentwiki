@@ -4,7 +4,6 @@ description: "Fix Go LDAP bind errors. Handle authentication, connection securit
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ldap", "authentication", "directory"]
 weight: 5
 ---
 

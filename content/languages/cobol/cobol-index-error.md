@@ -4,7 +4,6 @@ description: "Index errors in COBOL occur when using invalid subscript values or
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "subscript", "occurs", "array", "cobol"]
 weight: 5
 ---
 

@@ -6,7 +6,6 @@ replacement_function: "Thread.interrupt"
 languages: ["java"]
 deprecated_since: "JDK 1.2"
 error_message: "Thread.stop() is deprecated"
-tags: ["thread", "stop", "interrupt", "concurrency"]
 weight: 120
 ---
 

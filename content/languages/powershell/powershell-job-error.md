@@ -4,7 +4,6 @@ description: "Fix PowerShell job errors when background jobs fail, return errors
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["job", "background", "Start-Job", "Receive-Job", "async"]
 weight: 5
 ---
 

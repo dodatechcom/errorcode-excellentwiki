@@ -4,7 +4,6 @@ description: "Fix Kubernetes Job failed with backoff limit exceeded. Learn why j
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["job", "batch", "backoff-limit", "failed", "retry"]
 weight: 5
 ---
 

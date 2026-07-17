@@ -4,7 +4,6 @@ description: "Fix Linux SELinux context errors. Correct file labels, set securit
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["selinux", "context", "file-context", "security", "label"]
 weight: 5
 ---
 

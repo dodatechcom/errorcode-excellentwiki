@@ -4,7 +4,6 @@ description: "Fix Kubernetes service unavailable errors. Resolve 'no endpoints a
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "service", "endpoints", "clusterip", "connectivity"]
 weight: 5
 ---
 

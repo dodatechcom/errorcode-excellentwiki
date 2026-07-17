@@ -4,7 +4,6 @@ description: "Fix Python ImportError: google.cloud.bigquery not found. Install g
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "bigquery", "module-not-found", "pip", "gcp"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix UndefinedBehaviorSanitizer detected errors. Handle signed inte
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ubsan", "sanitizer", "undefined-behavior", "integer", "alignment"]
 weight: 5
 ---
 

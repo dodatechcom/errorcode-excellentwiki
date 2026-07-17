@@ -4,7 +4,6 @@ description: "Fix Kotlin IOException when file or network operations fail. Handl
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ioexception", "io", "file", "network", "stream"]
 weight: 5
 ---
 

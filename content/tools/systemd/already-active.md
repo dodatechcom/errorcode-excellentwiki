@@ -4,7 +4,6 @@ description: "Fix systemd 'unit is already active' error. Resolve duplicate serv
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["already-active", "systemd", "duplicate", "conflict", "active"]
 weight: 5
 ---
 

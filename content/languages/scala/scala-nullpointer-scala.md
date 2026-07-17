@@ -4,7 +4,6 @@ description: "Fix Scala NullPointerException. Learn about null handling, Option 
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "pointer", "option", "reference", "nullpointer"]
 weight: 5
 ---
 

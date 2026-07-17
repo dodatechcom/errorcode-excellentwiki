@@ -4,7 +4,6 @@ description: "Fix Kubernetes RBAC forbidden errors. Resolve 'forbidden' access d
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "rbac", "forbidden", "role", "clusterrole", "binding"]
 weight: 5
 ---
 

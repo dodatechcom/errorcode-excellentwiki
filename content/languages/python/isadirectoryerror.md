@@ -4,7 +4,6 @@ description: "Fix Python IsADirectoryError when trying to open a directory as a 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["isadirectoryerror", "directory", "file-path", "os"]
 weight: 60
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Bicep Deployment Error"
 description: "Fix Azure Bicep deployment errors. Resolve Bicep compilation and deployment issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "bicep", "deployment", "infrastructure", "template"]
 weight: 5
 ---
 

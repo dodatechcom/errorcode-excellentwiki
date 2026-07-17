@@ -4,7 +4,6 @@ description: "Fix Python UnicodeDecodeError: 'utf-8' codec can't decode. Specify
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unicodedecodeerror", "utf-8", "encoding", "codec", "bytes"]
 weight: 5
 ---
 

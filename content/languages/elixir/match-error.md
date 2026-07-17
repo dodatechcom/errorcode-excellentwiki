@@ -4,7 +4,6 @@ description: "A MatchError occurs when a pattern match fails because the right-h
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern", "pattern-matching", "matcherror"]
 weight: 5
 ---
 

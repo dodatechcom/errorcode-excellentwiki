@@ -4,7 +4,6 @@ description: "Fix C EOVERFLOW (Value too large) by using appropriate data types,
 languages: ["c"]
 severities: ["error"]
 error-types: ["os-error"]
-tags: ["eoverflow", "value-too-large-variant", "large-values", "type-limits"]
 weight: 5
 ---
 

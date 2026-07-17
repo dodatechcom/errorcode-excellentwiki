@@ -4,7 +4,6 @@ description: "Fix Go listen tcp bind address already in use error. Handle port r
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["http", "listen", "tcp", "port", "bind", "address", "runtime"]
 weight: 5
 ---
 

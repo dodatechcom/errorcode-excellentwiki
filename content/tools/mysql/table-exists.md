@@ -4,7 +4,6 @@ description: "Attempted to create a MySQL table that already exists"
 tools: ["mysql"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["table", "create", "duplicate", "schema"]
 weight: 5
 ---
 

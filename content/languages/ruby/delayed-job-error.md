@@ -4,7 +4,6 @@ description: "Fix Delayed::Worker errors in Rails. Learn why Delayed::Job worker
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["delayed-job", "worker", "background-jobs", "rails", "ruby"]
 weight: 5
 ---
 

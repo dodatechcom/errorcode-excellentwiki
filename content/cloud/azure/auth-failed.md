@@ -1,10 +1,8 @@
 ---
 title: "Azure AADSTS50126: Invalid Username or Password"
 description: "AADSTS50126: Invalid username or password — Fix Azure AD authentication failures."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "aad", "authentication", "login", "credentials", "entra-id", "sts"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux EPERM (errno 1) Operation Not Permitted error. Solutions
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["epERM", "permission", "errno-1", "sudo"]
 weight: 10
 ---
 

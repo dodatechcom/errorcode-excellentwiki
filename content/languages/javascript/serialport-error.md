@@ -4,7 +4,6 @@ description: "Fix SerialPort device not found errors. Handle serial communicatio
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["serialport", "serial", "uart"]
 weight: 5
 ---
 

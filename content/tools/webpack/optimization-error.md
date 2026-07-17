@@ -4,7 +4,6 @@ description: "Fix webpack optimization errors. Resolve code splitting, minificat
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "optimization", "splitting", "minify", "treeshake"]
 weight: 5
 ---
 

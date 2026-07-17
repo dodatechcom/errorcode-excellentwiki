@@ -4,7 +4,6 @@ description: "Fix DNS resolution errors. Handle DNS failures, name resolution is
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dns", "resolution", "network"]
 weight: 5
 ---
 

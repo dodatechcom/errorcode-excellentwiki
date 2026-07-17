@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure SQL — firewall rule blocked"
 description: "Fix Azure SQL firewall rule blocked. Resolve SQL Database connectivity and firewall issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "sql", "firewall", "blocked", "connectivity", "database"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::runtime_error with specific message strings. Understa
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-error", "runtime_error", "exception", "stdexcept", "what"]
 weight: 5
 ---
 

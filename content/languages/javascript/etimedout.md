@@ -4,7 +4,6 @@ description: "Fix Node.js ETIMEDOUT: connection timed out error. Handle network 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["etimedout", "timeout", "connection", "network", "socket"]
 weight: 5
 ---
 

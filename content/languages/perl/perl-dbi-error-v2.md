@@ -4,7 +4,6 @@ description: "Fix Perl DBI database errors including connection failures, query 
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dbi", "database", "handle", "sql", "connection", "perl"]
 weight: 5
 ---
 

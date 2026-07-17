@@ -4,7 +4,6 @@ description: "SQLite operation encounters a data type mismatch."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "type", "mismatch", "data-type", "casting"]
 weight: 5
 ---
 

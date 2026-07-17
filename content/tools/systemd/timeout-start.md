@@ -4,7 +4,6 @@ description: "Fix systemd startup timeout errors. Resolve services that take too
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["timeout", "startup", "systemd", "watchdog", "deadline"]
 weight: 5
 ---
 

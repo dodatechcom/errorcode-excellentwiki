@@ -4,7 +4,6 @@ description: "Fix Linux ECHILD (errno 10) No Child Processes error. Solutions fo
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOCHILD", "child", "errno-10", "wait"]
 weight: 5
 ---
 

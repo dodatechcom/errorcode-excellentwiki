@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -109 (memBadSize). Resolve bad memory size erro
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["membadsize", "osstatus-109", "memory", "core-services", "carbon", "invalid-size"]
 weight: 5
 ---
 

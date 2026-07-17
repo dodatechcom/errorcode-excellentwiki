@@ -4,7 +4,6 @@ description: "Fix Linux 'NFS: server not responding' errors. Resolve NFS mount t
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nfs", "server-not-responding", "network-filesystem", "mount", "stale-handle"]
 weight: 5
 ---
 

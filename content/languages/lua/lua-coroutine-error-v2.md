@@ -4,7 +4,6 @@ description: "Fix Lua coroutine errors when trying to resume a dead or already-r
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["coroutine", "resume", "dead", "yield", "thread", "lua"]
 weight: 5
 ---
 

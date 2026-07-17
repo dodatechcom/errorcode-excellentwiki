@@ -4,7 +4,6 @@ description: "Fix Spring Boot auto-configuration failures. Resolve conflicting b
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-boot", "auto-configuration", "bean", "starter", "conditional"]
 weight: 5
 ---
 

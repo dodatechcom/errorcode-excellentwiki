@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error when creating containers that are too la
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["length-error", "length_error", "container", "resize", "max-size", "stdexcept"]
 weight: 5
 ---
 

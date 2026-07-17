@@ -4,7 +4,6 @@ description: "Fix PHP E_CORE_WARNING non-fatal engine warnings. Learn to diagnos
 languages: ["php"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["e-core-warning", "core", "warning"]
 weight: 5
 ---
 

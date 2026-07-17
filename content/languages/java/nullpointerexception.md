@@ -4,7 +4,6 @@ description: "Fix Java NullPointerException by adding null checks, using Optiona
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["nullpointerexception", "null", "reference", "optional"]
 weight: 10
 ---
 

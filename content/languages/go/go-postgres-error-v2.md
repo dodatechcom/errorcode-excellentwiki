@@ -4,7 +4,6 @@ description: "Fix pgx PostgreSQL connection errors in Go. Handle connection refu
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["postgresql", "pgx", "database", "connection", "pool"]
 weight: 5
 ---
 

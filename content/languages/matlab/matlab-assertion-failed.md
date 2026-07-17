@@ -4,7 +4,6 @@ description: "Fix 'Assertion failed' in MATLAB when assert() conditions evaluate
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["assert", "assertion", "condition", "validation", "matlab"]
 weight: 5
 ---
 

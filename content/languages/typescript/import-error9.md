@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Cannot find module X or its type declarations' err
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["import-error", "module-not-found", "module-resolution", "type-declarations", "tsconfig"]
 weight: 5
 ---
 

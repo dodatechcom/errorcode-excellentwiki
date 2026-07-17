@@ -4,7 +4,6 @@ description: "Fix Kubernetes kube-proxy iptables errors. Resolve kube-proxy and 
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "kube-proxy", "iptables", "proxy", "networking", "service"]
 weight: 5
 ---
 

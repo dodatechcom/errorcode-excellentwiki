@@ -4,7 +4,6 @@ description: "Next.js raises this build error when the application code contains
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["build", "compilation", "webpack", "next-config"]
 weight: 5
 ---
 

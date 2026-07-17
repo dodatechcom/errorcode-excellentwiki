@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS SNS Publish Failed"
 description: "Fix AWS SNS publish errors. Resolve SNS message delivery issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "sns", "publish", "notification", "topic"]
 weight: 5
 ---
 

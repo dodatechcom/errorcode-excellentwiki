@@ -4,7 +4,6 @@ description: "Fix Go context canceled and context deadline exceeded errors. Hand
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["context", "canceled", "deadline", "timeout", "goroutine", "propagation"]
 weight: 5
 ---
 

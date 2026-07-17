@@ -4,7 +4,6 @@ description: "Fix Symfony serializer errors. Handle normalizers, encoders, and f
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "serializer", "encoding"]
 weight: 5
 ---
 

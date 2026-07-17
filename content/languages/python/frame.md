@@ -4,7 +4,6 @@ description: "Fix Python ValueError: bad callable for frame. Understand frame-re
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["valueerror", "frame", "callable", "function"]
 weight: 5
 ---
 

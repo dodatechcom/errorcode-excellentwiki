@@ -4,7 +4,6 @@ description: "A Closure error occurs when calling a closure with wrong arguments
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["closure", "call", "arguments", "groovy"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C memory leaks detected by Valgrind. Track and eliminate memor
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["memory-leak", "valgrind", "leak-check", "heap", "malloc"]
 weight: 5
 ---
 

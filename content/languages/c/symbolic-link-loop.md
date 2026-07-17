@@ -4,7 +4,6 @@ description: "Fix C ELOOP: too many levels of symbolic links. Break circular sym
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eloop", "symbolic-link", "symlink", "loop", "errno"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Compute Engine — quota exceeded"
 description: "Fix GCP Compute Engine quota exceeded. Resolve instance and resource quota limits."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "compute", "engine", "quota", "exceeded", "limit", "resources"]
 weight: 5
 ---
 

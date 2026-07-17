@@ -4,7 +4,6 @@ description: "Fix http-body-util body errors. Handle body framing, size limits, 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http-body-util", "body", "http"]
 weight: 5
 ---
 

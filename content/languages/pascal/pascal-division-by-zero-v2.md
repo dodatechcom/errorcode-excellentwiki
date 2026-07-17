@@ -4,7 +4,6 @@ description: "Fix Pascal runtime errors when dividing by zero in integer or real
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "arithmetic", "integer", "real", "pascal"]
 weight: 5
 ---
 

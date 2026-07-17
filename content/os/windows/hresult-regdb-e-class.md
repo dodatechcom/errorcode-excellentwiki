@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT REGDB_E_CLASSNOTREG (0x80040154) class not reg
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "regdb-e-classnotreg", "0x80040154", "class-not-registered", "com", "registry"]
 weight: 5
 ---
 

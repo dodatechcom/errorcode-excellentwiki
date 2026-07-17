@@ -4,7 +4,6 @@ description: "Next.js API routes raise errors when request handling, validation,
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["api", "route", "handler", "rest", "nextjs"]
 weight: 5
 ---
 

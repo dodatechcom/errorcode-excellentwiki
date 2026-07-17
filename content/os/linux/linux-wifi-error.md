@@ -4,7 +4,6 @@ description: "Fix Linux Wi-Fi 'wpa_supplicant: authentication failed' errors. Re
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["wifi", "wpa_supplicant", "authentication-failed", "wireless", "network"]
 weight: 5
 ---
 

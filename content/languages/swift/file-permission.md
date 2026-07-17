@@ -4,7 +4,6 @@ description: "Fix Swift POSIX error: Permission denied. Learn why file access fa
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["posix", "permission", "file", "filesystem", "sandbox"]
 weight: 5
 ---
 

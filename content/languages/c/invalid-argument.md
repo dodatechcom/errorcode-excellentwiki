@@ -4,7 +4,6 @@ description: "Fix C invalid argument (EINVAL). Pass valid arguments to system ca
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["einval", "invalid-argument", "system-call", "errno", "parameter"]
 weight: 5
 ---
 

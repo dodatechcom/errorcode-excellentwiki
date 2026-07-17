@@ -4,7 +4,6 @@ description: "Fix Sidekiq::Worker::TransactionError in Rails. Learn why Sidekiq 
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sidekiq", "transaction", "background-jobs", "rails", "ruby"]
 weight: 5
 ---
 

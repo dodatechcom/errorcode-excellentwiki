@@ -4,7 +4,6 @@ description: "Fix requests SSLError certificate verify failed. Handle SSL certif
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["requests", "ssl", "certificate", "https", "security"]
 weight: 5
 ---
 

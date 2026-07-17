@@ -4,7 +4,6 @@ description: "Fix 'process substitution failed' in Bash when <() or >() syntax f
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["process-substitution", "fd", "command-substitution"]
 weight: 5
 ---
 

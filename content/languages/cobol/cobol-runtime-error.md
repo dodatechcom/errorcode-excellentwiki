@@ -4,7 +4,6 @@ description: "Runtime errors in COBOL occur during program execution due to inva
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "execution", "exception", "abend", "cobol"]
 weight: 5
 ---
 

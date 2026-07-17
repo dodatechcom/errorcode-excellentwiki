@@ -4,7 +4,6 @@ description: "Fix Swift ARKit session errors. Learn why AR sessions fail and how
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["arkit", "augmented-reality", "session", "swift"]
 weight: 5
 ---
 

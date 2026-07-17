@@ -4,7 +4,6 @@ description: "Fix Python ZeroDivisionError: division by zero. Add input validati
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["zerodivisionerror", "division", "zero", "math"]
 weight: 90
 ---
 

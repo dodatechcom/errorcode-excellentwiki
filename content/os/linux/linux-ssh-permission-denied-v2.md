@@ -4,7 +4,6 @@ description: "Fix Linux SSH 'Permission denied (publickey,password)' errors. Res
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["ssh", "permission-denied", "publickey", "authentication", "keys"]
 weight: 5
 ---
 

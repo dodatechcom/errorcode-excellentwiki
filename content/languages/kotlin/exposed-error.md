@@ -4,7 +4,6 @@ description: "Fix Exposed ORM errors in Kotlin. Learn why Exposed database opera
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["exposed", "orm", "database", "kotlin"]
 weight: 5
 ---
 

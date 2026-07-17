@@ -4,7 +4,6 @@ description: "Fix Cells view errors in Ruby. Learn why Cells view rendering fail
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cells", "view", "component", "ruby"]
 weight: 5
 ---
 

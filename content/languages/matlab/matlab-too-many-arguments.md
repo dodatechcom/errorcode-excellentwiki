@@ -4,7 +4,6 @@ description: "Fix 'Too many input arguments' when calling MATLAB functions with 
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["arguments", "input", "too-many", "function", "matlab"]
 weight: 5
 ---
 

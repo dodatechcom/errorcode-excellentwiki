@@ -4,7 +4,6 @@ description: "Fix Nginx reverse proxy errors. Resolve proxy_pass configuration i
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["proxy", "reverse-proxy", "proxy_pass", "upstream", "nginx"]
 weight: 5
 ---
 

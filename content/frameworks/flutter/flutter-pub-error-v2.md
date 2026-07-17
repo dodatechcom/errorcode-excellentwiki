@@ -4,7 +4,6 @@ description: "Flutter pub get fails when it cannot resolve compatible versions f
 frameworks: ["flutter"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["flutter", "pub", "dependency", "version", "sdk", "resolution"]
 weight: 5
 ---
 

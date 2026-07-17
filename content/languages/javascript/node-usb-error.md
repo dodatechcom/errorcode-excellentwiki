@@ -4,7 +4,6 @@ description: "Fix USB device not found errors in Node.js USB modules."
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["usb", "device", "hardware"]
 weight: 5
 ---
 

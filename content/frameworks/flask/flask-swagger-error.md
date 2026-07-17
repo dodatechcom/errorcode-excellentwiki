@@ -4,7 +4,6 @@ description: "Flask-Swagger raises errors when OpenAPI/Swagger specification gen
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["swagger", "openapi", "api-docs", "specification", "flask"]
 weight: 5
 ---
 

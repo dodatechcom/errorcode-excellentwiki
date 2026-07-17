@@ -4,7 +4,6 @@ description: "A table index is nil error occurs when trying to use nil as a tabl
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["table", "index", "nil", "key", "lua"]
 weight: 5
 ---
 

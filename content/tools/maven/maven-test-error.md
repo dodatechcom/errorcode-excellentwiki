@@ -4,7 +4,6 @@ description: "Maven test phase fails with test errors or assertion failures."
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "test", "surefire", "failure", "assertion"]
 weight: 5
 ---
 

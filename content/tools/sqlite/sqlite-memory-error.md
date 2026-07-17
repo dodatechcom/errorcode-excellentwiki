@@ -4,7 +4,6 @@ description: "SQLite operation fails due to insufficient memory."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "memory", "oom", "allocation", "large-query"]
 weight: 5
 ---
 

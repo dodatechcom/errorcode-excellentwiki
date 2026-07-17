@@ -4,7 +4,6 @@ description: "Fix bash case statement syntax errors. Learn proper case/esac synt
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["case", "pattern", "esac", "syntax", "bash"]
 weight: 5
 ---
 

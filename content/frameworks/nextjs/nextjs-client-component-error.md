@@ -4,7 +4,6 @@ description: "Next.js client component errors occur when client-side rendering f
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["client-component", "use-client", "browser", "interactive", "nextjs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift dictionary key not found errors. Learn why accessing a m
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dictionary", "key", "keynotfound", "optional", "subscript"]
 weight: 5
 ---
 

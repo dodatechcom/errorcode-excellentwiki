@@ -1,10 +1,8 @@
 ---
 title: "GCP BigQuery: Access Denied to Table"
 description: "BigQuery: Access denied to table — Fix Google BigQuery authorization and permission errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "bigquery", "bq", "access-denied", "table", "dataset", "iam"]
 weight: 5
 ---
 

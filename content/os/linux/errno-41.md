@@ -4,7 +4,6 @@ description: "Fix Linux ENOSTR (errno 41) No STREAMS resources error. Solutions 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enostr", "streams", "errno-41", "allocation"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C EADDRINUSE (Address already in use) by using SO_REUSEADDR, c
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eaddrinuse", "address-already-in-use", "socket", "bind", "so-reuseaddr"]
 weight: 5
 ---
 

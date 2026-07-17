@@ -4,7 +4,6 @@ description: "Fix TypeScript TS7006 when function parameters lack type annotatio
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts7006", "implicit-any", "noImplicitAny", "callback", "type-inference"]
 weight: 5
 ---
 

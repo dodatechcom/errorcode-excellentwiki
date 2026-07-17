@@ -4,7 +4,6 @@ description: "Fix node-cron syntax errors. Handle invalid cron expressions and s
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["node-cron", "cron", "syntax"]
 weight: 5
 ---
 

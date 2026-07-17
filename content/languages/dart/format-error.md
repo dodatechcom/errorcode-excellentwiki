@@ -4,7 +4,6 @@ description: "A FormatException occurs when attempting to parse a string that do
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["format", "parse", "invalid", "dart"]
 weight: 5
 ---
 

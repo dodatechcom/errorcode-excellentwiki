@@ -4,7 +4,6 @@ description: "Fix R 'error in which' when logical condition is invalid. Ensure w
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["which", "logical", "index", "condition"]
 weight: 5
 ---
 

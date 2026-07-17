@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS EKS — cluster health check failed"
 description: "Fix AWS EKS cluster health check failed. Resolve EKS control plane and node health issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "eks", "cluster", "health", "check", "failed", "control-plane"]
 weight: 5
 ---
 

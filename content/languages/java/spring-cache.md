@@ -4,7 +4,6 @@ description: "Fix CacheAccessException when Spring Cache operations fail. Handle
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "cache", "cache-abstraction", "cache-access", "ehcache"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "React Navigation throws an error when navigating between screens w
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["navigation", "react-navigation", "screen", "params"]
 weight: 5
 ---
 

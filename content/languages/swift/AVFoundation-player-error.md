@@ -4,7 +4,6 @@ description: "Fix Swift AVFoundation playback errors. Learn why audio/video play
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["avfoundation", "playback", "avplayer", "swift"]
 weight: 5
 ---
 

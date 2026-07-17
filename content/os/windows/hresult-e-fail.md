@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_FAIL (0x80004005) general failure error. Cau
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-fail", "0x80004005", "com-error", "general-failure"]
 weight: 5
 ---
 

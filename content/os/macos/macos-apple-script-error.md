@@ -4,7 +4,6 @@ description: "Fix AppleScript errors on Mac when scripts fail with syntax errors
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["applescript", "automation", "scripting", "osa", "event"]
 weight: 5
 ---
 

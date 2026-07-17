@@ -4,7 +4,6 @@ description: "Vite fails when using import.meta.glob for asset imports."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "asset", "import", "glob", "meta"]
 weight: 5
 ---
 

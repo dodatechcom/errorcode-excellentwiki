@@ -4,7 +4,6 @@ description: "Fix PHP Fatal error: Allowed memory size of X bytes exhausted. Lea
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fatal-error", "memory", "memory-limit", "out-of-memory"]
 weight: 5
 ---
 

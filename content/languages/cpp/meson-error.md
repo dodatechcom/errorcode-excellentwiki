@@ -4,7 +4,6 @@ description: "Fix C++ Meson build errors. Resolve meson.build configuration issu
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["meson", "build-system", "ninja", "compilation", "meson-build"]
 weight: 5
 ---
 

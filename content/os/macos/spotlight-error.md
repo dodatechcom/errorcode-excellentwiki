@@ -4,7 +4,6 @@ description: "Fix macOS Spotlight search not working or stuck indexing. Rebuild 
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["spotlight", "search", "indexing", "mdfind", "metadata"]
 weight: 5
 ---
 

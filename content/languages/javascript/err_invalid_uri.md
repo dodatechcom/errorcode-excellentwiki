@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_INVALID_URI when parsing or creating URIs with inv
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-invalid-uri", "uri", "url", "parse", "encoding", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix http-proxy-middleware errors when the proxy target is unreacha
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["proxy", "http-proxy-middleware", "upstream", "gateway", "express"]
 weight: 5
 ---
 

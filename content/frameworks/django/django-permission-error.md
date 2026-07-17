@@ -4,7 +4,6 @@ description: "Fix Django PermissionDenied errors. Resolve permission and authori
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["permission", "denied", "authorization", "access", "django"]
 weight: 5
 ---
 

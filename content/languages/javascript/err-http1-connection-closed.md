@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP1_CONNECTION_CLOSED when an HTTP/1.1 connectio
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http1-connection-closed", "http", "connection", "closed", "nodejs"]
 weight: 5
 ---
 

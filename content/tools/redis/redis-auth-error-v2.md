@@ -4,7 +4,6 @@ description: "Redis rejects authentication attempt because the provided password
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "auth", "password", "acl", "authentication"]
 weight: 5
 ---
 

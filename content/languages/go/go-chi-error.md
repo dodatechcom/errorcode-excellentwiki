@@ -4,7 +4,6 @@ description: "Fix Chi router route not found errors. Handle route patterns, midd
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["chi", "router", "web"]
 weight: 5
 ---
 

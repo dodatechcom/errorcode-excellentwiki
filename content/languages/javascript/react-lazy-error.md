@@ -4,7 +4,6 @@ description: "Fix React 'React.lazy: Expected a ReactElement type' error. Unders
 languages: ["javascript"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["react", "react-lazy", "lazy-loading", "dynamic-import", "suspense", "code-splitting"]
 weight: 5
 ---
 

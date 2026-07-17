@@ -4,7 +4,6 @@ description: "End of file errors in Fortran occur when attempting to read past t
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["eof", "end-of-file", "read", "iostat", "fortran"]
 weight: 5
 ---
 

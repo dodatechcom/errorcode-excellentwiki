@@ -4,7 +4,6 @@ description: "Fix Rcpp compilation errors including C++ syntax issues, missing h
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rcpp", "cpp", "compilation", "c-plus-plus", "native", "r"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Redis Sentinel cannot find an available master node for the monito
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "sentinel", "master", "failover", "ha", "replication"]
 weight: 5
 ---
 

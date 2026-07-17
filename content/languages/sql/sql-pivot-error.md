@@ -4,7 +4,6 @@ description: "Fix dynamic SQL pivot errors when unpivoting or creating dynamic c
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pivot", "dynamic-sql", "crosstab", "unpivot", "conditional"]
 weight: 5
 ---
 

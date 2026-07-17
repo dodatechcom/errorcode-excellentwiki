@@ -4,7 +4,6 @@ description: "Fix Lua bad argument errors. Learn why argument validation fails a
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["argument", "parameter", "type", "lua"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Erlang raises case_clause when no clause in a case expression matc
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["case", "clause", "match", "case_clause"]
 weight: 5
 ---
 

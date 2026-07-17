@@ -4,7 +4,6 @@ description: "Fix Go binary read errors. Handle buffer overflow, endianness, and
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["binary", "encoding", "data"]
 weight: 5
 ---
 

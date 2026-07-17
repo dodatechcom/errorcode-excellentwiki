@@ -4,7 +4,6 @@ description: "Fix C ELIBACC (Can't access shared lib) by verifying library permi
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["elibacc", "cannot-access-shared-lib", "dynamic-loading", "library-permissions"]
 weight: 5
 ---
 

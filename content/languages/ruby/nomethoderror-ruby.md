@@ -4,7 +4,6 @@ description: "Fix Ruby NoMethodError: undefined method. Learn why the method doe
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nomethoderror", "undefined-method", "method", "ruby"]
 weight: 5
 ---
 

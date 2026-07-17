@@ -4,7 +4,6 @@ description: "Fix fs_extra file operation errors. Handle copy, move, and directo
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fs_extra", "filesystem", "io"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix VBA Run-time error 7 when VBA cannot allocate memory for varia
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime-error", "memory", "out-of-memory", "allocation", "vba"]
 weight: 5
 ---
 

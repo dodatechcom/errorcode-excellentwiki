@@ -4,7 +4,6 @@ description: "Fix Express CORS errors when browsers block cross-origin requests 
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cors", "access-control", "origin", "browser", "express"]
 weight: 5
 ---
 

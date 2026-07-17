@@ -4,7 +4,6 @@ description: "Fix Git cherry-pick merge conflict. Resolve conflicts when cherry-
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cherry-pick", "conflict", "commit", "branch", "git"]
 weight: 5
 ---
 

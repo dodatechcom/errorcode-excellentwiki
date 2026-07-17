@@ -4,7 +4,6 @@ description: "Fix Linux GRUB rescue 'error: no such partition' and minimal BASH-
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["grub-rescue", "minimal-shell", "no-such-partition", "boot", "recovery"]
 weight: 5
 ---
 

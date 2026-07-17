@@ -4,7 +4,6 @@ description: "Fix Vite dev server errors. Resolve development server startup and
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "dev-server", "development", "localhost", "port"]
 weight: 5
 ---
 

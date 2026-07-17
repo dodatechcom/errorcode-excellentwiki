@@ -4,7 +4,6 @@ description: "Fix PHP E_ERROR fatal runtime errors that halt script execution. L
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["e-error", "fatal", "runtime"]
 weight: 5
 ---
 

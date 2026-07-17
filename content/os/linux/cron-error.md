@@ -4,7 +4,6 @@ description: "Fix Linux CRON 'CMD failed' and execution errors. Debug cron jobs,
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cron", "crontab", "cmd-failed", "scheduled-task", "anacron"]
 weight: 5
 ---
 

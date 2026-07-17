@@ -4,7 +4,6 @@ description: "Fix OpenSSL handshake errors. Handle certificate chains, cipher su
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["openssl", "tls", "security"]
 weight: 5
 ---
 

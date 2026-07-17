@@ -4,7 +4,6 @@ description: "Fix 'Matrix dimensions must agree' when performing element-wise op
 languages: ["matlab"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["matrix-dimensions", "dimension-mismatch", "matlab"]
 weight: 5
 ---
 

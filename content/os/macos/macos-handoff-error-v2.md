@@ -4,7 +4,6 @@ description: "Fix Handoff errors on macOS when Continuity features like Handoff,
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["handoff", "continuity", "universal-clipboard", "airdrop", "macos"]
 weight: 5
 ---
 

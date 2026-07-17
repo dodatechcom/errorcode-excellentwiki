@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_CONNECTION_REFUSED when a TCP connection to a serv
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-connection-refused", "connection", "network", "nodejs", "tcp"]
 weight: 5
 ---
 

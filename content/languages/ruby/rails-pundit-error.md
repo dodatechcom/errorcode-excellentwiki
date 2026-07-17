@@ -4,7 +4,6 @@ description: "Fix Pundit::NotAuthorizedError in Rails. Learn why Pundit authoriz
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["authorization-error"]
-tags: ["pundit", "authorization", "not-authorized", "rails", "ruby"]
 weight: 5
 ---
 

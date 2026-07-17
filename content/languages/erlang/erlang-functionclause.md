@@ -4,7 +4,6 @@ description: "Erlang raises function_clause when no function clause matches the 
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["function", "clause", "pattern", "function_clause"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "MongoDB client fails SCRAM authentication when credentials are inc
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "authentication", "scram", "password", "credential", "auth"]
 weight: 5
 ---
 

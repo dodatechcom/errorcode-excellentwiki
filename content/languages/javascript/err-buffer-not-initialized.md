@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_BUFFER_NOT_INITIALIZED when using a buffer that ha
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-buffer-not-initialized", "buffer", "nodejs", "allocation"]
 weight: 5
 ---
 

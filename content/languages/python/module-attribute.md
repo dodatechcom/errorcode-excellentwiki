@@ -4,7 +4,6 @@ description: "Fix Python AttributeError when accessing non-existent module attri
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["attributeerror", "module", "attribute", "import"]
 weight: 5
 ---
 

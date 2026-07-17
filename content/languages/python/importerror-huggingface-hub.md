@@ -4,7 +4,6 @@ description: "Fix Python ImportError: huggingface_hub not found or ModuleNotFoun
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "huggingface-hub", "huggingface_hub", "module-not-found", "pip"]
 weight: 5
 ---
 

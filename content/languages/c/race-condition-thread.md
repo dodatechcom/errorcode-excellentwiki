@@ -4,7 +4,6 @@ description: "Fix C race condition in multithreaded programs. Protect shared dat
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["race-condition", "thread", "concurrency", "mutex", "shared-data"]
 weight: 5
 ---
 

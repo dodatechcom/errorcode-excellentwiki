@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2532: Object is possibly 'undefined'. Handle unde
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2532", "undefined", "strictNullChecks", "possibly-undefined"]
 weight: 5
 ---
 

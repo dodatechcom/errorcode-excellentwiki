@@ -4,7 +4,6 @@ description: "Fix PHP E_CORE_ERROR fatal errors originating from the PHP engine.
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["e-core-error", "core", "engine"]
 weight: 5
 ---
 

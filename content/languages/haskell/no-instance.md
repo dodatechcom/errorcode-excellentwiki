@@ -4,7 +4,6 @@ description: "Fix Haskell 'No instance for' typeclass errors. Learn why the comp
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["typeclass", "instance", "no-instance", "compilation", "deriving"]
 weight: 5
 ---
 

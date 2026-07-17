@@ -4,7 +4,6 @@ description: "Fix C errno 32 EPIPE (Broken pipe) by handling SIGPIPE signal, che
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["epipe", "errno-32", "broken-pipe", "sigpipe", "socket"]
 weight: 5
 ---
 

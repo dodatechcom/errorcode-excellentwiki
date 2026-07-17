@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x800f0922 (CBS_E_CONNECTOR_DISABLED) on 
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["update-error"]
-tags: ["windows-update", "cbs", "connector-disabled", "service-error"]
 weight: 5
 ---
 

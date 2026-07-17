@@ -4,7 +4,6 @@ description: "Fix SQL Server Error 4060 cannot open database errors. Resolve dat
 tools: ["sqlserver"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlserver", "4060", "database", "open", "default", "access"]
 weight: 5
 ---
 

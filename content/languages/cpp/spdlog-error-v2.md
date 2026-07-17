@@ -4,7 +4,6 @@ description: "Fix spdlog sink creation errors. Handle file sink failures, async 
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spdlog", "logging", "sink", "file", "async"]
 weight: 5
 ---
 

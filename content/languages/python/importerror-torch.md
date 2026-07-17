@@ -4,7 +4,6 @@ description: "Fix Python ImportError: torch. Reinstall PyTorch, match CUDA versi
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["importerror", "torch", "pytorch", "cuda", "installation"]
 weight: 5
 ---
 

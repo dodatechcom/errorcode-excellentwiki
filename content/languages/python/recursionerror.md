@@ -4,7 +4,6 @@ description: "Fix Python RecursionError when maximum recursion depth exceeded. I
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["recursionerror", "recursion", "depth", "stack-overflow"]
 weight: 75
 ---
 

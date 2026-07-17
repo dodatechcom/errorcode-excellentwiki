@@ -4,7 +4,6 @@ description: "Fix Python ImportError: csv module not found. The csv module is pa
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "csv", "module-not-found", "standard-library"]
 weight: 5
 ---
 

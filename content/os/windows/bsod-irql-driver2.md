@@ -4,7 +4,6 @@ description: "Fix Blue Screen DRIVER_IRQL_NOT_LESS_OR_EQUAL stop code 0xA caused
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "driver-irql", "netio", "network", "stop-0xa"]
 weight: 5
 ---
 

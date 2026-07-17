@@ -4,7 +4,6 @@ description: "Fix std::filesystem directory iteration errors. Handle permission 
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["filesystem", "directory", "iteration", "std", "io"]
 weight: 5
 ---
 

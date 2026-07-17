@@ -4,7 +4,6 @@ description: "Fix 'bash: test command error' when using [ ] or test builtin inco
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["test", "bracket", "conditional", "expression", "builtin"]
 weight: 5
 ---
 

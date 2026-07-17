@@ -4,7 +4,6 @@ description: "Fix Swift ProcessInfo errors. Learn about ProcessInfo property acc
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["processinfo", "environment", "arguments", "operating-system", "system"]
 weight: 5
 ---
 

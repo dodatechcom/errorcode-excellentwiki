@@ -4,7 +4,6 @@ description: "Fix RSpec expectation failures. Learn why RSpec tests fail and how
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["test-error"]
-tags: ["rspec", "expectation", "test", "ruby"]
 weight: 5
 ---
 

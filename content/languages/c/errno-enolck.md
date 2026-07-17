@@ -4,7 +4,6 @@ description: "Fix C ENOLCK (No record locks available) by reducing lock usage, c
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enolck", "no-record-locks", "file-locking", "fcntl-lock"]
 weight: 5
 ---
 

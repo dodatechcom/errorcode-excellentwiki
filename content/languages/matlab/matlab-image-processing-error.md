@@ -4,7 +4,6 @@ description: "Fix MATLAB Image Processing Toolbox errors when image dimensions d
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["image-processing", "dimensions", "toolbox", "image", "pixel", "matlab"]
 weight: 5
 ---
 

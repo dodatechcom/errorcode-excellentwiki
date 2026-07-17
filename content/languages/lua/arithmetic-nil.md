@@ -4,7 +4,6 @@ description: "An attempt to perform arithmetic on nil occurs when using nil in m
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["arithmetic", "nil", "math", "lua"]
 weight: 5
 ---
 

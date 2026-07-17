@@ -4,7 +4,6 @@ description: "Fix Shortcuts app errors on Mac when shortcuts fail to run, show '
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["shortcuts", "automation", "workflow", "app-automation"]
 weight: 5
 ---
 

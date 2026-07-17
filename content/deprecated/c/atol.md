@@ -6,7 +6,6 @@ replacement_function: "strtol"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["atol", "strtol", "parsing", "error-handling", "c"]
 weight: 5
 ---
 

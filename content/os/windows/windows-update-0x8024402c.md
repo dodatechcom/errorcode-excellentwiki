@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x8024402c on Windows 10 and 11. Reset pr
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["update-error"]
-tags: ["windows-update", "connection-error", "proxy", "firewall", "network"]
 weight: 5
 ---
 

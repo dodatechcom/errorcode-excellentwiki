@@ -4,7 +4,6 @@ description: "Fix Gatekeeper errors on Mac when apps are blocked from opening be
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["gatekeeper", "app-blocked", "unidentified-developer", "unsigned", "security"]
 weight: 5
 ---
 

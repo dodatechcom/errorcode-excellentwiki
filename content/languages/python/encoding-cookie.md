@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError caused by invalid encoding declarations. Le
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "encoding", "declaration", "cookie"]
 weight: 5
 ---
 

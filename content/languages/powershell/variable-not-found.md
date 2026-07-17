@@ -4,7 +4,6 @@ description: "Fix 'Variable cannot be retrieved' when PowerShell cannot access a
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["VariableNotFoundException", "variable", "scope"]
 weight: 5
 ---
 

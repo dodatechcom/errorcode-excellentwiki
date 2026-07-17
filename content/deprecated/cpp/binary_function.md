@@ -6,7 +6,6 @@ replacement_function: "std::function"
 languages: ["cpp"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["binary_function", "std::function", "lambda", "functional", "cpp11"]
 weight: 5
 ---
 

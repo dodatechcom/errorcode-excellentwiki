@@ -4,7 +4,6 @@ description: "Fix C EKEYEXPIRED (Key has expired) by refreshing expired keys, ch
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ekeyexpired", "key-has-expired", "keyring", "key-expiry", "keyctl"]
 weight: 5
 ---
 

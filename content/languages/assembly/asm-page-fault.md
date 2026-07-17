@@ -4,7 +4,6 @@ description: "A page fault in Assembly occurs when accessing a memory page that 
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["page-fault", "memory", "virtual", "mmap", "segfault"]
 weight: 5
 ---
 

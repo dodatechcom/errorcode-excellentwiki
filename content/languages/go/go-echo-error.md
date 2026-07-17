@@ -4,7 +4,6 @@ description: "Fix Echo framework handler errors. Handle middleware, routing, and
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["echo", "web", "framework"]
 weight: 5
 ---
 

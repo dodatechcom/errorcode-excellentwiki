@@ -4,7 +4,6 @@ description: "Haskell raises pattern match failure when a function encounters a 
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pattern-match", "failure", "case", "non-exhaustive"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'ModuleNotFound' errors in PowerShell when modules fail to imp
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ModuleNotFound", "module", "import", "psm1", "gallery"]
 weight: 5
 ---
 

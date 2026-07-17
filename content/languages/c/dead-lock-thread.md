@@ -4,7 +4,6 @@ description: "Fix C deadlock in multithreaded programs. Prevent threads from wai
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["deadlock", "mutex", "thread", "pthreads", "concurrency"]
 weight: 5
 ---
 

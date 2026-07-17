@@ -4,7 +4,6 @@ description: "Fix Cypress test failures. Handle assertion errors, timeout issues
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cypress", "testing", "e2e"]
 weight: 5
 ---
 

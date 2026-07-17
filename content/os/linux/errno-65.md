@@ -4,7 +4,6 @@ description: "Fix Linux ENETUNREACH (errno 65) Network is unreachable error. Sol
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enetunreach", "network", "errno-65", "routing", "unreachable"]
 weight: 5
 ---
 

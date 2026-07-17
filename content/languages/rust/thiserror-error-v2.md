@@ -4,7 +4,6 @@ description: "Fix thiserror custom derive errors. Handle error enum definitions,
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["thiserror", "error-handling", "derive", "enum", "library"]
 weight: 5
 ---
 

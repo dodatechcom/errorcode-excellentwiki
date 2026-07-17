@@ -4,7 +4,6 @@ description: "Fix Objective-C Core Data errors including fetch, save, and migrat
 languages: ["objective-c"]
 error-types: ["database-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "core-data", "persistence"]
 weight: 5
 ---
 

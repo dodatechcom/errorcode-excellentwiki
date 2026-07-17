@@ -4,7 +4,6 @@ description: "Fix 'Registry export failed' errors on Windows 10 and 11. Resolve 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "export", "export-failed", "backup"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Jenkins Groovy script fails during execution in the pipeline or co
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "groovy", "script", "execution", "console"]
 weight: 5
 ---
 

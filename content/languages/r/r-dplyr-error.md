@@ -4,7 +4,6 @@ description: "Fix dplyr 'column not found' errors when using mutate, filter, sel
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dplyr", "column-not-found", "tidyverse", "mutate", "filter", "r"]
 weight: 5
 ---
 

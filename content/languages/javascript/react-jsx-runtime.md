@@ -4,7 +4,6 @@ description: "Fix React JSX runtime errors when the JSX transform cannot be foun
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "jsx", "runtime", "babel", "transform", "new-jsx"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Django NoReverseMatch errors. Resolve URL pattern not found is
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["url", "noreversematch", "pattern", "reverse", "django"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_PASSWORD_EXPIRED (1330). Resolve expired passwor
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-1330", "password-expired", "password"]
 weight: 5
 ---
 

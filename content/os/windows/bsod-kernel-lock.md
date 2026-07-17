@@ -4,7 +4,6 @@ description: "Fix Blue Screen KERNEL_LOCK_ENTRY_LEAKED_ON_THREAD_TERMINATION on 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "kernel-lock", "thread", "driver", "resource-leak"]
 weight: 5
 ---
 

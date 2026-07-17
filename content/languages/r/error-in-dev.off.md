@@ -4,7 +4,6 @@ description: "Fix R 'error in dev.off' when closing graphics devices. Check devi
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dev.off", "graphics", "device", "close"]
 weight: 5
 ---
 

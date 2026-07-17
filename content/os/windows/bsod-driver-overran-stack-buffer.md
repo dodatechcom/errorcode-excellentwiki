@@ -4,7 +4,6 @@ description: "Fix Blue Screen DRIVER_OVERRAN_STACK_BUFFER error on Windows 10 an
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "stack-buffer", "driver-security", "stop-code"]
 weight: 5
 ---
 

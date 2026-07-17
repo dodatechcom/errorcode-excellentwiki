@@ -4,7 +4,6 @@ description: "Fix 'COM STA threading error' on Windows 10 and 11. Resolve Single
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "sta", "threading", "apartment", "multi-threaded"]
 weight: 5
 ---
 

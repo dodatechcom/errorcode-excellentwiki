@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure AKS — node pool not ready"
 description: "Fix Azure AKS node pool not ready. Resolve AKS node pool health and provisioning issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "aks", "node-pool", "not-ready", "kubernetes", "node", "health"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Express returns HTTP 429 when a client exceeds the configured rate
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rate-limit", "throttle", "429", "middleware"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'cannot use process substitution' when Bash fails with <() or 
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["process-substitution", "dev-fd", "named-pipe", "compare"]
 weight: 5
 ---
 

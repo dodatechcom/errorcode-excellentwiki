@@ -4,7 +4,6 @@ description: "Fix readonly property errors in PHP 8.1+. Handle initialization, p
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "readonly", "oop"]
 weight: 5
 ---
 

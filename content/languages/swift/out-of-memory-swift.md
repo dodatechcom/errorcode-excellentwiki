@@ -4,7 +4,6 @@ description: "Fix Swift out of memory errors. Learn why memory exhaustion occurs
 languages: ["swift"]
 severities: ["error"]
 error-types: ["memory-error"]
-tags: ["out-of-memory", "memory", "allocation", "swift"]
 weight: 5
 ---
 

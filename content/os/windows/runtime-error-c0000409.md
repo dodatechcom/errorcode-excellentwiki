@@ -4,7 +4,6 @@ description: "Fix Windows runtime error 0xC0000409 (Stack Buffer Overflow) on Wi
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["runtime-error"]
-tags: ["stack-overflow", "buffer-overflow", "security", "0xC0000409", "STATUS_STACK_BUFFER_OVERRUN"]
 weight: 5
 ---
 

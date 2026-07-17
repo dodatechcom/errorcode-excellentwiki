@@ -4,7 +4,6 @@ description: "Fix Linux ENFILE (errno 23) Too many open files in system error. S
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enfile", "file-descriptor", "errno-23", "limits"]
 weight: 5
 ---
 

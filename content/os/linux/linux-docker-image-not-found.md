@@ -4,7 +4,6 @@ description: "Fix 'docker image not found' errors on Linux. Resolve 'image not f
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "image", "not-found", "manifest", "tag", "registry"]
 weight: 5
 ---
 

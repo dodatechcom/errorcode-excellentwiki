@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP BigQuery Query Error"
 description: "Fix GCP BigQuery query errors. Resolve BigQuery SQL and permission issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "bigquery", "query", "sql", "analytics"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_NOT_ENOUGH_MEMORY (8). Resolve memory allocation
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-8", "not-enough-memory", "memory"]
 weight: 5
 ---
 

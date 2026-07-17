@@ -4,7 +4,6 @@ description: "SQL Server backup operation fails."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "backup", "full", "differential", "log"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Expo Application Services build fails due to configuration errors,
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["expo", "eas", "build", "cloud", "android", "ios", "eas-build"]
 weight: 5
 ---
 

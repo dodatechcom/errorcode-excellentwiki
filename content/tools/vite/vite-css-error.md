@@ -4,7 +4,6 @@ description: "Vite fails to process or transform CSS files."
 tools: ["vite"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["vite", "css", "style", "postcss", "processing"]
 weight: 5
 ---
 

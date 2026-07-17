@@ -4,7 +4,6 @@ description: "Fix Go out of memory panic. Optimize memory usage, use streaming i
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["memory", "oom", "allocation", "gc", "panic"]
 weight: 5
 ---
 

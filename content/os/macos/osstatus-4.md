@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -109 (dsHeapErr). Resolve heap errors in Core S
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["dsheaperr", "osstatus-109", "heap", "core-services", "carbon", "memory"]
 weight: 5
 ---
 

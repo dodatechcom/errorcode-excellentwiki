@@ -4,7 +4,6 @@ description: "Laravel throws ValidationException when request data fails validat
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["validation", "request", "form-request", "rules"]
 weight: 5
 ---
 

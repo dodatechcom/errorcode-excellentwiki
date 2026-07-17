@@ -4,7 +4,6 @@ description: "React Native displays a RedBox error when a JavaScript runtime err
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redbox", "runtime", "javascript", "error-boundary", "debug"]
 weight: 5
 ---
 

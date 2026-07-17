@@ -4,7 +4,6 @@ description: "Fix Swift WatchKit extension errors. Learn why watchOS extensions 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["watchkit", "watchos", "extension", "swift"]
 weight: 5
 ---
 

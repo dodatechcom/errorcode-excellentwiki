@@ -4,7 +4,6 @@ description: "Fix systemd 'Failed with result dependency' error. Resolve service
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dependency", "systemd", "failed", "service", "order"]
 weight: 5
 ---
 

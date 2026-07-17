@@ -6,7 +6,6 @@ replacement_function: "std::negate"
 languages: ["cpp"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["logical_not", "negate", "functional", "cpp11", "unary"]
 weight: 5
 ---
 

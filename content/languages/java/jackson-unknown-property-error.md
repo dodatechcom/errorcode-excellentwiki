@@ -4,7 +4,6 @@ description: "Fix Jackson unknown property error. Configure ObjectMapper to igno
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "unknown-property", "databind", "objectmapper"]
 weight: 5
 ---
 

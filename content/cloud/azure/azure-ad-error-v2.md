@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure AD — AADSTS50011 redirect URI mismatch"
 description: "Fix Azure AD AADSTS50011 redirect URI mismatch. Resolve Entra ID redirect URI configuration issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "ad", "entra-id", "redirect", "uri", "mismatch", "aadsts50011"]
 weight: 5
 ---
 

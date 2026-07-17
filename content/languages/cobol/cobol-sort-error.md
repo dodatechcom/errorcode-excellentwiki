@@ -4,7 +4,6 @@ description: "Fix COBOL sort errors when sorting operations fail due to memory l
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sort", "memory", "merge", "work-file", "cobol"]
 weight: 5
 ---
 

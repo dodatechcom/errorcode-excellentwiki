@@ -4,7 +4,6 @@ description: "Fix renv restore errors including library restore failures, packag
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["renv", "reproducibility", "library", "lockfile", "package", "r"]
 weight: 5
 ---
 

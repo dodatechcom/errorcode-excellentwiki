@@ -4,7 +4,6 @@ description: "Fix Python ImportError: ocrmypdf not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "ocrmypdf", "module-not-found", "pip", "pdf", "ocr"]
 weight: 5
 ---
 

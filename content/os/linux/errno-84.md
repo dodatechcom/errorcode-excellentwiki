@@ -4,7 +4,6 @@ description: "Fix Linux KEYEXPIRED (errno 84) Key has expired error. Solutions f
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["keyexpired", "key", "errno-84", "expired", "kerberos"]
 weight: 5
 ---
 

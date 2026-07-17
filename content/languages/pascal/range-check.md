@@ -4,7 +4,6 @@ description: "A range check error occurs when a value is assigned outside the al
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["range-check", "subrange", "bounds", "pascal"]
 weight: 5
 ---
 

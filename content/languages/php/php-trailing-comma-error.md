@@ -4,7 +4,6 @@ description: "Fix trailing comma errors in function calls. Handle PHP 7.3+ trail
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "syntax", "trailing-comma"]
 weight: 5
 ---
 

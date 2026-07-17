@@ -4,7 +4,6 @@ description: "Fix C EROFS (Read-only file system) by remounting filesystems read
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["erofs", "read-only-file-system", "filesystem", "mount-options"]
 weight: 5
 ---
 

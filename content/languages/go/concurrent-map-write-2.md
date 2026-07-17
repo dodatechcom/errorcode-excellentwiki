@@ -4,7 +4,6 @@ description: "Fix Go concurrent map writes fatal error. Use sync.Mutex, sync.RWM
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["concurrent", "map", "write", "race", "sync", "fatal"]
 weight: 5
 ---
 

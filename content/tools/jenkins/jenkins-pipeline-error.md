@@ -4,7 +4,6 @@ description: "Jenkins pipeline has syntax errors or fails during pipeline execut
 tools: ["jenkins"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["jenkins", "pipeline", "declarative", "scripted", "jenkinsfile"]
 weight: 5
 ---
 

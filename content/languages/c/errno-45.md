@@ -4,7 +4,6 @@ description: "Fix C errno 45 EBADMSG (Not a STREAMS message) by validating messa
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ebadmsg", "errno-45", "streams", "bad-message", "invalid-message"]
 weight: 5
 ---
 

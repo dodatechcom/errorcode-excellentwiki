@@ -4,7 +4,6 @@ description: "Fix Go OpenAPI validation errors. Handle request/response validati
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["openapi", "validation", "api"]
 weight: 5
 ---
 

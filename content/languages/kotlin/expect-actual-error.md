@@ -4,7 +4,6 @@ description: "Fix Kotlin expect/actual mismatch errors. Learn why expect declara
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["expect", "actual", "multiplatform", "kotlin"]
 weight: 5
 ---
 

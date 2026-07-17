@@ -4,7 +4,6 @@ description: "Fix C EEXIST (File exists) by handling O_EXCL flags, checking for 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eexist", "file-exists", "o-excl", "atomic-creation"]
 weight: 5
 ---
 

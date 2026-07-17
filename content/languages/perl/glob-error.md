@@ -4,7 +4,6 @@ description: "A glob error occurs when pattern matching for filenames fails due 
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["glob", "pattern", "file", "perl"]
 weight: 5
 ---
 

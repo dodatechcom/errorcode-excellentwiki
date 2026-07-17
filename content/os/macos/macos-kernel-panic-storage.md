@@ -4,7 +4,6 @@ description: "Fix kernel panic errors on macOS related to storage subsystem fail
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["kernel-panic", "storage", "disk", "apfs", "hfs", "io-error", "macos"]
 weight: 5
 ---
 

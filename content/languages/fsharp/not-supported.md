@@ -4,7 +4,6 @@ description: "A NotSupportedException occurs when an operation is not supported 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["not-supported", "unsupported", "operation", "notsupportedexception"]
 weight: 5
 ---
 

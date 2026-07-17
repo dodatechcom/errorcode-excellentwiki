@@ -4,7 +4,6 @@ description: "Fix 'Not a GROUP BY clause' when ORDER BY or HAVING references non
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["group-by", "having", "order-by", "aggregation"]
 weight: 5
 ---
 

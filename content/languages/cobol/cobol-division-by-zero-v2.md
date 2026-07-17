@@ -4,7 +4,6 @@ description: "Fix COBOL errors when dividing by zero in COMPUTE or DIVIDE statem
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "arithmetic", "compute", "divide", "cobol"]
 weight: 5
 ---
 

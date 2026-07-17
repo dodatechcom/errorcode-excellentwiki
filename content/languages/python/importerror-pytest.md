@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pytest not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pytest", "module-not-found", "pip", "testing"]
 weight: 5
 ---
 

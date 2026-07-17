@@ -4,7 +4,6 @@ description: "Fix R 'subscript out of bounds' error when accessing elements beyo
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["subscript-out-of-bounds", "dimension", "index", "array", "r"]
 weight: 5
 ---
 

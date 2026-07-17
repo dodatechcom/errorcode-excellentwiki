@@ -4,7 +4,6 @@ description: "Fix docker exec errors on Linux. Resolve 'exec failed', 'container
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "exec", "container", "interactive", "shell", "process"]
 weight: 5
 ---
 

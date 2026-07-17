@@ -4,7 +4,6 @@ description: "Fix assembly segmentation faults caused by null pointer dereferenc
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["segfault", "null-pointer", "memory", "access-violation", "signal", "assembly"]
 weight: 5
 ---
 

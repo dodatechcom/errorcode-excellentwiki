@@ -4,7 +4,6 @@ description: "Fix C errno 42 ENOMSG (No message of desired type) by using correc
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enomsg", "errno-42", "message", "ipc", "system-v"]
 weight: 5
 ---
 

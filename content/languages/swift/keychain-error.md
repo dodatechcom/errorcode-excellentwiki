@@ -4,7 +4,6 @@ description: "Fix Swift Keychain errors. Learn about errSecItemNotFound, keychai
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["keychain", "security", "credentials", "password", "token"]
 weight: 5
 ---
 

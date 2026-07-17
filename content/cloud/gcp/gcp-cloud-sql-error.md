@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud SQL Connection Error"
 description: "Fix GCP Cloud SQL connection errors. Resolve Cloud SQL connectivity issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-sql", "database", "connection", "postgres"]
 weight: 5
 ---
 

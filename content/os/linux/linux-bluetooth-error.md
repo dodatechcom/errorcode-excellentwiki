@@ -4,7 +4,6 @@ description: "Fix Linux Bluetooth 'bluetoothd: pairing failed' errors. Resolve B
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bluetooth", "bluetoothd", "pairing-failed", "wireless", "device"]
 weight: 5
 ---
 

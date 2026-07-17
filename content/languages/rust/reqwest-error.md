@@ -4,7 +4,6 @@ description: "Fix reqwest HTTP client errors. Handle network failures, TLS issue
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["reqwest", "http", "request"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Gradle build fails with compilation errors in source code."
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "build", "compilation", "compile", "error"]
 weight: 5
 ---
 

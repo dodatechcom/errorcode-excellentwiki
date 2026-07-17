@@ -4,7 +4,6 @@ description: "Fix Laravel NotFoundHttpException for file operations. Handle stor
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "file", "storage"]
 weight: 5
 ---
 

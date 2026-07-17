@@ -4,7 +4,6 @@ description: "Fix Bundler gem not found errors when required gems are missing."
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bundler", "gem", "Gemfile", "missing", "ruby"]
 weight: 5
 ---
 

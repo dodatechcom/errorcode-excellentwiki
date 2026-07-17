@@ -4,7 +4,6 @@ description: "An overflow error occurs when an arithmetic result exceeds the cap
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "integer", "arithmetic", "pascal"]
 weight: 5
 ---
 

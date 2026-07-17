@@ -4,7 +4,6 @@ description: "Fix PowerShell clipboard access denied errors when Set-Clipboard o
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["clipboard", "Set-Clipboard", "access-denied", "powershell"]
 weight: 5
 ---
 

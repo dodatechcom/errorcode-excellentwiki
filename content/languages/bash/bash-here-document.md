@@ -4,7 +4,6 @@ description: "Fix 'here document' errors in Bash when heredoc syntax is wrong, d
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["here-document", "heredoc", "delimiter", "eof", "input"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin destructuring declaration errors. Learn why destructuri
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["destructuring", "component", "data-class", "kotlin"]
 weight: 5
 ---
 

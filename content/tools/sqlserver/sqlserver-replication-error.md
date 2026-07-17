@@ -4,7 +4,6 @@ description: "SQL Server replication encounters errors during distribution or sy
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "replication", "publisher", "subscriber", "distribution"]
 weight: 5
 ---
 

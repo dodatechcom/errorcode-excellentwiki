@@ -4,7 +4,6 @@ description: "Fix JavaScript RangeError for invalid array length, maximum call s
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["rangeerror", "array-length", "recursion", "call-stack"]
 weight: 75
 ---
 

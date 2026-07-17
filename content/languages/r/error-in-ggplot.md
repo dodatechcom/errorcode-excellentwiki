@@ -4,7 +4,6 @@ description: "Fix R 'error in ggplot' when using ggplot2 package. Check aes mapp
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ggplot", "ggplot2", "aesthetic", "mapping"]
 weight: 5
 ---
 

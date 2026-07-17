@@ -4,7 +4,6 @@ description: "Fix Linux SSH 'Connection timed out' errors. Resolve SSH connectio
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["ssh", "timeout", "connection-timeout", "network", "firewall"]
 weight: 5
 ---
 

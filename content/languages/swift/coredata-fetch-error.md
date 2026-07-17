@@ -4,7 +4,6 @@ description: "Fix Swift CoreData fetch errors. Learn why CoreData fetch requests
 languages: ["swift"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["coredata", "fetch", "database", "swift"]
 weight: 5
 ---
 

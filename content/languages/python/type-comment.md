@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError caused by invalid type comments. Learn abou
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "type", "comment", "annotation", "typing"]
 weight: 5
 ---
 

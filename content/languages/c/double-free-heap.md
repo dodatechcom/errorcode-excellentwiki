@@ -4,7 +4,6 @@ description: "Fix C double free or heap corruption. Prevent heap memory errors w
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["double-free", "heap-corruption", "glibc", "fasttop", "memory"]
 weight: 5
 ---
 

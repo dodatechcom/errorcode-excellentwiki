@@ -4,7 +4,6 @@ description: "Fix VBA PowerPoint errors when presentations cannot be opened, fou
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["powerpoint", "presentation", "automation", "com", "slide", "vba"]
 weight: 5
 ---
 

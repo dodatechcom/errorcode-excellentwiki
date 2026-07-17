@@ -4,7 +4,6 @@ description: "Fix Pascal runtime errors related to heap memory allocation, deall
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["heap", "memory", "new", "dispose", "allocation", "pascal"]
 weight: 5
 ---
 

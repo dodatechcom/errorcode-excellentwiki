@@ -4,7 +4,6 @@ description: "Fix 'The term X is not recognized' when PowerShell cannot find a c
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["CommandNotFoundException", "module", "command"]
 weight: 5
 ---
 

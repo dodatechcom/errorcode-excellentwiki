@@ -4,7 +4,6 @@ description: "Fix Java IOException by handling file system errors, checking perm
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["ioexception", "file", "stream", "io", "filesystem"]
 weight: 5
 ---
 

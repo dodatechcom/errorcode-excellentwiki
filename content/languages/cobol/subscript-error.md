@@ -4,7 +4,6 @@ description: "A subscript error occurs when accessing an array element with an i
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["subscript", "array", "index", "cobol"]
 weight: 5
 ---
 

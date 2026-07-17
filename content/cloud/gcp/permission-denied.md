@@ -1,10 +1,8 @@
 ---
 title: "GCP Permission Denied"
 description: "PermissionDenied - The caller does not have permission"
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "iam", "permission", "access", "authorization"]
 weight: 5
 ---
 

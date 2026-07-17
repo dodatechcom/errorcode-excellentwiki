@@ -4,7 +4,6 @@ description: "Fix F# InvalidOperation when calling First, Single, or Head on emp
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["invalid-operation", "sequence", "empty", "first", "head", "fsharp"]
 weight: 5
 ---
 

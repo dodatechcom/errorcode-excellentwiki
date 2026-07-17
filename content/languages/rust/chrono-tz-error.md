@@ -4,7 +4,6 @@ description: "Fix chrono-tz timezone errors. Handle timezone lookup, conversion,
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["chrono-tz", "timezone", "datetime"]
 weight: 5
 ---
 

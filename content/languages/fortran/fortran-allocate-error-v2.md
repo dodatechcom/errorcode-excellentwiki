@@ -4,7 +4,6 @@ description: "Fix Fortran allocation errors when ALLOCATE statement fails due to
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["allocate", "memory", "heap", "array", "dynamic", "fortran"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python TypeError when trying to iterate over a boolean value. 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "bool", "iterable", "boolean"]
 weight: 5
 ---
 

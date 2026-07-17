@@ -4,7 +4,6 @@ description: "Fix 'Dimensions of arrays are not compatible' when performing oper
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dimension", "mismatch", "array-size", "matrix", "matlab"]
 weight: 5
 ---
 

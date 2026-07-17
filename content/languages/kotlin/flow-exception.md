@@ -4,7 +4,6 @@ description: "Fix Kotlin Flow exception propagation errors. Handle flow exceptio
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["flow-exception", "flow", "catch", "terminal", "collect"]
 weight: 5
 ---
 

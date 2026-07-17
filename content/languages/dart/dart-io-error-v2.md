@@ -4,7 +4,6 @@ description: "Fix Dart HttpException when connections are closed unexpectedly. H
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "http", "connection", "network", "exception", "dart"]
 weight: 5
 ---
 

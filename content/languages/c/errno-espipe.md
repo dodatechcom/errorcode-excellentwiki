@@ -4,7 +4,6 @@ description: "Fix C ESPIPE (Illegal seek) by avoiding lseek on pipes, sockets, a
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["espipe", "illegal-seek", "lseek", "pipe", "seek-not-supported"]
 weight: 5
 ---
 

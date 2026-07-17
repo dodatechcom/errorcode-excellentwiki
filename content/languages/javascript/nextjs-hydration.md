@@ -4,7 +4,6 @@ description: "Fix Next.js hydration mismatch error when server and client HTML d
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "hydration", "ssr", "mismatch", "react", "server"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Git push rejected error. Resolve Updates were rejected when pu
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["push-rejected", "rejected", "updates", "git"]
 weight: 5
 ---
 

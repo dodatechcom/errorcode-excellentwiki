@@ -4,7 +4,6 @@ description: "Fix Express HTTPS errors when SSL certificates are invalid, expire
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ssl", "tls", "https", "certificate", "express"]
 weight: 5
 ---
 

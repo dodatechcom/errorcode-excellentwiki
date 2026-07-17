@@ -4,7 +4,6 @@ description: "Haskell raises scope errors when a variable or function name is no
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["scope", "variable", "undefined", "not-in-scope", "import"]
 weight: 5
 ---
 

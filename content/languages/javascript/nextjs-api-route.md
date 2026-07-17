@@ -4,7 +4,6 @@ description: "Fix Next.js API route errors including missing HTTP methods, incor
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "api-route", "api", "server", "handler"]
 weight: 5
 ---
 

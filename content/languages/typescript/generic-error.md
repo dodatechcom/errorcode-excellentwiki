@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Type X is not assignable to generic type parameter
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["generic-error", "type-parameter", "generic-constraint", "variance", "type-error"]
 weight: 5
 ---
 

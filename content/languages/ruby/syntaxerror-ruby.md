@@ -4,7 +4,6 @@ description: "Fix Ruby SyntaxError: syntax error. Learn why Ruby can't parse you
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["syntax-error"]
-tags: ["syntaxerror", "syntax", "parse", "ruby"]
 weight: 5
 ---
 

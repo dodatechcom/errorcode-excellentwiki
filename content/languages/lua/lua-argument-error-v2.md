@@ -4,7 +4,6 @@ description: "Fix Lua bad argument errors when functions receive wrong number or
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "bad-argument", "function", "parameter", "lua"]
 weight: 5
 ---
 

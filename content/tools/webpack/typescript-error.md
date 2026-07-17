@@ -4,7 +4,6 @@ description: "Fix webpack TypeScript compilation errors. Resolve ts-loader and t
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "typescript", "ts-loader", "compilation", "type-check"]
 weight: 5
 ---
 

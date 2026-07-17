@@ -4,7 +4,6 @@ description: "Fix Linux EISDIR (errno 21) Is a directory error. Solutions for fi
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enISDIR", "directory", "errno-21", "file"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java FileNotFoundException with 'No such file or directory'. C
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["filenotfoundexception", "no-such-file", "file-path", "io", "classpath"]
 weight: 5
 ---
 

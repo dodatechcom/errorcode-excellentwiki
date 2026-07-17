@@ -4,7 +4,6 @@ description: "Fix MATLAB string conversion errors when converting between cell a
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["string", "conversion", "cell", "char", "character", "matlab"]
 weight: 5
 ---
 

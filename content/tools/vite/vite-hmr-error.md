@@ -4,7 +4,6 @@ description: "Vite Hot Module Replacement fails to update modules in the develop
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "hmr", "hot-module", "development", "update"]
 weight: 5
 ---
 

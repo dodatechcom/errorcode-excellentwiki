@@ -4,7 +4,6 @@ description: "Fix Perl runtime errors. Learn why Perl scripts fail at runtime an
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime", "exception", "perl"]
 weight: 5
 ---
 

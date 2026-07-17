@@ -4,7 +4,6 @@ description: "Fix Java AbstractMethodError by ensuring concrete implementations 
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["abstractmethoderror", "abstract", "interface", "linkage"]
 weight: 5
 ---
 

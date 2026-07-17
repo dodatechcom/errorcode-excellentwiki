@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_INCOMPLETE when an HTTP/2 message is incompl
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-incomplete", "http2", "incomplete", "message", "frame", "nodejs"]
 weight: 5
 ---
 

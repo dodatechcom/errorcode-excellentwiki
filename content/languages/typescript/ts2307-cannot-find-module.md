@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2307: Cannot find module 'X'. Resolve module reso
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2307", "module", "import", "cannot-find", "module-resolution"]
 weight: 5
 ---
 

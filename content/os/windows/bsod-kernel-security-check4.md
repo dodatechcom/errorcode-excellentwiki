@@ -4,7 +4,6 @@ description: "Fix Blue Screen KERNEL_SECURITY_CHECK_FAILURE stop code 0x139 caus
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "kernel-security", "ndis", "network", "stop-0x139"]
 weight: 5
 ---
 

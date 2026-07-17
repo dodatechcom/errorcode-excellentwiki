@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error from acos with out-of-range argument. Cl
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["domain-error", "acos", "arccosine", "trigonometry", "domain"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_OUTOFMEMORY (14). Resolve out of memory errors, 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-14", "out-of-memory", "oom"]
 weight: 5
 ---
 

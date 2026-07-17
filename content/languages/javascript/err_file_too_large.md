@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_FILE_TOO_LARGE when reading or writing files that 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-file-too-large", "file", "size", "memory", "stream", "nodejs"]
 weight: 5
 ---
 

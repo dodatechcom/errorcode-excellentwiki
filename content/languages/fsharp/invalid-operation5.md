@@ -4,7 +4,6 @@ description: "An InvalidOperationException occurs when a method call is invalid 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["invalid", "operation", "state", "invalidoperationexception"]
 weight: 5
 ---
 

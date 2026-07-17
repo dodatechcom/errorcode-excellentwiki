@@ -4,7 +4,6 @@ description: "Fix Fortran errors when dividing by zero in integer or real arithm
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "arithmetic", "floating-point", "integer", "fortran"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java MarshalException by handling incomplete data during marsh
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["marshallingeofexception", "marshal", "eof", "serialization", "stream"]
 weight: 5
 ---
 

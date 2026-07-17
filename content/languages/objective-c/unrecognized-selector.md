@@ -4,7 +4,6 @@ description: "An unrecognized selector error occurs when calling a method that t
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unrecognized-selector", "method", "runtime", "objc"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin IllegalArgumentException when a method receives an inva
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalargumentexception", "argument", "validation", "require", "check"]
 weight: 5
 ---
 

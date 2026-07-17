@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -10 (memErr). Resolve general memory errors in 
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["memerr", "osstatus-10", "memory", "core-services", "carbon", "memory-error"]
 weight: 5
 ---
 

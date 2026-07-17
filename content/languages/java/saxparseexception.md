@@ -4,7 +4,6 @@ description: "Fix Java SAXParseException by correcting XML syntax, handling DTD/
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["saxparseexception", "xml", "sax", "parser", "malformed"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_column() expects at least 2 arguments. Lear
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-column", "array", "arguments"]
 weight: 5
 ---
 

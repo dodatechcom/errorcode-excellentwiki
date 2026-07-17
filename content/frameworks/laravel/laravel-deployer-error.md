@@ -4,7 +4,6 @@ description: "Laravel Deployer throws deployment errors when the Deployer task f
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["deployer", "deployment", "ssh", "release", "symlink"]
 weight: 5
 ---
 

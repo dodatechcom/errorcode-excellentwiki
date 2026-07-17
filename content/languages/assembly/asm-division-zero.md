@@ -4,7 +4,6 @@ description: "Division by zero in Assembly causes a hardware exception (SIGFPE) 
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "div", "idiv", "sigfpe"]
 weight: 5
 ---
 

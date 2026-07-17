@@ -4,7 +4,6 @@ description: "Fix Kotlin UnsupportedOperationException when operations are not s
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unsupportedoperationexception", "operation", "immutable", "kotlin"]
 weight: 5
 ---
 

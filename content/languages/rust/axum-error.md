@@ -4,7 +4,6 @@ description: "Fix axum routing and handler errors. Handle route extraction, stat
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["axum", "web", "framework"]
 weight: 5
 ---
 

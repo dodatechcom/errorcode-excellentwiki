@@ -4,7 +4,6 @@ description: "Fix C infinite loop. Prevent unbounded loops with proper terminati
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["infinite-loop", "loop", "termination", "hang", "timeout"]
 weight: 5
 ---
 

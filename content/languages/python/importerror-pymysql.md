@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pymysql not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pymysql", "module-not-found", "pip", "mysql"]
 weight: 5
 ---
 

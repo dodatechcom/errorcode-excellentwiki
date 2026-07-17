@@ -4,7 +4,6 @@ description: "Julia raises CompositeException when multiple errors occur in para
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["composite", "exception", "async", "task", "parallel"]
 weight: 5
 ---
 

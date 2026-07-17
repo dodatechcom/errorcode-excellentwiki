@@ -4,7 +4,6 @@ description: "Gradle build fails with a build exception indicating configuration
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "build", "exception", "failure", "error"]
 weight: 5
 ---
 

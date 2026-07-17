@@ -4,7 +4,6 @@ description: "Oracle sequence encounters errors during value generation."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "sequence", "auto-increment", "nextval", "identity"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'swap not working' and 'swapon failed' errors. Create sw
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["swap", "swapon", "swapoff", "memory", "hibernate"]
 weight: 5
 ---
 

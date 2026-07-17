@@ -4,7 +4,6 @@ description: "An undefined variable error occurs when a Fortran program referenc
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["variable", "undefined", "declaration", "implicit"]
 weight: 5
 ---
 

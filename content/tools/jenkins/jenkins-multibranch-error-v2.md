@@ -4,7 +4,6 @@ description: "Jenkins multibranch pipeline fails during branch indexing."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "multibranch", "branch", "indexing", "scm"]
 weight: 5
 ---
 

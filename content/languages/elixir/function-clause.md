@@ -4,7 +4,6 @@ description: "A FunctionClauseError occurs when no function clause matches the g
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["function", "clause", "pattern-matching", "functionclauseerror"]
 weight: 5
 ---
 

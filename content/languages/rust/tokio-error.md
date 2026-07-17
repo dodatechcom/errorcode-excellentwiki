@@ -4,7 +4,6 @@ description: "Fix tokio runtime errors. Handle async runtime configuration, task
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tokio", "async", "runtime"]
 weight: 5
 ---
 

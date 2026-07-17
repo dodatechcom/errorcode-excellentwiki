@@ -4,7 +4,6 @@ description: "Fix 'Not enough input arguments' when calling MATLAB functions wit
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["arguments", "input", "not-enough", "function", "matlab"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Pascal runtime errors when the call stack exceeds its allocate
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursion", "local-variable", "memory", "pascal"]
 weight: 5
 ---
 

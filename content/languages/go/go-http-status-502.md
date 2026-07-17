@@ -4,7 +4,6 @@ description: "Fix HTTP 502 Bad Gateway errors in Go applications. Handle upstrea
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "502", "bad-gateway", "proxy", "upstream"]
 weight: 5
 ---
 

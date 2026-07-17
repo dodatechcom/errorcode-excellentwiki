@@ -4,7 +4,6 @@ description: "Fix Pascal division by zero errors. Learn why dividing by zero cra
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division-by-zero", "zero", "math", "runtime", "arithmetic"]
 weight: 5
 ---
 

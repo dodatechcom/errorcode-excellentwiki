@@ -4,7 +4,6 @@ description: "Fix JPA ConstraintViolationException when inserting duplicate valu
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jpa", "database", "constraint", "duplicate", "unique-violation"]
 weight: 5
 ---
 

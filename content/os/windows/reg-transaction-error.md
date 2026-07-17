@@ -4,7 +4,6 @@ description: "Fix 'Registry transaction error' on Windows 10 and 11. Resolve tra
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "transaction", "ktm", "transactional"]
 weight: 5
 ---
 

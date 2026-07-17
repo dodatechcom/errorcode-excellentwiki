@@ -4,7 +4,6 @@ description: "Fix R 'argument is missing' error in cat() function. Provide all r
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cat", "output", "missing-argument"]
 weight: 5
 ---
 

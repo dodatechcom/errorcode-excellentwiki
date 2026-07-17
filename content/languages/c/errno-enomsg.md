@@ -4,7 +4,6 @@ description: "Fix C ENOMSG (No message of desired type) by checking message queu
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enomsg", "no-message", "message-queue", "posix-mq"]
 weight: 5
 ---
 

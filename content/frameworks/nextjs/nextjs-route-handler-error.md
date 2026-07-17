@@ -4,7 +4,6 @@ description: "Next.js Route Handler errors occur when the App Router API handler
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["route-handler", "api", "app-router", "handler", "nextjs"]
 weight: 5
 ---
 

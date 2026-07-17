@@ -4,7 +4,6 @@ description: "Fix Python ImportError: polars not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "polars", "module-not-found", "pip", "dataframe"]
 weight: 5
 ---
 

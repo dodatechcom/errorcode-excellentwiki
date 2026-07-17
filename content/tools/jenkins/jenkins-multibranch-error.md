@@ -4,7 +4,6 @@ description: "Jenkins Multibranch pipeline fails to scan, build, or index branch
 tools: ["jenkins"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["jenkins", "multibranch", "branch", "scan", "index"]
 weight: 5
 ---
 

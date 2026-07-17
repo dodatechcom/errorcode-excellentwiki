@@ -7,7 +7,6 @@ languages: ["php"]
 deprecated_since: "PHP 5.3"
 removed_in: "PHP 7.0"
 error_message: "Deprecated: Function split() is deprecated"
-tags: ["split", "explode", "string"]
 weight: 20
 ---
 

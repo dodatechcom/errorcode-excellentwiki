@@ -4,7 +4,6 @@ description: "GitHub Actions workflow fails because a required secret is not con
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "secret", "governance", "environment", "credential"]
 weight: 5
 ---
 

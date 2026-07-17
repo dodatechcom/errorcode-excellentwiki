@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_ALTSVC when an HTTP/2 Alt-Svc header operati
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-altsvc", "http2", "altsvc", "alternative-service", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java FileAlreadyExistsException by using CREATE, CREATE_NEW, o
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["filealreadyexistsexception", "file", "nio", "filesystem", "create"]
 weight: 5
 ---
 

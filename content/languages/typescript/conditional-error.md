@@ -4,7 +4,6 @@ description: "Fix TypeScript conditional type resolution errors. Understand cond
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["conditional-type", "type-resolution", "infer", "distributed-type", "type-error"]
 weight: 5
 ---
 

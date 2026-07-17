@@ -4,7 +4,6 @@ description: "Fix C ENOTEMPTY (Directory not empty) by removing all entries befo
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotempty", "directory-not-empty", "rmdir", "unlink"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go crypto hash errors. Handle unsupported algorithms, hash com
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["crypto", "hash", "security"]
 weight: 5
 ---
 

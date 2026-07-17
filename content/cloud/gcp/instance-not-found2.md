@@ -1,10 +1,8 @@
 ---
 title: "GCP Instance Not Found: Instance 'X' Was Not Found"
 description: "Instance 'X' was not found — Fix Google Cloud Compute Engine instance lookup errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "compute", "instance", "not-found", "gce", "vm"]
 weight: 5
 ---
 

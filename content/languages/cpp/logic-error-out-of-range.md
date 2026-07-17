@@ -4,7 +4,6 @@ description: "Fix C++ std::logic_error out of range. Access elements within vali
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["logic-error", "out-of-range", "bounds", "stdexcept", "access"]
 weight: 5
 ---
 

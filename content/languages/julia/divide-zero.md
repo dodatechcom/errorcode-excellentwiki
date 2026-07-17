@@ -4,7 +4,6 @@ description: "A DivideError occurs when attempting to divide an integer by zero.
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "divide", "zero", "integer", "divideerror"]
 weight: 5
 ---
 

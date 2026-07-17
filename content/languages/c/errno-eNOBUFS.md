@@ -4,7 +4,6 @@ description: "Fix C ENOBUFS (No buffer space available) by tuning network buffer
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enobufs", "no-buffer-space", "network-buffers", "socket-buffer", "memory"]
 weight: 5
 ---
 

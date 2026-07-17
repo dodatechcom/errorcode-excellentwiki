@@ -4,7 +4,6 @@ description: "Fix Go go.sum mismatch error. Update go.sum with go mod download, 
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["go", "sum", "checksum", "module", "verify"]
 weight: 5
 ---
 

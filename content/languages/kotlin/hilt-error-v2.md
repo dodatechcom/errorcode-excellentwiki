@@ -4,7 +4,6 @@ description: "Fix Hilt DI errors when dependency injection fails in Android or K
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hilt", "dependency-injection", "Dagger", "Android", "kotlin"]
 weight: 5
 ---
 

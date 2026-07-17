@@ -4,7 +4,6 @@ description: "Fix Rust index out of bounds panics. Use safe indexing methods lik
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "bounds", "panic", "slice", "vector", "array", "indexing"]
 weight: 5
 ---
 

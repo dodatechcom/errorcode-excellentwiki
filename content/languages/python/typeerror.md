@@ -4,7 +4,6 @@ description: "Fix Python TypeError: unsupported operand type(s). Learn why TypeE
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "type", "operands", "conversion"]
 weight: 10
 ---
 

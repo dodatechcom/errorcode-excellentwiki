@@ -4,7 +4,6 @@ description: "Fix Ruby Errno::ENOENT: No such file or directory. Check file path
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["file"]
-tags: ["enoent", "file_not_found", "no_such_file", "directory"]
 weight: 230
 ---
 

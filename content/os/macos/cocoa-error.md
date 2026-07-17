@@ -4,7 +4,6 @@ description: "Fix macOS Cocoa error codes in the 1-713 range. Causes and solutio
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cocoa", "nscocoaerrordomain", "error-codes", "foundation", "file-operation"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Perl Dancer web framework errors. Learn why Dancer routes fail
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dancer", "web", "route", "perl"]
 weight: 5
 ---
 

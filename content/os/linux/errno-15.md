@@ -4,7 +4,6 @@ description: "Fix Linux ENOTBLK (errno 15) Block device required error. Solution
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOTBLK", "block", "errno-15", "device"]
 weight: 5
 ---
 

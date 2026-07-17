@@ -4,7 +4,6 @@ description: "Fix npm version conflict errors. Resolve dependency version resolu
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["version", "conflict", "dependency", "resolution", "npm"]
 weight: 5
 ---
 

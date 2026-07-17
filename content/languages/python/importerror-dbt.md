@@ -4,7 +4,6 @@ description: "Fix Python ImportError: dbt not found or ModuleNotFoundError: No m
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "dbt", "module-not-found", "pip", "data-transformation"]
 weight: 5
 ---
 

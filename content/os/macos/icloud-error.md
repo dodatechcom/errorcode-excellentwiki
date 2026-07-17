@@ -4,7 +4,6 @@ description: "Fix iCloud sync errors on Mac: couldn't connect to iCloud, sync st
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["icloud", "sync", "apple-id", "cloud", "connection"]
 weight: 5
 ---
 

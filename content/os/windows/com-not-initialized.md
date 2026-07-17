@@ -4,7 +4,6 @@ description: "Fix 'COM not initialized' errors on Windows 10 and 11. Initialize 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "not-initialized", "coinitialize", "com-library"]
 weight: 5
 ---
 

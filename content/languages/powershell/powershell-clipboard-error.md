@@ -4,7 +4,6 @@ description: "Fix PowerShell clipboard errors when Set-Clipboard or Get-Clipboar
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["clipboard", "Set-Clipboard", "Get-Clipboard", "copy", "paste"]
 weight: 5
 ---
 

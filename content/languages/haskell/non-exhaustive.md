@@ -4,7 +4,6 @@ description: "Non-exhaustive patterns occur when a function doesn't cover all po
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["non-exhaustive", "patterns", "incomplete", "haskell"]
 weight: 5
 ---
 

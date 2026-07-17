@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error from asin with out-of-range argument. Cl
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["domain-error", "asin", "arcsine", "trigonometry", "domain"]
 weight: 5
 ---
 

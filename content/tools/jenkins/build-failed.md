@@ -4,7 +4,6 @@ description: "A Jenkins build step returned a non-zero exit code or explicitly m
 tools: ["jenkins"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["jenkins", "build", "pipeline", "failure"]
 weight: 5
 ---
 

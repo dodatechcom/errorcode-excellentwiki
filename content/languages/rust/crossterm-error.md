@@ -4,7 +4,6 @@ description: "Fix crossterm terminal errors. Handle cursor control, event pollin
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["crossterm", "terminal", "tui"]
 weight: 5
 ---
 

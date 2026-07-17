@@ -4,7 +4,6 @@ description: "Fix Swift invalid URL format errors. Learn why URL initialization 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-url", "url", "foundation", "swift"]
 weight: 5
 ---
 

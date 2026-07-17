@@ -4,7 +4,6 @@ description: "Fix toml crate deserialization errors. Handle malformed TOML, miss
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["toml", "config", "parse"]
 weight: 5
 ---
 

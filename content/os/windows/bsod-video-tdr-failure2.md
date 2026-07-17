@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_TDR_FAILURE stop code 0x116 caused by nvlddm
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "video-tdr", "nvlddmkm", "nvidia", "gpu", "stop-0x116"]
 weight: 5
 ---
 

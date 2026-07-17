@@ -4,7 +4,6 @@ description: "Spring throws ObservabilityException when tracing or metrics colle
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["observability", "tracing", "micrometer", "open-telemetry", "metrics"]
 weight: 5
 ---
 

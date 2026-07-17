@@ -2,7 +2,6 @@
 title: "Cross-Platform Error Code Comparison Table"
 description: "Compare equivalent error codes across Windows, Linux, macOS, and programming languages. Find the same error in different systems."
 severities: ["info"]
-tags: ["comparison", "cross-platform", "reference", "error-codes"]
 weight: 4
 ---
 

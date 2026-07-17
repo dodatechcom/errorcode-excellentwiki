@@ -4,7 +4,6 @@ description: "Fix Python OverflowError when arithmetic operations produce result
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["overflowerror", "arithmetic", "large-number", "math"]
 weight: 85
 ---
 

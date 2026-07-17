@@ -4,7 +4,6 @@ description: "Fix Go x509 certificate errors. Handle certificate validation, cha
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["x509", "certificate", "security"]
 weight: 5
 ---
 

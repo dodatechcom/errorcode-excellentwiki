@@ -4,7 +4,6 @@ description: "Fix Kotlin coroutine dispatcher errors. Learn why dispatcher switc
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["coroutine", "dispatcher", "threading", "kotlin"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux ENOTUNIQ (errno 55) Name not unique on network error. So
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotuniq", "network", "errno-55", "name", "duplicate"]
 weight: 5
 ---
 

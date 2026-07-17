@@ -4,7 +4,6 @@ description: "Fix 'Cannot add or update child row — foreign key constraint fai
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["foreign-key", "constraint", "referential-integrity", "child-row"]
 weight: 5
 ---
 

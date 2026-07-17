@@ -6,7 +6,6 @@ replacement_function: "Clipboard API"
 languages: ["javascript"]
 deprecated_since: "DOM Level 2"
 error_message: "document.execCommand() is deprecated"
-tags: ["exec-command", "clipboard", "copy", "paste"]
 weight: 110
 ---
 

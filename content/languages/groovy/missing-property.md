@@ -4,7 +4,6 @@ description: "A MissingPropertyException occurs when accessing a property that d
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["property", "missing", "attribute", "groovy"]
 weight: 5
 ---
 

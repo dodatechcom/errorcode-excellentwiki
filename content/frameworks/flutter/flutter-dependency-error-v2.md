@@ -4,7 +4,6 @@ description: "Flutter throws a dependency conflict error when two or more packag
 frameworks: ["flutter"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["flutter", "dependency", "conflict", "pubspec", "transitive"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen DRIVER_IRQL_NOT_LESS_OR_EQUAL caused by ataport.SY
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "ataport", "ata", "storage", "irql", "driver"]
 weight: 5
 ---
 

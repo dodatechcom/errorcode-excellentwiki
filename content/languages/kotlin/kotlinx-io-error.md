@@ -4,7 +4,6 @@ description: "Fix kotlinx.io errors in Kotlin. Learn why IO operations fail and 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["io-error"]
-tags: ["kotlinx-io", "io", "stream", "kotlin"]
 weight: 5
 ---
 

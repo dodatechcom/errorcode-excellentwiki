@@ -4,7 +4,6 @@ description: "Flask-SocketIO raises errors related to WebSocket connection, even
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["socketio", "websocket", "realtime", "events", "flask"]
 weight: 5
 ---
 

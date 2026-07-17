@@ -4,7 +4,6 @@ description: "Fix Go reflect.Set value of type X not assignable to type Y error.
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["reflect", "set", "type", "assignable", "runtime", "conversion"]
 weight: 5
 ---
 

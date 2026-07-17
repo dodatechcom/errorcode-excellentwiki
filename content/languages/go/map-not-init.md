@@ -4,7 +4,6 @@ description: "Fix Go panic: assignment to entry in nil map. Initialize maps with
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["map", "nil", "init", "make", "panic"]
 weight: 5
 ---
 

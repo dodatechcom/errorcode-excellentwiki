@@ -4,7 +4,6 @@ description: "Fix PHP E_COMPILE_ERROR fatal compilation errors. Learn to diagnos
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["e-compile-error", "compile", "compilation"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes RBAC forbidden errors. Resolve Role-Based Access Co
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["rbac", "forbidden", "permission", "role", "kubernetes"]
 weight: 5
 ---
 

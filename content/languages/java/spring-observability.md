@@ -4,7 +4,6 @@ description: "Fix ObservabilityException when span creation fails in Spring Obse
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "observability", "tracing", "micrometer", "span"]
 weight: 5
 ---
 

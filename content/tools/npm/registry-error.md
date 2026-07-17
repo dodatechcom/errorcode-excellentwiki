@@ -4,7 +4,6 @@ description: "Fix npm registry error. Resolve network and authentication issues 
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["registry-error", "registry", "network", "connection", "npm"]
 weight: 5
 ---
 

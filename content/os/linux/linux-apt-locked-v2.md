@@ -4,7 +4,6 @@ description: "Fix Linux 'Could not get lock /var/lib/dpkg' errors. Remove stale 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["apt", "dpkg", "lock", "frontend-lock", "package-manager", "apt-get"]
 weight: 5
 ---
 

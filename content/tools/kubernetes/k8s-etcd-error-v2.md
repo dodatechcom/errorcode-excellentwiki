@@ -4,7 +4,6 @@ description: "Fix Kubernetes etcd leader election failed. Resolve etcd cluster h
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "etcd", "leader", "election", "cluster", "datastore"]
 weight: 5
 ---
 

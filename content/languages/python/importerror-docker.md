@@ -4,7 +4,6 @@ description: "Fix Python ImportError: docker not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "docker", "module-not-found", "pip", "containers"]
 weight: 5
 ---
 

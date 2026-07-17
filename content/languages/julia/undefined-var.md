@@ -4,7 +4,6 @@ description: "An UndefVarError occurs when referencing a variable that has not b
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["variable", "undefined", "scope", "undefvarerror"]
 weight: 5
 ---
 

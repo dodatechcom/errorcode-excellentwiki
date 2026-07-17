@@ -4,7 +4,6 @@ description: "Fix PHP E_USER_DEPRECATED deprecation notices triggered by user co
 languages: ["php"]
 severities: ["notice"]
 error-types: ["runtime-error"]
-tags: ["e-user-deprecated", "user-deprecated", "trigger-error"]
 weight: 5
 ---
 

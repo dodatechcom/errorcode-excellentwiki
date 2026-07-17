@@ -4,7 +4,6 @@ description: "Fix Java ClassCastException when an object cannot be cast to the s
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["classcastexception", "casting", "generics", "instanceof"]
 weight: 40
 ---
 

@@ -4,7 +4,6 @@ description: "SQLite database schema migration fails during upgrade."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "migration", "schema", "upgrade", "alter"]
 weight: 5
 ---
 

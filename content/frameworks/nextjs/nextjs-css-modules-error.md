@@ -4,7 +4,6 @@ description: "Next.js CSS Modules errors occur when scoped styles fail to compil
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["css", "styles", "modules", "scoped", "nextjs"]
 weight: 5
 ---
 

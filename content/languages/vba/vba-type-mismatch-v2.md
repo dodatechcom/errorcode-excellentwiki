@@ -4,7 +4,6 @@ description: "Fix VBA Run-time error 13 when a variable type doesn't match the e
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime-error", "type", "mismatch", "conversion", "vba"]
 weight: 5
 ---
 

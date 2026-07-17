@@ -4,7 +4,6 @@ description: "Fix thiserror derive macro errors. Handle error type definitions, 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["thiserror", "error-handling", "derive"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: awq not found or ModuleNotFoundError: No m
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "awq", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

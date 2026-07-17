@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Spanner Error"
 description: "Fix GCP Cloud Spanner errors. Resolve Spanner connectivity and configuration issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "spanner", "database", "distributed", "sql"]
 weight: 5
 ---
 

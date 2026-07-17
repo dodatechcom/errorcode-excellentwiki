@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -3 (dsBadRoute). Resolve bad route errors in Co
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["dsbadroute", "osstatus-3", "bad-route", "core-services", "carbon", "resource"]
 weight: 5
 ---
 

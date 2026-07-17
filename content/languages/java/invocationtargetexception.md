@@ -4,7 +4,6 @@ description: "Fix Java InvocationTargetException by inspecting the wrapped cause
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["invocationtargetexception", "reflection", "reflective", "invoke"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Next.js App Router errors including layout issues, page not fo
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "app-router", "server-component", "layout", "page"]
 weight: 5
 ---
 

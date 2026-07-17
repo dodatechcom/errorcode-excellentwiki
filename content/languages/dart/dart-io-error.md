@@ -4,7 +4,6 @@ description: "Fix Dart 'HttpException: Connection closed' error. Learn about HTT
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "connection", "network", "client", "request"]
 weight: 5
 ---
 

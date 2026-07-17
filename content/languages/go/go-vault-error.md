@@ -4,7 +4,6 @@ description: "Fix HashiCorp Vault permission denied errors. Handle secret access
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vault", "secrets", "security"]
 weight: 5
 ---
 

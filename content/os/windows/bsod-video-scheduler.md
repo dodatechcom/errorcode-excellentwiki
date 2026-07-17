@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_SCHEDULER_INTERNAL_ERROR on Windows 10 and 1
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "video-scheduler", "gpu", "graphics", "display"]
 weight: 5
 ---
 

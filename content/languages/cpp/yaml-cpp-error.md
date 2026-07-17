@@ -4,7 +4,6 @@ description: "Fix C++ yaml-cpp parse errors. Handle malformed YAML input."
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["yaml-cpp", "yaml", "parse", "syntax", "config"]
 weight: 5
 ---
 

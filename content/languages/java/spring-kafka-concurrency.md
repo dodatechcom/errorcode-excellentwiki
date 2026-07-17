@@ -4,7 +4,6 @@ description: "Fix IllegalContainerGroupIdException in Spring Kafka when containe
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-kafka", "kafka", "consumer-group", "concurrency", "container"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Oracle sequence has reached its maximum value and cannot generate 
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "sequence", "maxvalue", "ora-08004", "auto-increment"]
 weight: 5
 ---
 

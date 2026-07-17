@@ -4,7 +4,6 @@ description: "Fix SQL errors when WHERE clause references a column that doesn't 
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unknown-column", "where-clause", "column-not-found", "sql"]
 weight: 5
 ---
 

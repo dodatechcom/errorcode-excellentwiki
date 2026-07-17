@@ -4,7 +4,6 @@ description: "Fix Scala NoSuchElementException when accessing Map keys that don'
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nosuchelement", "map", "key", "option", "lookup", "scala"]
 weight: 5
 ---
 

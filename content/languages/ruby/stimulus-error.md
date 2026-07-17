@@ -4,7 +4,6 @@ description: "Fix Stimulus controller errors in Ruby on Rails. Learn why Stimulu
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stimulus", "javascript", "controller", "rails", "ruby"]
 weight: 5
 ---
 

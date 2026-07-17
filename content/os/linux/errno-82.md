@@ -4,7 +4,6 @@ description: "Fix Linux EILSEQ (errno 82) Invalid or incomplete multibyte or wid
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eilseq", "encoding", "errno-82", "multibyte", "wchar"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Xcode archive errors with provisioning profile issues, code si
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["xcode", "archive", "provisioning", "signing", "app-store", "macos"]
 weight: 5
 ---
 

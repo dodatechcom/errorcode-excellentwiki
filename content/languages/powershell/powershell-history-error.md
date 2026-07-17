@@ -4,7 +4,6 @@ description: "Fix PowerShell Get-History errors when command history is empty, i
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["history", "Get-History", "command-history", "session"]
 weight: 5
 ---
 

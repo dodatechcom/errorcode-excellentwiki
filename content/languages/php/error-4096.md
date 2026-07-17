@@ -4,7 +4,6 @@ description: "Fix PHP error code 4096 E_RECOVERABLE_ERROR. Learn to handle recov
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["error-4096", "e-recoverable-error", "recoverable", "type-hint"]
 weight: 5
 ---
 

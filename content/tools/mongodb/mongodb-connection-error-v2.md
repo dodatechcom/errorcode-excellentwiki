@@ -4,7 +4,6 @@ description: "MongoDB connection pool runs out of available connections, causing
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "connection", "pool", "maxpoolsize", "exhausted", "timeout"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when positional arguments follow keyword ar
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "positional", "keyword", "argument"]
 weight: 5
 ---
 

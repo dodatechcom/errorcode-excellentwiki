@@ -4,7 +4,6 @@ description: "Fix C connection reset by peer (ECONNRESET). Handle abrupt connect
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["econnreset", "connection-reset", "peer", "socket", "errno"]
 weight: 5
 ---
 

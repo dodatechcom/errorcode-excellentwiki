@@ -4,7 +4,6 @@ description: "Fix Ruby FiberError. Handle fiber-related errors in concurrent Rub
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["fiber"]
-tags: ["fiber_error", "fiber", "concurrency", "yield", "resume"]
 weight: 370
 ---
 

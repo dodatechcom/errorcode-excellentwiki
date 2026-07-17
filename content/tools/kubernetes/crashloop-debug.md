@@ -4,7 +4,6 @@ description: "Debug Kubernetes CrashLoopBackOff errors using kubectl logs. Step-
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["crashloopbackoff", "debugging", "kubectl-logs", "pod", "container"]
 weight: 5
 ---
 

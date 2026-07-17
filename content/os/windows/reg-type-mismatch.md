@@ -4,7 +4,6 @@ description: "Fix 'Registry type mismatch' errors on Windows 10 and 11. Resolve 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "type-mismatch", "data-type", "regedit"]
 weight: 5
 ---
 

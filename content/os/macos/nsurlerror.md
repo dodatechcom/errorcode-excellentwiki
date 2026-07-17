@@ -4,7 +4,6 @@ description: "Fix macOS NSURLError network connection errors. Causes and solutio
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nsurlerror", "network", "urlsession", "connectivity", "foundation"]
 weight: 5
 ---
 

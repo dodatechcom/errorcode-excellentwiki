@@ -4,7 +4,6 @@ description: "Fix Java InvalidClassException by ensuring serialVersionUID matche
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalidclassexception", "serialization", "serialversionuid", "classloader"]
 weight: 5
 ---
 

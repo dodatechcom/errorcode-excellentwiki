@@ -4,7 +4,6 @@ description: "Fix Linux ERANGE (errno 34) Math result not representable error. S
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enRANGE", "math", "errno-34", "overflow"]
 weight: 5
 ---
 

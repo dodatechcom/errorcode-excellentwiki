@@ -4,7 +4,6 @@ description: "Fix Lua runtime errors. Learn why Lua scripts fail at runtime and 
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime", "error", "exception", "lua"]
 weight: 5
 ---
 

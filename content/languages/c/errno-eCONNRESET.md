@@ -4,7 +4,6 @@ description: "Fix C ECONNRESET (Connection reset by peer) by handling TCP RST, i
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["econnreset", "connection-reset-by-peer", "tcp-rst", "peer-closed"]
 weight: 5
 ---
 

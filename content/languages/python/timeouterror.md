@@ -4,7 +4,6 @@ description: "Fix Python TimeoutError when socket or async operations exceed the
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["timeouterror", "timeout", "socket", "async", "network"]
 weight: 5
 ---
 

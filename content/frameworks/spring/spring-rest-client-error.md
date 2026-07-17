@@ -4,7 +4,6 @@ description: "Spring throws ResourceAccessException when a REST client request f
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rest-client", "timeout", "http", "webclient", "connection"]
 weight: 5
 ---
 

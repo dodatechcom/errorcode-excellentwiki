@@ -4,7 +4,6 @@ description: "Fix fast-fail (fastfail) termination errors on Windows 10/11. Reso
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["fastfail", "fast-fail", "0xC0000409", "stack-buffer-overrun", "security", "gs"]
 weight: 5
 ---
 

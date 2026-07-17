@@ -4,7 +4,6 @@ description: "A dynamically loaded chunk failed to load at runtime, typically du
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "chunk", "dynamic-import", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Maven wrapper fails to download the required Maven distribution."
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "wrapper", "download", "distribution", "network"]
 weight: 5
 ---
 

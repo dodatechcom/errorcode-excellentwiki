@@ -4,7 +4,6 @@ description: "React Native Fast Refresh fails to apply module updates during dev
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fast-refresh", "hot-reload", "development", "module", "hmr"]
 weight: 5
 ---
 

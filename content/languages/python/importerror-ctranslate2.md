@@ -4,7 +4,6 @@ description: "Fix Python ImportError: ctranslate2 not found or ModuleNotFoundErr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "ctranslate2", "module-not-found", "pip", "translation"]
 weight: 5
 ---
 

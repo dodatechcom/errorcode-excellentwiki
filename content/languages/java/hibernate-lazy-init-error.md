@@ -4,7 +4,6 @@ description: "Fix Hibernate LazyInitializationException when accessing lazy-load
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hibernate", "jpa", "lazy", "session", "orm"]
 weight: 5
 ---
 

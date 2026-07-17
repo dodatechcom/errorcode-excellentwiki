@@ -4,7 +4,6 @@ description: "Laravel throws RouteNotFoundException when a named route or URL ge
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["route", "url", "named-route", "redirect", "routing"]
 weight: 5
 ---
 

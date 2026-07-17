@@ -4,7 +4,6 @@ description: "Fix R 'error in lapply' when apply functions fail. Check function 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["lapply", "apply", "function", "vector"]
 weight: 5
 ---
 

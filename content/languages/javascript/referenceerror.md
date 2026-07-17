@@ -4,7 +4,6 @@ description: "Fix JavaScript ReferenceError: variable is not defined. Check vari
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["referenceerror", "variable", "scope", "hoisting"]
 weight: 60
 ---
 

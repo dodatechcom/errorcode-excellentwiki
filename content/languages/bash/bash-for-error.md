@@ -4,7 +4,6 @@ description: "Fix for loop errors in Bash when loops have syntax errors, unexpec
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["for", "loop", "word-splitting", "glob", "range"]
 weight: 5
 ---
 

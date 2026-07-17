@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error when map exceeds maximum size. Monitor m
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["length-error", "map", "max-size", "insert", "container"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'Kernel is tainted' warnings. Understand taint flags, id
 platforms: ["linux"]
 severities: ["warning"]
 error-types: ["system-error"]
-tags: ["kernel-tainted", "taint", "proprietary-module", "kernel-module", "warning"]
 weight: 5
 ---
 

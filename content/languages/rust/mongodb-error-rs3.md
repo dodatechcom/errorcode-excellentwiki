@@ -4,7 +4,6 @@ description: "Fix mongodb write concern errors. Handle write concern configurati
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mongodb", "database", "write-concern", "replica-set", "nosql"]
 weight: 5
 ---
 

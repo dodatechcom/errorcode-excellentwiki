@@ -4,7 +4,6 @@ description: "Fix SWC (Speedy Web Compiler) errors. Handle configuration issues,
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["swc", "compiler", "transpiler"]
 weight: 5
 ---
 

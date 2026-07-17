@@ -4,7 +4,6 @@ description: "Fix data.frame row names errors including duplicate row names, inv
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dataframe", "row-names", "merge", "bind", "data-frame", "r"]
 weight: 5
 ---
 

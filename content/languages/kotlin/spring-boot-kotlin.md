@@ -4,7 +4,6 @@ description: "Fix Spring Boot Kotlin errors. Learn why Spring Boot applications 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["spring-boot", "spring", "kotlin", "jvm"]
 weight: 5
 ---
 

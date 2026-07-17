@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Pub/Sub Error"
 description: "Fix GCP Pub/Sub errors. Resolve Pub/Sub messaging issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "pubsub", "pub-sub", "messaging", "topic"]
 weight: 5
 ---
 

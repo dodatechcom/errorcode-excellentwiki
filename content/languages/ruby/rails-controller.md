@@ -4,7 +4,6 @@ description: "Fix ActionController::InvalidAuthenticityToken in Rails. Learn why
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["security-error"]
-tags: ["actioncontroller", "csrf", "authenticity-token", "rails", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Spring Security OAuth2 errors. Resolve token validation, redir
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-security", "oauth2", "jwt", "token", "authorization"]
 weight: 5
 ---
 

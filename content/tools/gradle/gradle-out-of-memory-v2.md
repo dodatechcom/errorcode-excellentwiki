@@ -4,7 +4,6 @@ description: "Gradle build fails with Java heap space or out of memory error."
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "memory", "heap", "out-of-memory", "jvm"]
 weight: 5
 ---
 

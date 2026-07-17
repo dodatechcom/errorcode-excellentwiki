@@ -4,7 +4,6 @@ description: "Julia raises InexactError when converting between numeric types lo
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["inexact", "conversion", "numeric", "precision", "round"]
 weight: 5
 ---
 

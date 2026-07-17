@@ -4,7 +4,6 @@ description: "Fix C software caused connection abort (ECONNABORTED). Handle abno
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["econnaborted", "connection-aborted", "socket", "abort", "errno"]
 weight: 5
 ---
 

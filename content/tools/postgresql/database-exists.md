@@ -4,7 +4,6 @@ description: "Attempted to create a PostgreSQL database that already exists"
 tools: ["postgresql"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["database", "create", "duplicate"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Haskell IOException when file operations fail. Handle missing 
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "exception", "file", "ioerror", "haskell"]
 weight: 5
 ---
 

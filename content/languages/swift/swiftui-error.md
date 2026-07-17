@@ -4,7 +4,6 @@ description: "Fix SwiftUI runtime errors. Learn how to resolve common SwiftUI is
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["swiftui", "runtime-error", "state-management", "ui", "swift"]
 weight: 5
 ---
 

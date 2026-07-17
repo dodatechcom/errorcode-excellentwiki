@@ -4,7 +4,6 @@ description: "Laravel throws UploadedFile error when file upload fails due to si
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["upload", "file", "validation", "storage", "request"]
 weight: 5
 ---
 

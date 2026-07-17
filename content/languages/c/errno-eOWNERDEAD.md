@@ -4,7 +4,6 @@ description: "Fix C EOWNERDEAD (Owner died) by recovering robust mutex state, ca
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eownerdead", "owner-died", "robust-mutex", "pthreads", "mutex-recovery"]
 weight: 5
 ---
 

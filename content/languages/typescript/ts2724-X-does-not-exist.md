@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2724: Module has no exported member. Ensure prope
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2724", "does-not-exist", "scope", "export", "import"]
 weight: 5
 ---
 

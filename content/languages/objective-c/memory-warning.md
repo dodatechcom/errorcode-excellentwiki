@@ -4,7 +4,6 @@ description: "A memory warning indicates the system is running low on memory and
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "warning", "ios", "objc"]
 weight: 5
 ---
 

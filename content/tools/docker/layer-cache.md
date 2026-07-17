@@ -4,7 +4,6 @@ description: "Fix Docker cache not found error during build. Optimize layer cach
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["layer-cache", "cache", "build", "optimization", "docker"]
 weight: 5
 ---
 

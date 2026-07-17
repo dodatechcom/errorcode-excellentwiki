@@ -4,7 +4,6 @@ description: "Fix Kotlin ConnectException when network connection is refused. Ch
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["connectexception", "network", "connection", "socket", "refused"]
 weight: 5
 ---
 

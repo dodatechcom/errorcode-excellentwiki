@@ -4,7 +4,6 @@ description: "Fix React invalid element type errors. Resolve issues with compone
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "invalid", "element", "type", "component", "import", "export", "render"]
 weight: 5
 ---
 

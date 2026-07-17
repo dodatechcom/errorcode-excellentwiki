@@ -4,7 +4,6 @@ description: "Fix Linux EINTR (errno 4) Interrupted System Call error. Handle si
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["eintr", "interrupted-system-call", "errno-4", "signals", "retry"]
 weight: 40
 ---
 

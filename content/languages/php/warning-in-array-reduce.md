@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_reduce() expects at least 2 arguments. Lear
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-reduce", "array", "callback"]
 weight: 5
 ---
 

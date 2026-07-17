@@ -4,7 +4,6 @@ description: "Fix Parallels Desktop errors on Mac when VMs fail to start, show b
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["parallels", "virtual-machine", "windows", "vm", "hypervisor"]
 weight: 5
 ---
 

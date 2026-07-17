@@ -4,7 +4,6 @@ description: "Fix Knex.js database connection errors, query builder issues, and 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["knex", "database", "migration"]
 weight: 5
 ---
 

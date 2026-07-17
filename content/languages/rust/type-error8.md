@@ -4,7 +4,6 @@ description: "Fix Rust type mismatch errors. Understand type inference, coercion
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "mismatch", "inference", "coercion", "expected", "found", "compiler"]
 weight: 5
 ---
 

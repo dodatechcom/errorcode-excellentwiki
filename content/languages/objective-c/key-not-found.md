@@ -4,7 +4,6 @@ description: "A key not found error occurs when accessing a dictionary with a ke
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["key", "dictionary", "not-found", "objc"]
 weight: 5
 ---
 

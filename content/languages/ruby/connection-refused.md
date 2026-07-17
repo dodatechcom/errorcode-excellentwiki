@@ -4,7 +4,6 @@ description: "Fix Ruby Errno::ECONNREFUSED. Handle connection refused errors in 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["network"]
-tags: ["econnrefused", "connection_refused", "socket", "tcp", "network"]
 weight: 250
 ---
 

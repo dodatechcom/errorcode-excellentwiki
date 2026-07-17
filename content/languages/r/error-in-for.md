@@ -4,7 +4,6 @@ description: "Fix R 'invalid for loop sequence' error when loop variable is not 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["for-loop", "loop-sequence", "iteration"]
 weight: 5
 ---
 

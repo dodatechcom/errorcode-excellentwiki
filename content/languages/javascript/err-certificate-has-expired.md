@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_CERT_HAS_EXPIRED when SSL/TLS certificates have ex
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-cert-has-expired", "certificate", "ssl", "tls", "nodejs", "security"]
 weight: 5
 ---
 

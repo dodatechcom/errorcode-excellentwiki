@@ -4,7 +4,6 @@ description: "Fix 'select syntax error' in Bash when the select loop has incorre
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["select", "menu", "interactive", "loop", "ps3"]
 weight: 5
 ---
 

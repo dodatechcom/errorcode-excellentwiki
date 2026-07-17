@@ -4,7 +4,6 @@ description: "Fix R 'NAs introduced by coercion' warning when converting data ty
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["warning"]
-tags: ["na", "coercion", "type-conversion", "data-type"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "F# raises MatchFailureException when a pattern match expression do
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern", "failure", "matchfailureexception"]
 weight: 5
 ---
 

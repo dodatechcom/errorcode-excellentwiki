@@ -4,7 +4,6 @@ description: "Fix Swift PDFKit rendering errors. Learn why PDF rendering fails a
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pdfkit", "pdf", "rendering", "swift"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes kubelet errors. Resolve kubelet crashes, certificat
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "kubelet", "node", "agent", "runtime", "cri"]
 weight: 5
 ---
 

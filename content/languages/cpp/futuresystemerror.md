@@ -4,7 +4,6 @@ description: "Fix C++ std::future_error when promise/future operations fail. Han
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["future-error", "std-future", "promise", "exception"]
 weight: 50
 ---
 

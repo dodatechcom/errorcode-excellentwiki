@@ -4,7 +4,6 @@ description: "Fix npm deprecated package warnings. Handle deprecated dependency 
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["deprecated", "warning", "package", "maintenance", "npm"]
 weight: 5
 ---
 

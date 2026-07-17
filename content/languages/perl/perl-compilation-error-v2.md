@@ -4,7 +4,6 @@ description: "Fix Perl compilation errors caused by syntax issues. Debug syntax 
 languages: ["perl"]
 error-types: ["syntax-error"]
 severities: ["error"]
-tags: ["compilation", "syntax", "compile-time", "perl"]
 weight: 5
 ---
 

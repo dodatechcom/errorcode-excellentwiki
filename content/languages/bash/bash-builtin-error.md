@@ -4,7 +4,6 @@ description: "Fix bash builtin command not found errors when built-in commands a
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["builtin", "command-not-found", "enable", "disable", "bash"]
 weight: 5
 ---
 

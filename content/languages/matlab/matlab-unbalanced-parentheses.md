@@ -4,7 +4,6 @@ description: "Fix MATLAB errors from unbalanced parentheses, brackets, or braces
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["parentheses", "brackets", "braces", "syntax", "matlab"]
 weight: 5
 ---
 

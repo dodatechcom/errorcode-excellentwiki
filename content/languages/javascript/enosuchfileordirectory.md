@@ -4,7 +4,6 @@ description: "Fix Node.js ENOENT error when files cannot be found at runtime. Ch
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["enoent", "nodejs", "file", "path", "fs"]
 weight: 90
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python AttributeError related to property objects. Learn how p
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["attributeerror", "property", "getter", "setter", "class"]
 weight: 5
 ---
 

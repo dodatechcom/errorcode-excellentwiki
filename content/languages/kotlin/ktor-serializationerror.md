@@ -4,7 +4,6 @@ description: "Fix Ktor serialization errors. Learn why Ktor content negotiation 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ktor", "serialization", "content-negotiation", "kotlin"]
 weight: 5
 ---
 

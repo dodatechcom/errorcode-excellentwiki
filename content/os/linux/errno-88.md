@@ -4,7 +4,6 @@ description: "Fix Linux ENOTRECOVERABLE (errno 88) State not recoverable error. 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotrecoverable", "mutex", "errno-88", "recovery", "robust"]
 weight: 5
 ---
 

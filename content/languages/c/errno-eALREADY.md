@@ -4,7 +4,6 @@ description: "Fix C EALREADY (Operation already in progress) by handling non-blo
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ealready", "operation-already-in-progress", "non-blocking", "connect", "socket"]
 weight: 5
 ---
 

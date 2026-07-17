@@ -4,7 +4,6 @@ description: "Fix user32.dll errors on Windows 10/11. Resolve crashes and load f
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["user32", "dll", "window", "input", "ui", "crash"]
 weight: 5
 ---
 

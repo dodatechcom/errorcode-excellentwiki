@@ -4,7 +4,6 @@ description: "Maven build fails with a BUILD FAILURE message during compilation,
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "build", "failure", "compile", "package"]
 weight: 5
 ---
 

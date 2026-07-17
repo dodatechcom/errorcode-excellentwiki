@@ -4,7 +4,6 @@ description: "Fix Java ClassCircularReferenceError by breaking circular class de
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["classcircularreference", "circular-dependency", "classloader", "linkage"]
 weight: 5
 ---
 

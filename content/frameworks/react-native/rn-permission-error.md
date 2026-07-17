@@ -4,7 +4,6 @@ description: "React Native app receives permission denied error when accessing c
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["permission", "camera", "storage", "android", "ios", "grant"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'command is not recognized' when PowerShell cannot find or exe
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["CommandNotFoundException", "not-recognized", "command"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python IndexError: list index out of range. Check list bounds,
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["indexerror", "list", "index", "range"]
 weight: 40
 ---
 

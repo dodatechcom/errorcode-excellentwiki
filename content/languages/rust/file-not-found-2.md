@@ -4,7 +4,6 @@ description: "Fix Rust file not found error. Learn why file operations fail with
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "not-found", "io", "filesystem", "path", "os-error"]
 weight: 5
 ---
 

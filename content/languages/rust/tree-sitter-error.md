@@ -4,7 +4,6 @@ description: "Fix tree-sitter parse errors. Handle grammar loading, node travers
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tree-sitter", "parser", "syntax"]
 weight: 5
 ---
 

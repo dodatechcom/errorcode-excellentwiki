@@ -4,7 +4,6 @@ description: "Fix kernel32.dll access violation errors on Windows 10 and 11. Res
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "kernel32", "access-violation", "system-dll", "critical"]
 weight: 5
 ---
 

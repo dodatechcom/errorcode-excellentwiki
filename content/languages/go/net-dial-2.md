@@ -4,7 +4,6 @@ description: "Fix Go dial tcp connect connection refused error. Verify server is
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["net", "dial", "connection", "refused", "tcp", "runtime"]
 weight: 5
 ---
 

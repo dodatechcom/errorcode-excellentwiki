@@ -4,7 +4,6 @@ description: "Fix std::system_error socket errors. Handle network socket failure
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["system_error", "socket", "network", "errno", "system"]
 weight: 5
 ---
 

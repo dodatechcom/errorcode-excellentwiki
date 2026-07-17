@@ -4,7 +4,6 @@ description: "Fix Rust 'does not live long enough' error. Learn why references m
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["lifetime", "reference", "borrow", "scope", "clone"]
 weight: 5
 ---
 

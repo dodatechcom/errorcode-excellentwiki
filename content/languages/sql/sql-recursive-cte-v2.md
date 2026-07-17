@@ -4,7 +4,6 @@ description: "Fix SQL recursive CTE errors when the maximum recursion depth is e
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["recursive-cte", "max-recursion", "hierarchy", "sql"]
 weight: 5
 ---
 

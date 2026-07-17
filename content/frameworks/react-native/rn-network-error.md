@@ -4,7 +4,6 @@ description: "React Native fetch or XMLHttpRequest times out, causing network re
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["network", "fetch", "timeout", "request", "api", "offline"]
 weight: 5
 ---
 

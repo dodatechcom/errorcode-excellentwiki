@@ -4,7 +4,6 @@ description: "Django ORM raises FieldError when a query references a field or re
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["orm", "queryset", "field", "related", "lookup"]
 weight: 5
 ---
 

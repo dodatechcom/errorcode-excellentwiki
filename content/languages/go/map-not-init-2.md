@@ -4,7 +4,6 @@ description: "Fix Go nil map panic when assigning to an uninitialized map. Alway
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["map", "nil", "assign", "panic", "runtime", "initialization"]
 weight: 5
 ---
 

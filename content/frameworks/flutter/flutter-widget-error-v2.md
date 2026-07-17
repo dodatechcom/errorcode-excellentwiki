@@ -4,7 +4,6 @@ description: "Flutter throws RenderFlex overflowed error when a flex widget's ch
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "renderflex", "overflow", "layout", "widget", "responsive"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go no required module provides package error. Add missing depe
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["go", "mod", "package", "import", "module", "runtime"]
 weight: 5
 ---
 

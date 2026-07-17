@@ -4,7 +4,6 @@ description: "Fix tera template errors. Handle template parsing, variable resolu
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tera", "template", "rendering"]
 weight: 5
 ---
 

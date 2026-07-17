@@ -4,7 +4,6 @@ description: "Fix Blue Screen WHEA_UNCORRECTABLE_ERROR caused by CPU voltage iss
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "whea", "uncorrectable", "cpu", "voltage", "hardware"]
 weight: 5
 ---
 

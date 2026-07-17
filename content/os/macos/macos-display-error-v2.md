@@ -4,7 +4,6 @@ description: "Fix display errors on macOS when brightness controls don't work, d
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["display", "brightness", "monitor", "external", "screen", "macos"]
 weight: 5
 ---
 

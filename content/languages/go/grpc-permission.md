@@ -4,7 +4,6 @@ description: "Fix Go gRPC permission denied errors. Handle authorization, access
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "permission", "authorization"]
 weight: 5
 ---
 

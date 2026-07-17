@@ -4,7 +4,6 @@ description: "Fix webauthn-rs authentication errors. Handle registration, authen
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webauthn-rs", "webauthn", "security"]
 weight: 5
 ---
 

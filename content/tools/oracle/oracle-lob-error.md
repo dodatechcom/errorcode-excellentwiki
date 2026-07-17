@@ -4,7 +4,6 @@ description: "Oracle LOB (Large Object) operations fail during read, write, or m
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "lob", "clob", "blob", "large-object"]
 weight: 5
 ---
 

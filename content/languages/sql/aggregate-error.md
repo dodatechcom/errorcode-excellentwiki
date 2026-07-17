@@ -4,7 +4,6 @@ description: "Fix 'In aggregated query without GROUP BY' when a SELECT mixes agg
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["aggregate-error", "group-by", "mixed-columns", "select-list"]
 weight: 5
 ---
 

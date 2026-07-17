@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Storage — bucket not found"
 description: "Fix Cloud Storage bucket not found. Resolve GCS bucket access and permission issues."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "storage", "bucket", "not-found", "gcs", "access", "object"]
 weight: 5
 ---
 

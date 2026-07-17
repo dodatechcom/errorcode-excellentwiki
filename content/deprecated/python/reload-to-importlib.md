@@ -7,7 +7,6 @@ languages: ["python"]
 deprecated_since: "Python 3.0"
 removed_in: "Python 3.0"
 error_message: "NameError: name 'reload' is not defined"
-tags: ["reload", "importlib", "python2", "python3", "module-reload"]
 weight: 38
 ---
 

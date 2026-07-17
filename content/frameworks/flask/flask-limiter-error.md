@@ -4,7 +4,6 @@ description: "Flask-Limiter raises 429 Too Many Requests when rate limits are ex
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["limiter", "rate-limit", "throttle", "429", "flask"]
 weight: 5
 ---
 

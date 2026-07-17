@@ -4,7 +4,6 @@ description: "Fix Linux ENOTDIR (errno 20) Not a directory error. Solutions for 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOTDIR", "directory", "errno-20", "path"]
 weight: 5
 ---
 

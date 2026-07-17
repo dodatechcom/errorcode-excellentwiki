@@ -4,7 +4,6 @@ description: "Gradle wrapper cannot download the specified Gradle distribution."
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "wrapper", "download", "distribution", "network"]
 weight: 5
 ---
 

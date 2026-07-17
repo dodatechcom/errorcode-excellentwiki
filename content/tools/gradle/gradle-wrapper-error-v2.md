@@ -4,7 +4,6 @@ description: "Gradle wrapper fails to download the required Gradle distribution.
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "wrapper", "download", "distribution", "network"]
 weight: 5
 ---
 

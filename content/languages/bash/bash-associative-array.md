@@ -4,7 +4,6 @@ description: "Fix 'bash: associative array' errors when using string-indexed arr
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["associative-array", "declare", "string-key", "hash", "map"]
 weight: 5
 ---
 

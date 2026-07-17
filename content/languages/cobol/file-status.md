@@ -4,7 +4,6 @@ description: "A file status error occurs when a file operation fails, indicated 
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "status", "error", "cobol"]
 weight: 5
 ---
 

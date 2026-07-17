@@ -4,7 +4,6 @@ description: "Fix PHP Warning: implode() invalid arguments. Learn the correct pa
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "implode", "array", "join"]
 weight: 5
 ---
 

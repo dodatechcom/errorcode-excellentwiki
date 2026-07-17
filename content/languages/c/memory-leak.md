@@ -4,7 +4,6 @@ description: "Fix C memory leaks detected by Valgrind. Understand 'definitely lo
 languages: ["c"]
 severities: ["error"]
 error-types: ["memory-error"]
-tags: ["memory-leak", "valgrind", "lost-bytes", "still-reachable", "malloc", "free"]
 weight: 5
 ---
 

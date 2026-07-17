@@ -4,7 +4,6 @@ description: "Fix gRPC UNAVAILABLE status errors. Handle connection issues, load
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "rpc", "unavailable"]
 weight: 5
 ---
 

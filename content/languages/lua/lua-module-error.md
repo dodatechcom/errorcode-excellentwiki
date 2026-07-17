@@ -4,7 +4,6 @@ description: "Fix Lua module errors. Learn why module loading fails and how to h
 languages: ["lua"]
 severities: ["error"]
 error-types: ["load-error"]
-tags: ["module", "require", "load", "lua"]
 weight: 5
 ---
 

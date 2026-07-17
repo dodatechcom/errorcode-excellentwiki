@@ -4,7 +4,6 @@ description: "Fix Docker container healthcheck failed errors on Linux. Resolve u
 platforms: ["linux"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["docker", "healthcheck", "health", "unhealthy", "probe", "container"]
 weight: 5
 ---
 

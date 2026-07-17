@@ -4,7 +4,6 @@ description: "Fix Windows Update service not running on Windows 10 and 11. Resol
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["windows-update", "service", "wuauserv", "not-running", "service-failure"]
 weight: 5
 ---
 

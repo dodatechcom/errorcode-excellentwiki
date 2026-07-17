@@ -4,7 +4,6 @@ description: "Fix PHP Warning: Wrong parameter count for function. Learn to vali
 languages: ["php"]
 severities: ["warning"]
 error_types: ["runtime"]
-tags: ["parameters", "function-arguments", "variadic", "signature-mismatch"]
 date: 2026-07-15
 ---
 

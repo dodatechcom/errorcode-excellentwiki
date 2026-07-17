@@ -4,7 +4,6 @@ description: "Fix Go stack overflow panic caused by unbounded recursion. Use ite
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stack", "overflow", "recursion", "panic", "runtime", "goroutine"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "A MatchFailureException occurs when a pattern match in a match exp
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern", "failure", "matchfailureexception"]
 weight: 5
 ---
 

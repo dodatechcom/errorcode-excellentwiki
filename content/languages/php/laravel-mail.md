@@ -4,7 +4,6 @@ description: "Fix Swift_TransportException when mail sending fails. Handle SMTP 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "mail", "smtp"]
 weight: 5
 ---
 

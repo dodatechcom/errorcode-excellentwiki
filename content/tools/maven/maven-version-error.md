@@ -4,7 +4,6 @@ description: "Maven build fails due to version incompatibility between Maven, pl
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "version", "compatibility", "java", "plugin"]
 weight: 5
 ---
 

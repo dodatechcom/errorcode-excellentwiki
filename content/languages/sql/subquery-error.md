@@ -4,7 +4,6 @@ description: "Fix 'Subquery returns more than 1 row' when a scalar subquery unex
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["subquery", "more-than-one-row", "scalar-subquery"]
 weight: 5
 ---
 

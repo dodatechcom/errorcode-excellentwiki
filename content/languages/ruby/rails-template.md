@@ -4,7 +4,6 @@ description: "Fix ActionView::MissingTemplate in Rails. Learn why view templates
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["actionview", "template", "missing-template", "rails", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C ENOTCONN (Not connected) by ensuring socket is connected bef
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotconn", "not-connected", "socket", "send", "recv"]
 weight: 5
 ---
 

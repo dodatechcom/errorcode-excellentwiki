@@ -4,7 +4,6 @@ description: "Flutter FFI fails to load a native shared library due to missing f
 frameworks: ["flutter"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["flutter", "ffi", "native", "shared-library", "dynamic", "c", "c++"]
 weight: 5
 ---
 

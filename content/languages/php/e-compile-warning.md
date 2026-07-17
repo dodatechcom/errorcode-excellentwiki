@@ -4,7 +4,6 @@ description: "Fix PHP E_COMPILE_WARNING non-fatal compilation warnings. Learn to
 languages: ["php"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["e-compile-warning", "compile", "warning"]
 weight: 5
 ---
 

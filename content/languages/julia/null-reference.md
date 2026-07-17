@@ -4,7 +4,6 @@ description: "A NullReferenceException occurs when attempting to access a method
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "reference", "nothing", "exception"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix WebExchangeBindException when reactive request validation fail
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "webflux", "reactive", "validation", "web-exchange-bind"]
 weight: 5
 ---
 

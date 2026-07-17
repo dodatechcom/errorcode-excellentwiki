@@ -4,7 +4,6 @@ description: "Fix Kotlin Flow collection errors. Learn why Flow operations fail 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["flow", "coroutine", "reactive", "kotlin"]
 weight: 5
 ---
 

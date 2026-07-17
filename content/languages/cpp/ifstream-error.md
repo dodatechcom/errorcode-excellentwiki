@@ -4,7 +4,6 @@ description: "Fix C++ std::ifstream input file errors. Handle file read failures
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ifstream", "input-file", "read", "file-not-found", "io"]
 weight: 5
 ---
 

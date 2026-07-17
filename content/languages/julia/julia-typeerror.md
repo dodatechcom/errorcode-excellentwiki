@@ -4,7 +4,6 @@ description: "Julia raises TypeError when a value is of an unexpected type in a 
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "assertion", "typeerror", "conversion", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ vcpkg package manager errors. Resolve vcpkg installation a
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["vcpkg", "package-manager", "dependencies", "manifest", "triplet"]
 weight: 5
 ---
 

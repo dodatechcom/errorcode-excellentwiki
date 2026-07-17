@@ -4,7 +4,6 @@ description: "Fix Swift async/await unstructured task errors when Task.detached 
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["concurrency", "unstructured-task", "async-await", "swift"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Mongoose ValidationError when saving documents with invalid da
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mongoose", "mongodb", "validation", "schema", "database"]
 weight: 5
 ---
 

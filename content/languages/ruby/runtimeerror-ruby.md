@@ -4,7 +4,6 @@ description: "Fix Ruby RuntimeError. Learn about the base class for runtime erro
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtimeerror", "runtime", "exception", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go JWT token expired errors. Handle token validation, signing,
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jwt", "token", "auth"]
 weight: 5
 ---
 

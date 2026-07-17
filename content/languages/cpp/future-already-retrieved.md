@@ -4,7 +4,6 @@ description: "Fix C++ std::future already retrieved error when calling get() twi
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["future", "already-retrieved", "promise", "concurrency"]
 weight: 5
 ---
 

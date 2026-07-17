@@ -1,10 +1,8 @@
 ---
 title: "Azure Resource Not Found"
 description: "ResourceNotFound - The resource was not found"
-cloud: ["azure"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["azure", "resource", "not-found", "arm", "management"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2306: File 'X' is not a module. Add exports to ma
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2306", "not-a-module", "import", "export", "file"]
 weight: 5
 ---
 

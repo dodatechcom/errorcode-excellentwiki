@@ -4,7 +4,6 @@ description: "Fix Perl permission denied errors. Learn why file permission error
 languages: ["perl"]
 severities: ["error"]
 error-types: ["io-error"]
-tags: ["permission", "file", "access", "perl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Webpack build fails during bundling, compilation, or asset process
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "build", "bundle", "compilation", "error"]
 weight: 5
 ---
 

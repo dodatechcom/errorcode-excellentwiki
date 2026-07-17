@@ -4,7 +4,6 @@ description: "A stack overflow occurs when a program exhausts the available stac
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursion", "memory"]
 weight: 5
 ---
 

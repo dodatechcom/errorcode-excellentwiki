@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_intersect() arguments must be arrays. Learn
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-intersect", "array", "arguments"]
 weight: 5
 ---
 

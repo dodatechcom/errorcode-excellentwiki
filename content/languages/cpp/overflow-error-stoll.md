@@ -4,7 +4,6 @@ description: "Fix C++ std::overflow_error from stoll when value exceeds long lon
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["overflow-error", "stoll", "conversion", "long-long", "range"]
 weight: 5
 ---
 

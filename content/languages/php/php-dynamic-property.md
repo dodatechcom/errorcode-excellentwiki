@@ -4,7 +4,6 @@ description: "Fix dynamic property deprecation errors in PHP 8.2+. Handle __get/
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "dynamic-property", "oop"]
 weight: 5
 ---
 

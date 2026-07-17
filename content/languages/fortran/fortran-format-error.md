@@ -4,7 +4,6 @@ description: "Format errors in Fortran occur when the format specification doesn
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["format", "read", "write", "specification", "fortran"]
 weight: 5
 ---
 

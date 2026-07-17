@@ -4,7 +4,6 @@ description: "Fix Perl file not found errors. Handle missing files, incorrect pa
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "not-found", "path", "open", "permission", "perl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux EBADF (errno 9) Bad File Descriptor error. Resolve inval
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["ebadf", "bad-file-descriptor", "errno-9", "file-descriptor", "fd"]
 weight: 90
 ---
 

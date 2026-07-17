@@ -4,7 +4,6 @@ description: "Fix word splitting issues in Bash when unquoted variables cause un
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["word-splitting", "quoting", "variable-expansion"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Next.js middleware errors occur when request modification, authent
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["middleware", "request", "response", "routing", "nextjs"]
 weight: 5
 ---
 

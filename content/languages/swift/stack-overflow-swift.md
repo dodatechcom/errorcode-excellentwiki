@@ -4,7 +4,6 @@ description: "Fix Swift stack overflow errors. Learn why stack overflow occurs i
 languages: ["swift"]
 severities: ["error"]
 error-types: ["memory-error"]
-tags: ["stack-overflow", "recursion", "memory", "swift"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS NSFileWriteUnknownError (NSCocoaErrorDomain Code 513). R
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilewriteunknownerror", "nscocoaerrordomain", "code-513", "file-write", "cocoa", "foundation"]
 weight: 5
 ---
 

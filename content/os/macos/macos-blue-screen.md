@@ -4,7 +4,6 @@ description: "Fix macOS blue screen of death. Resolve blue screen crashes caused
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["blue-screen", "bsod", "crash", "display", "boot"]
 weight: 5
 ---
 

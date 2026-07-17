@@ -4,7 +4,6 @@ description: "Fix Go nil pointer dereference panic. Learn to check for nil befor
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nil", "pointer", "dereference", "panic", "runtime", "invalid-memory-address"]
 weight: 5
 ---
 

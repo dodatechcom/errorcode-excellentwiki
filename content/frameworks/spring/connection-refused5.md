@@ -4,7 +4,6 @@ description: "Spring fails to establish a database connection through the config
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["datasource", "connection", "database", "jdbc", "pool"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS EC2 Instance Launch Failed"
 description: "Fix AWS EC2 instance launch errors. Resolve EC2 provisioning issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "ec2", "instance", "launch", "quota"]
 weight: 5
 ---
 

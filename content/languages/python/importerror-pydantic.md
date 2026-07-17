@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pydantic not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pydantic", "module-not-found", "pip", "validation"]
 weight: 5
 ---
 

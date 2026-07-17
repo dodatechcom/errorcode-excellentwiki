@@ -4,7 +4,6 @@ description: "Fix C++ UndefinedBehaviorSanitizer (UBSan) errors. Detect and fix 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ubsan", "undefined-behavior", "sanitizer", "signed-overflow", "null"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Perl Test::More assertion errors. Learn why Perl tests fail an
 languages: ["perl"]
 severities: ["error"]
 error-types: ["test-error"]
-tags: ["test-more", "testing", "assertion", "perl"]
 weight: 5
 ---
 

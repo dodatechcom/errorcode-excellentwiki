@@ -4,7 +4,6 @@ description: "Fix Linux 'prometheus: scrape error' and monitoring failures. Reso
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["prometheus", "scrape-error", "monitoring", "targets", "metrics", "alertmanager"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Spotlight not indexing on Mac when search results are incomple
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["spotlight", "indexing", "search", "mdls", "metadata"]
 weight: 5
 ---
 

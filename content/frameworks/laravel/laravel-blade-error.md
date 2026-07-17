@@ -4,7 +4,6 @@ description: "Laravel throws ViewException when a Blade template has syntax erro
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["blade", "template", "view", "undefined-variable", "compilation"]
 weight: 5
 ---
 

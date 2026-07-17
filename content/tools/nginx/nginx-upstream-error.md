@@ -4,7 +4,6 @@ description: "Fix Nginx upstream timed out error. Resolve upstream server timeou
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["upstream", "timed-out", "timeout", "backend", "nginx"]
 weight: 5
 ---
 

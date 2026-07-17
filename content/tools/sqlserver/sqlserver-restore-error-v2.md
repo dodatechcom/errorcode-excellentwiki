@@ -4,7 +4,6 @@ description: "SQL Server restore operation fails due to file access issues, vers
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "restore", "database", "backup", "recovery", "file"]
 weight: 5
 ---
 

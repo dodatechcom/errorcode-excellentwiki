@@ -4,7 +4,6 @@ description: "Fix 'Registry backup failed' errors on Windows 10 and 11. Resolve 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "backup", "backup-failed", "regback"]
 weight: 5
 ---
 

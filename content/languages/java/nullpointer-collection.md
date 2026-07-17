@@ -4,7 +4,6 @@ description: "Fix Java NullPointerException when working with collections: List,
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["nullpointerexception", "collection", "list", "map", "set", "null"]
 weight: 5
 ---
 

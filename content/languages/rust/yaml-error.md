@@ -4,7 +4,6 @@ description: "Fix serde_yaml errors. Handle malformed YAML, type conversion, and
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["yaml", "serialization", "parse"]
 weight: 5
 ---
 

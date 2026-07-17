@@ -4,7 +4,6 @@ description: "A StateError occurs when calling first or last on an empty iterabl
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["state", "empty", "no-element", "dart"]
 weight: 5
 ---
 

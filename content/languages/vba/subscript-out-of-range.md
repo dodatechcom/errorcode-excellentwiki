@@ -4,7 +4,6 @@ description: "Fix VBA 'Run-time error 9: Subscript out of range' when accessing 
 languages: ["vba"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-error-9", "subscript-out-of-range", "vba"]
 weight: 5
 ---
 

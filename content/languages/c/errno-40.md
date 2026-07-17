@@ -4,7 +4,6 @@ description: "Fix C errno 40 ELOOP (Too many symbolic links) by checking for cir
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eloop", "errno-40", "symbolic-link", "too-many-links", "symlink"]
 weight: 5
 ---
 

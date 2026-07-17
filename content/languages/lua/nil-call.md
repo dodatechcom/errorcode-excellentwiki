@@ -4,7 +4,6 @@ description: "Fix Lua 'attempt to call a nil value' error. Learn why calling nil
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nil", "call", "function", "nil-value", "runtime"]
 weight: 5
 ---
 

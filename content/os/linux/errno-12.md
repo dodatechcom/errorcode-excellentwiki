@@ -4,7 +4,6 @@ description: "Fix Linux ENOMEM (errno 12) Out of Memory error. Diagnose memory u
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["enomem", "errno-12", "out-of-memory", "oom"]
 weight: 40
 ---
 

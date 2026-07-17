@@ -4,7 +4,6 @@ description: "Fix kernel panic errors on macOS related to sleep/wake transitions
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["kernel-panic", "sleep", "wake", "crash", "power", "macos"]
 weight: 5
 ---
 

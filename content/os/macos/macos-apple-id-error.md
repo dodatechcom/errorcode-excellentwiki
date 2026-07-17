@@ -4,7 +4,6 @@ description: "Fix Apple ID sign-in errors on Mac when you cannot sign in, get 'v
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["apple-id", "sign-in", "authentication", "verification", "locked"]
 weight: 5
 ---
 

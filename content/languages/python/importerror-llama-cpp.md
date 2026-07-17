@@ -4,7 +4,6 @@ description: "Fix Python ImportError: llama_cpp not found or ModuleNotFoundError
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "llama-cpp", "llama_cpp", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

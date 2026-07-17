@@ -4,7 +4,6 @@ description: "Fix uuid parsing errors. Handle invalid format, version mismatch, 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["uuid", "identifier", "format"]
 weight: 5
 ---
 

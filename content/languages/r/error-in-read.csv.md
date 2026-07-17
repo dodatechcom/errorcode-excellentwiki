@@ -4,7 +4,6 @@ description: "Fix R 'error in read.csv' when importing CSV files. Check file pat
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["read.csv", "csv", "import", "file"]
 weight: 5
 ---
 

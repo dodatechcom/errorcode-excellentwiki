@@ -4,7 +4,6 @@ description: "Fix SQLite out of memory errors. Resolve memory allocation failure
 tools: ["sqlite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlite", "memory", "oom", "allocation", "large-query"]
 weight: 5
 ---
 

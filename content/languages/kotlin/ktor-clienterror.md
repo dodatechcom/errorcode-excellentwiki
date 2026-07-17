@@ -4,7 +4,6 @@ description: "Fix Ktor client engine errors. Learn why Ktor client engine fails 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ktor", "client", "engine", "http", "kotlin"]
 weight: 5
 ---
 

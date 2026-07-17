@@ -4,7 +4,6 @@ description: "Fix Pascal errors related to exception handling, including unhandl
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["exception", "try", "except", "error-handling", "raise", "pascal"]
 weight: 5
 ---
 

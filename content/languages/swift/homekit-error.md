@@ -4,7 +4,6 @@ description: "Fix Swift HomeKit errors. Learn why HomeKit operations fail and ho
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["homekit", "smart-home", "home", "swift"]
 weight: 5
 ---
 

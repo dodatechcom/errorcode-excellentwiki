@@ -4,7 +4,6 @@ description: "Fix Terraform provider errors in Go. Handle provider initializatio
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["terraform", "iac", "provider"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Socket.IO connection errors including transport failures, auth
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["socket-io", "websocket", "realtime", "connection", "transport"]
 weight: 5
 ---
 

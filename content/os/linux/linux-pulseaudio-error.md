@@ -4,7 +4,6 @@ description: "Fix Linux PulseAudio 'connection refused' errors. Resolve audio se
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pulseaudio", "connection-refused", "audio", "sound", "alsa"]
 weight: 5
 ---
 

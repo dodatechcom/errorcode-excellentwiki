@@ -4,7 +4,6 @@ description: "Fix vcpkg dependency conflict errors. Handle version conflicts, fe
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vcpkg", "package-manager", "dependency", "conflict"]
 weight: 5
 ---
 

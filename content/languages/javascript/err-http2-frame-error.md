@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_FRAME_ERROR when an invalid or malformed HTT
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-frame-error", "http2", "frame", "protocol", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift force unwrap fatal errors. Learn why the ! operator cras
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["force-unwrap", "bang", "nil", "optional", "crash"]
 weight: 5
 ---
 

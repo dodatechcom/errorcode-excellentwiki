@@ -4,7 +4,6 @@ description: "Fix Rust I/O error. Learn about common IO error types in Rust and 
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "error", "filesystem", "network", "read", "write"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "An overflow error occurs when a numeric value exceeds the capacity
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "numeric", "size", "cobol"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::function exceptions including bad_function_call, call
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["std-function", "callable", "exception", "type-erasure"]
 weight: 5
 ---
 

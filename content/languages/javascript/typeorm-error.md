@@ -4,7 +4,6 @@ description: "Fix TypeORM errors including entity not found, query builder issue
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["typeorm", "orm", "database"]
 weight: 5
 ---
 

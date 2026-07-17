@@ -4,7 +4,6 @@ description: "Fix askama template errors. Handle compile-time template checking,
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["askama", "template", "compile-time"]
 weight: 5
 ---
 

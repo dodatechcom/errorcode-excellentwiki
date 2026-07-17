@@ -4,7 +4,6 @@ description: "Fix webpack HMR errors. Resolve hot module replacement failures in
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "hmr", "hot-module", "development", "reload"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen DPC_WATCHDOG_VIOLATION caused by storahci.sys on W
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "dpc", "watchdog", "storahci", "ahci", "storage"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python TypeError: argument of type 'NoneType' is not iterable.
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "nonetype", "iterable", "none", "in-operator"]
 weight: 5
 ---
 

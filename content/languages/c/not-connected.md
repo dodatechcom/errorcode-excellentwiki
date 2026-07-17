@@ -4,7 +4,6 @@ description: "Fix C socket is not connected (ENOTCONN). Connect socket before us
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enotconn", "not-connected", "socket", "connect", "errno"]
 weight: 5
 ---
 

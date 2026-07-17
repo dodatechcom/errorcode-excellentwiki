@@ -4,7 +4,6 @@ description: "Fix Swift URLError not connected to internet. Learn why network re
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["urlerror", "not-connected", "internet", "swift"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Next.js getServerSideProps errors. Handle data fetching failur
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "getServerSideProps", "ssr", "data-fetching", "server"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Flask raises an error when a Blueprint is registered with an inval
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["blueprint", "registration", "url-prefix", "modular"]
 weight: 5
 ---
 

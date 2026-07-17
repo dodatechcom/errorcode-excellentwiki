@@ -4,7 +4,6 @@ description: "Fix Go TOML decode errors. Handle malformed TOML, missing sections
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["toml", "config", "parse"]
 weight: 5
 ---
 

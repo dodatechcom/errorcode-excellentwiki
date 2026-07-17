@@ -4,7 +4,6 @@ description: "Django raises ValidationError when form data does not meet the val
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["forms", "validation", "clean", "input"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux EPIPE (errno 32) Broken pipe error. Solutions for pipe a
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enPIPE", "pipe", "errno-32", "signal"]
 weight: 5
 ---
 

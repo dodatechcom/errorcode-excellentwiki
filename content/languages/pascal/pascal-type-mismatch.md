@@ -4,7 +4,6 @@ description: "Type mismatch errors in Pascal occur when assigning or comparing v
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "mismatch", "compatibility", "conversion", "pascal"]
 weight: 5
 ---
 

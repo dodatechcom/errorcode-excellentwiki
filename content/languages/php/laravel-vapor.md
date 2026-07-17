@@ -4,7 +4,6 @@ description: "Fix Vapor deployment errors in Laravel. Handle Lambda configuratio
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "vapor", "deployment"]
 weight: 5
 ---
 

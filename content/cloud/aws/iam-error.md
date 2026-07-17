@@ -1,10 +1,8 @@
 ---
 title: "AWS IAM Error: Not Authorized to Perform"
 description: "IAM: not authorized to perform — Fix AWS IAM permission and authorization errors."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "iam", "not-authorized", "permissions", "policy", "role"]
 weight: 5
 ---
 

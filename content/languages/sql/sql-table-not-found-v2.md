@@ -4,7 +4,6 @@ description: "Fix SQL errors when a query references a table that doesn't exist 
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["table-not-found", "doesnt-exist", "sql", "database"]
 weight: 5
 ---
 

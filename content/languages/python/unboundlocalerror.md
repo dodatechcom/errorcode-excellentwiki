@@ -4,7 +4,6 @@ description: "Fix Python UnboundLocalError: local variable 'X' referenced before
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["unboundlocalerror", "local-variable", "scope", "initialization"]
 weight: 5
 ---
 

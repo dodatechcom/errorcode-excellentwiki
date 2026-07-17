@@ -4,7 +4,6 @@ description: "Flask-SQLAlchemy raises OperationalError, ProgrammingError, or Int
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlalchemy", "database", "orm", "sql", "flask"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Tailwind CSS build errors. Handle PostCSS configuration, purge
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tailwind", "css", "postcss"]
 weight: 5
 ---
 

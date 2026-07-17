@@ -4,7 +4,6 @@ description: "Fix Linux ENOLINK (errno 31) Link has been severed error. Solution
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enolink", "link", "errno-31", "nfs", "stale"]
 weight: 5
 ---
 

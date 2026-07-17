@@ -4,7 +4,6 @@ description: "Fix docker-compose network errors. Resolve 'Failed to create the d
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker-compose", "network", "bridge", "subnet", "ipam"]
 weight: 5
 ---
 

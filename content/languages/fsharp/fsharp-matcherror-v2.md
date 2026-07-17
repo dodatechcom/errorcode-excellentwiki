@@ -4,7 +4,6 @@ description: "Fix F# MatchFailureException when pattern match doesn't cover all 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern", "failure", "matchfailureexception", "fsharp"]
 weight: 5
 ---
 

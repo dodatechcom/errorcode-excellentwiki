@@ -4,7 +4,6 @@ description: "MongoDB rejects an insert or update because it violates a unique i
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["unique", "index", "duplicate", "insert", "update"]
 weight: 5
 ---
 

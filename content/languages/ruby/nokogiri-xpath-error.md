@@ -4,7 +4,6 @@ description: "Fix Nokogiri XPath errors. Learn why XPath queries fail and how to
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["query-error"]
-tags: ["nokogiri", "xpath", "query", "ruby"]
 weight: 5
 ---
 

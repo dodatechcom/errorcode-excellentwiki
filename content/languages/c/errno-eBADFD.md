@@ -4,7 +4,6 @@ description: "Fix C EBADFD (File descriptor in bad state) by checking descriptor
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ebadfd", "file-descriptor-bad-state", "streams", "descriptor-corrupted"]
 weight: 5
 ---
 

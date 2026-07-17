@@ -4,7 +4,6 @@ description: "Fix Swift CarPlay template errors. Learn why CarPlay templates fai
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["carplay", "template", "interface", "swift"]
 weight: 5
 ---
 

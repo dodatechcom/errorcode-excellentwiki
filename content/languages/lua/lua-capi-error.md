@@ -4,7 +4,6 @@ description: "Fix Lua C API errors. Learn why C API calls fail and how to handle
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["c-api", "lua-api", "c-function", "lua"]
 weight: 5
 ---
 

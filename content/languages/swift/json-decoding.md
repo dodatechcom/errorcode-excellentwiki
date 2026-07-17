@@ -4,7 +4,6 @@ description: "Fix Swift DecodingError in JSON decoding. Learn about JSONDecoder 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["json", "decoding", "codable", "decoder", "serialization"]
 weight: 5
 ---
 

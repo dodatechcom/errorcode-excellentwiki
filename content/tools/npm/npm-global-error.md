@@ -4,7 +4,6 @@ description: "Fix npm global install permission errors. Resolve EACCES permissio
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["global", "permission", "eacces", "install", "npm"]
 weight: 5
 ---
 

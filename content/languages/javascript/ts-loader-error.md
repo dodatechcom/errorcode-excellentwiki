@@ -4,7 +4,6 @@ description: "Fix ts-loader TypeScript compilation errors. Handle type errors, c
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ts-loader", "typescript", "webpack"]
 weight: 5
 ---
 

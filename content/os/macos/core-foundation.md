@@ -4,7 +4,6 @@ description: "Fix macOS Core Foundation errors. Causes and solutions for CFError
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["core-foundation", "cferror", "cfnetwork", "foundation", "low-level"]
 weight: 5
 ---
 

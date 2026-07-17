@@ -4,7 +4,6 @@ description: "A Redis key expires between the time it is read and the time it is
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["ttl", "expire", "race-condition", "consistency"]
 weight: 5
 ---
 

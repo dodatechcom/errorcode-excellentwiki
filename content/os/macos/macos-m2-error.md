@@ -4,7 +4,6 @@ description: "Fix Apple Silicon M2 errors including app compatibility, GPU memor
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["m2", "apple-silicon", "arm64", "gpu", "neural-engine"]
 weight: 5
 ---
 

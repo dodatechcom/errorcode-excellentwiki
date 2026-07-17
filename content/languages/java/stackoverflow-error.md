@@ -4,7 +4,6 @@ description: "Fix Java StackOverflowError from infinite recursion. Add base case
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["stackoverflowerror", "recursion", "call-stack", "stack-size", "iteration"]
 weight: 5
 ---
 

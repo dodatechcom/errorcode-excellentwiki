@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -67000 (errCoreFoundationUnknown). Resolve Core
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["errcorefoundationunknown", "osstatus-67000", "core-foundation", "cocoa", "unknown-error"]
 weight: 5
 ---
 

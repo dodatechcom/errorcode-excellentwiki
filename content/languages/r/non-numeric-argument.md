@@ -4,7 +4,6 @@ description: "Fix R 'non-numeric argument to mathematical function' error when p
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["non-numeric", "mathematical-function", "type-error", "conversion"]
 weight: 5
 ---
 

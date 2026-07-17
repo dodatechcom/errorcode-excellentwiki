@@ -4,7 +4,6 @@ description: "A regex error occurs when a regular expression pattern is malforme
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["regex", "regular-expression", "pattern", "perl"]
 weight: 5
 ---
 

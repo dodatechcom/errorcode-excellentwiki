@@ -4,7 +4,6 @@ description: "Fix PHP Warning: Invalid argument supplied for foreach(). Learn to
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "foreach", "array", "iteration"]
 weight: 5
 ---
 

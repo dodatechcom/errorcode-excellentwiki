@@ -4,7 +4,6 @@ description: "Fix Ruby ThreadError: deadlock; recursive locking. Resolve mutex d
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["thread", "deadlock"]
-tags: ["deadlock", "recursive_locking", "mutex", "thread", "concurrency"]
 weight: 390
 ---
 

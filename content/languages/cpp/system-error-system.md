@@ -4,7 +4,6 @@ description: "Fix C++ std::system_error with system category. Handle Windows-spe
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["system-error", "system_error", "system-category", "windows", "error-code"]
 weight: 5
 ---
 

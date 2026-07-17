@@ -4,7 +4,6 @@ description: "Fix Rust Mutex poisoned error. Learn why mutexes become poisoned w
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["mutex", "poisoned", "thread", "lock", "sync", "arc"]
 weight: 5
 ---
 

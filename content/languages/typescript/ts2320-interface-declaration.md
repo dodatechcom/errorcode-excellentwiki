@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2320: Interface 'X' cannot extend 'Y'. Fix interf
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2320", "interface", "extends", "cannot-extend", "declaration"]
 weight: 5
 ---
 

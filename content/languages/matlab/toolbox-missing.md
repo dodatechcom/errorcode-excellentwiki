@@ -4,7 +4,6 @@ description: "Fix 'Toolbox not found' or 'Undefined function' when a required MA
 languages: ["matlab"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["toolbox-missing", "license", "toolbox-not-found"]
 weight: 5
 ---
 

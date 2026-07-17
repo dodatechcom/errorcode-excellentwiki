@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2531: Object is possibly 'null'. Handle nullable 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2531", "null", "strictNullChecks", "nullable", "possibly-null"]
 weight: 5
 ---
 

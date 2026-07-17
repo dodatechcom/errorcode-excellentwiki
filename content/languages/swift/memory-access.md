@@ -4,7 +4,6 @@ description: "Fix Swift EXC_BAD_ACCESS memory errors. Learn why EXC_BAD_ACCESS o
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["exc-bad-access", "memory", "dangling-pointer", "use-after-free", "deallocation"]
 weight: 5
 ---
 

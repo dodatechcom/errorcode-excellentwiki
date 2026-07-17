@@ -4,7 +4,6 @@ description: "Fix Git rebase aborted error. Understand why rebase fails and how 
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["rebase", "abort", "conflict", "git"]
 weight: 5
 ---
 

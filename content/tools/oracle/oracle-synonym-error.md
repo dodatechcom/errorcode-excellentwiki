@@ -4,7 +4,6 @@ description: "Oracle synonym fails to resolve or compile."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "synonym", "alias", "object", "reference"]
 weight: 5
 ---
 

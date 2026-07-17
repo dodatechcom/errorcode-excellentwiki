@@ -4,7 +4,6 @@ description: "Maven compiler plugin fails due to source or target version mismat
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "compiler", "source", "target", "java-version"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Application Error Event ID 1000 on Windows 10 and 11. Identify
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["event-viewer", "application-crash", "faulting-module", "event-id-1000", "wer"]
 weight: 5
 ---
 

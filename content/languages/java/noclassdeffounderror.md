@@ -4,7 +4,6 @@ description: "Fix Java NoClassDefFoundError by ensuring all required classes are
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["noclassdeffounderror", "classpath", "classloader", "dependency"]
 weight: 5
 ---
 

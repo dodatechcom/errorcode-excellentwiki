@@ -4,7 +4,6 @@ description: "GitHub Actions job exceeds the maximum execution time limit."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "timeout", "execution", "duration", "limit"]
 weight: 5
 ---
 

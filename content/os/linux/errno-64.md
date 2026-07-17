@@ -4,7 +4,6 @@ description: "Fix Linux ENETDOWN (errno 64) Network is down error. Solutions for
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enetdown", "network", "errno-64", "interface", "down"]
 weight: 5
 ---
 

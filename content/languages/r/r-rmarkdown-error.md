@@ -4,7 +4,6 @@ description: "Fix rmarkdown rendering errors including chunk evaluation failures
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rmarkdown", "knitr", "pandoc", "render", "document", "r"]
 weight: 5
 ---
 

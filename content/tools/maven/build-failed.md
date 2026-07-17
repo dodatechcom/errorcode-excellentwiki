@@ -4,7 +4,6 @@ description: "Maven build failed because it could not execute a goal, often due 
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "build", "goal", "failure"]
 weight: 5
 ---
 

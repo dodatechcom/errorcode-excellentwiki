@@ -4,7 +4,6 @@ description: "Vite fails to compile Svelte component syntax."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "svelte", "compilation", "component", "template"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Vitest test errors. Handle assertion failures, configuration i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vitest", "testing", "vite"]
 weight: 5
 ---
 

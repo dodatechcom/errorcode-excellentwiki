@@ -4,7 +4,6 @@ description: "Fix bash echo invalid option errors when using unsupported flags w
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["echo", "option", "printf", "output", "bash"]
 weight: 5
 ---
 

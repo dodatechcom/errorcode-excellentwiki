@@ -4,7 +4,6 @@ description: "Laravel returns a 404 error when no route matches the incoming req
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["routing", "404", "not-found", "http"]
 weight: 5
 ---
 

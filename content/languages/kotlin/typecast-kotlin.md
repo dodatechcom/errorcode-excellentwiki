@@ -4,7 +4,6 @@ description: "Fix Kotlin ClassCastException when type casting fails. Learn how t
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["classcastexception", "type-cast", "as", "kotlin"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Prometheus query errors in Go. Handle PromQL syntax, metric co
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["prometheus", "monitoring", "metrics"]
 weight: 5
 ---
 

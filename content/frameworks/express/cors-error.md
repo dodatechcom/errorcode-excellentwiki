@@ -4,7 +4,6 @@ description: "Express returns a CORS error when the request origin is not in the
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cors", "origin", "headers", "cross-origin", "security"]
 weight: 5
 ---
 

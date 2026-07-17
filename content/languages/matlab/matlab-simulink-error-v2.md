@@ -4,7 +4,6 @@ description: "Fix Simulink errors when models fail to compile, simulate, or buil
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["simulink", "model", "compilation", "simulation", "build", "matlab"]
 weight: 5
 ---
 

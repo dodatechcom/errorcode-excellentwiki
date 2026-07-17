@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_weak_ptr when converting expired weak_ptr to shar
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-weak-ptr", "weak-ptr", "shared-ptr", "expired", "lock"]
 weight: 5
 ---
 

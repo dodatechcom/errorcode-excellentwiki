@@ -4,7 +4,6 @@ description: "Fix pandas groupby KeyError when grouping column does not exist. V
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pandas", "groupby", "keyerror", "dataframe", "aggregation"]
 weight: 5
 ---
 

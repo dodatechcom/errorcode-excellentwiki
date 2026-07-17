@@ -4,7 +4,6 @@ description: "Fix Linux EAGAIN (errno 7) Resource Temporarily Unavailable error.
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eAGAIN", "resource", "errno-7", "non-blocking"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: cohere not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "cohere", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

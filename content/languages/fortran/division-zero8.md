@@ -4,7 +4,6 @@ description: "A floating point division by zero occurs when a Fortran program di
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "floating-point", "arithmetic"]
 weight: 5
 ---
 

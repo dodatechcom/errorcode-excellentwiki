@@ -4,7 +4,6 @@ description: "Fix Kubernetes Ingress TLS configuration errors. Resolve TLS certi
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "ingress", "tls", "certificate", "ssl", "routing"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Spotlight errors on macOS when search doesn't find files, inde
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["spotlight", "search", "indexing", "mds", "metadata", "macos"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Oracle query fails because a read-consistent snapshot of data has 
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "snapshot", "ora-01555", "undo", "read-consistency", "long-query"]
 weight: 5
 ---
 

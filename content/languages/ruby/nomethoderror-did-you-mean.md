@@ -4,7 +4,6 @@ description: "Fix Ruby NoMethodError with DidYouMean suggestions. Learn how Ruby
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nomethoderror", "did-you-mean", "method-suggestion", "ruby"]
 weight: 5
 ---
 

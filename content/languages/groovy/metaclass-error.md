@@ -4,7 +4,6 @@ description: "A Metaclass error occurs when accessing or modifying metaclass beh
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["metaclass", "meta", "class", "groovy"]
 weight: 5
 ---
 

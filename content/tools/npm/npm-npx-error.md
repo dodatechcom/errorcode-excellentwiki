@@ -4,7 +4,6 @@ description: "Fix npm npx command not found errors. Resolve npx execution issues
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["npx", "command", "not-found", "execute", "npm"]
 weight: 5
 ---
 

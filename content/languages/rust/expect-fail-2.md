@@ -4,7 +4,6 @@ description: "Fix Rust expect() on Err panic. Learn why expect panics on Err Res
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["expect", "result", "err", "error", "panic", "unwrap"]
 weight: 5
 ---
 

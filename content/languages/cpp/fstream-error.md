@@ -4,7 +4,6 @@ description: "Fix C++ std::fstream file stream errors. Handle file open, read, a
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["fstream", "file-stream", "open", "read", "write", "io"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Blue Screen IRQL_NOT_LESS_OR_EQUAL caused by ndis.sys on Windo
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "ndis", "network", "irql", "driver"]
 weight: 5
 ---
 

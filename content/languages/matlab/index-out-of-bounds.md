@@ -4,7 +4,6 @@ description: "Fix 'Index exceeds array bounds' when accessing an element beyond 
 languages: ["matlab"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["index-exceeds", "array-bounds", "matlab"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Objective-C protocol conformance and adoption errors"
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "protocols", "interfaces"]
 weight: 5
 ---
 

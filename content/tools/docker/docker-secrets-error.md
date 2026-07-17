@@ -4,7 +4,6 @@ description: "Fix Docker secrets errors. Resolve secret creation, access, and in
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["secrets", "swarm", "security", "credentials", "docker"]
 weight: 5
 ---
 

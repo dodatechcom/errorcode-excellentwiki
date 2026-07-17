@@ -4,7 +4,6 @@ description: "Fix DNF (Disjunctive Normal Form) type errors in PHP 8.2+. Handle 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "dnf-type", "typing"]
 weight: 5
 ---
 

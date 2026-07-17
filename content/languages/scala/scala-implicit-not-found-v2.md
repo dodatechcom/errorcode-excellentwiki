@@ -4,7 +4,6 @@ description: "Fix Scala 'implicit not found' error when the compiler cannot find
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["implicit", "not-found", "typeclass", "evidence", "scala"]
 weight: 5
 ---
 

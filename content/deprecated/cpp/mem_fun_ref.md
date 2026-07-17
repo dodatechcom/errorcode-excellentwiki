@@ -6,7 +6,6 @@ replacement_function: "std::function"
 languages: ["cpp"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["mem_fun_ref", "std::function", "lambda", "member-function", "cpp11"]
 weight: 5
 ---
 

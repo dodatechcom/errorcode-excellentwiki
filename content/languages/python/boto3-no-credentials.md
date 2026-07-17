@@ -4,7 +4,6 @@ description: "Fix boto3 NoCredentialsError. Configure AWS credentials via enviro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["boto3", "aws", "credentials", "iam", "security"]
 weight: 5
 ---
 

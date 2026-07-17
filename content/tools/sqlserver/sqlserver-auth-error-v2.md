@@ -4,7 +4,6 @@ description: "SQL Server rejects login attempt because the specified user creden
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "login", "auth", "password", "user", "credential"]
 weight: 5
 ---
 

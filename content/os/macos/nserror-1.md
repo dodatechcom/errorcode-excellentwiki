@@ -4,7 +4,6 @@ description: "Fix macOS NSFileReadUnknownError (NSCocoaErrorDomain Code 256). Re
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfileunknownerror", "nscocoaerrordomain", "code-256", "file-read", "cocoa", "foundation"]
 weight: 5
 ---
 

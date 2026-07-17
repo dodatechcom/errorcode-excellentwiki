@@ -4,7 +4,6 @@ description: "Fix Python ImportError: chromadb not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "chromadb", "module-not-found", "pip", "vector-db"]
 weight: 5
 ---
 

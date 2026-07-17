@@ -4,7 +4,6 @@ description: "Fix Linux 'rsync: connection error' and transfer failures. Resolve
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["rsync", "connection-error", "sync", "transfer", "ssh", "backup"]
 weight: 5
 ---
 

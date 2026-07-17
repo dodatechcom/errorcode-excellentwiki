@@ -4,7 +4,6 @@ description: "Fix Python UnicodeWarning when Unicode-related encoding issues occ
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unicodewarning", "unicode", "encoding", "utf-8", "decode"]
 weight: 5
 ---
 

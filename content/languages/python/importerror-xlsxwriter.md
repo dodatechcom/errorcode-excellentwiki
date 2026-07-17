@@ -4,7 +4,6 @@ description: "Fix Python ImportError: xlsxwriter not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "xlsxwriter", "module-not-found", "pip", "excel"]
 weight: 5
 ---
 

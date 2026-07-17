@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2554: Expected X arguments but got Y. Resolve fun
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2554", "argument-count", "function-call", "expected-arguments"]
 weight: 5
 ---
 

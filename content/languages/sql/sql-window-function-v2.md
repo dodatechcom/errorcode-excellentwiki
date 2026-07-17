@@ -4,7 +4,6 @@ description: "Fix SQL window function errors when window functions are used inco
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["window-function", "OVER", "PARTITION", "ROW_NUMBER", "sql"]
 weight: 5
 ---
 

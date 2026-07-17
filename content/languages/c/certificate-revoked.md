@@ -4,7 +4,6 @@ description: "Fix C certificate has been revoked. Handle revoked SSL/TLS certifi
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["certificate", "revoked", "ssl", "tls", "crl"]
 weight: 5
 ---
 

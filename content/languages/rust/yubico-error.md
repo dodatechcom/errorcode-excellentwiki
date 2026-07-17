@@ -4,7 +4,6 @@ description: "Fix yubico HSM errors. Handle device communication, PIV operations
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["yubico", "hsm", "security"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Grape API errors in Ruby. Learn why Grape endpoints fail and h
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["grape", "api", "endpoint", "ruby"]
 weight: 5
 ---
 

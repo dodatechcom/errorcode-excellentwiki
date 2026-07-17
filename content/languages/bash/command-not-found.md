@@ -4,7 +4,6 @@ description: "Fix 'bash: X: command not found' when a command or program is not 
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["command-not-found", "path", "installation"]
 weight: 5
 ---
 

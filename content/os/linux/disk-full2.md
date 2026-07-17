@@ -4,7 +4,6 @@ description: "Fix Linux 'disk I/O error' messages. Diagnose failing hard drives,
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["disk-io-error", "i-o-error", "bad-sector", "disk-failure", "fsck"]
 weight: 5
 ---
 

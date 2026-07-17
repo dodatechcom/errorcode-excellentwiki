@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Type X is not assignable to type Y' errors. Unders
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["type-assignability", "type-mismatch", "assignability", "type-error"]
 weight: 5
 ---
 

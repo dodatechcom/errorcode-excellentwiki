@@ -4,7 +4,6 @@ description: "An I/O error occurs when a file input/output operation fails."
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "input", "output", "file", "pascal"]
 weight: 5
 ---
 

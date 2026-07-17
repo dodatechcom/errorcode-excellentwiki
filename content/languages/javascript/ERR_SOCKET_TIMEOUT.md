@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_SOCKET_TIMEOUT by increasing timeout values, check
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["err-socket-timeout", "timeout", "network", "keep-alive", "nodejs"]
 weight: 85
 ---
 

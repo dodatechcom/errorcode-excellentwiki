@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_DLOPEN_NOT_SUPPORTED when process.dlopen is unavai
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-dlopen-not-supported", "dlopen", "native", "addon", "napi", "nodejs"]
 weight: 5
 ---
 

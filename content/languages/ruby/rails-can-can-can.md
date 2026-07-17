@@ -4,7 +4,6 @@ description: "Fix CanCan::AccessDenied in Rails. Learn why CanCanCan authorizati
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["authorization-error"]
-tags: ["cancancan", "authorization", "access-denied", "rails", "ruby"]
 weight: 5
 ---
 

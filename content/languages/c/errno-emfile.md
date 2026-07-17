@@ -4,7 +4,6 @@ description: "Fix C EMFILE (Too many open files) by closing unused descriptors, 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["emfile", "too-many-open-files", "file-descriptor-limit", "ulimit"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java ArithmeticException by checking the divisor before dividi
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["arithmeticexception", "divide-by-zero", "bigdecimal", "integer-division"]
 date: 2026-07-15
 ---
 

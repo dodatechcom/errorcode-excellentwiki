@@ -4,7 +4,6 @@ description: "Maven cannot resolve a required dependency from any configured rep
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "dependency", "resolution", "artifact", "repository"]
 weight: 5
 ---
 

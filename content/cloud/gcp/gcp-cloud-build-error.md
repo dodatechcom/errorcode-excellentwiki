@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Build Error"
 description: "Fix GCP Cloud Build errors. Resolve Cloud Build pipeline issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-build", "ci-cd", "build", "pipeline"]
 weight: 5
 ---
 

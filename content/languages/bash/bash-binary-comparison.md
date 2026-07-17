@@ -4,7 +4,6 @@ description: "Fix 'bash: binary operator expected' when test expressions have mi
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["binary-operator", "test", "conditional", "bracket", "comparison"]
 weight: 5
 ---
 

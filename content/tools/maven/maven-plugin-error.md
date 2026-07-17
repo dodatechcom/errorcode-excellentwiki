@@ -4,7 +4,6 @@ description: "A Maven plugin fails during execution, preventing the build from c
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "plugin", "execution", "goal", "build"]
 weight: 5
 ---
 

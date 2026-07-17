@@ -4,7 +4,6 @@ description: "Fix Sequelize database errors including connection issues, query f
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sequelize", "database", "orm"]
 weight: 5
 ---
 

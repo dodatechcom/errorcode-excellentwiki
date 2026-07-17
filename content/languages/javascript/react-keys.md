@@ -4,7 +4,6 @@ description: "Fix React 'Each child in a list should have a unique key prop' war
 languages: ["javascript"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["react", "key-prop", "list-rendering", "reconciliation", "warning"]
 weight: 5
 ---
 

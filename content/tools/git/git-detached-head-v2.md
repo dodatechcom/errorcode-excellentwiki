@@ -4,7 +4,6 @@ description: "Fix Git detached HEAD state. Restore or create a branch when HEAD 
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["detached-head", "checkout", "branch", "HEAD", "git"]
 weight: 5
 ---
 

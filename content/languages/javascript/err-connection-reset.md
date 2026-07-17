@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_CONNECTION_RESET when an existing connection is fo
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-connection-reset", "connection", "network", "nodejs", "tcp"]
 weight: 5
 ---
 

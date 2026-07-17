@@ -4,7 +4,6 @@ description: "Fix Twig template rendering errors. Handle undefined variables, fi
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["twig", "template", "rendering"]
 weight: 5
 ---
 

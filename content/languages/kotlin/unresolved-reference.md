@@ -4,7 +4,6 @@ description: "Fix Kotlin unresolved reference errors. Check imports, spelling, v
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["unresolved-reference", "import", "symbol", "compile", "name"]
 weight: 5
 ---
 

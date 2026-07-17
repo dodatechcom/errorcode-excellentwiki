@@ -4,7 +4,6 @@ description: "Fix BeanCreationException when Spring AOP proxy creation fails. Re
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "aop", "aspectj", "proxy", "bean-creation"]
 weight: 5
 ---
 

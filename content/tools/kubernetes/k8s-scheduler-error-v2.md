@@ -4,7 +4,6 @@ description: "Fix Kubernetes scheduler failed to schedule pod. Resolve schedulin
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "scheduler", "scheduling", "pod", "placement", "control-plane"]
 weight: 5
 ---
 

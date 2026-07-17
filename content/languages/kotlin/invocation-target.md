@@ -4,7 +4,6 @@ description: "Fix Kotlin InvocationTargetException when a reflected method throw
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invocationtargetexception", "reflection", "invoke", "cause"]
 weight: 5
 ---
 

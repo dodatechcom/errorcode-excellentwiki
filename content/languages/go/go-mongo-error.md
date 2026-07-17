@@ -4,7 +4,6 @@ description: "Fix MongoDB Go driver server selection timeout. Handle replica set
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mongo", "mongodb", "database"]
 weight: 5
 ---
 

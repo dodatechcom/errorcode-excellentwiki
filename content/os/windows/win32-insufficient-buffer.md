@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_INSUFFICIENT_BUFFER (122). Resolve buffer too sm
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-122", "insufficient-buffer", "buffer"]
 weight: 5
 ---
 

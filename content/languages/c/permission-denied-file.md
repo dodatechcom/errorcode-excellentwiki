@@ -4,7 +4,6 @@ description: "Fix C permission denied (EACCES). Set correct file permissions for
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eacces", "permission-denied", "file-permissions", "chmod", "errno"]
 weight: 5
 ---
 

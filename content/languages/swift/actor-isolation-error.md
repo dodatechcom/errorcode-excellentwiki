@@ -4,7 +4,6 @@ description: "Fix Swift actor isolation errors. Learn why actor isolation fails 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["actor", "isolation", "concurrency", "swift"]
 weight: 5
 ---
 

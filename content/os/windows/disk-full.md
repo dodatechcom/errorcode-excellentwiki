@@ -4,7 +4,6 @@ description: "Fix 'There is not enough space on the disk' error on Windows 10 an
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["disk-full", "storage", "low-disk-space", "temp-files", "cleanup"]
 weight: 5
 ---
 

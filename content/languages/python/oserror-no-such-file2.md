@@ -4,7 +4,6 @@ description: "Fix Python FileNotFoundError [Errno 2] No such file or directory. 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["filenotfounderror", "errno-2", "no-such-file", "path", "directory"]
 weight: 5
 ---
 

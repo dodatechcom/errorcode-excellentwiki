@@ -4,7 +4,6 @@ description: "Fix Kubernetes ErrImagePull error. Resolve image pull failures in 
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["errimagepull", "image-pull", "image", "pull", "kubernetes"]
 weight: 5
 ---
 

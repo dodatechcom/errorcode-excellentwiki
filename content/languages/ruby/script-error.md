@@ -4,7 +4,6 @@ description: "Fix Ruby ScriptError. Handle script-level errors including load er
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["script"]
-tags: ["script_error", "script", "load", "syntax", "not_implemented"]
 weight: 340
 ---
 

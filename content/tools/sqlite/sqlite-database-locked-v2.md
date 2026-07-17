@@ -4,7 +4,6 @@ description: "SQLite database is locked by another connection and cannot be acce
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "locked", "busy", "concurrent", "timeout", "wal"]
 weight: 5
 ---
 

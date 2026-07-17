@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_UNSUPPORTED_ESM_URL schemes by handling protocol i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-unsupported-esm-url-scheme", "esm", "url", "protocol", "import", "nodejs"]
 weight: 5
 ---
 

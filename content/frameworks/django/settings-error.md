@@ -4,7 +4,6 @@ description: "Django raises ImproperlyConfigured when a required setting is miss
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["settings", "configuration", "improperly-configured"]
 weight: 5
 ---
 

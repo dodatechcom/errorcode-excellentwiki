@@ -6,7 +6,6 @@ replacement_function: "strtod"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["atof", "strtod", "parsing", "locale", "c"]
 weight: 5
 ---
 

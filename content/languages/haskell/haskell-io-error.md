@@ -4,7 +4,6 @@ description: "Haskell raises IOException when file, network, or I/O operations f
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "exception", "file", "network", "ioerror"]
 weight: 5
 ---
 

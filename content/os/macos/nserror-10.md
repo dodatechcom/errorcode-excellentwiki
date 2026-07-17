@@ -4,7 +4,6 @@ description: "Fix macOS NSFileWriteOutOfSpace (NSCocoaErrorDomain Code 640). Res
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilewriteoutofspace", "nscocoaerrordomain", "code-640", "file-write", "out-of-space", "disk-full", "cocoa", "foundation"]
 weight: 5
 ---
 

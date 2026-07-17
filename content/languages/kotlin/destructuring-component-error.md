@@ -4,7 +4,6 @@ description: "Fix Kotlin destructuring component errors. Learn why componentN fu
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["destructuring", "component", "operator", "kotlin"]
 weight: 5
 ---
 

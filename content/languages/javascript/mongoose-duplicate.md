@@ -4,7 +4,6 @@ description: "Fix Mongoose duplicate key errors when inserting documents with un
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mongoose", "mongodb", "duplicate-key", "e11000", "unique-index"]
 weight: 5
 ---
 

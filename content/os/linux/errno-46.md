@@ -4,7 +4,6 @@ description: "Fix Linux ENOSTR (errno 46) No stream head associated error. Solut
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOSTR", "streams", "errno-46", "stream-head"]
 weight: 5
 ---
 

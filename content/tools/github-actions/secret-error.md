@@ -4,7 +4,6 @@ description: "Fix GitHub Actions secret not found errors. Resolve secret configu
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "secret", "not-found", "security", "credential"]
 weight: 5
 ---
 

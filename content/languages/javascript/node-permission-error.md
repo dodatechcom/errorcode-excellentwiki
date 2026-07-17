@@ -4,7 +4,6 @@ description: "Fix Node.js permission model errors. Handle access denied errors i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["permission", "access", "security"]
 weight: 5
 ---
 

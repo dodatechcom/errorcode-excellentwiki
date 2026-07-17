@@ -4,7 +4,6 @@ description: "Fix PHP E_NOTICE runtime notices. Learn common causes and solution
 languages: ["php"]
 severities: ["notice"]
 error-types: ["runtime-error"]
-tags: ["e-notice", "runtime", "notice"]
 weight: 5
 ---
 

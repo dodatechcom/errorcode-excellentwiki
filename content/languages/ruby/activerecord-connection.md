@@ -4,7 +4,6 @@ description: "Fix ActiveRecord::ConnectionNotEstablished in Rails. Learn why dat
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["connection-error"]
-tags: ["activerecord", "connection", "database", "rails", "ruby"]
 weight: 5
 ---
 

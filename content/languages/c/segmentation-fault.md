@@ -4,7 +4,6 @@ description: "Fix C segmentation fault (core dumped) errors with these proven te
 languages: ["c"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["segfault", "sigsegv", "memory", "null-pointer", "core-dumped"]
 weight: 10
 ---
 

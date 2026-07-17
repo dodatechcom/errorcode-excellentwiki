@@ -4,7 +4,6 @@ description: "React Native Reanimated throws an error when accessing shared valu
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["reanimated", "shared-value", "worklet", "animation", "ui-thread"]
 weight: 5
 ---
 

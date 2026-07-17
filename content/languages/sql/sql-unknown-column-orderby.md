@@ -4,7 +4,6 @@ description: "Fix 'Unknown column in ORDER BY clause' when ORDER BY references a
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["order-by", "unknown-column", "group-by", "select"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Overflow errors in COBOL occur when arithmetic results exceed the 
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "arithmetic", "numeric", "size", "cobol"]
 weight: 5
 ---
 

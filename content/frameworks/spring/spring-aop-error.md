@@ -4,7 +4,6 @@ description: "Spring throws BeanCreationException when an AOP proxy cannot be cr
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aop", "proxy", "bean-creation", "aspect", "spring-context"]
 weight: 5
 ---
 

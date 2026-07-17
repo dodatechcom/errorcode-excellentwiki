@@ -4,7 +4,6 @@ description: "Fix Kubernetes RBAC denied error. Resolve Role, ClusterRole, and R
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["rbac-error", "forbidden", "rbac", "permission", "kubernetes"]
 weight: 5
 ---
 

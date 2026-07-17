@@ -4,7 +4,6 @@ description: "Flutter displays a yellow/black striped overflow warning when a Fl
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["warning"]
-tags: ["layout", "overflow", "flex", "rendering"]
 weight: 5
 ---
 

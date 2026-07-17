@@ -4,7 +4,6 @@ description: "Fix Docker socket permission denied errors. Resolve docker.sock ac
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["socket", "permission", "denied", "docker.sock", "docker"]
 weight: 5
 ---
 

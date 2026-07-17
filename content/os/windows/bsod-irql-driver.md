@@ -4,7 +4,6 @@ description: "Fix Blue Screen IRQL_NOT_LESS_OR_EQUAL caused by faulty drivers on
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "irql", "driver", "kernel-memory"]
 weight: 5
 ---
 

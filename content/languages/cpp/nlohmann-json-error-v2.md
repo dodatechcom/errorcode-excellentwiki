@@ -4,7 +4,6 @@ description: "Fix nlohmann/json parse errors at offset. Handle unexpected tokens
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nlohmann", "json", "parsing", "parse-error", "offset"]
 weight: 5
 ---
 

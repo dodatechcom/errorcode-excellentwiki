@@ -4,7 +4,6 @@ description: "Fix C++ std::logic_error exceptions. Understand the difference bet
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["logic-error", "logic_error", "invariant", "precondition", "stdexcept"]
 weight: 5
 ---
 

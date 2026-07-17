@@ -4,7 +4,6 @@ description: "Fix PowerShell 'CommandNotFoundException' when a cmdlet, function,
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["CommandNotFoundException", "command", "not-found", "cmdlet", "module"]
 weight: 5
 ---
 

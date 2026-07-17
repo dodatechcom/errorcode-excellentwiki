@@ -4,7 +4,6 @@ description: "Fix lettre SMTP errors. Handle email sending, authentication, and 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["lettre", "smtp", "email"]
 weight: 5
 ---
 

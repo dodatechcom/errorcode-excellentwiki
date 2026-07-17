@@ -4,7 +4,6 @@ description: "Fix std::bad_alloc errors from vector reserve failures. Handle mem
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["std", "bad_alloc", "vector", "memory", "allocation"]
 weight: 5
 ---
 

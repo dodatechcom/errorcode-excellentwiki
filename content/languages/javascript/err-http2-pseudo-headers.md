@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_PSEUDO_HEADERS when invalid or misplaced pse
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-pseudo-headers", "http2", "pseudo-headers", "nodejs"]
 weight: 5
 ---
 

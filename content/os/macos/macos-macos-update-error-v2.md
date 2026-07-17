@@ -4,7 +4,6 @@ description: "Fix macOS software update errors. Resolve 'An error occurred', upd
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["software-update", "macos-update", "upgrade", "ventura", "sonoma", "sequoia", "macos"]
 weight: 5
 ---
 

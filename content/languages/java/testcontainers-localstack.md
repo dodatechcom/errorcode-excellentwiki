@@ -4,7 +4,6 @@ description: "Fix LocalStackContainer startup failure in Testcontainers. Check D
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "localstack", "docker", "container", "aws"]
 weight: 5
 ---
 

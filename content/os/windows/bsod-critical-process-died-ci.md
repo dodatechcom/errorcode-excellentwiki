@@ -4,7 +4,6 @@ description: "Fix Blue Screen CRITICAL_PROCESS_DIED caused by CI.dll on Windows 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "critical-process", "ci-dll", "code-integrity", "driver"]
 weight: 5
 ---
 

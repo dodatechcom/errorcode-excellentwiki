@@ -4,7 +4,6 @@ description: "Julia raises DimensionMismatch when array dimensions do not match 
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dimension", "mismatch", "array", "shape", "broadcast"]
 weight: 5
 ---
 

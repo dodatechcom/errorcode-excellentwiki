@@ -4,7 +4,6 @@ description: "Fix chacha20poly1305 decryption errors. Handle key/nonce issues, a
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["chacha20poly1305", "encryption", "crypto"]
 weight: 5
 ---
 

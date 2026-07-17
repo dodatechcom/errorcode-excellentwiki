@@ -4,7 +4,6 @@ description: "Fix Jackson deserialization mismatch when JSON structure does not 
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "deserialization", "mismatch", "databind"]
 weight: 5
 ---
 

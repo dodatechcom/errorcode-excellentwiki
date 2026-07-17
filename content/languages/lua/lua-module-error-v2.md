@@ -4,7 +4,6 @@ description: "Fix Lua module not found errors when require() fails. Configure pa
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["module", "not-found", "require", "package", "path", "lua"]
 weight: 5
 ---
 

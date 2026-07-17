@@ -4,7 +4,6 @@ description: "Fix Rocket web framework launch errors. Handle configuration, fair
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rocket", "web", "framework"]
 weight: 5
 ---
 

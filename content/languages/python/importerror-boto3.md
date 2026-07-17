@@ -4,7 +4,6 @@ description: "Fix Python ImportError: boto3 not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "boto3", "module-not-found", "pip", "aws"]
 weight: 5
 ---
 

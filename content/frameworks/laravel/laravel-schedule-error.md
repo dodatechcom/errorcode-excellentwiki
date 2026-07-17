@@ -4,7 +4,6 @@ description: "Laravel throws ScheduleTaskFailedException when a scheduled task f
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["scheduler", "cron", "task", "command", "failed"]
 weight: 5
 ---
 

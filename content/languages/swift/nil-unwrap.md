@@ -4,7 +4,6 @@ description: "Fix Swift nil unwrap crashes. Learn why force unwrapping optionals
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nil-unwrap", "optional", "force-unwrap", "swift"]
 weight: 5
 ---
 

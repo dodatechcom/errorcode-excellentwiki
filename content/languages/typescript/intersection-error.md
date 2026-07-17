@@ -4,7 +4,6 @@ description: "Fix TypeScript intersection type errors when combining types with 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["intersection-type", "type-conflict", "combining-types", "type-error", "intersection"]
 weight: 5
 ---
 

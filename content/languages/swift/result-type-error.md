@@ -4,7 +4,6 @@ description: "Fix Swift Result type errors. Learn why Result type handling fails
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["result", "error-handling", "success-failure", "swift"]
 weight: 5
 ---
 

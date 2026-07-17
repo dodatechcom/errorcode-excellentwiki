@@ -4,7 +4,6 @@ description: "Fix Kotlin sealed class when expression errors. Learn why when exh
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sealed-class", "when", "pattern-matching", "kotlin"]
 weight: 5
 ---
 

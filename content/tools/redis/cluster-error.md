@@ -4,7 +4,6 @@ description: "Redis Cluster refuses commands because one or more hash slots are 
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["cluster", "sharding", "slots", "availability"]
 weight: 5
 ---
 

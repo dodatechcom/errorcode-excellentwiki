@@ -4,7 +4,6 @@ description: "Fix nanoid generation errors. Handle character set issues, length 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nanoid", "id", "generation"]
 weight: 5
 ---
 

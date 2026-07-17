@@ -4,7 +4,6 @@ description: "Fix Perl reference errors. Learn why dereferencing fails and how t
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["reference", "dereference", "scalar", "perl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin vararg parameter errors. Learn why vararg arguments fai
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["vararg", "spread", "parameter", "kotlin"]
 weight: 5
 ---
 

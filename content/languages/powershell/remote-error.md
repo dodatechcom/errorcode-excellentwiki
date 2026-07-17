@@ -4,7 +4,6 @@ description: "Fix 'PSRemoting' errors when PowerShell cannot establish or mainta
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["PSRemoting", "remote", "winrm"]
 weight: 5
 ---
 

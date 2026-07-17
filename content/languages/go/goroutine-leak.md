@@ -4,7 +4,6 @@ description: "Fix Go goroutine leaks. Ensure goroutines exit when done, use cont
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["goroutine", "leak", "concurrency", "context", "memory"]
 weight: 5
 ---
 

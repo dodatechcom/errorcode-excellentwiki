@@ -4,7 +4,6 @@ description: "Tailwind CSS errors in Next.js occur when utility classes are not 
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tailwind", "css", "utility", "purge", "nextjs"]
 weight: 5
 ---
 

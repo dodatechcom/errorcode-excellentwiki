@@ -4,7 +4,6 @@ description: "Fix MyBatis dynamic SQL errors. Resolve malformed XML tags, null p
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mybatis", "dynamic-sql", "xml", "foreach", "sql"]
 weight: 5
 ---
 

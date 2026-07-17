@@ -4,7 +4,6 @@ description: "Fix blake3 hash errors. Handle input processing, key derivation, a
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["blake3", "hash", "crypto"]
 weight: 5
 ---
 

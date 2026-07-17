@@ -4,7 +4,6 @@ description: "Fix Python OSError when system calls fail. Handle file errors, net
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["oserror", "os", "system", "file", "permission", "network"]
 weight: 5
 ---
 

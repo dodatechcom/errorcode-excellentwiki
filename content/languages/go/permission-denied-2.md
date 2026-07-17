@@ -4,7 +4,6 @@ description: "Fix Go permission denied error when accessing files. Set correct f
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["permission", "denied", "access", "file", "os", "runtime"]
 weight: 5
 ---
 

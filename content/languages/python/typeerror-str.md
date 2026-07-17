@@ -4,7 +4,6 @@ description: "Fix Python TypeError: can only concatenate str (not 'int') to str.
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["typeerror", "string", "concatenation", "type-conversion"]
 weight: 5
 ---
 

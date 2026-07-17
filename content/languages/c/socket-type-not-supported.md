@@ -4,7 +4,6 @@ description: "Fix C socket type not supported (EOPNOTSUPP). Use supported socket
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eopnotsupp", "socket-type", "not-supported", "errno", "socket"]
 weight: 5
 ---
 

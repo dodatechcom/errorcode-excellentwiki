@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -50 (paramErr). Resolve parameter errors in Cor
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["paramerr", "osstatus-50", "parameter", "core-services", "carbon", "invalid-argument"]
 weight: 5
 ---
 

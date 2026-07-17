@@ -1,10 +1,8 @@
 ---
 title: "GKE: Cluster Is Currently Unusable"
 description: "GKE: Cluster is currently unusable — Fix Google Kubernetes Engine cluster health errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "gke", "kubernetes", "cluster", "unusable", "node-pool", "control-plane"]
 weight: 5
 ---
 

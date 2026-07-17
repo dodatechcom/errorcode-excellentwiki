@@ -4,7 +4,6 @@ description: "Fix Python ConnectionRefusedError when a connection is refused by 
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["connectionrefusederror", "connection", "network", "server", "port"]
 weight: 5
 ---
 

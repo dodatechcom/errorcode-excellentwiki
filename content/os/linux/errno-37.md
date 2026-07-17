@@ -4,7 +4,6 @@ description: "Fix Linux ENAMETOOLONG (errno 37) File name too long error. Soluti
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enametoolong", "filename", "errno-37", "path", "limits"]
 weight: 5
 ---
 

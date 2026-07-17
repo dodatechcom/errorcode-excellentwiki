@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_cast when dynamic_cast fails in reference context
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-cast", "dynamic-cast", "rtti", "exception"]
 weight: 50
 ---
 

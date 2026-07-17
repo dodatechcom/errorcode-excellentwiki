@@ -4,7 +4,6 @@ description: "Fix yaml-cpp type conversion errors. Handle wrong type access, mis
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["yaml", "yaml-cpp", "parsing", "type-conversion"]
 weight: 5
 ---
 

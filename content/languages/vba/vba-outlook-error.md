@@ -4,7 +4,6 @@ description: "Fix VBA Outlook errors when creating mail items, appointments, or 
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["outlook", "email", "mail", "automation", "com", "vba"]
 weight: 5
 ---
 

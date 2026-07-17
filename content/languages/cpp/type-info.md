@@ -4,7 +4,6 @@ description: "Fix C++ std::type_info and typeid issues including RTTI disabled, 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["type-info", "typeid", "rtti", "type"]
 weight: 5
 ---
 

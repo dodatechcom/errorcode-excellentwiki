@@ -4,7 +4,6 @@ description: "MongoDB encounters a write conflict when concurrent operations att
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "write-conflict", "concurrent", "transaction", "lock", "retry"]
 weight: 5
 ---
 

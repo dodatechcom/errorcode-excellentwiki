@@ -4,7 +4,6 @@ description: "Fix C++ std::ios_base::failbit stream failure. Handle logical I/O 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ios-base", "failbit", "stream", "logical-error", "io"]
 weight: 5
 ---
 

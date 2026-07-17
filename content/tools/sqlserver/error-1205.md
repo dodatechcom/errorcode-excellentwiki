@@ -4,7 +4,6 @@ description: "Fix SQL Server Error 1205 deadlock victim errors. Resolve transact
 tools: ["sqlserver"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlserver", "1205", "deadlock", "victim", "blocking", "transaction"]
 weight: 5
 ---
 

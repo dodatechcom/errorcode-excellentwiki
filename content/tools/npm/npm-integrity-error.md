@@ -4,7 +4,6 @@ description: "Fix npm integrity check errors. Resolve package integrity verifica
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["integrity", "checksum", "hash", "verification", "npm"]
 weight: 5
 ---
 

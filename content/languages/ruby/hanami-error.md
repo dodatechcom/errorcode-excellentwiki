@@ -4,7 +4,6 @@ description: "Fix Hanami action errors in Ruby. Learn why Hanami controller acti
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["hanami", "action", "controller", "ruby"]
 weight: 5
 ---
 

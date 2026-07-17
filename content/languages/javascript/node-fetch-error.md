@@ -4,7 +4,6 @@ description: "Fix node-fetch errors. Handle network failures, invalid responses,
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fetch", "http", "request"]
 weight: 5
 ---
 

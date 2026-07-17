@@ -4,7 +4,6 @@ description: "Fix MATLAB errors when function handles are invalid, undefined, or
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["function-handle", "handle", "anonymous", "invalid", "matlab"]
 weight: 5
 ---
 

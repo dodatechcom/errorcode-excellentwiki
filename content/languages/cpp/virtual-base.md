@@ -4,7 +4,6 @@ description: "Fix C++ pure virtual function called error during construction and
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["pure-virtual", "virtual-function", "construction", "destruction"]
 weight: 5
 ---
 

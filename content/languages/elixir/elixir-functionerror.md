@@ -4,7 +4,6 @@ description: "Elixir raises FunctionClauseError when no function clause matches 
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["function", "clause", "pattern-matching", "functionclauseerror"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix npm ci errors. Resolve package-lock.json synchronization issue
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["ci", "package-lock", "install", "synchronization", "npm"]
 weight: 5
 ---
 

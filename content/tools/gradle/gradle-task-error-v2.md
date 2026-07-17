@@ -4,7 +4,6 @@ description: "Gradle task execution fails with 'Execution failed for task' error
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "task", "execution", "runtime", "build"]
 weight: 5
 ---
 

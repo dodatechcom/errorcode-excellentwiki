@@ -4,7 +4,6 @@ description: "Fix Linux 'Segmentation fault (core dumped)' errors. Diagnose segf
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["segmentation-fault", "segfault", "sigsegv", "core-dumped", "memory"]
 weight: 5
 ---
 

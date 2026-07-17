@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure SignalR Connection Error"
 description: "Fix Azure SignalR connection errors. Resolve SignalR real-time connectivity issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "signalr", "real-time", "websocket", "connection"]
 weight: 5
 ---
 

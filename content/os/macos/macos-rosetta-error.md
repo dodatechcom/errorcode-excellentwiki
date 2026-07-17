@@ -4,7 +4,6 @@ description: "Fix Rosetta 2 errors on Mac when Intel apps fail to run, crash dur
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["rosetta", "translation", "intel", "compatibility", "x86_64"]
 weight: 5
 ---
 

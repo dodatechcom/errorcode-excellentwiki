@@ -4,7 +4,6 @@ description: "An infinite loop occurs when a function calls itself indefinitely,
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["infinite", "loop", "stack", "overflow", "haskell"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix MATLAB Statistics Toolbox errors when statistical functions re
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["statistics", "data", "toolbox", "sample", "distribution", "matlab"]
 weight: 5
 ---
 

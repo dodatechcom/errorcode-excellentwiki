@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_typeid when typeid is called on a null pointer. U
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-typeid", "typeid", "rtti", "null-pointer", "typeinfo"]
 weight: 5
 ---
 

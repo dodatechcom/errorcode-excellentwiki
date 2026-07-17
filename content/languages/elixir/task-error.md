@@ -4,7 +4,6 @@ description: "A Task error occurs when a spawned task crashes or returns an erro
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["task", "async", "concurrency", "process", "taskerror"]
 weight: 5
 ---
 

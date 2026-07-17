@@ -4,7 +4,6 @@ description: "Fix Linux 'Kernel panic - not syncing' errors. Diagnose boot failu
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["runtime-error"]
-tags: ["kernel-panic", "not-syncing", "boot-failure", "kernel", "crash"]
 weight: 5
 ---
 

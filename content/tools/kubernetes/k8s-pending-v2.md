@@ -4,7 +4,6 @@ description: "Fix Kubernetes Pod stuck in Pending state. Resolve insufficient re
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "pending", "pod", "scheduling", "resources", "insufficient"]
 weight: 5
 ---
 

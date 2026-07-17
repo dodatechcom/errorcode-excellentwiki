@@ -4,7 +4,6 @@ description: "Fix Linux systemd 'Job <service>.service/start timed out' errors. 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["systemd", "timeout", "job-timeout", "service", "startup"]
 weight: 5
 ---
 

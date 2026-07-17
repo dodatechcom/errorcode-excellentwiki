@@ -4,7 +4,6 @@ description: "Fix Vite HMR (Hot Module Replacement) errors during development. H
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "hmr", "hot-module-replacement", "websocket", "development"]
 weight: 5
 ---
 

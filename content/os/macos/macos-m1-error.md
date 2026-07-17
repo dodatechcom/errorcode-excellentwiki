@@ -4,7 +4,6 @@ description: "Fix Apple Silicon M1 errors including Rosetta 2 issues, native app
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["m1", "apple-silicon", "arm64", "rosetta", "native"]
 weight: 5
 ---
 

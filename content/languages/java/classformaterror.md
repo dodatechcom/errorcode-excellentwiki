@@ -4,7 +4,6 @@ description: "Fix Java ClassFormatError by ensuring class files are not corrupte
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["classformaterror", "classfile", "bytecode", "compiler"]
 weight: 5
 ---
 

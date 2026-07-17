@@ -4,7 +4,6 @@ description: "Fix C errno 21 EISDIR (Is a directory) by checking if path is a di
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eisdir", "errno-21", "directory", "is-a-directory", "open"]
 weight: 5
 ---
 

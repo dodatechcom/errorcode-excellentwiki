@@ -4,7 +4,6 @@ description: "Webpack produces warnings about tree shaking and unused exports."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "tree-shaking", "dead-code", "optimization", "esm"]
 weight: 5
 ---
 

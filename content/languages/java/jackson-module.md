@@ -4,7 +4,6 @@ description: "Fix UnresolvedTypeVariableException when Jackson cannot resolve ge
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "module", "type-variable", "generic"]
 weight: 5
 ---
 

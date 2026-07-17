@@ -4,7 +4,6 @@ description: "A General Protection Fault (#GP) in Assembly occurs when a protect
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["general-protection", "gpf", "segmentation", "protection", "ring"]
 weight: 5
 ---
 

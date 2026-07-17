@@ -4,7 +4,6 @@ description: "Fix C errno 48 ENOSR (No STREAMS buffers) by reducing STREAMS memo
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enosr", "errno-48", "streams", "buffers", "memory"]
 weight: 5
 ---
 

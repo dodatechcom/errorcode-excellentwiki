@@ -4,7 +4,6 @@ description: "Fix Swift URLError cannot find host. Learn why DNS resolution fail
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["urlerror", "dns", "hostname", "network", "swift"]
 weight: 5
 ---
 

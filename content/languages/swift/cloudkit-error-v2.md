@@ -4,7 +4,6 @@ description: "Fix CloudKit server record errors when saving or fetching records 
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["CloudKit", "server-record", "CKRecord", "iCloud", "swift"]
 weight: 5
 ---
 

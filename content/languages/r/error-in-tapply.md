@@ -4,7 +4,6 @@ description: "Fix R 'error in tapply' when applying functions over ragged arrays
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tapply", "apply", "grouping", "aggregation"]
 weight: 5
 ---
 

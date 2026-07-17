@@ -4,7 +4,6 @@ description: "Fix C EILSEQ (Invalid multibyte sequence) by setting proper locale
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eilseq", "invalid-multibyte-sequence", "encoding", "locale", "utf8"]
 weight: 5
 ---
 

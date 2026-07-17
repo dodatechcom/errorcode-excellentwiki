@@ -4,7 +4,6 @@ description: "Fix PHP E_PARSE syntax errors that prevent script execution. Learn
 languages: ["php"]
 severities: ["error"]
 error-types: ["syntax"]
-tags: ["e-parse", "parse", "syntax"]
 weight: 5
 ---
 

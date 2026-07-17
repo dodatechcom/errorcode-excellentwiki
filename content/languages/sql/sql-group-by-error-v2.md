@@ -4,7 +4,6 @@ description: "Fix SQL GROUP BY errors when a selected column isn't in the GROUP 
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["group-by", "aggregate", "select-list", "sql"]
 weight: 5
 ---
 

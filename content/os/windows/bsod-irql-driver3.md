@@ -4,7 +4,6 @@ description: "Fix Blue Screen DRIVER_IRQL_NOT_LESS_OR_EQUAL stop code 0xD1 cause
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "driver-irql", "nvlddmkm", "nvidia", "gpu", "stop-0xd1"]
 weight: 5
 ---
 

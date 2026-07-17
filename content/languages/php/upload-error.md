@@ -4,7 +4,6 @@ description: "Fix PHP file upload errors. Learn to resolve upload_max_filesize, 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["upload", "file-upload", "upload-error", "multipart", "tmp"]
 weight: 5
 ---
 

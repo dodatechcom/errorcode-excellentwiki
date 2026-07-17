@@ -4,7 +4,6 @@ description: "Fix Deployer deployment errors in Laravel. Handle deployment tasks
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "deployer", "deployment"]
 weight: 5
 ---
 

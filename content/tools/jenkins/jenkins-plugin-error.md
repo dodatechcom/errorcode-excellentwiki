@@ -4,7 +4,6 @@ description: "Jenkins plugin fails to install, load, or execute during build."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "plugin", "extension", "update", "compatibility"]
 weight: 5
 ---
 

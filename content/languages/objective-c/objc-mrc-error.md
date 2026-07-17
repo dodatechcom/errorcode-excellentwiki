@@ -4,7 +4,6 @@ description: "Fix Objective-C Manual Reference Counting errors in legacy code"
 languages: ["objective-c"]
 error-types: ["memory-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "mrc", "legacy", "memory-management"]
 weight: 5
 ---
 

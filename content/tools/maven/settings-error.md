@@ -4,7 +4,6 @@ description: "Fix Maven settings.xml errors. Resolve repository, proxy, and prof
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "settings", "settings.xml", "configuration", "proxy"]
 weight: 5
 ---
 

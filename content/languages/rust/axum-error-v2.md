@@ -4,7 +4,6 @@ description: "Fix axum routing and handler errors. Handle missing route paramete
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["axum", "web", "framework", "routing", "handler"]
 weight: 5
 ---
 

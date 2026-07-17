@@ -6,7 +6,6 @@ replacement_function: "exec family"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["system", "exec", "shell", "security", "posix", "c"]
 weight: 5
 ---
 

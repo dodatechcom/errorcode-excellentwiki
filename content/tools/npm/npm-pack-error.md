@@ -4,7 +4,6 @@ description: "Fix npm pack errors. Resolve package tarball creation failures."
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["pack", "tarball", "publish", "package", "npm"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x80070002 on Windows 10 and 11. Resolve 
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["windows-update", "0x80070002", "update-error", "update-failed"]
 weight: 5
 ---
 

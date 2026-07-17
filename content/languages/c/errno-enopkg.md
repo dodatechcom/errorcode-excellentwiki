@@ -4,7 +4,6 @@ description: "Fix C ENOPKG (No package found) by verifying shared library availa
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enopkg", "no-package-found", "shared-library", "dynamic-loading"]
 weight: 5
 ---
 

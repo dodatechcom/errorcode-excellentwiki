@@ -4,7 +4,6 @@ description: "Fix Docker save errors. Resolve image export and tar archive creat
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["save", "export", "image", "tar", "archive", "docker"]
 weight: 5
 ---
 

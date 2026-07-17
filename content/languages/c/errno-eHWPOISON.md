@@ -4,7 +4,6 @@ description: "Fix C EHWPOISON (Memory page has hardware error) by handling hardw
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ehwpoison", "hardware-error", "memory-error", "mce", "hwpoison"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Maven profile not found errors. Resolve profile activation and
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "profile", "not-found", "activation", "pom"]
 weight: 5
 ---
 

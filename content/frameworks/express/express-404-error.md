@@ -4,7 +4,6 @@ description: "Fix Express 404 Not Found errors. Resolve route and endpoint not f
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["404", "not-found", "route", "endpoint", "express"]
 weight: 5
 ---
 

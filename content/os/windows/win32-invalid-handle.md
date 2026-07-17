@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_INVALID_HANDLE (6). Resolve invalid handle error
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-6", "invalid-handle", "handle"]
 weight: 5
 ---
 

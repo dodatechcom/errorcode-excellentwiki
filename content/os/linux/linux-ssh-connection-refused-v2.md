@@ -4,7 +4,6 @@ description: "Fix Linux 'ssh: Connection refused' errors. Check SSH service stat
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssh", "connection-refused", "sshd", "port-22", "firewall", "remote-access"]
 weight: 5
 ---
 

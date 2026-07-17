@@ -4,7 +4,6 @@ description: "Fix 'bash: ./script.sh: Permission denied' when you lack execute o
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["permission-denied", "chmod", "execute"]
 weight: 5
 ---
 

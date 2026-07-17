@@ -4,7 +4,6 @@ description: "Fix Node.js MODULE_NOT_FOUND error by checking require paths, node
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["module-not-found", "require", "commonjs", "nodejs", "node_modules"]
 weight: 5
 ---
 

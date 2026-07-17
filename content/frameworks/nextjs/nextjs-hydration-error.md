@@ -4,7 +4,6 @@ description: "Next.js throws a hydration mismatch error when server-rendered HTM
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hydration", "ssr", "react", "mismatch", "nextjs"]
 weight: 5
 ---
 

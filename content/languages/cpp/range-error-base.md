@@ -4,7 +4,6 @@ description: "Fix C++ std::range_error from range errors. Ensure values are with
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["range-error", "range", "stdexcept", "runtime-error", "bounds"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Webpack hot module replacement fails during development."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "hmr", "hot", "module-replacement", "dev"]
 weight: 5
 ---
 

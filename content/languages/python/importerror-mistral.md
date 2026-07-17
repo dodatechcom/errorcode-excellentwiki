@@ -4,7 +4,6 @@ description: "Fix Python ImportError: mistralai not found or ModuleNotFoundError
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "mistral", "mistralai", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

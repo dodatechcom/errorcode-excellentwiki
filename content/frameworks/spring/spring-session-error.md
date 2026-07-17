@@ -4,7 +4,6 @@ description: "Spring Session throws SessionCreationException when it cannot crea
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["session", "http-session", "redis", "spring-session", "cookie"]
 weight: 5
 ---
 

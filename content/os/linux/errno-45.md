@@ -4,7 +4,6 @@ description: "Fix Linux EBADMSG (errno 45) Not a STREAMS message error. Solution
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enBADMSG", "streams", "errno-45", "message"]
 weight: 5
 ---
 

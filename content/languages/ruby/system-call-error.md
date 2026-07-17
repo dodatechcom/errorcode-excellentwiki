@@ -4,7 +4,6 @@ description: "Fix Ruby Errno::EACCES, Errno::ENOENT, and other system call error
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["system_call"]
-tags: ["errno", "system_call", "eacces", "enoent", "os_error"]
 weight: 220
 ---
 

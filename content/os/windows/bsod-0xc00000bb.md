@@ -4,7 +4,6 @@ description: "Fix Blue Screen error 0xc00000bb (STATUS_NOT_SUPPORTED) on Windows
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "stop-error", "blue-screen", "not-supported", "driver-compatibility"]
 weight: 5
 ---
 

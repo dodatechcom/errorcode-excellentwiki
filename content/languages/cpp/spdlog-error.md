@@ -4,7 +4,6 @@ description: "Fix C++ spdlog logging errors. Resolve spdlog configuration and fo
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["spdlog", "logging", "format", "sink", "async"]
 weight: 5
 ---
 

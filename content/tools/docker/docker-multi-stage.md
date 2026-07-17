@@ -4,7 +4,6 @@ description: "Fix Docker multi-stage build errors. Resolve stage not found, COPY
 tools: ["docker"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["multi-stage", "build", "stage", "copy-from", "dockerfile"]
 weight: 5
 ---
 

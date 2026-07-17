@@ -4,7 +4,6 @@ description: "Fix VBA 'Run-time error 6: Overflow' when a numeric value exceeds 
 languages: ["vba"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-error-6", "overflow", "vba"]
 weight: 5
 ---
 

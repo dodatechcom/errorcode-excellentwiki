@@ -4,7 +4,6 @@ description: "Fix Psalm static analysis errors. Handle type inference, suppresse
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["psalm", "static-analysis", "linting"]
 weight: 5
 ---
 

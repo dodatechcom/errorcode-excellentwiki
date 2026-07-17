@@ -4,7 +4,6 @@ description: "Fix C++ std::packaged_task errors including calling without a func
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["packaged-task", "future", "async", "concurrency"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Roda routing errors in Ruby. Learn why Roda routes fail and ho
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["routing-error"]
-tags: ["roda", "routing", "web", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin contracts errors. Learn why contract declarations fail 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["contracts", "smart-cast", "effect", "kotlin"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "GCP Compute Engine: The Zone Does Not Have Enough Resources"
 description: "Compute Engine: The zone does not have enough resources — Fix Google Cloud zone resource exhaustion."
-cloud: ["gcp"]
 error-types: ["quota-error"]
 severities: ["error"]
-tags: ["gcp", "compute", "zone", "resources", "insufficient", "capacity", "machine-type"]
 weight: 5
 ---
 

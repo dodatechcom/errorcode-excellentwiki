@@ -4,7 +4,6 @@ description: "Fix Python TypeError related to itertools.zip_longest. Learn how z
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "zip", "zip_longest", "itertools"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix buffer overrun runtime errors on Windows. Resolve stack buffer
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["buffer-overrun", "stack-overflow", "security", "gs", "stack-cookie", "memory"]
 weight: 5
 ---
 

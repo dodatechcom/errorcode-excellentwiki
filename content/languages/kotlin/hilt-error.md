@@ -4,7 +4,6 @@ description: "Fix Hilt dependency injection errors in Kotlin. Learn why Hilt inj
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["hilt", "dependency-injection", "di", "kotlin"]
 weight: 5
 ---
 

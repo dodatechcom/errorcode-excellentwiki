@@ -4,7 +4,6 @@ description: "Fix 'The program can't start because X.dll is missing' error on Wi
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["dll-error"]
-tags: ["dll", "missing-dll", "application-error", "vcruntime", "msvcp"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Puppeteer navigation timeout errors. Handle slow page loads, i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["puppeteer", "browser", "automation", "timeout", "navigation"]
 weight: 5
 ---
 

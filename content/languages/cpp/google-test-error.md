@@ -4,7 +4,6 @@ description: "Fix C++ Google Test (gtest) test errors. Resolve test failures and
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["google-test", "gtest", "unit-test", "assertion", "test"]
 weight: 5
 ---
 

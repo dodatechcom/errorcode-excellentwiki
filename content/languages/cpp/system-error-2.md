@@ -4,7 +4,6 @@ description: "Fix C++ std::system_error when OS or library functions fail. Handl
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["system-error", "error-code", "errno", "exception"]
 weight: 5
 ---
 

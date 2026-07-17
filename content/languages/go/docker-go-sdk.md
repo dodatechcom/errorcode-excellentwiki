@@ -4,7 +4,6 @@ description: "Fix Go Docker SDK connection errors. Handle Docker daemon connecti
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["docker", "sdk", "connection"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux SELinux 'context labeling error' and AVC denial messages
 platforms: ["linux"]
 severities: ["warning"]
 error-types: ["system-error"]
-tags: ["selinux", "context", "labeling", "avc", "policy"]
 weight: 5
 ---
 

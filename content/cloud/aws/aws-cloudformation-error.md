@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS CloudFormation Stack Failed"
 description: "Fix AWS CloudFormation stack failures. Resolve CloudFormation deployment issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "cloudformation", "stack", "infrastructure", "deployment"]
 weight: 5
 ---
 

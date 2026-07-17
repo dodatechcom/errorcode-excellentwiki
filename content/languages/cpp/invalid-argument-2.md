@@ -4,7 +4,6 @@ description: "Fix C++ std::invalid_argument when functions receive invalid param
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["invalid-argument", "validation", "parameter", "exception"]
 weight: 5
 ---
 

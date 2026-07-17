@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2391: Function with qualified name. Resolve funct
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2391", "function", "qualified-name", "declaration", "initialization"]
 weight: 5
 ---
 

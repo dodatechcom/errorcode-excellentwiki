@@ -4,7 +4,6 @@ description: "Elixir raises MatchError when a pattern match fails on the right-h
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern", "matcherror", "binding", "destructure"]
 weight: 5
 ---
 

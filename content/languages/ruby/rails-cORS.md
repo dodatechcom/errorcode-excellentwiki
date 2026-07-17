@@ -4,7 +4,6 @@ description: "Fix Rack::Cors errors in Rails. Learn why CORS requests fail and h
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["security-error"]
-tags: ["rack", "cors", "cross-origin", "rails", "ruby"]
 weight: 5
 ---
 

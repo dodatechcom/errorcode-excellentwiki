@@ -4,7 +4,6 @@ description: "Fix Ruby RangeError: X out of range. Handle integer overflow, Floa
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["range"]
-tags: ["rangeerror", "range", "overflow", "integer", "float"]
 weight: 100
 ---
 

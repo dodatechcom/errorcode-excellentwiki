@@ -4,7 +4,6 @@ description: "React Native Android build fails with duplicate class error caused
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["android", "build", "gradle", "duplicate-class", "dependencies", "dex"]
 weight: 5
 ---
 

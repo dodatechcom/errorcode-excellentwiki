@@ -4,7 +4,6 @@ description: "A runtime error is a general error that occurs during program exec
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "general", "execution", "unhandled"]
 weight: 5
 ---
 

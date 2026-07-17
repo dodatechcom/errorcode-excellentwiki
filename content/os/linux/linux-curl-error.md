@@ -4,7 +4,6 @@ description: "Fix Linux 'curl: SSL certificate problem' errors. Resolve SSL/TLS 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["curl", "ssl-certificate", "tls", "https", "certificate-verification"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rust missing lifetime specifier error. Learn how Rust lifetime
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["lifetime", "reference", "borrow", "annotation", "compiler"]
 weight: 5
 ---
 

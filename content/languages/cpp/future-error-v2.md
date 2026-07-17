@@ -4,7 +4,6 @@ description: "Fix std::future promise already satisfied errors. Handle duplicate
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["future", "promise", "thread", "concurrency", "synchronization"]
 weight: 5
 ---
 

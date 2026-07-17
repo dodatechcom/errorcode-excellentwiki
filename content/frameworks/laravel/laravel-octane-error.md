@@ -4,7 +4,6 @@ description: "Laravel Octane throws worker errors when the application running i
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["octane", "swoole", "roadrunner", "worker", "persistent"]
 weight: 5
 ---
 

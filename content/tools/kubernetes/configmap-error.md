@@ -4,7 +4,6 @@ description: "Fix Kubernetes ConfigMap not found error. Create and reference Con
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["configmap-error", "configmap", "not-found", "configuration", "kubernetes"]
 weight: 5
 ---
 

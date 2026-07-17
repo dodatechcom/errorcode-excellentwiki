@@ -4,7 +4,6 @@ description: "Fix R 'error in match' when matching or looking up values. Check t
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "lookup", "table", "nomatch"]
 weight: 5
 ---
 

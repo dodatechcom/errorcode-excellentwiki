@@ -4,7 +4,6 @@ description: "Fix Swift URLError:cannotFindHost errors. Learn why DNS resolution
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dns", "hostname", "network", "urlsession", "lookup"]
 weight: 5
 ---
 

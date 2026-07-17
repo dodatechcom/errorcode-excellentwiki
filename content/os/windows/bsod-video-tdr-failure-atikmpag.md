@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_TDR_FAILURE caused by atikmpag.sys on Window
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "amd", "atikmpag", "gpu", "tdr", "radeon"]
 weight: 5
 ---
 

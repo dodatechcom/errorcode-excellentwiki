@@ -4,7 +4,6 @@ description: "Fix Python ImportError: sklearn not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "sklearn", "scikit-learn", "module-not-found", "pip", "machine-learning"]
 weight: 5
 ---
 

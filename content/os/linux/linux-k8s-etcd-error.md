@@ -4,7 +4,6 @@ description: "Fix Kubernetes etcd errors. Resolve etcd cluster failures, leader 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "etcd", "cluster", "leader", "raft", "datastore"]
 weight: 5
 ---
 

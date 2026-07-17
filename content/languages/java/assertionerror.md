@@ -4,7 +4,6 @@ description: "Fix Java AssertionError by enabling assertions, handling assertion
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["assertionerror", "assert", "debugging", "precondition"]
 weight: 5
 ---
 

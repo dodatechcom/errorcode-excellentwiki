@@ -4,7 +4,6 @@ description: "Fix npm workspace errors. Resolve issues with npm workspaces and m
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["workspace-error", "workspace", "monorepo", "workspaces", "npm"]
 weight: 5
 ---
 

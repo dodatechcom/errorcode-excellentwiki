@@ -4,7 +4,6 @@ description: "Fix tungstenite WebSocket errors. Handle handshake, framing, and p
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tungstenite", "websocket", "protocol"]
 weight: 5
 ---
 

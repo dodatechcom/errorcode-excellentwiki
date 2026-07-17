@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Event Hub Error"
 description: "Fix Azure Event Hub errors. Resolve Event Hub connectivity and processing issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "event-hub", "eventhub", "streaming", "events"]
 weight: 5
 ---
 

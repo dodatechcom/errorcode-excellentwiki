@@ -4,7 +4,6 @@ description: "Fix match expression errors in PHP 8.0+. Handle exhaustive matchin
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "match", "control-flow"]
 weight: 5
 ---
 

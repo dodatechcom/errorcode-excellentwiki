@@ -4,7 +4,6 @@ description: "Fix Swift SKScene SpriteKit errors. Learn why SpriteKit scenes fai
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["skscene", "spritekit", "game", "swift"]
 weight: 5
 ---
 

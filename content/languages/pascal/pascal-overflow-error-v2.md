@@ -4,7 +4,6 @@ description: "Fix Pascal runtime errors when arithmetic operations exceed the da
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "arithmetic", "integer", "data-type", "range", "pascal"]
 weight: 5
 ---
 

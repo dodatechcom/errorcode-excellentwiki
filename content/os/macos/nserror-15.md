@@ -4,7 +4,6 @@ description: "Fix macOS NSFileStreamErrorMinimum (NSCocoaErrorDomain Code 2048).
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfstreamerrorminimum", "nscocoaerrordomain", "code-2048", "stream", "cocoa", "foundation"]
 weight: 5
 ---
 

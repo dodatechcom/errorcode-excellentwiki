@@ -4,7 +4,6 @@ description: "Fix Python ConnectionResetError when a connection is reset by the 
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["connectionreseterror", "connection", "network", "reset", "socket"]
 weight: 5
 ---
 

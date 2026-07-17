@@ -4,7 +4,6 @@ description: "SQLite schema migration fails when altering table structure or add
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "migration", "schema", "alter-table", "column", "version"]
 weight: 5
 ---
 

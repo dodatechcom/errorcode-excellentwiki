@@ -4,7 +4,6 @@ description: "Fix Linux GRUB 'error: no such partition' and boot errors. Reinsta
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["runtime-error"]
-tags: ["grub", "no-such-partition", "boot", "grub-install", "bootloader"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes PersistentVolumeClaim Pending errors. Resolve PVC b
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "pvc", "persistentvolume", "storage", "storageclass"]
 weight: 5
 ---
 

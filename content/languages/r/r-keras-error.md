@@ -4,7 +4,6 @@ description: "Fix Keras and TensorFlow errors in R including installation issues
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["keras", "tensorflow", "deep-learning", "gpu", "python", "r"]
 weight: 5
 ---
 

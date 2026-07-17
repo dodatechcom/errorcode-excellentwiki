@@ -4,7 +4,6 @@ description: "Fix F# ArgumentException when function arguments are invalid. Vali
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "exception", "invalid", "validation", "fsharp"]
 weight: 5
 ---
 

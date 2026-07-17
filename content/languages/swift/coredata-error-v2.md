@@ -4,7 +4,6 @@ description: "Fix CoreData errors when the persistent store cannot be loaded or 
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["CoreData", "persistent-store", "migration", "sqlite", "swift"]
 weight: 5
 ---
 

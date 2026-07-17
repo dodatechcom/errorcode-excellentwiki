@@ -4,7 +4,6 @@ description: "React Native build fails because the Android SDK is not installed 
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["android", "sdk", "android-home", "build-tools", "platform", "ndk"]
 weight: 5
 ---
 

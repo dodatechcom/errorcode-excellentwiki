@@ -4,7 +4,6 @@ description: "Fix Kubernetes PersistentVolumeClaim pending errors. Resolve PVC b
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["pvc", "persistentvolume", "claim", "pending", "storage", "kubernetes"]
 weight: 5
 ---
 

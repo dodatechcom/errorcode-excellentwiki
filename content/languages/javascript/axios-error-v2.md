@@ -4,7 +4,6 @@ description: "Fix Axios errors when HTTP requests fail with non-2xx status codes
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["axios", "http", "request", "status-code", "interceptor", "api"]
 weight: 5
 ---
 

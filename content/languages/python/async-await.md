@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when using async outside a function. Learn 
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "async", "await", "function"]
 weight: 5
 ---
 

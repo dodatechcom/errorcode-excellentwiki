@@ -4,7 +4,6 @@ description: "Fix Swift force cast failures. Learn why as! operator crashes and 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type-cast", "force-cast", "as", "downcast", "swift"]
 weight: 5
 ---
 

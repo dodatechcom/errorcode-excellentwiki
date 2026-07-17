@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Dataflow Job Error"
 description: "Fix GCP Dataflow job errors. Resolve Dataflow pipeline and job issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "dataflow", "pipeline", "beam", "streaming"]
 weight: 5
 ---
 

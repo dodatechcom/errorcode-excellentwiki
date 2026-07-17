@@ -4,7 +4,6 @@ description: "Fix 'ScriptSyntaxException' when PowerShell encounters invalid syn
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ScriptSyntaxException", "syntax", "script-block"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Grafana API errors in Go. Handle dashboard operations, data so
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grafana", "monitoring", "api"]
 weight: 5
 ---
 

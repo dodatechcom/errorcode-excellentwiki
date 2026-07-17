@@ -4,7 +4,6 @@ description: "Fix Linux Redis 'OOM command not allowed' errors. Resolve Redis ou
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["redis", "oom", "out-of-memory", "maxmemory", "eviction", "cache"]
 weight: 5
 ---
 

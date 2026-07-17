@@ -4,7 +4,6 @@ description: "Fix bcrypt errors including data and hash required, salt rounds, a
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bcrypt", "password", "hash", "salt", "authentication"]
 weight: 5
 ---
 

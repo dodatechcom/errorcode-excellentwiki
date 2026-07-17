@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP1_HEADER_RE_ASSIGNMENT when attempting to assi
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http1-header-re-assignment", "http", "headers", "nodejs"]
 weight: 5
 ---
 

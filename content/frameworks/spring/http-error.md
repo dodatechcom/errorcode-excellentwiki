@@ -4,7 +4,6 @@ description: "Spring RestTemplate or WebClient throws when the upstream API retu
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "rest-client", "4xx", "webclient", "resttemplate"]
 weight: 5
 ---
 

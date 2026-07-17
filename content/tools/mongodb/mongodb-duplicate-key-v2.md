@@ -4,7 +4,6 @@ description: "MongoDB insert or update fails because a document violates a uniqu
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "duplicate-key", "unique", "index", "e11000", "insert"]
 weight: 5
 ---
 

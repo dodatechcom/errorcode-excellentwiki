@@ -4,7 +4,6 @@ description: "Fix C ENOSYS (Function not implemented) by checking kernel support
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enosys", "function-not-implemented", "syscall", "kernel-support"]
 weight: 5
 ---
 

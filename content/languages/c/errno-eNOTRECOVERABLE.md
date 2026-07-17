@@ -4,7 +4,6 @@ description: "Fix C ENOTRECOVERABLE (State not recoverable) by handling unrecove
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotrecoverable", "state-not-recoverable", "robust-mutex", "pthreads", "mutex-error"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C EPFNOSUPPORT (Protocol family not supported) by using suppor
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["epfnosupport", "protocol-family-not-supported", "socket", "af-inet", "af-local"]
 weight: 5
 ---
 

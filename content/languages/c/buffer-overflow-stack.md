@@ -4,7 +4,6 @@ description: "Fix C stack buffer overflow (stack smashing). Prevent stack-based 
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stack-smashing", "buffer-overflow", "stack", "canary", "security"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Docker image not found errors. Resolve image pull failures fro
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["image", "not-found", "registry", "pull", "docker"]
 weight: 5
 ---
 

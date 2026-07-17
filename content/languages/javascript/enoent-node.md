@@ -4,7 +4,6 @@ description: "Fix Node.js ENOENT: no such file or directory error from fs module
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["enoent", "fs", "file-not-found", "nodejs", "filesystem"]
 weight: 5
 ---
 

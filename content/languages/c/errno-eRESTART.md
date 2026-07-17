@@ -4,7 +4,6 @@ description: "Fix C ERESTART (Interrupted system call should be restarted) by ha
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["erestart", "interrupted-system-call", "signal-restart", "sa-restart"]
 weight: 5
 ---
 

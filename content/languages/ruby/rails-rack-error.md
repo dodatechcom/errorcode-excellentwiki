@@ -4,7 +4,6 @@ description: "Fix Rack::Utils::HeaderHash errors in Rails. Learn why header hash
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["rack", "header-hash", "http-headers", "rails", "ruby"]
 weight: 5
 ---
 

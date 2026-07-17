@@ -7,7 +7,6 @@ languages: ["php"]
 deprecated_since: "PHP 5.5"
 removed_in: "PHP 7.0"
 error_message: "Call to undefined function mysql_connect()"
-tags: ["mysql", "mysqli", "database", "pdo"]
 weight: 40
 ---
 

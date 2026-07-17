@@ -4,7 +4,6 @@ description: "Fix Mac firmware errors when the Mac won't boot, shows a blinking 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["firmware", "boot", "bridge-os", "t2", "apple-silicon"]
 weight: 5
 ---
 

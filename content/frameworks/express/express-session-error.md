@@ -4,7 +4,6 @@ description: "Fix Express session errors. Resolve session storage and configurat
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["session", "cookie", "store", "storage", "express"]
 weight: 5
 ---
 

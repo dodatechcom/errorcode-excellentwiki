@@ -4,7 +4,6 @@ description: "Fix Ruby IndexError: index out of range. Learn how to safely acces
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["indexerror", "index-out-of-range", "array", "ruby"]
 weight: 5
 ---
 

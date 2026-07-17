@@ -4,7 +4,6 @@ description: "Fix bash brace expansion errors. Learn how brace expansion works a
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["brace-expansion", "curly-braces", "syntax", "bash"]
 weight: 5
 ---
 

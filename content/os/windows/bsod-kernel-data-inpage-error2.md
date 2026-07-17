@@ -4,7 +4,6 @@ description: "Fix Blue Screen KERNEL_DATA_INPAGE_ERROR stop code 0x7A caused by 
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "kernel-data-inpage", "ataport", "ata", "storage", "stop-0x7a"]
 weight: 5
 ---
 

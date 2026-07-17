@@ -4,7 +4,6 @@ description: "Expo development client fails to load updates or connect to the de
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["expo", "dev-client", "development", "update", "metro", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error from math domain errors. Validate argume
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["domain-error", "math", "domain", "sqrt", "log", "acos"]
 weight: 5
 ---
 

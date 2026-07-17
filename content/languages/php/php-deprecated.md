@@ -4,7 +4,6 @@ description: "Fix PHP deprecated function warnings. Handle version migration, re
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "deprecated", "compatibility"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ Boost.Asio async operation errors. Handle asynchronous I/O
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["boost", "asio", "async", "io", "network", "error-code"]
 weight: 5
 ---
 

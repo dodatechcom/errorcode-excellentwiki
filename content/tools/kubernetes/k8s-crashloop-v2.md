@@ -4,7 +4,6 @@ description: "Fix Kubernetes CrashLoopBackOff. Diagnose why pods keep crashing a
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "crashloopbackoff", "pod", "restart", "crash", "container"]
 weight: 5
 ---
 

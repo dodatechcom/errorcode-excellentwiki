@@ -4,7 +4,6 @@ description: "Fix Go EOF error when reading from files, streams, or network conn
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eof", "io", "read", "stream", "end-of-file"]
 weight: 5
 ---
 

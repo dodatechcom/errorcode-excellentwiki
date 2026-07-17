@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Functions Error"
 description: "Fix Azure Functions errors. Resolve Azure Functions execution and deployment issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "functions", "serverless", "function-app", "trigger"]
 weight: 5
 ---
 

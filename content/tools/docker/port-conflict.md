@@ -4,7 +4,6 @@ description: "Fix Docker port already allocated error. Resolve port binding conf
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["port-conflict", "already-allocated", "port-binding", "docker"]
 weight: 5
 ---
 

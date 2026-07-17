@@ -4,7 +4,6 @@ description: "MongoDB change stream fails to resume from a saved resume token du
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "change-stream", "resume", "oplog", "token", "watch"]
 weight: 5
 ---
 

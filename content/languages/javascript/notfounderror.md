@@ -4,7 +4,6 @@ description: "Fix JavaScript NotFoundError when a requested resource cannot be l
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["notfounderror", "not-found", "missing", "404", "dom"]
 weight: 5
 ---
 

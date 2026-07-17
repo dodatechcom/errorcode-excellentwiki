@@ -4,7 +4,6 @@ description: "Erlang try expressions raise errors when exception handling is inc
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["try", "catch", "exception", "error", "throw"]
 weight: 5
 ---
 

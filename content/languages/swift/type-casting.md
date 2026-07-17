@@ -4,7 +4,6 @@ description: "Fix Swift type casting errors. Learn why unsafe type casts fail at
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["type-casting", "as", "cast", "type-mismatch", "downcast"]
 weight: 5
 ---
 

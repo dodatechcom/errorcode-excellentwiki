@@ -4,7 +4,6 @@ description: "Fix Dart type cast errors. Learn why 'type X is not a subtype of t
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type-cast", "type-error", "subtype", "casting", "runtime"]
 weight: 5
 ---
 

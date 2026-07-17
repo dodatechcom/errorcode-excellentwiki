@@ -4,7 +4,6 @@ description: "Fix Ruby Encoding::InvalidByteSequenceError. Handle invalid byte s
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["encoding"]
-tags: ["encoding_error", "invalid_byte_sequence", "encoding", "utf8", "binary"]
 weight: 140
 ---
 

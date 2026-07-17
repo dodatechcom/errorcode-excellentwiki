@@ -6,7 +6,6 @@ replacement_function: "fgets + sscanf"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["scanf", "fgets", "sscanf", "input", "buffer-overflow", "c"]
 weight: 5
 ---
 

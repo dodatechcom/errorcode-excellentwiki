@@ -4,7 +4,6 @@ description: "Fix R 'error in tryCatch' when error handling functions fail. Chec
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["trycatch", "error-handling", "condition"]
 weight: 5
 ---
 

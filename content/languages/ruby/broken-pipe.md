@@ -4,7 +4,6 @@ description: "Fix Ruby Errno::EPIPE: broken pipe. Handle broken pipe errors in I
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["io"]
-tags: ["epipe", "broken_pipe", "pipe", "io", "signal"]
 weight: 270
 ---
 

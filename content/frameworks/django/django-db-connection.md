@@ -4,7 +4,6 @@ description: "Fix Django DatabaseError connection failures. Resolve database con
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["database", "connection", "db", "OperationalError", "django"]
 weight: 5
 ---
 

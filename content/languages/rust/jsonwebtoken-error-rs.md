@@ -4,7 +4,6 @@ description: "Fix jsonwebtoken decode errors. Handle token validation, algorithm
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jsonwebtoken", "jwt", "auth"]
 weight: 5
 ---
 

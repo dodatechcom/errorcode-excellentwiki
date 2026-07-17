@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud Armor Error"
 description: "Fix GCP Cloud Armor errors. Resolve Cloud Armor security policy issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-armor", "security", "waf", "ddos"]
 weight: 5
 ---
 

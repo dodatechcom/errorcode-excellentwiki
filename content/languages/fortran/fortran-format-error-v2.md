@@ -4,7 +4,6 @@ description: "Fix Fortran errors when format specifications don't match the data
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["format", "specification", "read", "write", "i-o", "fortran"]
 weight: 5
 ---
 

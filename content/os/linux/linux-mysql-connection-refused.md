@@ -4,7 +4,6 @@ description: "Fix Linux MySQL 'Can't connect to local server' errors. Resolve My
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["mysql", "connection-refused", "socket", "database", "server"]
 weight: 5
 ---
 

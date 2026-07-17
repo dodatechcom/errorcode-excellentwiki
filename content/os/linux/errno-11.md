@@ -4,7 +4,6 @@ description: "Fix Linux EAGAIN (errno 11) Resource Temporarily Unavailable error
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["eagain", "resource-temporarily-unavailable", "errno-11", "non-blocking", "epoll"]
 weight: 110
 ---
 

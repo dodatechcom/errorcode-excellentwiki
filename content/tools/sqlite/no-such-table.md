@@ -4,7 +4,6 @@ description: "SQLite cannot find the specified table in the database."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["database", "schema", "query"]
 weight: 5
 ---
 

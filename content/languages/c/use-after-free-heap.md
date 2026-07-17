@@ -4,7 +4,6 @@ description: "Fix C use-after-free heap memory errors. Prevent accessing freed h
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["use-after-free", "heap", "memory", "dangling-pointer", "undefined-behavior"]
 weight: 5
 ---
 

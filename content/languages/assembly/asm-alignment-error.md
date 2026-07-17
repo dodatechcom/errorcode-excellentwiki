@@ -4,7 +4,6 @@ description: "Alignment errors in Assembly occur when accessing memory at addres
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["alignment", "memory", "sse", "avx", "bus-error"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Laravel BindingResolutionException when service container fail
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "service-container", "ioc"]
 weight: 5
 ---
 

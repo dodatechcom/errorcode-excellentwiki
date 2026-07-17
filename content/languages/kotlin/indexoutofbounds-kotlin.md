@@ -4,7 +4,6 @@ description: "Fix Kotlin IndexOutOfBoundsException when accessing collections be
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["indexoutofboundsexception", "index-out-of-range", "collection", "kotlin"]
 weight: 5
 ---
 

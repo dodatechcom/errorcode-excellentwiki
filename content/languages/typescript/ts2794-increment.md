@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2794: Expected 1 arguments but got 0. Resolve fun
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2794", "arguments", "function-call", "increment", "argument-count"]
 weight: 5
 ---
 

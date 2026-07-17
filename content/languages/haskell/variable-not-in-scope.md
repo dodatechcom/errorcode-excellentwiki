@@ -4,7 +4,6 @@ description: "A variable not in scope error occurs when referencing an undefined
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["variable", "scope", "not-defined", "haskell"]
 weight: 5
 ---
 

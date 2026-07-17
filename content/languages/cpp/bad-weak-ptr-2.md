@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_weak_ptr when constructing shared_ptr from an exp
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-weak-ptr", "weak-ptr", "shared-ptr", "smart-pointer"]
 weight: 5
 ---
 

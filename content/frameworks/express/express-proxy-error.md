@@ -4,7 +4,6 @@ description: "Fix Express proxy errors. Resolve reverse proxy and upstream issue
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["proxy", "upstream", "reverse-proxy", "http-proxy", "express"]
 weight: 5
 ---
 

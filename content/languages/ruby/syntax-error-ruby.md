@@ -4,7 +4,6 @@ description: "Fix Ruby SyntaxError: unexpected token. Learn how to identify and 
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["syntaxerror", "unexpected-token", "parse-error", "ruby"]
 weight: 5
 ---
 

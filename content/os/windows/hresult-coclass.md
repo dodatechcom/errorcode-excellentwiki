@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT CO_E_OBJISCONNECTED (0x800401FD) COM object di
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "co-e-objisconnected", "0x800401fd", "com", "dcom", "disconnected"]
 weight: 5
 ---
 

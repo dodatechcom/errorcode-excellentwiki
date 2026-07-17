@@ -4,7 +4,6 @@ description: "Fix Vite invalid configuration errors. Resolve vite.config.ts/js c
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "config", "configuration", "validation", "setup"]
 weight: 5
 ---
 

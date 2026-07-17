@@ -4,7 +4,6 @@ description: "Fix Python ConnectionError when network connections fail. Check in
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["connectionerror", "network", "http", "timeout", "retry"]
 weight: 80
 ---
 

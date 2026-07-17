@@ -4,7 +4,6 @@ description: "Fix ActionMailer::DeliveryError in Rails. Learn why email delivery
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["actionmailer", "delivery", "email", "rails", "ruby"]
 weight: 5
 ---
 

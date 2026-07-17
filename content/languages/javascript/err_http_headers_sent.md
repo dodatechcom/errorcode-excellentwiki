@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP_HEADERS_SENT when attempting to set HTTP head
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http-headers-sent", "http", "headers", "response", "express", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Docker BuildKit failed to solve errors. Resolve build context,
 tools: ["docker"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["buildkit", "build", "failed-to-solve", "cache", "dockerfile"]
 weight: 5
 ---
 

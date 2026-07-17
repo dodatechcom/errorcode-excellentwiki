@@ -4,7 +4,6 @@ description: "Fix Perl 'wide character' encoding errors. Handle Unicode, UTF-8, 
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["encoding", "unicode", "utf-8", "wide-character", "perl"]
 weight: 5
 ---
 

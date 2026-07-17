@@ -4,7 +4,6 @@ description: "Invalid operand errors in Assembly occur when instruction operands
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["operand", "instruction", "size-mismatch", "addressing", "assembly"]
 weight: 5
 ---
 

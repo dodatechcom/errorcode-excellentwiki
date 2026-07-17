@@ -4,7 +4,6 @@ description: "Fix Kubernetes Ingress 503 Service Unavailable errors. Resolve no 
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["ingress", "503", "service", "backend", "load-balancer"]
 weight: 5
 ---
 

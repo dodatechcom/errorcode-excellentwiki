@@ -4,7 +4,6 @@ description: "Fix Sidekiq worker errors in Rails. Learn why background jobs fail
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sidekiq", "worker", "background-jobs", "rails", "ruby"]
 weight: 5
 ---
 

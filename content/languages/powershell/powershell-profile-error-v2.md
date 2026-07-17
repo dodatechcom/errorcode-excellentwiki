@@ -4,7 +4,6 @@ description: "Fix PowerShell profile syntax errors that prevent the profile from
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["profile", "syntax", "startup", "Microsoft.PowerShell_profile", "powershell"]
 weight: 5
 ---
 

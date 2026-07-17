@@ -4,7 +4,6 @@ description: "Fix Linux Wayland compositor errors. Resolve display server crashe
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["wayland", "compositor", "display", "graphics", "wlroots"]
 weight: 5
 ---
 

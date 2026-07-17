@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Object is possibly undefined' errors. Add null che
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["object-undefined", "possibly-undefined", "null-check", "optional-chaining", "strict-null"]
 weight: 5
 ---
 

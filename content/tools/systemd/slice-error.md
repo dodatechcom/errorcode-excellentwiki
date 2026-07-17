@@ -4,7 +4,6 @@ description: "Fix systemd slice errors. Resolve resource control and cgroup slic
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["slice", "systemd", "cgroup", "resource-control", "memory"]
 weight: 5
 ---
 

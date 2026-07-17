@@ -4,7 +4,6 @@ description: "Fix Swift CoreML model loading errors. Learn why CoreML models fai
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["coreml", "machine-learning", "model", "swift"]
 weight: 5
 ---
 

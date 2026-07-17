@@ -4,7 +4,6 @@ description: "Fix Python TypeError: unsupported callable when trying to call an 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "callable", "call", "function"]
 weight: 5
 ---
 

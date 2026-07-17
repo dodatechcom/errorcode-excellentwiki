@@ -4,7 +4,6 @@ description: "Fix C errno 43 EIDRM (Identifier removed) by checking if IPC resou
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eidrm", "errno-43", "identifier", "removed", "ipc"]
 weight: 5
 ---
 

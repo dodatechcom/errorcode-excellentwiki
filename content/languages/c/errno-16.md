@@ -4,7 +4,6 @@ description: "Fix C errno 16 EBUSY (Device or resource busy) by unmounting the d
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ebusy", "errno-16", "device", "busy", "mount"]
 weight: 5
 ---
 

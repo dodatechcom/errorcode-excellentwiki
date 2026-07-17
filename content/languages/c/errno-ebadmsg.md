@@ -4,7 +4,6 @@ description: "Fix C EBADMSG (Not a STREAMS message) by validating STREAMS messag
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ebadmsg", "bad-streams-message", "streams", "putmsg", "getmsg"]
 weight: 5
 ---
 

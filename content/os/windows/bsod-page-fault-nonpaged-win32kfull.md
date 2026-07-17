@@ -4,7 +4,6 @@ description: "Fix Blue Screen PAGE_FAULT_IN_NONPAGED_AREA caused by win32kfull.s
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "win32kfull", "graphics", "page-fault", "kernel"]
 weight: 5
 ---
 

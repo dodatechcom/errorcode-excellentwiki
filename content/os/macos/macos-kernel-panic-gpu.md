@@ -4,7 +4,6 @@ description: "Fix macOS kernel panic caused by GPU errors. Diagnose graphics car
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kernel-panic", "gpu", "graphics", "egpu", "metal", "crash"]
 weight: 5
 ---
 

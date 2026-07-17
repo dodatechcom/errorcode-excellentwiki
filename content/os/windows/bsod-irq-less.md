@@ -4,7 +4,6 @@ description: "Fix Blue Screen IRQL_GT_ZERO_AT_SYSTEM_SERVICE on Windows 10 and 1
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "irql", "system-service", "driver", "kernel"]
 weight: 5
 ---
 

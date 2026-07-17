@@ -4,7 +4,6 @@ description: "Fix C++ cppcheck static analysis errors. Address code quality issu
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["cppcheck", "static-analysis", "lint", "code-quality", "warning"]
 weight: 5
 ---
 

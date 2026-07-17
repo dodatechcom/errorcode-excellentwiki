@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_FLOW_CONTROL_ERROR when HTTP/2 flow control 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-flow-control-error", "http2", "flow-control", "nodejs"]
 weight: 5
 ---
 

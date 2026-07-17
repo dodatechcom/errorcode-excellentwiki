@@ -4,7 +4,6 @@ description: "Jenkins agent node loses connection to the controller."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "agent", "connection", "node", "offline"]
 weight: 5
 ---
 

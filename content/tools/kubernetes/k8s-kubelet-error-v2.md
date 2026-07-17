@@ -4,7 +4,6 @@ description: "Fix Kubernetes kubelet pod lifecycle errors. Resolve kubelet sync 
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "kubelet", "pod", "lifecycle", "sync", "container-runtime"]
 weight: 5
 ---
 

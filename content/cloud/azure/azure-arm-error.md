@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure ARM Template Deployment Error"
 description: "Fix Azure ARM template deployment errors. Resolve ARM template issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "arm", "template", "deployment", "infrastructure"]
 weight: 5
 ---
 

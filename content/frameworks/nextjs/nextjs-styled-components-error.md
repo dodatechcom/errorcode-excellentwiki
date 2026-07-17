@@ -4,7 +4,6 @@ description: "styled-components errors in Next.js occur when server-side renderi
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["styled-components", "css-in-js", "ssr", "styles", "nextjs"]
 weight: 5
 ---
 

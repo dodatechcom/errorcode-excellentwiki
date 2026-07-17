@@ -4,7 +4,6 @@ description: "GitHub Actions workflow fails with SSH deploy key authentication e
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "ssh", "deploy-key", "authentication", "git"]
 weight: 5
 ---
 

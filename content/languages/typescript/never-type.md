@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Type never has no properties' errors. Understand t
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["never-type", "exhaustive-check", "unreachable", "type-narrowing", "type-error"]
 weight: 5
 ---
 

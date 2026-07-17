@@ -4,7 +4,6 @@ description: "Fix 'unbound variable' in Bash when set -u is active and a variabl
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unbound-variable", "set-u", "uninitialized-variable"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: ibis not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "ibis", "module-not-found", "pip", "dataframe"]
 weight: 5
 ---
 

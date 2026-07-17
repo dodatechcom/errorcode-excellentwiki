@@ -4,7 +4,6 @@ description: "F# raises IndexOutOfRangeException when accessing an array or list
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "out-of-range", "array", "list", "range"]
 weight: 5
 ---
 

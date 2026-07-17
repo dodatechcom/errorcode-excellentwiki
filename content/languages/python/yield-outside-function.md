@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when using yield outside a function. Learn 
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "yield", "generator", "function"]
 weight: 5
 ---
 

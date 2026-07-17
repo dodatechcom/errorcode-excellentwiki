@@ -7,7 +7,6 @@ languages: ["python"]
 deprecated_since: "Python 2.6"
 removed_in: "Python 3.0"
 error_message: "AttributeError: 'dict' object has no attribute 'has_key'"
-tags: ["has_key", "dict", "in", "membership"]
 weight: 80
 ---
 

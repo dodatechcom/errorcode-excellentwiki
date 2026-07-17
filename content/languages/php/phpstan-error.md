@@ -4,7 +4,6 @@ description: "Fix PHPStan static analysis errors. Handle type mismatches, dead c
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["phpstan", "static-analysis", "linting"]
 weight: 5
 ---
 

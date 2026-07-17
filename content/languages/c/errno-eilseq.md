@@ -4,7 +4,6 @@ description: "Fix C EILSEQ (Invalid or incomplete multibyte) by handling locale 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eilseq", "invalid-multibyte", "encoding", "locale", "wchar"]
 weight: 5
 ---
 

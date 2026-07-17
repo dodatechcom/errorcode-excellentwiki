@@ -4,7 +4,6 @@ description: "Fix UploadedFile upload errors in Laravel. Handle file size limits
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "upload", "file"]
 weight: 5
 ---
 

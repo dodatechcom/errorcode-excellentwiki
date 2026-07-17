@@ -4,7 +4,6 @@ description: "Fix PHP Warning: count() expects an array or Countable. Learn to v
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "count", "array", "countable"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud DNS Error"
 description: "Fix GCP Cloud DNS errors. Resolve DNS zone and record issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-dns", "dns", "zone", "record"]
 weight: 5
 ---
 

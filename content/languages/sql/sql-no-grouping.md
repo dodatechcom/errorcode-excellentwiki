@@ -4,7 +4,6 @@ description: "Fix 'Not a GROUP BY expression' when a column in SELECT is not gro
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["group-by", "expression", "aggregate", "ONLY_FULL_GROUP_BY"]
 weight: 5
 ---
 

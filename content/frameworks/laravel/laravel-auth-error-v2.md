@@ -4,7 +4,6 @@ description: "Laravel throws AuthenticationException when an unauthenticated use
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["auth", "authentication", "login", "middleware", "guard"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PowerShell workflow activity errors when workflows fail due to
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["workflow", "PSWorkflowError", "activity", "powershell"]
 weight: 5
 ---
 

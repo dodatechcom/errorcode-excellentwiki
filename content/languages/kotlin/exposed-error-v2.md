@@ -4,7 +4,6 @@ description: "Fix Exposed framework transaction errors in Kotlin database operat
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["exposed", "transaction", "database", "jetbrains", "kotlin"]
 weight: 5
 ---
 

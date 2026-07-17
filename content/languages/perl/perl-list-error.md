@@ -4,7 +4,6 @@ description: "Fix Perl List::Util errors. Learn why List::Util functions fail an
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["list", "util", "array", "perl"]
 weight: 5
 ---
 

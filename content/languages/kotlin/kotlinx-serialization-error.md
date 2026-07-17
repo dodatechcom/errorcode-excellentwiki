@@ -4,7 +4,6 @@ description: "Fix kotlinx.serialization format errors. Learn why serialization f
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kotlinx-serialization", "serialization", "format", "kotlin"]
 weight: 5
 ---
 

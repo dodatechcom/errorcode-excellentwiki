@@ -4,7 +4,6 @@ description: "Fix SSH2 authentication failures. Handle key-based auth, password 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ssh", "authentication", "remote"]
 weight: 5
 ---
 

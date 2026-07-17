@@ -4,7 +4,6 @@ description: "Fix Catch2 assertion failures. Handle REQUIRE, CHECK, and SECTION 
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["catch2", "testing", "assertion", "unit-test"]
 weight: 5
 ---
 

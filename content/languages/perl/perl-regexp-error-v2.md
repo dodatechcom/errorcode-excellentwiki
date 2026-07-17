@@ -4,7 +4,6 @@ description: "Fix Perl regex compilation errors. Handle invalid patterns, unesca
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["regexp", "regex", "pattern", "compilation", "match", "perl"]
 weight: 5
 ---
 

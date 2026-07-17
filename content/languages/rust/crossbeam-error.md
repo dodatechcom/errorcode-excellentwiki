@@ -4,7 +4,6 @@ description: "Fix crossbeam channel errors. Handle bounded/unbounded channels, s
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["crossbeam", "channel", "concurrency"]
 weight: 5
 ---
 

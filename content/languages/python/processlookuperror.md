@@ -4,7 +4,6 @@ description: "Fix Python ProcessLookupError when a process does not exist or has
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["processlookuperror", "process", "os", "kill", "pid", "zombie"]
 weight: 5
 ---
 

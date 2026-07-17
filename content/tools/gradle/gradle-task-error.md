@@ -4,7 +4,6 @@ description: "Gradle task fails during execution, returning a non-zero exit code
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "task", "execution", "runtime", "build"]
 weight: 5
 ---
 

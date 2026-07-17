@@ -4,7 +4,6 @@ description: "Fix GitHub Actions environment variable errors. Resolve undefined 
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "environment", "env", "variable", "secret"]
 weight: 5
 ---
 

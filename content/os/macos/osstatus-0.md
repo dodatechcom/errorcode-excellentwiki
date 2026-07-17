@@ -4,7 +4,6 @@ description: "Understand macOS OSStatus 0 (noErr). Learn about the noErr constan
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["noerr", "osstatus-0", "core-services", "success"]
 weight: 5
 ---
 

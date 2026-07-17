@@ -4,7 +4,6 @@ description: "Fix Windows DLL version mismatch errors when a 32-bit DLL is loade
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dll", "version-mismatch", "32-bit", "64-bit", "module-load", "entry-point"]
 weight: 5
 ---
 

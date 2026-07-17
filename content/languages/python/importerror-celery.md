@@ -4,7 +4,6 @@ description: "Fix Python ImportError: celery not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "celery", "module-not-found", "pip", "task-queue"]
 weight: 5
 ---
 

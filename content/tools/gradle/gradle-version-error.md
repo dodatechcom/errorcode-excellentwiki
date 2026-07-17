@@ -4,7 +4,6 @@ description: "Gradle build fails due to version incompatibility between Gradle w
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "version", "compatibility", "wrapper", "java"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes etcd leader election timeout errors. Resolve etcd c
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["etcd", "leader-election", "cluster", "control-plane", "timeout"]
 weight: 5
 ---
 

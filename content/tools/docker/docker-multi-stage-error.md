@@ -4,7 +4,6 @@ description: "Fix Docker multi-stage build failures. Resolve stage reference, CO
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["multi-stage", "build", "copy-from", "stage", "dockerfile", "docker"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PowerShell transcription errors when Start-Transcript fails be
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["transcript", "Start-Transcript", "file-in-use", "powershell"]
 weight: 5
 ---
 

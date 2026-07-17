@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Pub/Sub — topic not found"
 description: "Fix Pub/Sub topic not found. Resolve Pub/Sub topic and subscription issues."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "pubsub", "topic", "not-found", "publish", "subscribe", "message"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: kubernetes not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "kubernetes", "module-not-found", "pip", "orchestration"]
 weight: 5
 ---
 

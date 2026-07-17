@@ -4,7 +4,6 @@ description: "Understand Windows HRESULT S_FALSE (0x00000001). Why a successful 
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "s-false", "0x00000001", "success-false", "com"]
 weight: 5
 ---
 

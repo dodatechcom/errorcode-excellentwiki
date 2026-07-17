@@ -4,7 +4,6 @@ description: "Fix Lua userdata errors. Learn why userdata operations fail and ho
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["userdata", "cdata", "ffi", "lua"]
 weight: 5
 ---
 

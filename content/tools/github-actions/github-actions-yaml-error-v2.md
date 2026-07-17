@@ -4,7 +4,6 @@ description: "GitHub Actions workflow fails due to YAML parsing error."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "yaml", "parse", "syntax", "workflow"]
 weight: 5
 ---
 

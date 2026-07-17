@@ -4,7 +4,6 @@ description: "Fix Java EnumConstantNotPresentException by handling missing enum 
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enumconstantnotpresentexception", "enum", "reflection", "serialization"]
 weight: 5
 ---
 

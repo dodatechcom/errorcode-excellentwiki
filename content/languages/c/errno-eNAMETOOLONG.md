@@ -4,7 +4,6 @@ description: "Fix C ENAMETOOLONG (File name too long) by shortening path compone
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enametoolong", "file-name-too-long", "path-limit", "name-max"]
 weight: 5
 ---
 

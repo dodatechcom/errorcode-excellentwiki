@@ -4,7 +4,6 @@ description: "A segmentation fault occurs when a program attempts to access memo
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "segmentation-fault", "core-dumped"]
 weight: 5
 ---
 

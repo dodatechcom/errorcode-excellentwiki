@@ -4,7 +4,6 @@ description: "Fix Kotlin IllegalStateException when object state is invalid. Lea
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalstateexception", "state", "check", "kotlin"]
 weight: 5
 ---
 

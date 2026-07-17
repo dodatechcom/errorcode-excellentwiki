@@ -4,7 +4,6 @@ description: "Fix VBA Run-time error 9 when accessing an array element or collec
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime-error", "subscript", "array", "collection", "index", "vba"]
 weight: 5
 ---
 

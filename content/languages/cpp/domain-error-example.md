@@ -4,7 +4,6 @@ description: "Example of std::domain_error in C++. Handle mathematically undefin
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["domain-error", "math", "numeric", "exception"]
 weight: 50
 ---
 

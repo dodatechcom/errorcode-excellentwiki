@@ -4,7 +4,6 @@ description: "Vite development server middleware encounters an error."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "dev", "middleware", "server", "proxy"]
 weight: 5
 ---
 

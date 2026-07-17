@@ -4,7 +4,6 @@ description: "Fix Go sync RWMutex is not locked error. Use correct Lock/Unlock p
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sync", "mutex", "rwmutex", "lock", "concurrency", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix SQL access denied errors when a database user lacks permission
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["access-denied", "permission", "grant", "user", "sql"]
 weight: 5
 ---
 

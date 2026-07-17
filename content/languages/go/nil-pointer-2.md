@@ -4,7 +4,6 @@ description: "Advanced fixes for Go nil pointer dereference panic. Handle nil in
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nil", "pointer", "dereference", "panic", "runtime"]
 weight: 5
 ---
 

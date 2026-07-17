@@ -4,7 +4,6 @@ description: "Fix Nginx 403 Forbidden directory index. Resolve directory listing
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "403", "forbidden", "directory", "index", "permission"]
 weight: 5
 ---
 

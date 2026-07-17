@@ -4,7 +4,6 @@ description: "Fix Blue Screen IRQL_NOT_LESS_OR_EQUAL stop code 0xA caused by ndi
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "irql", "ndis", "network", "stop-0xa"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Spring throws ConfigDataException when it fails to load or import 
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["config", "spring-cloud-config", "import", "properties", "yaml"]
 weight: 5
 ---
 

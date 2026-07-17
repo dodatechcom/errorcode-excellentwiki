@@ -4,7 +4,6 @@ description: "Fix 'Division by zero' when a SQL expression divides by a zero val
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["division-by-zero", "arithmetic-error", "math"]
 weight: 5
 ---
 

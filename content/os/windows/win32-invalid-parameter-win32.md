@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_INVALID_PARAMETER (87). Resolve invalid paramete
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-87", "invalid-parameter", "parameter"]
 weight: 5
 ---
 

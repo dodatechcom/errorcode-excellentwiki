@@ -4,7 +4,6 @@ description: "Fix AMQP (RabbitMQ) connection errors with amqplib. Handle connect
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["amqp", "rabbitmq", "message-queue"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Lua file not found errors. Handle missing files, incorrect pat
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "not-found", "path", "open", "io", "lua"]
 weight: 5
 ---
 

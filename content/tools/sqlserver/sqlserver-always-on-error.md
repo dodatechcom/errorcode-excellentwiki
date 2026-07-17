@@ -4,7 +4,6 @@ description: "SQL Server Always On Availability Groups encounter errors during f
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "always-on", "availability-group", "failover", "sync"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix assembly errors when making system calls with invalid or unsup
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["syscall", "system-call", "kernel", "linux", "invalid", "assembly"]
 weight: 5
 ---
 

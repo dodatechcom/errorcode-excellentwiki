@@ -4,7 +4,6 @@ description: "Fix Swift AppKit application errors. Learn why macOS application l
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["appkit", "macos", "application", "swift"]
 weight: 5
 ---
 

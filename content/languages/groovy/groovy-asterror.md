@@ -4,7 +4,6 @@ description: "Fix AST transformation errors when compile-time code generation fa
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["AST", "transformation", "compile-time", "annotation", "groovy"]
 weight: 5
 ---
 

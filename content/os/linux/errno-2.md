@@ -4,7 +4,6 @@ description: "Fix Linux ENOENT (errno 2) No Such File or Directory error. Troubl
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["enoent", "errno-2", "file-not-found", "path"]
 weight: 20
 ---
 

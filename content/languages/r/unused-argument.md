@@ -4,7 +4,6 @@ description: "Fix R 'unused argument' error when passing arguments that a functi
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unused-argument", "function-call", "argument-name"]
 weight: 5
 ---
 

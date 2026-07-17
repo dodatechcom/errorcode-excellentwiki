@@ -4,7 +4,6 @@ description: "Fix chrono timezone parsing errors. Handle invalid timezone string
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["chrono", "datetime", "timezone", "parsing", "time"]
 weight: 5
 ---
 

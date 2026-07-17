@@ -4,7 +4,6 @@ description: "Fix R 'error in simplify2array' when sapply() fails to simplify re
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sapply", "simplify2array", "lapply", "vapply"]
 weight: 5
 ---
 

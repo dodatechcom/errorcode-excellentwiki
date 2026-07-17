@@ -4,7 +4,6 @@ description: "Fix GitHub Actions step failed errors. Resolve individual step fai
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "step", "failed", "exit-code", "command"]
 weight: 5
 ---
 

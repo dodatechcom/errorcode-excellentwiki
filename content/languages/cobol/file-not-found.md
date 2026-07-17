@@ -4,7 +4,6 @@ description: "Fix COBOL FILE-STATUS 35 (file not found). Learn why the runtime c
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file-status", "file-not-found", "35", "open", "runtime"]
 weight: 5
 ---
 

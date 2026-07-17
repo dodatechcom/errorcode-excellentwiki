@@ -4,7 +4,6 @@ description: "Fix JavaScript AbortError when async operations are cancelled. Han
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aborterror", "abort", "abortcontroller", "timeout", "cancelled", "async"]
 weight: 5
 ---
 

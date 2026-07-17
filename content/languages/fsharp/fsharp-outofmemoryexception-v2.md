@@ -4,7 +4,6 @@ description: "Fix F# OutOfMemoryException when the .NET runtime cannot allocate 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["out-of-memory", "heap", "memory", "gc", "dotnet", "fsharp"]
 weight: 5
 ---
 

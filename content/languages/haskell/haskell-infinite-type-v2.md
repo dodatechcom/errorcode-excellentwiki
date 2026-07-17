@@ -4,7 +4,6 @@ description: "Fix Haskell infinite type errors when the occurs check fails. Unde
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["infinite-type", "occurs-check", "recursive", "unify", "haskell"]
 weight: 5
 ---
 

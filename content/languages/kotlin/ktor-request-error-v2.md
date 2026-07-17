@@ -4,7 +4,6 @@ description: "Fix Ktor request pipeline errors when the request processing pipel
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ktor", "request-pipeline", "interceptor", "kotlin"]
 weight: 5
 ---
 

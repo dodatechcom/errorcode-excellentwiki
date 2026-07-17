@@ -4,7 +4,6 @@ description: "Fix bash shift errors when shifting more positions than available 
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["shift", "positional-parameters", "args", "bash"]
 weight: 5
 ---
 

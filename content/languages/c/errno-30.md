@@ -4,7 +4,6 @@ description: "Fix C errno 30 EROFS (Read-only file system) by mounting file syst
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["erofs", "errno-30", "read-only", "filesystem", "mount"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Vite HMR (Hot Module Replacement) errors when module updates f
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "hmr", "hot-module-replacement", "dev-server", "module-update"]
 weight: 5
 ---
 

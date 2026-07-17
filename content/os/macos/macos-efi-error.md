@@ -4,7 +4,6 @@ description: "Fix EFI boot errors on Mac when the Mac fails to load the EFI part
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["efi", "boot", "partition", "bootloader", "nvram"]
 weight: 5
 ---
 

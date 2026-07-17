@@ -4,7 +4,6 @@ description: "systemd-journald logging service encounters errors or loses log da
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "journald", "logging", "journal", "logs"]
 weight: 5
 ---
 

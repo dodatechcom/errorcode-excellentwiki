@@ -4,7 +4,6 @@ description: "Webpack fails to process static assets like images, fonts, or SVG 
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "asset", "image", "font", "static"]
 weight: 5
 ---
 

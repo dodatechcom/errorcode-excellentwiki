@@ -4,7 +4,6 @@ description: "Fix TypeScript TS18047: X is possibly 'null'. Handle null values w
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts18047", "possibly-null", "null", "type-guard", "strictNullChecks"]
 weight: 5
 ---
 

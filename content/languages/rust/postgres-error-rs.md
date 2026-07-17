@@ -4,7 +4,6 @@ description: "Fix PostgreSQL client connection errors. Handle SSL, connection po
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["postgres", "database", "connection"]
 weight: 5
 ---
 

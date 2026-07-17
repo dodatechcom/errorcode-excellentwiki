@@ -4,7 +4,6 @@ description: "Fix Java FileNotFoundException by verifying file paths exist, usin
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["filenotfoundexception", "file-path", "io", "try-with-resources", "classloader"]
 date: 2026-07-15
 ---
 

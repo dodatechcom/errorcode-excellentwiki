@@ -4,7 +4,6 @@ description: "Redis PubSub encounters an error when a subscriber or publisher fa
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["pubsub", "publish", "subscribe", "channel", "messaging"]
 weight: 5
 ---
 

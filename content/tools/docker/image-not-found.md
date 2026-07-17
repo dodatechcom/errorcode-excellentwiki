@@ -4,7 +4,6 @@ description: "Fix Docker 'No such image' error. Resolve missing image issues wit
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["image-not-found", "no-such-image", "daemon", "pull"]
 weight: 5
 ---
 

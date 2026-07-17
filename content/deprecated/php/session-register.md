@@ -7,7 +7,6 @@ languages: ["php"]
 deprecated_since: "PHP 4.2"
 removed_in: "PHP 5.4"
 error_message: "Deprecated: session_register() is deprecated"
-tags: ["session-register", "superglobal", "session", "php"]
 weight: 28
 ---
 

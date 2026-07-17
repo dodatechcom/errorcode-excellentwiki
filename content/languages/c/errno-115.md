@@ -4,7 +4,6 @@ description: "Fix C errno 115 EINPROGRESS for non-blocking sockets. Use select/p
 languages: ["c"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["einprogress", "errno-115", "non-blocking", "select", "poll", "epoll"]
 weight: 35
 ---
 

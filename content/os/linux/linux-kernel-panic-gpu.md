@@ -4,7 +4,6 @@ description: "Fix Linux kernel panic caused by GPU driver errors. Resolve displa
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["kernel-panic", "gpu", "driver", "nvidia", "amdgpu", "nouveau", "display"]
 weight: 5
 ---
 

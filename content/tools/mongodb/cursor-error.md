@@ -4,7 +4,6 @@ description: "MongoDB server loses a cursor because it timed out or was killed d
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["cursor", "query", "timeout", "batch"]
 weight: 5
 ---
 

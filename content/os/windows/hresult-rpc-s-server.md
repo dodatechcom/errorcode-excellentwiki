@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT RPC_S_SERVER_UNAVAILABLE (0x800706BA) RPC serv
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "rpc-s-server-unavailable", "0x800706ba", "rpc-error", "network", "remote"]
 weight: 5
 ---
 

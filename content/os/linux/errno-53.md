@@ -4,7 +4,6 @@ description: "Fix Linux EREMOTEIO (errno 53) Remote I/O error. Solutions for rem
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eremoteio", "remote-io", "errno-53", "storage", "network"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP Fiber errors when suspend or resume operations fail. Learn
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fiber", "suspend", "concurrency", "php"]
 weight: 5
 ---
 

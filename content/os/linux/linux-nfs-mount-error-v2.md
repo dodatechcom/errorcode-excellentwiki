@@ -4,7 +4,6 @@ description: "Fix Linux NFS 'mount failed — no such file or directory' errors.
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["nfs", "mount", "no-such-file", "export", "network-file-system"]
 weight: 5
 ---
 

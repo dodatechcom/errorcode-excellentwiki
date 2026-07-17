@@ -4,7 +4,6 @@ description: "Fix Linux 'Cannot allocate memory' (ENOMEM) errors. Diagnose memor
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cannot-allocate-memory", "enomem", "malloc", "memory", "overcommit"]
 weight: 5
 ---
 

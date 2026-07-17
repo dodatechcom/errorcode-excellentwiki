@@ -4,7 +4,6 @@ description: "Fix Swift CloudKit errors. Learn about CKError codes, iCloud sync 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cloudkit", "icloud", "sync", "database", "push"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java IllegalMonitorStateException by properly synchronizing be
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalmonitorstateexception", "synchronization", "wait", "notify", "monitor"]
 weight: 5
 ---
 

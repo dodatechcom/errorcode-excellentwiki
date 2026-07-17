@@ -4,7 +4,6 @@ description: "Fix PowerShell history errors when Get-History fails due to sessio
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["history", "Get-History", "session", "powershell"]
 weight: 5
 ---
 

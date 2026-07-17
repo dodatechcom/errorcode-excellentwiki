@@ -4,7 +4,6 @@ description: "Fix Swift async/await concurrency errors. Learn why async operatio
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["concurrency", "async-await", "swift", "structured-concurrency"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP GKE Cluster Error"
 description: "Fix GCP GKE cluster errors. Resolve Google Kubernetes Engine issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "gke", "kubernetes", "cluster", "node"]
 weight: 5
 ---
 

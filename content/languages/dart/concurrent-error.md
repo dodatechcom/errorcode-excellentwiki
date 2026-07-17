@@ -4,7 +4,6 @@ description: "A concurrent modification error occurs when modifying a collection
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["concurrent", "modification", "iteration", "dart"]
 weight: 5
 ---
 

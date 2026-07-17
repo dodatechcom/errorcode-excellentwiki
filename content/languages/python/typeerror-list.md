@@ -4,7 +4,6 @@ description: "Fix Python TypeError: list indices must be integers or slices, not
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["typeerror", "list", "indexing", "subscript"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix go-micro service errors. Handle service discovery, RPC calls, 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["go-micro", "microservice", "rpc"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "SQLite query contains invalid SQL syntax."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "syntax", "sql", "parse", "query"]
 weight: 5
 ---
 

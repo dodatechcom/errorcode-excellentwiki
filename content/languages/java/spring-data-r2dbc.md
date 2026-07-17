@@ -4,7 +4,6 @@ description: "Fix DataIntegrityViolationException in Spring Data R2DBC. Handle r
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-data", "r2dbc", "reactive", "database", "data-integrity"]
 weight: 5
 ---
 

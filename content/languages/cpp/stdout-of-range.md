@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range exception when accessing vectors and str
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["out-of-range", "vector", "string", "at"]
 weight: 40
 ---
 

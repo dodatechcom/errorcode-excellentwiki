@@ -1,10 +1,8 @@
 ---
 title: "AWS InstanceLimitExceeded / VpcLimitExceeded"
 description: "InstanceLimitExceeded / VpcLimitExceeded — Fix AWS EC2 and VPC quota exceeded errors."
-cloud: ["aws"]
 error-types: ["quota-error"]
 severities: ["error"]
-tags: ["aws", "ec2", "vpc", "quota", "limit", "instance-limit", "vpc-limit"]
 weight: 5
 ---
 

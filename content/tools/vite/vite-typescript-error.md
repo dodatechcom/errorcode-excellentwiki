@@ -4,7 +4,6 @@ description: "Vite encounters TypeScript type errors during development or build
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "typescript", "type", "error", "checking"]
 weight: 5
 ---
 

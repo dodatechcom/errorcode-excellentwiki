@@ -4,7 +4,6 @@ description: "Fix Node.js EADDRINUSE: port already in use error. Kill existing p
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["eaddrinuse", "port", "address-in-use", "server", "listen"]
 weight: 5
 ---
 

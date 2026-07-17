@@ -4,7 +4,6 @@ description: "Fix Perl Autoloader errors. Learn why AUTOLOAD fails and how to im
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["autoload", "dynamic", "method", "perl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix ActiveRecord::RecordNotFound in Rails when record lookups fail
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["activerecord", "record-not-found", "rails", "ruby"]
 weight: 5
 ---
 

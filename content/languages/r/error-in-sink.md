@@ -4,7 +4,6 @@ description: "Fix R 'error in sink' when redirecting output. Check file connecti
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sink", "output", "redirection", "file"]
 weight: 5
 ---
 

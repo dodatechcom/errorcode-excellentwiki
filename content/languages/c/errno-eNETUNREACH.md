@@ -4,7 +4,6 @@ description: "Fix C ENETUNREACH (Network is unreachable) by checking routing tab
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enetunreach", "network-unreachable", "routing", "gateway", "connectivity"]
 weight: 5
 ---
 

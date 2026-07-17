@@ -4,7 +4,6 @@ description: "Fix Ruby Encoding::CompatibilityError. Handle incompatible string 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["encoding"]
-tags: ["encoding_error", "compatibility", "encoding", "utf8", "ascii"]
 weight: 150
 ---
 

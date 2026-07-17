@@ -4,7 +4,6 @@ description: "Fix kernel32.dll access violation and errors on Windows 10/11. Res
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kernel32", "dll", "access-violation", "system-dll", "memory"]
 weight: 5
 ---
 

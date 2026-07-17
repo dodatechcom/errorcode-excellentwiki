@@ -4,7 +4,6 @@ description: "Fix LuaJIT FFI errors. Learn why FFI calls fail and how to use FFI
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ffi", "luajit", "c", "lua"]
 weight: 5
 ---
 

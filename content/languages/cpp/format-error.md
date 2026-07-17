@@ -4,7 +4,6 @@ description: "Fix C++ std::format errors including invalid format strings, argum
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["format", "string-formatting", "c++20", "fmt"]
 weight: 5
 ---
 

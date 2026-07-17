@@ -4,7 +4,6 @@ description: "Fix Kotlin reified type parameter errors. Learn why reified types 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["reified", "inline", "type-parameter", "kotlin"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rust macro errors and invalid token tree issues. Understand ma
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["macro", "token", "tree", "macro_rules", "compile", "syntax", "proc-macro"]
 weight: 5
 ---
 

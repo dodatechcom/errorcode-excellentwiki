@@ -4,7 +4,6 @@ description: "Python raises ImportError when a name cannot be found in the speci
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["imports", "modules", "python"]
 weight: 5
 ---
 

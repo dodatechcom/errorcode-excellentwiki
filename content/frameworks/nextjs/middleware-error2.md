@@ -4,7 +4,6 @@ description: "Next.js middleware throws an unhandled exception or modifies the r
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["middleware", "rewrites", "redirects", "edge"]
 weight: 5
 ---
 

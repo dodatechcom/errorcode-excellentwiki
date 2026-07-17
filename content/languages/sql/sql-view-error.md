@@ -4,7 +4,6 @@ description: "Fix 'View X references invalid table' when a view depends on a dro
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["view", "invalid-table", "view-definition", "metadata"]
 weight: 5
 ---
 

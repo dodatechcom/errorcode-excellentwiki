@@ -4,7 +4,6 @@ description: "Fix Go tls certificate is not standards compliant error. Configure
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["tls", "certificate", "ssl", "security", "https", "runtime"]
 weight: 5
 ---
 

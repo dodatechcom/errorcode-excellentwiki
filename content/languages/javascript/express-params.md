@@ -4,7 +4,6 @@ description: "Fix Express req.params being undefined. Define route parameters co
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["express", "params", "route-parameters", "named-params", "undefined"]
 weight: 5
 ---
 

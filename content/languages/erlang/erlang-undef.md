@@ -4,7 +4,6 @@ description: "Erlang raises undef when calling a function that is not defined or
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undef", "function", "module", "undefined", "not-loaded"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift array index out of range crashes. Learn how to safely ac
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["array-index", "index-out-of-range", "collection", "swift"]
 weight: 5
 ---
 

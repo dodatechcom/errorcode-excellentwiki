@@ -4,7 +4,6 @@ description: "React Native Hermes engine fails to compile JavaScript into Hermes
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["hermes", "bytecode", "javascript", "engine", "compilation", "android"]
 weight: 5
 ---
 

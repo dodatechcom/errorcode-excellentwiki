@@ -4,7 +4,6 @@ description: "Next.js layout errors occur when layout components fail to render 
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["layout", "app-router", "wrapping", "structure", "nextjs"]
 weight: 5
 ---
 

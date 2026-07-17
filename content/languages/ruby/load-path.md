@@ -4,7 +4,6 @@ description: "Fix Ruby LoadError: cannot load such file by understanding $LOAD_P
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["load"]
-tags: ["loaderror", "load_path", "require", "gem", "path"]
 weight: 75
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Hibernate SQLDialect not found error. Configure the correct Hi
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hibernate", "jpa", "dialect", "database", "sql"]
 weight: 5
 ---
 

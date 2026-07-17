@@ -1,10 +1,8 @@
 ---
 title: "AWS RDS Error: DB Instance Not Found / Cannot Connect"
 description: "RDS: DB instance not found / cannot connect — Fix AWS RDS connection and configuration errors."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "rds", "database", "connection", "db-instance", "postgres", "mysql"]
 weight: 5
 ---
 

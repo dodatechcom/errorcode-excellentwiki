@@ -4,7 +4,6 @@ description: "Prisma raises errors in Next.js when database queries fail, schema
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["prisma", "database", "orm", "query", "nextjs"]
 weight: 5
 ---
 

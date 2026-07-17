@@ -4,7 +4,6 @@ description: "Fix Blue Screen CRITICAL_PROCESS_DIED error on Windows 10 and 11. 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "critical-process", "boot-failure", "stop-code"]
 weight: 5
 ---
 

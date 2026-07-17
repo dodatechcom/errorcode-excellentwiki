@@ -4,7 +4,6 @@ description: "Fix Blue Screen PAGE_FAULT_IN_NONPAGED_AREA on Windows 10 and 11. 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "page-fault", "memory", "ram", "hardware"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux systemd 'Failed to start' errors. Resolve service failur
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["systemd", "failed", "service", "unit", "boot"]
 weight: 5
 ---
 

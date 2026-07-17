@@ -4,7 +4,6 @@ description: "Fix Doctrine deprecated usage warnings. Handle API changes, config
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["doctrine", "deprecated", "upgrade"]
 weight: 5
 ---
 

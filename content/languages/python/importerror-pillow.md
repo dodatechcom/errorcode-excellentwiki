@@ -4,7 +4,6 @@ description: "Fix Python ImportError: PIL/Pillow not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pillow", "pil", "module-not-found", "pip", "image"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Groovy MissingPropertyException when accessing non-existent pr
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["missing-property", "property", "scope", "dynamic", "groovy"]
 weight: 5
 ---
 

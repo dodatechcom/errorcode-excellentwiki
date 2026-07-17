@@ -4,7 +4,6 @@ description: "GitHub Actions matrix strategy configuration error prevents parall
 tools: ["github-actions"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["github-actions", "matrix", "strategy", "parallel", "combination"]
 weight: 5
 ---
 

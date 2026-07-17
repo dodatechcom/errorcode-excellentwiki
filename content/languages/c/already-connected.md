@@ -4,7 +4,6 @@ description: "Fix C socket is already connected (EISCONN). Don't connect an alre
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eisconn", "already-connected", "socket", "connect", "errno"]
 weight: 5
 ---
 

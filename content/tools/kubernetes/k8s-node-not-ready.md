@@ -4,7 +4,6 @@ description: "Fix Kubernetes Node NotReady status. Resolve kubelet readiness iss
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["node", "notready", "kubelet", "kubernetes"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift EXC_BAD_ACCESS memory errors. Learn why memory access fa
 languages: ["swift"]
 severities: ["error"]
 error-types: ["memory-error"]
-tags: ["exc-bad-access", "memory", "unsafe", "swift"]
 weight: 5
 ---
 

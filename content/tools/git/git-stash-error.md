@@ -4,7 +4,6 @@ description: "Fix Git stash apply errors. Resolve conflicts when applying stashe
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["stash", "apply", "conflict", "pop", "git"]
 weight: 5
 ---
 

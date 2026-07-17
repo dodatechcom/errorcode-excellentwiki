@@ -4,7 +4,6 @@ description: "Fix Python ValueError: level must be >= 1 when using relative impo
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["valueerror", "import", "level", "relative"]
 weight: 5
 ---
 

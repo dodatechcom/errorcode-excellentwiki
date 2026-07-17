@@ -4,7 +4,6 @@ description: "Fix Rust stack overflow error. Learn why deep recursion causes sta
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursion", "thread", "stack-size"]
 weight: 5
 ---
 

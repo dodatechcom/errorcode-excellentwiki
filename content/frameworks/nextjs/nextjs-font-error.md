@@ -4,7 +4,6 @@ description: "next/font errors occur when custom fonts fail to load, optimize, o
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["font", "typography", "optimization", "loading", "nextjs"]
 weight: 5
 ---
 

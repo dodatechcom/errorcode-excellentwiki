@@ -4,7 +4,6 @@ description: "Fix bash test expression errors when the test command has malforme
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["test", "expression", "bracket", "bash"]
 weight: 5
 ---
 

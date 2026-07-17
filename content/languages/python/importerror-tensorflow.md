@@ -4,7 +4,6 @@ description: "Fix Python ImportError: tensorflow. Reinstall TensorFlow, resolve 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["importerror", "tensorflow", "gpu", "cuda", "installation"]
 weight: 5
 ---
 

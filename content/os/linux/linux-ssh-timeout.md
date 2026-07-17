@@ -4,7 +4,6 @@ description: "Fix Linux 'ssh: connect to host <host> port 22: Connection timed o
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssh", "timeout", "connection-timeout", "network", "firewall"]
 weight: 5
 ---
 

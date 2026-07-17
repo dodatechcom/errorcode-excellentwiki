@@ -4,7 +4,6 @@ description: "Fix Python FutureWarning when code will behave differently in futu
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["futurewarning", "future", "compatibility", "migration", "version"]
 weight: 5
 ---
 

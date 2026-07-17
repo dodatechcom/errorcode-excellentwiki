@@ -4,7 +4,6 @@ description: "The login succeeded but SQL Server cannot access the requested dat
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["database", "permissions", "access", "login"]
 weight: 5
 ---
 

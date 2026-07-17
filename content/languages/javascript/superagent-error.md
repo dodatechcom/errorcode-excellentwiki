@@ -4,7 +4,6 @@ description: "Fix superagent network errors. Handle request failures, timeout is
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["superagent", "http", "request"]
 weight: 5
 ---
 

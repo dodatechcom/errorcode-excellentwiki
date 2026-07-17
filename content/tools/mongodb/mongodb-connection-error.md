@@ -4,7 +4,6 @@ description: "MongoDB client cannot establish a connection to the database serve
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "connection", "network", "econnrefused", "timeout"]
 weight: 5
 ---
 

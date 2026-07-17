@@ -4,7 +4,6 @@ description: "Fix C ENOTDIR (Not a directory) by verifying path components are d
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotdir", "not-a-directory", "path-resolution", "file-type"]
 weight: 5
 ---
 

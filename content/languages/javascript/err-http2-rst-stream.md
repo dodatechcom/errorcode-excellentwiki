@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_RST_STREAM when an HTTP/2 stream is reset. H
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-rst-stream", "http2", "stream", "reset", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix R 'error in parse' when source files contain syntax errors. Ch
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["parse", "syntax", "source", "file"]
 weight: 5
 ---
 

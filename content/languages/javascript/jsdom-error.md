@@ -4,7 +4,6 @@ description: "Fix jsdom errors. Handle DOM construction failures, resource loadi
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jsdom", "dom", "html"]
 weight: 5
 ---
 

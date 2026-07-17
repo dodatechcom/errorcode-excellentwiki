@@ -4,7 +4,6 @@ description: "Laravel database migration fails during execution due to SQL error
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["migration", "database", "schema", "eloquent", "artisan"]
 weight: 5
 ---
 

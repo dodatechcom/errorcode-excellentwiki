@@ -4,7 +4,6 @@ description: "Fix Python ValueError: invalid literal for int() with base 10. Han
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["valueerror", "int", "type-conversion", "parsing"]
 weight: 5
 ---
 

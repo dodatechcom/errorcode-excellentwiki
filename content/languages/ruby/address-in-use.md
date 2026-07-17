@@ -4,7 +4,6 @@ description: "Fix Ruby Errno::EADDRINUSE. Handle address already in use errors w
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["network"]
-tags: ["eaddrinuse", "address_in_use", "port", "socket", "server"]
 weight: 260
 ---
 

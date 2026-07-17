@@ -4,7 +4,6 @@ description: "Fix Linux EROFS (errno 30) Read-only file system error. Solutions 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enROFS", "read-only", "errno-30", "filesystem"]
 weight: 5
 ---
 

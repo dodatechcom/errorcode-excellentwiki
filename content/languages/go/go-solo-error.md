@@ -4,7 +4,6 @@ description: "Fix solo.io Gloo gateway errors. Handle route configuration, upstr
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["solo", "gateway", "api-gateway"]
 weight: 5
 ---
 

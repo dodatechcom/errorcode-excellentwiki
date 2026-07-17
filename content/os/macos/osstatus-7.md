@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus -110 (dsMemoryError). Resolve memory errors in 
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["dsmemoryerror", "osstatus-110", "memory", "core-services", "carbon", "memory-corruption"]
 weight: 5
 ---
 

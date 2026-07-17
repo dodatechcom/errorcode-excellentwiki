@@ -4,7 +4,6 @@ description: "Fix OpenTelemetry trace export errors. Handle span processing, exp
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["opentelemetry", "otel", "tracing"]
 weight: 5
 ---
 

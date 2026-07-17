@@ -4,7 +4,6 @@ description: "Fix Swift CloudKit operation errors. Learn why CloudKit operations
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["cloudkit", "icloud", "sync", "swift"]
 weight: 5
 ---
 

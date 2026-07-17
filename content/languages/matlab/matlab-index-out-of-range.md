@@ -4,7 +4,6 @@ description: "Fix 'Index exceeds array bounds' in MATLAB when accessing elements
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "array-bounds", "subscript", "dimension", "matlab"]
 weight: 5
 ---
 

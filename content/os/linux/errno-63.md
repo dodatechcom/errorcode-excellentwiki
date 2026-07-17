@@ -4,7 +4,6 @@ description: "Fix Linux ENOSYS (errno 63) Function not implemented error. Soluti
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enosys", "syscall", "errno-63", "streams", "kernel"]
 weight: 5
 ---
 

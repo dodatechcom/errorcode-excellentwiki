@@ -4,7 +4,6 @@ description: "Next.js API route throws an unhandled exception or returns an inco
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["api", "route", "serverless", "handler"]
 weight: 5
 ---
 

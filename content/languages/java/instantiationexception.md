@@ -4,7 +4,6 @@ description: "Fix Java InstantiationException by ensuring the target class is co
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["instantiationexception", "reflection", "constructor", "abstract"]
 weight: 5
 ---
 

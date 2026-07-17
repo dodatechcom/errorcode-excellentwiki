@@ -4,7 +4,6 @@ description: "Fix Kotlin SocketTimeoutException when a network operation takes t
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sockettimeoutexception", "timeout", "socket", "network", "slow"]
 weight: 5
 ---
 

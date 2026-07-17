@@ -4,7 +4,6 @@ description: "Fix Python ImportError: sentence_transformers not found. Install s
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "sentence-transformers", "sentence_transformers", "module-not-found", "pip"]
 weight: 5
 ---
 

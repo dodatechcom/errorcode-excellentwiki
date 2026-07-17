@@ -4,7 +4,6 @@ description: "Fix general VBA runtime errors that occur during code execution, i
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "execution", "error-handling", "vba", "debug"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin UnsupportedOperationException when calling a method tha
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unsupportedoperationexception", "operation", "immutable", "readonly"]
 weight: 5
 ---
 

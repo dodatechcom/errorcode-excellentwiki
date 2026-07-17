@@ -4,7 +4,6 @@ description: "Fix C no protocol option (ENOPROTOOPT). Use protocol-appropriate s
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enoprotoopt", "no-protocol-option", "socket-option", "protocol", "errno"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Laravel Eloquent throws QueryException when a database query fails
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["eloquent", "query", "database", "orm", "query-builder"]
 weight: 5
 ---
 

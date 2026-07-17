@@ -4,7 +4,6 @@ description: "Fix Rust out of memory error. Learn why memory allocation fails an
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "allocation", "oom", "heap", "vec"]
 weight: 5
 ---
 

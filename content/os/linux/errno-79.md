@@ -4,7 +4,6 @@ description: "Fix Linux EINPROGRESS (errno 79) Operation now in progress error. 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["einprogress", "socket", "errno-79", "non-blocking", "connect"]
 weight: 5
 ---
 

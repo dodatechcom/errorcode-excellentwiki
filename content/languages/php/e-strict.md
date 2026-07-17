@@ -4,7 +4,6 @@ description: "Fix PHP E_STRICT strict standards notices. Learn to comply with st
 languages: ["php"]
 severities: ["notice"]
 error-types: ["runtime-error"]
-tags: ["e-strict", "strict", "standards"]
 weight: 5
 ---
 

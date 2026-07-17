@@ -4,7 +4,6 @@ description: "Fix Linux ECANCELED (errno 81) Operation canceled error. Solutions
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ecanceled", "canceled", "errno-81", "async", "io"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rust connection reset error. Learn why connections are reset b
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["connection", "reset", "network", "tcp", "peer", "keepalive"]
 weight: 5
 ---
 

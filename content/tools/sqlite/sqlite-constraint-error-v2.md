@@ -4,7 +4,6 @@ description: "SQLite INSERT or UPDATE fails because it violates a UNIQUE constra
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "constraint", "unique", "insert", "conflict", "primary-key"]
 weight: 5
 ---
 

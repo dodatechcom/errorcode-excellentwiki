@@ -4,7 +4,6 @@ description: "Fix Jenkins SCM checkout errors. Resolve Git, SVN, and source code
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "scm", "checkout", "git", "svn", "source"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Vite fails to transform JSX syntax in React components."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "react", "jsx", "transform", "babel"]
 weight: 5
 ---
 

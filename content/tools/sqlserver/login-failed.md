@@ -4,7 +4,6 @@ description: "SQL Server rejected the login attempt due to invalid credentials o
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["database", "authentication", "login", "security"]
 weight: 5
 ---
 

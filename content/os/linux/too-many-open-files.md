@@ -4,7 +4,6 @@ description: "Fix Linux 'Too many open files' (EMFILE) errors. Increase file des
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["too-many-open-files", "emfile", "file-descriptor", "ulimit", "nofile"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP Warning: strlen() expects exactly 1 parameter. Learn to pa
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "strlen", "string", "arguments"]
 weight: 5
 ---
 

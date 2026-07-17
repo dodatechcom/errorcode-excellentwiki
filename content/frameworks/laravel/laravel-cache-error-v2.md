@@ -4,7 +4,6 @@ description: "Laravel cache operations fail when the configured cache driver is 
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cache", "redis", "memcached", "driver", "performance"]
 weight: 5
 ---
 

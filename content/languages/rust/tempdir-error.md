@@ -4,7 +4,6 @@ description: "Fix tempdir creation errors. Handle permission issues, disk space,
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tempdir", "filesystem", "temp"]
 weight: 5
 ---
 

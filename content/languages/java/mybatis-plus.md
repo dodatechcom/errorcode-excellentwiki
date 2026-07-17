@@ -4,7 +4,6 @@ description: "Fix MyBatis-Plus DataIntegrityViolationException when base methods
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mybatis-plus", "data-integrity", "base-mapper", "insert", "constraint"]
 weight: 5
 ---
 

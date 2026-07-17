@@ -4,7 +4,6 @@ description: "Fix plumber API errors including endpoint failures, request parsin
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["plumber", "api", "rest", "endpoint", "web-service", "r"]
 weight: 5
 ---
 

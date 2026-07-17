@@ -4,7 +4,6 @@ description: "Fix std::regex pattern compilation errors. Handle regex_error from
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["regex", "pattern", "compilation", "std", "search"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python BytesWarning when bytes and strings are mixed improperl
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["byteswarning", "bytes", "string", "encoding", "str-bytes"]
 weight: 5
 ---
 

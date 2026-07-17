@@ -4,7 +4,6 @@ description: "Fix Nginx SSL certificate problems. Resolve self-signed certificat
 tools: ["nginx"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["ssl", "certificate", "self-signed", "tls", "handshake"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: bitsandbytes not found or ModuleNotFoundEr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "bitsandbytes", "bnb", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

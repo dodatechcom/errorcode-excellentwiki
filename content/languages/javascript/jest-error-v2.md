@@ -4,7 +4,6 @@ description: "Fix Jest test assertion failures. Handle expect mismatches, async 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jest", "testing", "assertion", "expect", "unit-test"]
 weight: 5
 ---
 

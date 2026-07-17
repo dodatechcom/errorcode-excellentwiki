@@ -4,7 +4,6 @@ description: "Fix Ruby Timeout::Error. Handle operation timeouts using the Timeo
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["timeout"]
-tags: ["timeout_error", "timeout", "deadline", "deadline_exceeded"]
 weight: 280
 ---
 

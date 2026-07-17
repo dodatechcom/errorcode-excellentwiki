@@ -4,7 +4,6 @@ description: "Fix PostgreSQLContainer startup failure in Testcontainers. Check D
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "postgresql", "docker", "container", "database"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: kafka-python not found or ModuleNotFoundEr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "kafka", "kafka-python", "module-not-found", "pip", "messaging"]
 weight: 5
 ---
 

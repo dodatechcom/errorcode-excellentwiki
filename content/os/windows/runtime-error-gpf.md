@@ -4,7 +4,6 @@ description: "Fix General Protection Fault (GPF) errors on Windows. Resolve priv
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["gpf", "general-protection-fault", "privilege", "segment", "access-violation"]
 weight: 5
 ---
 

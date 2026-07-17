@@ -4,7 +4,6 @@ description: "Fix macOS Core Audio errors. Causes and solutions for audio hardwa
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["core-audio", "audio", "hardware", "audio-session", "sound"]
 weight: 5
 ---
 

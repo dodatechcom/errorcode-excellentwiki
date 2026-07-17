@@ -4,7 +4,6 @@ description: "Fix Nginx 400 Bad Request large header. Resolve header size limit 
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "400", "bad-request", "header", "large-header", "buffer"]
 weight: 5
 ---
 

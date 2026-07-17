@@ -4,7 +4,6 @@ description: "Fix Blue Screen KERNEL_DATA_INPAGE_ERROR on Windows 10 and 11. Res
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "kernel-data", "inpage", "disk", "storage"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Error: ENOENT: no such file or directory — Fix Node.js file syst
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "enoent", "file-system", "fs", "no-such-file"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Cloud SQL — connection name invalid"
 description: "Fix Cloud SQL connection name invalid. Resolve Cloud SQL connection and proxy issues."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "cloud-sql", "connection", "name", "invalid", "proxy", "instance"]
 weight: 5
 ---
 

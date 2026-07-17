@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS Lambda Function Error"
 description: "Fix AWS Lambda function errors. Resolve Lambda execution and configuration issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "lambda", "function", "serverless", "execution"]
 weight: 5
 ---
 

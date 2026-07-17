@@ -4,7 +4,6 @@ description: "Fix R 'argument is not interpretable as logical' error when using 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["non-vector", "logical", "coercion", "if-condition"]
 weight: 5
 ---
 

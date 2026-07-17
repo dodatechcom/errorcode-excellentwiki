@@ -4,7 +4,6 @@ description: "Flask-CORS raises errors when cross-origin resource sharing config
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cors", "headers", "origin", "api", "flask"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TLS handshake failures in Go. Handle certificate validation, c
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tls", "ssl", "security"]
 weight: 5
 ---
 

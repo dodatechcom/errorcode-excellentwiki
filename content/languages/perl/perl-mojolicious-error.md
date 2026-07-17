@@ -4,7 +4,6 @@ description: "Fix Perl Mojolicious errors. Learn why Mojolicious applications fa
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["mojolicious", "web", "framework", "perl"]
 weight: 5
 ---
 

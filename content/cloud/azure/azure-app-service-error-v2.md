@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure App Service — 503 Service Unavailable"
 description: "Fix Azure App Service 503 Service Unavailable. Resolve App Service scaling and startup issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "app-service", "503", "service-unavailable", "scaling", "startup"]
 weight: 5
 ---
 

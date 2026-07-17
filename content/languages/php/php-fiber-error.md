@@ -4,7 +4,6 @@ description: "Fix Fiber errors in PHP 8.1+. Handle fiber creation, suspension, a
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "fiber", "concurrency"]
 weight: 5
 ---
 

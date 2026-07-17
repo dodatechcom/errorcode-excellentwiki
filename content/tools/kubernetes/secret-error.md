@@ -4,7 +4,6 @@ description: "Fix Kubernetes Secret not found error. Create and manage Secrets f
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["secret-error", "secret", "not-found", "credentials", "kubernetes"]
 weight: 5
 ---
 

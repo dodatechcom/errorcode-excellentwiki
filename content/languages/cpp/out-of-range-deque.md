@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range when deque.at() receives an out-of-bound
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["out-of-range", "deque", "at", "index", "bounds"]
 weight: 5
 ---
 

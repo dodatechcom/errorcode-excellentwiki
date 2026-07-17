@@ -4,7 +4,6 @@ description: "Fix Apple Silicon errors when Rosetta 2 is not installed, Intel ap
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["apple-silicon", "m1", "m2", "m3", "rosetta", "intel", "compatibility", "macos"]
 weight: 5
 ---
 

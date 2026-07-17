@@ -4,7 +4,6 @@ description: "Fix Python TypeError when trying to subscript a set. Learn why set
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "set", "subscript", "index"]
 weight: 5
 ---
 

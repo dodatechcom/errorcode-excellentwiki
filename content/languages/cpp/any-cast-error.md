@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_any_cast when casting std::any to wrong type. Use
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-any-cast", "any-cast", "any", "type-cast", "type-safety"]
 weight: 5
 ---
 

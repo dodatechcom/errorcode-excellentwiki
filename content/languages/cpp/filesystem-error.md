@@ -4,7 +4,6 @@ description: "Fix C++ std::filesystem::filesystem_error. Handle filesystem opera
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["filesystem", "filesystem_error", "error-code", "path", "filesystem-library"]
 weight: 5
 ---
 

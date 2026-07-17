@@ -4,7 +4,6 @@ description: "Fix Rust invalid URL error. Learn why URL parsing fails and how to
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["url", "parse", "invalid", "percent-encoding", "scheme"]
 weight: 5
 ---
 

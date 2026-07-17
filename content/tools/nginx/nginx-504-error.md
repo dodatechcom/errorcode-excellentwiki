@@ -4,7 +4,6 @@ description: "Fix Nginx 504 Gateway Timeout error. Diagnose upstream server time
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["504", "gateway-timeout", "upstream", "timeout", "nginx"]
 weight: 5
 ---
 

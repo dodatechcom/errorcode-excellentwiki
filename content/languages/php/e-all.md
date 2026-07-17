@@ -4,7 +4,6 @@ description: "Configure PHP E_ALL to report all errors, warnings, notices, and d
 languages: ["php"]
 severities: ["warning"]
 error-types: ["runtime-error"]
-tags: ["e-all", "error-reporting", "configuration"]
 weight: 5
 ---
 

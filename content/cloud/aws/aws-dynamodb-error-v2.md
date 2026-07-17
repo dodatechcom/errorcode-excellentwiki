@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS DynamoDB — ProvisionedThroughputExceededException"
 description: "Fix AWS DynamoDB ProvisionedThroughputExceededException. Resolve DynamoDB throttling and capacity issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "dynamodb", "throughput", "exceeded", "throttling", "capacity", "provisioned"]
 weight: 5
 ---
 

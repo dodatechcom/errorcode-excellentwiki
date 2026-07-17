@@ -4,7 +4,6 @@ description: "Understand and handle Bash exit status codes for command success, 
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["exit-status", "return-code", "error-handling"]
 weight: 5
 ---
 

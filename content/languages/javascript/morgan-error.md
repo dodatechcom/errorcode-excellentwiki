@@ -4,7 +4,6 @@ description: "Fix Morgan HTTP logger errors. Handle stream issues, format proble
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["morgan", "logger", "http"]
 weight: 5
 ---
 

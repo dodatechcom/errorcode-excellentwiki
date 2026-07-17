@@ -4,7 +4,6 @@ description: "Fix Node.js ECONNREFUSED: connection refused error. Handle network
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["econnrefused", "connection-refused", "network", "socket", "tcp"]
 weight: 5
 ---
 

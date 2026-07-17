@@ -4,7 +4,6 @@ description: "React Native iOS build fails during CocoaPods pod installation due
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["ios", "cocoapods", "pod", "xcode", "dependency", "swift", "objc"]
 weight: 5
 ---
 

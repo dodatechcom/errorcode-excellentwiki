@@ -4,7 +4,6 @@ description: "A linker error occurs when the linker cannot resolve a reference t
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["linker", "undefined-reference", "link-time", "library"]
 weight: 5
 ---
 

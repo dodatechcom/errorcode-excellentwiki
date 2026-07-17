@@ -4,7 +4,6 @@ description: "Fix access violation runtime errors (read/write) on Windows 10/11.
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["access-violation", "0xC0000005", "memory", "read", "write", "null-pointer"]
 weight: 5
 ---
 

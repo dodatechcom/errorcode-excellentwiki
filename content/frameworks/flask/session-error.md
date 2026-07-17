@@ -4,7 +4,6 @@ description: "Flask raises an error when accessing or modifying a session that i
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["session", "cookie", "cookie-session", "signed-cookie"]
 weight: 5
 ---
 

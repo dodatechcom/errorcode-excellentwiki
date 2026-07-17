@@ -4,7 +4,6 @@ description: "Fix Docker inspect errors. Resolve container, image, and network i
 tools: ["docker"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["inspect", "container", "image", "metadata", "docker"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "AWS VPCIdNotSupported / InvalidVPCID"
 description: "VPCIdNotSupported / InvalidVPCID — Fix AWS VPC configuration errors."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "vpc", "network", "invalid-vpc", "subnet", "security-group"]
 weight: 5
 ---
 

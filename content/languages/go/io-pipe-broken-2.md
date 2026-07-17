@@ -4,7 +4,6 @@ description: "Fix Go broken pipe error when writing to a closed pipe or connecti
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pipe", "broken", "write", "signal", "connection", "runtime"]
 weight: 5
 ---
 

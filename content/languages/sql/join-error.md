@@ -4,7 +4,6 @@ description: "Fix 'Invalid use of group function' or JOIN errors when combining 
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["join-error", "invalid-group-by", "cross-join", "join-syntax"]
 weight: 5
 ---
 

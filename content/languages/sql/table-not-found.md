@@ -4,7 +4,6 @@ description: "Fix 'Table X doesn't exist' when a SQL query references a nonexist
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["table-not-found", "no-such-table", "missing-table"]
 weight: 5
 ---
 

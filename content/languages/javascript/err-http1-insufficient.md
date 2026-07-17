@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP1_INSUFFICIENT when there is insufficient data
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http1-insufficient", "http", "parser", "data", "nodejs"]
 weight: 5
 ---
 

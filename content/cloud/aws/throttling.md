@@ -1,10 +1,8 @@
 ---
 title: "AWS ThrottlingException / RequestLimitExceeded"
 description: "ThrottlingException / RequestLimitExceeded — Fix AWS API rate limiting errors."
-cloud: ["aws"]
 error-types: ["quota-error"]
 severities: ["error"]
-tags: ["aws", "throttling", "rate-limit", "request-limit", "api", "quota"]
 weight: 5
 ---
 

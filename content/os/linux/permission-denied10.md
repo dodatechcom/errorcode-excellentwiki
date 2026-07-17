@@ -4,7 +4,6 @@ description: "Fix Linux 'Permission denied (you must be root)' error. Learn how 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["permission-denied", "must-be-root", "sudo", "chmod", "chown"]
 weight: 5
 ---
 

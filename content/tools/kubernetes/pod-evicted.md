@@ -4,7 +4,6 @@ description: "Fix Kubernetes pod eviction due to node memory pressure. Learn why
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["pod-evicted", "memory-pressure", "node", "eviction", "resource"]
 weight: 5
 ---
 

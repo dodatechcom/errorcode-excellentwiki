@@ -4,7 +4,6 @@ description: "Fix 'Registry is corrupted' errors on Windows 10 and 11. Repair co
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "corrupted", "corrupt", "hive", "repair"]
 weight: 5
 ---
 

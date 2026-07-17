@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure DevOps Pipeline Error"
 description: "Fix Azure DevOps pipeline errors. Resolve CI/CD pipeline failures."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "devops", "pipeline", "ci-cd", "build"]
 weight: 5
 ---
 

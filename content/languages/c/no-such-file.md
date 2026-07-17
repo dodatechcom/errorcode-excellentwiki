@@ -4,7 +4,6 @@ description: "Fix C no such file or directory (ENOENT). Verify file paths before
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enoent", "no-such-file", "file-not-found", "errno", "open"]
 weight: 5
 ---
 

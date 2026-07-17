@@ -4,7 +4,6 @@ description: "Fix Go gRPC deadline exceeded errors. Handle timeouts, context dea
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "timeout", "deadline"]
 weight: 5
 ---
 

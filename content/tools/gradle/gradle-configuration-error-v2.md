@@ -4,7 +4,6 @@ description: "Gradle fails to create a task due to configuration or type errors.
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "configuration", "task", "type", "evaluation"]
 weight: 5
 ---
 

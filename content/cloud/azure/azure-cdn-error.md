@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure CDN Error"
 description: "Fix Azure CDN errors. Resolve CDN configuration and caching issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "cdn", "content-delivery", "cache", "edge"]
 weight: 5
 ---
 

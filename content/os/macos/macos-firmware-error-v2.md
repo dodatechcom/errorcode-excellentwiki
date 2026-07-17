@@ -4,7 +4,6 @@ description: "Fix Mac firmware update errors on macOS. Resolve firmware update f
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["firmware", "bridgeos", "im4p", "sep", "update", "macos"]
 weight: 5
 ---
 

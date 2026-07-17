@@ -4,7 +4,6 @@ description: "A MatchError occurs when a match expression encounters a value tha
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern", "matcherror", "runtime"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "S3 Access Denied"
 description: "AccessDenied - User is not authorized to perform s3:GetObject"
-cloud: ["aws"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["aws", "s3", "iam", "access-denied", "permissions"]
 weight: 5
 ---
 

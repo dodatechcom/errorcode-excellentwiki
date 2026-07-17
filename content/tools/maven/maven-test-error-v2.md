@@ -4,7 +4,6 @@ description: "Maven surefire plugin reports test failures or errors during build
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "tests", "surefire", "test-failure", "junit"]
 weight: 5
 ---
 

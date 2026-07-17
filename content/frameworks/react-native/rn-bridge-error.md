@@ -4,7 +4,6 @@ description: "React Native bridge fails to invoke a native module method, causin
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bridge", "native-module", "method", "argument", "ios", "android"]
 weight: 5
 ---
 

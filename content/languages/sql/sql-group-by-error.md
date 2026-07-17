@@ -4,7 +4,6 @@ description: "Fix 'Expression not in GROUP BY clause' when a SELECT column is no
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["group-by", "aggregate", "select", "sql-mode"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix F# StackOverflowException in recursive functions. Convert to t
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack-overflow", "recursion", "tail-recursion", "dotnet", "fsharp"]
 weight: 5
 ---
 

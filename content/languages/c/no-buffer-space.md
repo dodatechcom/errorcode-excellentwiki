@@ -4,7 +4,6 @@ description: "Fix C no buffer space available (ENOBUFS). Reduce buffer usage or 
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enobufs", "no-buffer-space", "socket", "buffer", "errno"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Laravel throws FileNotFoundException or FilesystemNotFoundExceptio
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "filesystem", "storage", "path", "upload"]
 weight: 5
 ---
 

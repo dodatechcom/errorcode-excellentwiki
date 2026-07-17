@@ -4,7 +4,6 @@ description: "Fix Mechanize connection errors in Ruby. Learn why Mechanize HTTP 
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["connection-error"]
-tags: ["mechanize", "connection", "http", "scraping", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Docker container OOM (Out of Memory) killed errors on Linux. R
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "oom", "out-of-memory", "memory", "oom-killer", "limits"]
 weight: 5
 ---
 

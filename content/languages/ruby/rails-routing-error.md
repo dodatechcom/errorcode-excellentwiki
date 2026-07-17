@@ -4,7 +4,6 @@ description: "Fix Rails routing errors when a request hits a route that doesn't 
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["routing", "ActionController", "routes", "rails", "ruby"]
 weight: 5
 ---
 

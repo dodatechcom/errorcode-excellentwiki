@@ -4,7 +4,6 @@ description: "Fix Bull queue job processing failures. Handle stalled jobs, retry
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bull", "redis", "queue", "job", "worker", "background"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes NetworkPolicy errors. Resolve network policy blocki
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["networkpolicy", "network", "policy", "connection", "kubernetes"]
 weight: 5
 ---
 

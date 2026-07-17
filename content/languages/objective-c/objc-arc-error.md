@@ -4,7 +4,6 @@ description: "Fix Objective-C Automatic Reference Counting compilation and runti
 languages: ["objective-c"]
 error-types: ["memory-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "arc", "memory-management"]
 weight: 5
 ---
 

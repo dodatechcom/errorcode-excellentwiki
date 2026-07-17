@@ -4,7 +4,6 @@ description: "Fix Groovy MissingMethodException when calling methods that don't 
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["missing-method", "method", "dynamic", "metaclass", "groovy"]
 weight: 5
 ---
 

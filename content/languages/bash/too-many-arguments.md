@@ -4,7 +4,6 @@ description: "Fix 'too many arguments' in Bash when a command receives more argu
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["too-many-arguments", "argument-error", "builtin-error"]
 weight: 5
 ---
 

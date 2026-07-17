@@ -4,7 +4,6 @@ description: "Fix Python TypeError: 'int' object is not iterable when trying to 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "iterable", "iteration", "int"]
 weight: 5
 ---
 

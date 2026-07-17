@@ -4,7 +4,6 @@ description: "React Native throws an error when using the Animated API on an unm
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["animated", "animation", "node", "reanimated", "lifecycle"]
 weight: 5
 ---
 

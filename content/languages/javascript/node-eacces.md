@@ -4,7 +4,6 @@ description: "Error: EACCES: permission denied — Fix Node.js file system permi
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "eacces", "permission-denied", "fs", "chmod"]
 weight: 5
 ---
 

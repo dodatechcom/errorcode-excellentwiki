@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error from pow function. Handle invalid pow ar
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["domain-error", "pow", "power", "math", "domain"]
 weight: 5
 ---
 

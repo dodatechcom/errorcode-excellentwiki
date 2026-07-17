@@ -4,7 +4,6 @@ description: "Fix Python NotADirectoryError when expecting a directory but findi
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["notadirectoryerror", "directory", "file-path", "os"]
 weight: 58
 ---
 

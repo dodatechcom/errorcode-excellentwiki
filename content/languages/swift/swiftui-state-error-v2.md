@@ -4,7 +4,6 @@ description: "Fix SwiftUI @State property wrapper mutation errors."
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["SwiftUI", "@State", "mutation", "binding", "swift"]
 weight: 5
 ---
 

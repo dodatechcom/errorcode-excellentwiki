@@ -4,7 +4,6 @@ description: "Fix Kubernetes CrashLoopBackOff status. Diagnose why pods keep cra
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["crashloopbackoff", "pod", "restart", "crash", "container"]
 weight: 5
 ---
 

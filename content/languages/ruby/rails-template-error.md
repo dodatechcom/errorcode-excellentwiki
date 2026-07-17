@@ -4,7 +4,6 @@ description: "Fix Rails template errors when a view template file is missing."
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ActionView", "missing-template", "view", "rails", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go HTTP timeout errors when context deadline is exceeded. Set 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["context", "deadline", "timeout"]
 weight: 5
 ---
 

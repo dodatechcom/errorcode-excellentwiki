@@ -4,7 +4,6 @@ description: "Fix Linux Kubernetes service connection timeout errors. Resolve se
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "service", "timeout", "connection", "dns", "endpoint"]
 weight: 5
 ---
 

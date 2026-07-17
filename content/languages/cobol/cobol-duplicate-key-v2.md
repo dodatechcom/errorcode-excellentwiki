@@ -4,7 +4,6 @@ description: "Fix COBOL duplicate key errors when attempting to write or add a r
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["duplicate", "key", "indexed", "record", "status", "cobol"]
 weight: 5
 ---
 

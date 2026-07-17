@@ -4,7 +4,6 @@ description: "Fix warnings when using deprecated Jackson APIs like SimpleModule.
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "deprecated", "simple-module", "migration"]
 weight: 5
 ---
 

@@ -6,7 +6,6 @@ replacement_function: "lambda"
 languages: ["cpp"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["bind2nd", "lambda", "functional", "cpp11", "bind"]
 weight: 5
 ---
 

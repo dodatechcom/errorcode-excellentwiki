@@ -4,7 +4,6 @@ description: "Fix Docker COPY failed file not found errors. Resolve missing file
 tools: ["docker"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["copy", "dockerfile", "build-context", "file-not-found", "build"]
 weight: 5
 ---
 

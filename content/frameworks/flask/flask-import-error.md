@@ -4,7 +4,6 @@ description: "Flask raises ImportError when a required module or extension canno
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["import", "module", "extension", "dependency", "flask"]
 weight: 5
 ---
 

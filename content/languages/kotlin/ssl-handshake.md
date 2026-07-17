@@ -4,7 +4,6 @@ description: "Fix Kotlin SSLHandshakeException when SSL/TLS handshake fails. Che
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sslhandshakeexception", "ssl", "tls", "certificate", "security"]
 weight: 5
 ---
 

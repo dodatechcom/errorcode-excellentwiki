@@ -4,7 +4,6 @@ description: "Fix macOS Launch Services errors -10810 and -10811. Causes and sol
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["launch-services", "-10810", "-10811", "app-launch", "lsregister"]
 weight: 5
 ---
 

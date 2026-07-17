@@ -4,7 +4,6 @@ description: "Fix Go fatal error concurrent map read and map write. Use sync.Mut
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["concurrent", "map", "race-condition", "sync-mutex", "sync-map", "goroutine", "runtime"]
 weight: 5
 ---
 

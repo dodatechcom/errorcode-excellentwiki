@@ -4,7 +4,6 @@ description: "Fix 'Foreign key constraint fails' when an INSERT or UPDATE violat
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["foreign-key", "referential-integrity", "constraint"]
 weight: 5
 ---
 

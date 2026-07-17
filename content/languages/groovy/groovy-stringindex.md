@@ -4,7 +4,6 @@ description: "Fix Groovy StringIndexOutOfBoundsException when accessing characte
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["string", "index", "out-of-bounds", "substring", "groovy"]
 weight: 5
 ---
 

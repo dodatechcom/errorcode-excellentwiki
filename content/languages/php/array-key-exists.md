@@ -4,7 +4,6 @@ description: "Fix PHP array_key_exists() type error. Learn why Argument #2 must 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["array-key-exists", "type-error", "argument", "array", "fatal-error"]
 weight: 5
 ---
 

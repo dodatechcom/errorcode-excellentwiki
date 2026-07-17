@@ -4,7 +4,6 @@ description: "Fix hyper HTTP library errors. Handle connection issues, body stre
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hyper", "http", "protocol"]
 weight: 5
 ---
 

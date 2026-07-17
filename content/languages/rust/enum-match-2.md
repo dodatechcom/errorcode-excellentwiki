@@ -4,7 +4,6 @@ description: "Fix Rust non-exhaustive patterns error. Learn why match expression
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "enum", "exhaustive", "patterns", "wildcard"]
 weight: 5
 ---
 

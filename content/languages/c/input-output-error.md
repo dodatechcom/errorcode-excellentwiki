@@ -4,7 +4,6 @@ description: "Fix C input/output error (EIO). Handle hardware and driver-level I
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eio", "input-output-error", "hardware", "driver", "errno"]
 weight: 5
 ---
 

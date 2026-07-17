@@ -4,7 +4,6 @@ description: "Fix Go invalid memory address panic. Check pointers before use, av
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["memory", "address", "invalid", "pointer", "unsafe", "panic"]
 weight: 5
 ---
 

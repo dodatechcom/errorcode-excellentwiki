@@ -4,7 +4,6 @@ description: "React Native RedBox error when accessing undefined as an object, t
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redbox", "runtime", "javascript", "undefined", "object", "props"]
 weight: 5
 ---
 

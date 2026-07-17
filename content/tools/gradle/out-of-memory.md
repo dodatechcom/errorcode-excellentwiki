@@ -4,7 +4,6 @@ description: "Gradle daemon or build process ran out of memory, causing the buil
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "out-of-memory", "heap-space", "daemon"]
 weight: 5
 ---
 

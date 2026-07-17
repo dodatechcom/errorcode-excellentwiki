@@ -4,7 +4,6 @@ description: "Fix PHP error code 256 E_USER_ERROR triggered as exception. Learn 
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["error-256", "e-user-error", "exception"]
 weight: 5
 ---
 

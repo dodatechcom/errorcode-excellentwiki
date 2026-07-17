@@ -1,10 +1,8 @@
 ---
 title: "GCP Firebase: Project Not Found / Quota Exceeded"
 description: "Firebase: Project not found / quota exceeded — Fix Firebase project and quota errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "firebase", "project", "not-found", "quota", "authentication", "api-key"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS Metal GPU errors. Causes and solutions for Metal renderi
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["metal", "gpu", "rendering", "compute", "graphics"]
 weight: 5
 ---
 

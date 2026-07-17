@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range when stoul receives value outside unsign
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["out-of-range", "stoul", "conversion", "unsigned-long", "range"]
 weight: 5
 ---
 

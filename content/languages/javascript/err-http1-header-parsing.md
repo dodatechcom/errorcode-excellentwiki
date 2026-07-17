@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP1_HEADER_PARSING when HTTP/1.1 headers cannot 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http1-header-parsing", "http", "headers", "parser", "nodejs"]
 weight: 5
 ---
 

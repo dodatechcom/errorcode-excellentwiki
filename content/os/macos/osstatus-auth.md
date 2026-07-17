@@ -4,7 +4,6 @@ description: "Fix macOS OSStatus authentication errors -25293 and -25291. Causes
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["osstatus", "authentication", "-25293", "-25291", "keychain", "security"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "A message sent to nil occurs when calling a method on a nil object
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nil", "message", "null", "objc"]
 weight: 5
 ---
 

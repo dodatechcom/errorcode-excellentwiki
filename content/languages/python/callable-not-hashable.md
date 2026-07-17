@@ -4,7 +4,6 @@ description: "Fix Python TypeError: unhashable type when using mutable objects a
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "unhashable", "hash", "dict", "set"]
 weight: 5
 ---
 

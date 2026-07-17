@@ -4,7 +4,6 @@ description: "Fix Blue Screen MOUNT_NOT_SUPPORTED error on Windows 10 and 11. Re
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "mount", "volume", "storage", "ntfs"]
 weight: 5
 ---
 

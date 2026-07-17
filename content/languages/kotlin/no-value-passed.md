@@ -4,7 +4,6 @@ description: "Fix Kotlin no value passed for parameter errors. Provide all requi
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["no-value-passed", "parameter", "argument", "function", "default"]
 weight: 5
 ---
 

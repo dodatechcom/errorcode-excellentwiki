@@ -4,7 +4,6 @@ description: "An array bounds error occurs when a Fortran program attempts to ac
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["array", "bounds", "index-out-of-range"]
 weight: 5
 ---
 

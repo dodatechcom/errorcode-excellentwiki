@@ -4,7 +4,6 @@ description: "Spring for GraphQL throws DataFetchingException when a GraphQL dat
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["graphql", "data-fetcher", "schema", "resolver", "spring-graphql"]
 weight: 5
 ---
 

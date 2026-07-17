@@ -4,7 +4,6 @@ description: "Fix macOS Time Machine backup failed errors. Resolve 'backup disk 
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["time-machine", "backup", "sparsebundle", "network-backup", "disk"]
 weight: 5
 ---
 

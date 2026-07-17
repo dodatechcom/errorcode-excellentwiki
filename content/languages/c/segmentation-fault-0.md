@@ -4,7 +4,6 @@ description: "Fix C segmentation fault at address 0x0. Resolve null pointer dere
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["segfault", "address-0x0", "null-pointer", "sigsegv"]
 weight: 5
 ---
 

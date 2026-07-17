@@ -4,7 +4,6 @@ description: "Flask-Admin raises errors related to admin panel configuration, mo
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["admin", "panel", "model", "backend", "flask"]
 weight: 5
 ---
 

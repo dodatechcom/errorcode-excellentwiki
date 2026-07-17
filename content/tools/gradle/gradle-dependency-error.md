@@ -4,7 +4,6 @@ description: "Gradle cannot resolve a required dependency from any configured re
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "dependency", "resolve", "repository", "artifact"]
 weight: 5
 ---
 

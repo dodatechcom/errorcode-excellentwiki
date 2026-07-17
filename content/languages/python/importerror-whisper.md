@@ -4,7 +4,6 @@ description: "Fix Python ImportError: whisper not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "whisper", "module-not-found", "pip", "speech"]
 weight: 5
 ---
 

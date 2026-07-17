@@ -4,7 +4,6 @@ description: "Fix R 'unused argument' error when calling functions with incorrec
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unused-argument", "function", "parameter", "named-argument", "r"]
 weight: 5
 ---
 

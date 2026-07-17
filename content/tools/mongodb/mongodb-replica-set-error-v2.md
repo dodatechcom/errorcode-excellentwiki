@@ -4,7 +4,6 @@ description: "MongoDB read operation fails because it is routed to a secondary n
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "replica-set", "primary", "read-preference", "secondary", "not-primary"]
 weight: 5
 ---
 

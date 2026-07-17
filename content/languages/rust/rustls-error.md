@@ -4,7 +4,6 @@ description: "Fix rustls TLS errors. Handle certificate verification, protocol n
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rustls", "tls", "security"]
 weight: 5
 ---
 

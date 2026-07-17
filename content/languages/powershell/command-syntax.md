@@ -4,7 +4,6 @@ description: "Fix 'ParserError: Unexpected token' when PowerShell cannot parse a
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ParserError", "syntax", "unexpected-token"]
 weight: 5
 ---
 

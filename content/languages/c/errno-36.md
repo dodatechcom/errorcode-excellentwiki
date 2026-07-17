@@ -4,7 +4,6 @@ description: "Fix C errno 36 ENOLCK (No record locks available) by reducing conc
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enolck", "errno-36", "lock", "record-lock", "file-lock"]
 weight: 5
 ---
 

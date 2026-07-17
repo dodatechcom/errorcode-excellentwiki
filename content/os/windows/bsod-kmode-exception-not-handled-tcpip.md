@@ -4,7 +4,6 @@ description: "Fix Blue Screen KMODE_EXCEPTION_NOT_HANDLED caused by tcpip.sys on
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "tcpip", "kmode", "network", "driver"]
 weight: 5
 ---
 

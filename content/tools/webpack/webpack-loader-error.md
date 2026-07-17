@@ -4,7 +4,6 @@ description: "A Webpack loader fails to process a module during the build."
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "loader", "transform", "babel", "typescript"]
 weight: 5
 ---
 

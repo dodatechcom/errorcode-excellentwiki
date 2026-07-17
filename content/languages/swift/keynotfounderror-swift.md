@@ -4,7 +4,6 @@ description: "Fix Swift KeyNotFoundError in dictionaries. Learn why dictionary k
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["keynotfound", "dictionary", "key", "swift"]
 weight: 5
 ---
 

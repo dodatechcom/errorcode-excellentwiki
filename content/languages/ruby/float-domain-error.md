@@ -4,7 +4,6 @@ description: "Fix Ruby FloatDomainError: NaN. Handle NaN and Infinity values in 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["float-domain"]
-tags: ["floatdomainerror", "nan", "infinity", "float", "math"]
 weight: 110
 ---
 

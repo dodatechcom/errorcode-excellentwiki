@@ -4,7 +4,6 @@ description: "Fix VBA Overflow error (Error 6) when a calculation exceeds the da
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "error-6", "numeric", "data-type", "vba"]
 weight: 5
 ---
 

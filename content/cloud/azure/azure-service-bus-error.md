@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Service Bus Error"
 description: "Fix Azure Service Bus errors. Resolve Service Bus connectivity and message issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "service-bus", "queue", "topic", "messaging"]
 weight: 5
 ---
 

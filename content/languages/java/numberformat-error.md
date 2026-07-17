@@ -4,7 +4,6 @@ description: "Fix Java NumberFormatException when parsing strings to numbers. Va
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["numberformatexception", "parsing", "integer", "long", "input-validation"]
 weight: 5
 ---
 

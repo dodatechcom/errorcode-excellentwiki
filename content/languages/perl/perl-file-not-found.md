@@ -4,7 +4,6 @@ description: "Fix Perl file not found errors. Learn why file operations fail and
 languages: ["perl"]
 severities: ["error"]
 error-types: ["io-error"]
-tags: ["file", "io", "open", "perl"]
 weight: 5
 ---
 

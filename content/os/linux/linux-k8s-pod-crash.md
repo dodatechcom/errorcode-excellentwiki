@@ -4,7 +4,6 @@ description: "Fix Linux Kubernetes pod crashing with exit code 1. Diagnose conta
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "pod", "crash", "exit-code-1", "restart-loop"]
 weight: 5
 ---
 

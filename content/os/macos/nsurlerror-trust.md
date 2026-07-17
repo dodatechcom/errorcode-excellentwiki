@@ -4,7 +4,6 @@ description: "Fix macOS NSURLError server trust evaluation error -1202. Causes a
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nsurlerror", "trust", "-1202", "ssl", "tls", "certificate", "sslerror"]
 weight: 5
 ---
 

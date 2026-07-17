@@ -4,7 +4,6 @@ description: "Fix Linux ENOEXEC (errno 8) Exec format error. Solutions for inval
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOEXEC", "exec", "errno-8", "binary"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Dart StateError when calling first or single on empty iterable
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["state-error", "no-element", "iterable", "empty", "first", "dart"]
 weight: 5
 ---
 

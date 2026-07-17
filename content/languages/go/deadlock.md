@@ -4,7 +4,6 @@ description: "Fix Go deadlock: all goroutines are asleep. Ensure channels are pr
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["deadlock", "goroutine", "channel", "concurrency", "panic"]
 weight: 5
 ---
 

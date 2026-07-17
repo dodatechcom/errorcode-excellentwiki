@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_key_exists() second argument. Learn to vali
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-key-exists", "array", "arguments"]
 weight: 5
 ---
 

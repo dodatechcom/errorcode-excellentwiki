@@ -4,7 +4,6 @@ description: "Fix VBA Access errors when records cannot be updated, edited, or d
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["access", "database", "record", "update", "query", "vba"]
 weight: 5
 ---
 

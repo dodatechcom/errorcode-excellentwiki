@@ -4,7 +4,6 @@ description: "Fix COBOL errors when record formats don't match, record lengths a
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["record", "format", "length", "fd", "file", "cobol"]
 weight: 5
 ---
 

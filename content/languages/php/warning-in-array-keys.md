@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_keys() expects at least 1 argument. Learn t
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-keys", "array", "arguments"]
 weight: 5
 ---
 

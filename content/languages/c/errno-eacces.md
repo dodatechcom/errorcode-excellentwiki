@@ -4,7 +4,6 @@ description: "Fix C EACCES (Permission denied) by correcting file permissions, c
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eacces", "permission-denied", "file-permissions", "access-control"]
 weight: 5
 ---
 

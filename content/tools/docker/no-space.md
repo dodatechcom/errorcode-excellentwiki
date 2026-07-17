@@ -4,7 +4,6 @@ description: "Fix Docker no space left on device error. Free disk space and clea
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["no-space", "disk-full", "device", "cleanup", "docker"]
 weight: 5
 ---
 

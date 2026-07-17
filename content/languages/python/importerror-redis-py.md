@@ -4,7 +4,6 @@ description: "Fix Python ImportError: redis not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "redis", "redis-py", "module-not-found", "pip", "cache"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix VBA Run-time error 70 when VBA cannot access a file, folder, o
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime-error", "permission", "denied", "access", "file", "vba"]
 weight: 5
 ---
 

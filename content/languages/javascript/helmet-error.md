@@ -4,7 +4,6 @@ description: "Fix Helmet security middleware errors. Handle CSP issues, header c
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["helmet", "security", "csp"]
 weight: 5
 ---
 

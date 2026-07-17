@@ -4,7 +4,6 @@ description: "Fix VBA Out of Memory error (Error 7) when VBA cannot allocate eno
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["out-of-memory", "error-7", "memory", "allocation", "vba"]
 weight: 5
 ---
 

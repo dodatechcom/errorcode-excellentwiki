@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_flip() expects exactly 1 argument. Learn to
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-flip", "array", "arguments"]
 weight: 5
 ---
 

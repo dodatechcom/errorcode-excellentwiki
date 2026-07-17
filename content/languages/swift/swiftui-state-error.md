@@ -4,7 +4,6 @@ description: "Fix Swift SwiftUI @State errors. Learn why SwiftUI state managemen
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["swiftui", "state", "binding", "view", "swift"]
 weight: 5
 ---
 

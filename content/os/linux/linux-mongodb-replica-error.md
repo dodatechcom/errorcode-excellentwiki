@@ -4,7 +4,6 @@ description: "Fix Linux MongoDB 'replica set not primary' errors. Resolve replic
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["mongodb", "replica-set", "not-primary", "election", "database"]
 weight: 5
 ---
 

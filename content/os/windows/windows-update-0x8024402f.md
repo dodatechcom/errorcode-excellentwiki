@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x8024402f (download connection failure) 
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["windows-update", "0x8024402f", "download", "connection", "network"]
 weight: 5
 ---
 

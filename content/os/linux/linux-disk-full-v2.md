@@ -4,7 +4,6 @@ description: "Fix Linux 'No space left on device' errors. Free disk space, remov
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["disk-full", "no-space", "inode-exhaustion", "filesystem", "disk-usage"]
 weight: 5
 ---
 

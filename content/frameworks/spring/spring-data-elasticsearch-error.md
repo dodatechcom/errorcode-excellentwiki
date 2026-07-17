@@ -4,7 +4,6 @@ description: "Spring Data Elasticsearch throws ElasticsearchException when an El
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["elasticsearch", "search", "spring-data", "index", "mapping"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix AmqpException in Spring AMQP. Resolve connection, channel, and
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "amqp", "rabbitmq", "message-queue", "amqp-exception"]
 weight: 5
 ---
 

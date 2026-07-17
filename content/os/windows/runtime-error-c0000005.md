@@ -4,7 +4,6 @@ description: "Fix Windows runtime error 0xC0000005 (Access Violation) on Windows
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["access-violation", "memory-error", "application-crash", "0xC0000005"]
 weight: 5
 ---
 

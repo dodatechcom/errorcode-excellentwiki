@@ -4,7 +4,6 @@ description: "Fix C format string vulnerabilities and compiler warnings. Prevent
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["format-string", "printf", "security", "vulnerability", "format-warning"]
 weight: 5
 ---
 

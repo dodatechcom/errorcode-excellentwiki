@@ -6,7 +6,6 @@ replacement_function: "fgets"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["gets", "fgets", "buffer-overflow", "security", "c"]
 weight: 5
 ---
 

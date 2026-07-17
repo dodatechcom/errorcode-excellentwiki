@@ -4,7 +4,6 @@ description: "Fix Python RuntimeWarning when suspicious runtime behavior is dete
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtimewarning", "runtime", "float", "regex", "diagnostic"]
 weight: 5
 ---
 

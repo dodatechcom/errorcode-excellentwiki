@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_exception from unexpected exception types. Use pr
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-exception", "unexpected", "exception", "dynamic-exception", "throw"]
 weight: 5
 ---
 

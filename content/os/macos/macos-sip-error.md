@@ -4,7 +4,6 @@ description: "Fix SIP errors on Mac when you can't modify system files, install 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["sip", "system-integrity-protection", "csrutil", "security", "system-files"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: cv2 not found or ModuleNotFoundError: No m
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "opencv", "cv2", "module-not-found", "pip", "vision"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python BlockingIOError when a non-blocking I/O operation canno
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["blockingioerror", "blocking", "io", "async", "non-blocking"]
 weight: 5
 ---
 

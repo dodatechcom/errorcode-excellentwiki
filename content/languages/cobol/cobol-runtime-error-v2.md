@@ -4,7 +4,6 @@ description: "Fix COBOL runtime errors when file operations fail with status cod
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "file", "status", "access", "open", "cobol"]
 weight: 5
 ---
 

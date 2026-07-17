@@ -4,7 +4,6 @@ description: "Fix TypeScript TS18048: X is possibly 'undefined'. Handle undefine
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts18048", "possibly-undefined", "undefined", "type-guard", "strictNullChecks"]
 weight: 5
 ---
 

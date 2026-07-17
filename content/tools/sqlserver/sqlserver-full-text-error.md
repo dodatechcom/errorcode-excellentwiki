@@ -4,7 +4,6 @@ description: "SQL Server full-text index fails to populate, query, or maintain d
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "full-text", "index", "search", "populate", "filter"]
 weight: 5
 ---
 

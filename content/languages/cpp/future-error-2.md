@@ -4,7 +4,6 @@ description: "Fix C++ std::future_error when using promises, futures, and packag
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["future-error", "std-future", "std-promise", "concurrency"]
 weight: 5
 ---
 

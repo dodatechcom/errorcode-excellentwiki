@@ -4,7 +4,6 @@ description: "Fix Go HTTP 404 not found errors. Handle missing routes, URL patte
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["http", "404", "not-found"]
 weight: 5
 ---
 

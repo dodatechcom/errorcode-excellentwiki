@@ -4,7 +4,6 @@ description: "Fix Linux 'rpm: package not found' and RPM installation errors. Re
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["rpm", "package-not-found", "rpmdb", "dependency", "redhat", "package-manager"]
 weight: 5
 ---
 

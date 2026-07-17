@@ -4,7 +4,6 @@ description: "A NullPointerException occurs when attempting to use a reference t
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "NullPointerException", "nil", "groovy"]
 weight: 5
 ---
 

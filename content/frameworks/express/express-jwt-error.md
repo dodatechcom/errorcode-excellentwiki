@@ -4,7 +4,6 @@ description: "Fix Express JWT verification errors. Resolve JSON Web Token authen
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jwt", "jsonwebtoken", "token", "auth", "express"]
 weight: 5
 ---
 

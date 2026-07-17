@@ -4,7 +4,6 @@ description: "Haskell raises infinite type errors when type inference encounters
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["infinite", "type", "recursive", "unification", "infinite-type"]
 weight: 5
 ---
 

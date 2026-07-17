@@ -4,7 +4,6 @@ description: "Fix Nginx limit_req rate limiting errors. Resolve request rate lim
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["limit_req", "rate-limit", "throttle", "503", "nginx"]
 weight: 5
 ---
 

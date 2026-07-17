@@ -4,7 +4,6 @@ description: "Fix Kubernetes controller-manager reconciliation errors. Resolve c
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "controller", "controller-manager", "reconciliation", "sync", "control-plane"]
 weight: 5
 ---
 

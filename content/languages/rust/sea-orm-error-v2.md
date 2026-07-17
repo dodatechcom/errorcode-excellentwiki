@@ -4,7 +4,6 @@ description: "Fix sea-orm entity not found errors. Handle missing entities, rela
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sea-orm", "database", "orm", "entity", "query"]
 weight: 5
 ---
 

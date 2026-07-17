@@ -4,7 +4,6 @@ description: "Fix macOS audio device not found, no sound output, or audio not wo
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["audio", "sound", "output", "input", "core-audio", "device", "macos"]
 weight: 5
 ---
 

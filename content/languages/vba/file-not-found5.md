@@ -4,7 +4,6 @@ description: "Fix VBA 'Run-time error 53: File not found' when trying to open or
 languages: ["vba"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-error-53", "file-not-found", "vba"]
 weight: 5
 ---
 

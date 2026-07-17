@@ -4,7 +4,6 @@ description: "Fix React 'Cannot read properties of undefined' errors. Add null c
 languages: ["javascript"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["react", "cannot-read-properties", "undefined", "optional-chaining", "props"]
 weight: 5
 ---
 

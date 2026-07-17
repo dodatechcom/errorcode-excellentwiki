@@ -4,7 +4,6 @@ description: "Fix PowerShell profile errors when the profile script fails to loa
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["profile", "startup", "Microsoft.PowerShell_profile", "configuration"]
 weight: 5
 ---
 

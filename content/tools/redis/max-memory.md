@@ -4,7 +4,6 @@ description: "Redis refuses a command because it would exceed the configured max
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oom", "memory", "maxmemory", "eviction"]
 weight: 5
 ---
 

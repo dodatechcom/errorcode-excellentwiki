@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_SOCKET_DESTROYED when writing to a destroyed socke
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-socket-destroyed", "socket", "tcp", "connection", "net", "nodejs"]
 weight: 5
 ---
 

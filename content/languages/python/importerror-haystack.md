@@ -4,7 +4,6 @@ description: "Fix Python ImportError: haystack not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "haystack", "module-not-found", "pip", "nlp"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go broken pipe error when writing to a pipe or socket. Handle 
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["broken-pipe", "pipe", "socket", "signal", "network"]
 weight: 5
 ---
 

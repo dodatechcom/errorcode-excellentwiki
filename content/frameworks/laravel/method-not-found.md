@@ -4,7 +4,6 @@ description: "Laravel throws this error via PHP when you call a method that is n
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["methods", "objects", "eloquent", "php"]
 weight: 5
 ---
 

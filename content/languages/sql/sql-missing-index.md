@@ -4,7 +4,6 @@ description: "Fix slow queries using filesort by adding appropriate indexes for 
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["filesort", "index", "order-by", "performance", "query-optimization"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix AirDrop errors when Mac cannot discover other devices, files f
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["airdrop", "bluetooth", "wifi", "sharing", "discovery", "macos"]
 weight: 5
 ---
 

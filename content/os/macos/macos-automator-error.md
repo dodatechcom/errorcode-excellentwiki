@@ -4,7 +4,6 @@ description: "Fix Automator workflow errors on Mac when workflows fail to run, a
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["automator", "workflow", "automation", "legacy", "shell-script"]
 weight: 5
 ---
 

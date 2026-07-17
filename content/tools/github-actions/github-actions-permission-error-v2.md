@@ -4,7 +4,6 @@ description: "GitHub Actions workflow fails due to GITHUB_TOKEN permission issue
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "permission", "token", "governance", "access"]
 weight: 5
 ---
 

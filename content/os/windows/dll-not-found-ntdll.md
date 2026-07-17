@@ -4,7 +4,6 @@ description: "Fix ntdll.dll error 0xc0000005 (access violation) on Windows 10 an
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "ntdll", "0xc0000005", "access-violation", "system-dll"]
 weight: 5
 ---
 

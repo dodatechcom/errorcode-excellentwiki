@@ -4,7 +4,6 @@ description: "Fix Java IllegalArgumentException for null and empty arguments. Va
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["illegalargumentexception", "null-check", "empty-argument", "validation", "preconditions"]
 weight: 5
 ---
 

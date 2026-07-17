@@ -4,7 +4,6 @@ description: "Fix C invalid cross-device link (EXDEV). Use copy-and-delete for c
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["exdev", "cross-device-link", "rename", "filesystem", "errno"]
 weight: 5
 ---
 

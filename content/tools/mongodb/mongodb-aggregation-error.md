@@ -4,7 +4,6 @@ description: "MongoDB aggregation pipeline fails due to stage errors, memory lim
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "aggregation", "pipeline", "memory", "group", "stage"]
 weight: 5
 ---
 

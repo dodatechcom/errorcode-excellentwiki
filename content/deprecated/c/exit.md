@@ -6,7 +6,6 @@ replacement_function: "atexit cleanup"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["exit", "atexit", "cleanup", "shutdown", "c"]
 weight: 5
 ---
 

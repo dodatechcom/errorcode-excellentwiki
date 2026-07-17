@@ -4,7 +4,6 @@ description: "Fix Python ImportError: text-generation-inference not found. Insta
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "tgi", "text-generation-inference", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

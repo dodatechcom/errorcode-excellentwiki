@@ -4,7 +4,6 @@ description: "Fix C ERMSR (No STREAMS resources) by managing STREAMS resource al
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ermsr", "no-streams-resources", "streams", "putmsg", "getmsg"]
 weight: 5
 ---
 

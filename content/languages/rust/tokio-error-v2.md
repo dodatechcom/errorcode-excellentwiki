@@ -4,7 +4,6 @@ description: "Fix tokio runtime builder errors. Handle multi-threaded runtime cr
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tokio", "async", "runtime", "thread"]
 weight: 5
 ---
 

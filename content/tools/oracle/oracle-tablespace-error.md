@@ -4,7 +4,6 @@ description: "Oracle tablespace is full or encounters storage issues."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "tablespace", "storage", "quota", "space"]
 weight: 5
 ---
 

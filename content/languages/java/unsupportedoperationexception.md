@@ -4,7 +4,6 @@ description: "Fix Java UnsupportedOperationException by choosing the right colle
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unsupportedoperationexception", "collection", "immutable", "list", "stream"]
 date: 2026-07-15
 ---
 

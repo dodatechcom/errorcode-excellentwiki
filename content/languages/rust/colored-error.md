@@ -4,7 +4,6 @@ description: "Fix colored ANSI string errors. Handle color codes, terminal compa
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["colored", "terminal", "ansi"]
 weight: 5
 ---
 

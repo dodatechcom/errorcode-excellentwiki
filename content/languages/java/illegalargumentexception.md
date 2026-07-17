@@ -4,7 +4,6 @@ description: "Fix Java IllegalArgumentException by validating parameters at meth
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["illegalargumentexception", "validation", "preconditions", "nonnull"]
 date: 2026-07-15
 ---
 

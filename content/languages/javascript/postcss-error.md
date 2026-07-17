@@ -4,7 +4,6 @@ description: "Fix PostCSS plugin errors. Handle plugin loading issues, configura
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["postcss", "css", "plugin"]
 weight: 5
 ---
 

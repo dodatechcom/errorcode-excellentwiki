@@ -4,7 +4,6 @@ description: "Fix Python JSONDecodeError: Expecting value. Handle empty response
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["jsondecodeerror", "json", "parsing", "expecting-value", "decode"]
 weight: 5
 ---
 

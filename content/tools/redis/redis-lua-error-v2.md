@@ -4,7 +4,6 @@ description: "Redis Lua script fails to execute due to syntax errors, runtime er
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "lua", "script", "eval", "sha", "syntax"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C EADDRNOTAVAIL (Cannot assign address) by checking interface 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eaddrnotavail", "cannot-assign-address", "socket", "bind", "network-interface"]
 weight: 5
 ---
 

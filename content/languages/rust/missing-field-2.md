@@ -4,7 +4,6 @@ description: "Fix Rust missing field in struct. Learn why all struct fields must
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["struct", "field", "initialization", "default", "missing"]
 weight: 5
 ---
 

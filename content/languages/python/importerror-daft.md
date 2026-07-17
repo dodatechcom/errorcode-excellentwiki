@@ -4,7 +4,6 @@ description: "Fix Python ImportError: daft not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "daft", "module-not-found", "pip", "distributed"]
 weight: 5
 ---
 

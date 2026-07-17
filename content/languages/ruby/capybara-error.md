@@ -4,7 +4,6 @@ description: "Fix Capybara test errors in Rails. Learn why Capybara tests fail a
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["test-error"]
-tags: ["capybara", "integration-test", "testing", "rails", "ruby"]
 weight: 5
 ---
 

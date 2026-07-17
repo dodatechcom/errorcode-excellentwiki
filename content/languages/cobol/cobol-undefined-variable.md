@@ -4,7 +4,6 @@ description: "Undefined variable errors in COBOL occur when referencing a variab
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undefined", "variable", "declaration", "working-storage", "cobol"]
 weight: 5
 ---
 

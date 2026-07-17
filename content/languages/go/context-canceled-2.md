@@ -4,7 +4,6 @@ description: "Fix Go context canceled error. Handle context cancellation in goro
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["context", "canceled", "cancel", "goroutine", "runtime", "lifecycle"]
 weight: 5
 ---
 

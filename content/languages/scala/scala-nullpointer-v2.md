@@ -4,7 +4,6 @@ description: "Fix Scala NullPointerException when calling methods on null values
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "pointer", "option", "nullcheck", "jvm", "scala"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux ESHUTDOWN (errno 72) Cannot send after socket shutdown e
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eshutdown", "socket", "errno-72", "shutdown", "send"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Scala OutOfMemoryError. Learn about heap space issues and memo
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["oom", "memory", "heap", "gc", "OutOfMemoryError"]
 weight: 5
 ---
 

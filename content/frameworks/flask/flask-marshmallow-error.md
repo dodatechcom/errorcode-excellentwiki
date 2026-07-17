@@ -4,7 +4,6 @@ description: "Flask-Marshmallow raises ValidationError or marshalling errors whe
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["marshmallow", "serialization", "schema", "validation", "flask"]
 weight: 5
 ---
 

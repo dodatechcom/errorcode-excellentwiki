@@ -4,7 +4,6 @@ description: "Fix scoped-threadpool thread errors. Handle thread spawning, join 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["scoped-threadpool", "threading", "concurrency"]
 weight: 5
 ---
 

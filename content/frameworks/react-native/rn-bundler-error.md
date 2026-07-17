@@ -4,7 +4,6 @@ description: "React Native Metro bundler throws errors when it cannot bundle the
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["metro", "bundler", "bundle", "hot-reload", "module"]
 weight: 5
 ---
 

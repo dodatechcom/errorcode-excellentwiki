@@ -4,7 +4,6 @@ description: "Fix Kotlin NoSuchElementException when retrieving elements from co
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nosuchelementexception", "element-not-found", "collection", "kotlin"]
 weight: 5
 ---
 

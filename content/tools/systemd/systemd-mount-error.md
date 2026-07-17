@@ -4,7 +4,6 @@ description: "systemd mount unit fails to mount a filesystem."
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "mount", "filesystem", "fstab", "automount"]
 weight: 5
 ---
 

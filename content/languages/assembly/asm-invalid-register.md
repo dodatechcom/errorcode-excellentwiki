@@ -4,7 +4,6 @@ description: "Invalid register errors in Assembly occur when using register name
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["register", "invalid", "syntax", "assembler", "x86"]
 weight: 5
 ---
 

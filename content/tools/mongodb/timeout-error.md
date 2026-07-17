@@ -4,7 +4,6 @@ description: "MongoDB client or server times out waiting for a response during a
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["timeout", "network", "performance", "latency"]
 weight: 5
 ---
 

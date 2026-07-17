@@ -4,7 +4,6 @@ description: "Fix Rust not connected error. Learn why socket operations fail wit
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["not-connected", "socket", "tcp", "connection", "io"]
 weight: 5
 ---
 

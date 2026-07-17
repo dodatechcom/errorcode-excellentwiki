@@ -4,7 +4,6 @@ description: "Vite production build fails with a Rollup plugin error."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "build", "rollup", "plugin", "production"]
 weight: 5
 ---
 

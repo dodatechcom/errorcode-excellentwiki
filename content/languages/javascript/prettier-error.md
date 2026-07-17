@@ -4,7 +4,6 @@ description: "Fix Prettier formatting errors. Handle parse errors, configuration
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["prettier", "formatting", "code-style"]
 weight: 5
 ---
 

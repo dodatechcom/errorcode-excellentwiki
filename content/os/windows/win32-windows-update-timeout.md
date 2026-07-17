@@ -4,7 +4,6 @@ description: "Fix Windows Update timeout errors on Windows 10 and 11. Resolve st
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["windows-update", "timeout", "update-stuck", "update-hang"]
 weight: 5
 ---
 

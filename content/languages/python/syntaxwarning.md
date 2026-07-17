@@ -4,7 +4,6 @@ description: "Fix Python SyntaxWarning when code has syntactically correct but s
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["syntaxwarning", "syntax", "escape", "comparison", "compile"]
 weight: 5
 ---
 

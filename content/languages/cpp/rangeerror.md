@@ -4,7 +4,6 @@ description: "Fix C++ std::range_error when results fall outside valid range. Ha
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["range-error", "numeric", "computation", "exception"]
 weight: 50
 ---
 

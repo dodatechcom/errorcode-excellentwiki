@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2339: Property 'X' does not exist on type 'Y'. Re
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2339", "property-access", "type-error", "missing-property"]
 weight: 5
 ---
 

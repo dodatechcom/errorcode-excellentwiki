@@ -4,7 +4,6 @@ description: "Fix Linux ETXTBSY (errno 26) Text file busy error. Solutions for e
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enTXTBSY", "text", "errno-26", "executable"]
 weight: 5
 ---
 

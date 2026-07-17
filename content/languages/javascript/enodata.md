@@ -4,7 +4,6 @@ description: "Fix JavaScript DataError when processing invalid or malformed data
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dataerror", "data", "validation", "malformed", "encoding"]
 weight: 5
 ---
 

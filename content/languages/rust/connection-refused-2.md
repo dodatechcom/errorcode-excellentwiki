@@ -4,7 +4,6 @@ description: "Fix Rust connection refused error. Learn why TCP connections are r
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["connection", "refused", "network", "tcp", "socket", "retry"]
 weight: 5
 ---
 

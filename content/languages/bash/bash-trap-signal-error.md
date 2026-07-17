@@ -4,7 +4,6 @@ description: "Fix bash trap invalid signal errors. Learn how to properly set sig
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["trap", "signal", "SIGINT", "SIGTERM", "bash"]
 weight: 5
 ---
 

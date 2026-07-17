@@ -4,7 +4,6 @@ description: "Fix C++ std::condition_variable issues including spurious wakeups,
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["condition-variable", "concurrency", "threading", "synchronization"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Lombok annotation processing errors in Java. Configure IDE, bu
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["lombok", "annotation-processing", "compiler", "ide", "build"]
 weight: 5
 ---
 

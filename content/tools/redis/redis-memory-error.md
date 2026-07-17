@@ -4,7 +4,6 @@ description: "Redis server runs out of memory and cannot allocate more."
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "memory", "oom", "maxmemory", "eviction"]
 weight: 5
 ---
 

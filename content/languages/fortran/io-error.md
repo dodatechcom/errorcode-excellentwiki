@@ -4,7 +4,6 @@ description: "A Fortran I/O error occurs when a file operation fails due to inva
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "file", "input-output"]
 weight: 5
 ---
 

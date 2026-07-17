@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_THREAD_EXCEPTION_NOT_HANDLED caused by mrxs
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "system-thread", "mrxsmb", "smb", "network", "file-sharing"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux SELinux 'denied' errors. Set correct SELinux contexts, u
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["selinux", "denied", "security", "context", "audit2allow"]
 weight: 5
 ---
 

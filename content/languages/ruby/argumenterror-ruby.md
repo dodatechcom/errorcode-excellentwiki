@@ -4,7 +4,6 @@ description: "Fix Ruby ArgumentError: wrong number of arguments. Learn why argum
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["argumenterror", "arguments", "wrong-number", "ruby"]
 weight: 5
 ---
 

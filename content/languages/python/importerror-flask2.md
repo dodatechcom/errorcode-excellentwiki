@@ -4,7 +4,6 @@ description: "Fix Python ImportError: flask not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "flask", "module-not-found", "pip", "web-framework"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: scipy missing C extensions. Reinstall SciP
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["importerror", "scipy", "c-extension", "shared-library", "installation"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix MetaClass errors when dynamically adding or modifying methods/
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["metaclass", "dynamic", "runtime", "groovy", "method-missing"]
 weight: 5
 ---
 

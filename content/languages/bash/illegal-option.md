@@ -4,7 +4,6 @@ description: "Fix 'illegal option' in Bash when an unknown flag or option is pas
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegal-option", "unknown-flag", "getopts"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'Subquery returns more than 1 row' when a scalar subquery retu
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["subquery", "scalar", "single-row", "IN", "EXISTS"]
 weight: 5
 ---
 

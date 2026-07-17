@@ -4,7 +4,6 @@ description: "Fix ConsulContainer startup failure in Testcontainers. Check Docke
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "consul", "docker", "container", "service-discovery"]
 weight: 5
 ---
 

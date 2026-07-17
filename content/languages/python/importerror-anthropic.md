@@ -4,7 +4,6 @@ description: "Fix Python ImportError: anthropic not found or ModuleNotFoundError
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "anthropic", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure VNet Peering Error"
 description: "Fix Azure VNet peering errors. Resolve virtual network peering and subnet issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "vnet", "peering", "subnet", "networking"]
 weight: 5
 ---
 

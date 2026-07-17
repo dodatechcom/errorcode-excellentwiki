@@ -4,7 +4,6 @@ description: "An OutOfMemoryException occurs when the JVM cannot allocate enough
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "out-of-memory", "allocation", "outofmemoryexception"]
 weight: 5
 ---
 

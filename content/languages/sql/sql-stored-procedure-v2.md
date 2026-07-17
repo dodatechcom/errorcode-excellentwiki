@@ -4,7 +4,6 @@ description: "Fix SQL stored procedure errors when calling a procedure that does
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stored-procedure", "routine", "call", "sql"]
 weight: 5
 ---
 

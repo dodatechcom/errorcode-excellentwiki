@@ -4,7 +4,6 @@ description: "Fix Git tag creation and push errors. Resolve tag name conflicts a
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tag", "create", "annotated", "lightweight", "release", "git"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range when accessing containers or strings bey
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["out-of-range", "bounds-check", "container", "exception"]
 weight: 5
 ---
 

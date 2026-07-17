@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP Secret Manager Error"
 description: "Fix GCP Secret Manager errors. Resolve secret access and management issues."
-cloud: ["gcp"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["gcp", "secret-manager", "secret", "credentials", "security"]
 weight: 5
 ---
 

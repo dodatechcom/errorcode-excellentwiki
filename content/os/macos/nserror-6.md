@@ -4,7 +4,6 @@ description: "Fix macOS NSFileReadNoSuchFile (NSCocoaErrorDomain Code 260). Reso
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilereadnosuchfile", "nscocoaerrordomain", "code-260", "file-read", "file-not-found", "cocoa", "foundation"]
 weight: 5
 ---
 

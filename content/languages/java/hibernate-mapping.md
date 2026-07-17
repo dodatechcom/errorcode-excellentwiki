@@ -4,7 +4,6 @@ description: "Fix Hibernate MappingException when entity mapping is invalid. Che
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hibernate", "jpa", "mapping", "entity", "orm"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rust division by zero. Learn why dividing an integer by zero p
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "arithmetic", "panic", "checked"]
 weight: 5
 ---
 

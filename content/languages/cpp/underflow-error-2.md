@@ -4,7 +4,6 @@ description: "Fix C++ std::underflow_error when arithmetic operations produce re
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["underflow-error", "arithmetic", "floating-point", "underflow"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PHP Opcache and JIT compilation errors. Learn to resolve opcac
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["opcache", "jit", "compilation", "cache", "performance"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix assembly SIGPIPE errors when writing to a pipe or socket whose
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sigpipe", "broken-pipe", "pipe", "socket", "signal", "assembly"]
 weight: 5
 ---
 

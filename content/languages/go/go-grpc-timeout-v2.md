@@ -4,7 +4,6 @@ description: "Fix gRPC DeadlineExceeded errors when requests time out. Handle co
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "timeout", "deadline", "context", "streaming"]
 weight: 5
 ---
 

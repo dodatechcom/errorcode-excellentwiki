@@ -4,7 +4,6 @@ description: "Fix C EKEYREJECTED (Key was rejected) by verifying key ownership, 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ekeyrejected", "key-was-rejected", "keyring", "key-permission", "keyctl"]
 weight: 5
 ---
 

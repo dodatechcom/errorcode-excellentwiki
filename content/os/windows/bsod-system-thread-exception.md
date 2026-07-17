@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_THREAD_EXCEPTION_NOT_HANDLED error on Windo
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "system-thread", "driver", "kernel"]
 weight: 5
 ---
 

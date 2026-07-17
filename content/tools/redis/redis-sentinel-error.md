@@ -4,7 +4,6 @@ description: "Redis Sentinel encounters issues with monitoring, failover, or con
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "sentinel", "failover", "monitoring", "ha"]
 weight: 5
 ---
 

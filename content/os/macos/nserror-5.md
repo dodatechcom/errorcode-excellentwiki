@@ -4,7 +4,6 @@ description: "Fix macOS NSFileReadCorruptFile (NSCocoaErrorDomain Code 512). Res
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilereadcorruptfile", "nscocoaerrordomain", "code-512", "file-read", "corrupt", "cocoa", "foundation"]
 weight: 5
 ---
 

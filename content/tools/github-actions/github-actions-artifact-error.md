@@ -4,7 +4,6 @@ description: "GitHub Actions fails to upload or download workflow artifacts."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "artifact", "upload", "download", "storage"]
 weight: 5
 ---
 

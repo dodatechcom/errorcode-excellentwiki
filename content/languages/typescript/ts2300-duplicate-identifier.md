@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2300: Duplicate identifier. Resolve duplicate var
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2300", "duplicate", "identifier", "redeclaration", "already-declared"]
 weight: 5
 ---
 

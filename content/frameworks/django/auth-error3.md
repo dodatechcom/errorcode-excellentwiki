@@ -4,7 +4,6 @@ description: "Django raises AuthenticationFailed when the authentication backend
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["authentication", "login", "session", "permission"]
 weight: 5
 ---
 

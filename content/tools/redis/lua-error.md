@@ -4,7 +4,6 @@ description: "Redis returns an error from an EVAL or EVALSHA script because the 
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["lua", "script", "eval", "evalsha", "atomicity"]
 weight: 5
 ---
 

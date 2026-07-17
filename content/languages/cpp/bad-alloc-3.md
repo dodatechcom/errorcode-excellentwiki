@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_alloc when new/malloc fails due to insufficient m
 languages: ["cpp"]
 severities: ["critical"]
 error-types: ["runtime-error", "memory-error"]
-tags: ["bad-alloc", "bad_alloc", "new", "malloc", "out-of-memory", "oom"]
 weight: 5
 ---
 

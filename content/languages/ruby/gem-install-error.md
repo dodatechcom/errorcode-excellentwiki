@@ -4,7 +4,6 @@ description: "Fix Gem::InstallError in Ruby. Learn why gem installation fails an
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["dependency-error"]
-tags: ["gem", "install-error", "rubygems", "ruby"]
 weight: 5
 ---
 

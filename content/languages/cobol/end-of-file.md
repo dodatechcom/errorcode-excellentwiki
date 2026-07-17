@@ -4,7 +4,6 @@ description: "An end of file condition occurs when attempting to read past the l
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["end-of-file", "eof", "file", "cobol"]
 weight: 5
 ---
 

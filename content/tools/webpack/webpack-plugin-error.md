@@ -4,7 +4,6 @@ description: "A Webpack plugin fails during the build process."
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "plugin", "extension", "compilation", "emit"]
 weight: 5
 ---
 

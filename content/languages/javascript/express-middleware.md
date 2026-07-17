@@ -4,7 +4,6 @@ description: "Fix Express middleware errors. Handle async errors, error middlewa
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["express", "middleware", "error-handler", "next", "expressjs"]
 weight: 5
 ---
 

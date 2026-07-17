@@ -4,7 +4,6 @@ description: "Flutter iOS build fails with CocoaPods errors due to pod installat
 frameworks: ["flutter"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["flutter", "ios", "cocoapods", "pod", "xcode", "build"]
 weight: 5
 ---
 

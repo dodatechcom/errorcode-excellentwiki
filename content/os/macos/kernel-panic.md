@@ -4,7 +4,6 @@ description: "Fix macOS Kernel Panic: your computer restarted because of a probl
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["kernel-panic", "restart", "crash", "boot", "system-failure"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Express returns 404 when no route handler matches the request URL"
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["routing", "404", "not-found", "middleware"]
 weight: 5
 ---
 

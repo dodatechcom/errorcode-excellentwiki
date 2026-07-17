@@ -4,7 +4,6 @@ description: "Fix MQTT connection refused errors. Handle broker connectivity, au
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mqtt", "iot", "broker"]
 weight: 5
 ---
 

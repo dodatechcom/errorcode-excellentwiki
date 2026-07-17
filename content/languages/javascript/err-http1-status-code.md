@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP1_STATUS_CODE when an invalid HTTP/1.1 status 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http1-status-code", "http", "status-code", "nodejs"]
 weight: 5
 ---
 

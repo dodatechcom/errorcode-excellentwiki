@@ -4,7 +4,6 @@ description: "Fix Python TypeError: cannot create instance when trying to instan
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "instance", "class", "instantiate"]
 weight: 5
 ---
 

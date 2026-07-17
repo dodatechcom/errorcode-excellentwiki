@@ -4,7 +4,6 @@ description: "Fix macOS Recovery errors when Internet Recovery fails, cannot con
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["recovery", "internet-recovery", "boot", "install", "macos"]
 weight: 5
 ---
 

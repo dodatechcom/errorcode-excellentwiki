@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_COMPRESS_HEADERS when HTTP/2 header compress
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-compress-headers", "http2", "headers", "compression", "nodejs"]
 weight: 5
 ---
 

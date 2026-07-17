@@ -4,7 +4,6 @@ description: "Fix R 'error in try' when using try() for error handling. Check ex
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["try", "error-handling", "silent"]
 weight: 5
 ---
 

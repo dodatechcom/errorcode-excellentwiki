@@ -4,7 +4,6 @@ description: "Fix Linux 'initramfs: mount failed' errors. Rebuild initramfs, rec
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["initramfs", "mount-failed", "initrd", "boot", "filesystem"]
 weight: 5
 ---
 

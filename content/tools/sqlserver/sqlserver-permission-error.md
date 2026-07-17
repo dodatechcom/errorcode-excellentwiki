@@ -4,7 +4,6 @@ description: "SQL Server operation fails due to insufficient permissions."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "permission", "grant", "role", "access"]
 weight: 5
 ---
 

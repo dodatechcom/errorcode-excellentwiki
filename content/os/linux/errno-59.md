@@ -4,7 +4,6 @@ description: "Fix Linux ELIBBAD (errno 59) Accessing a corrupted shared library 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["elibbad", "shared-library", "errno-59", "corrupt", "integrity"]
 weight: 5
 ---
 

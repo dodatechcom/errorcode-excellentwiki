@@ -4,7 +4,6 @@ description: "Fix C++ std::underflow_error when arithmetic results are too small
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["underflow-error", "arithmetic", "floating-point", "precision"]
 weight: 50
 ---
 

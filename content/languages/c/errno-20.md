@@ -4,7 +4,6 @@ description: "Fix C errno 20 ENOTDIR (Not a directory) by verifying path compone
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["notdir", "errno-20", "path", "directory", "not-a-directory"]
 weight: 5
 ---
 

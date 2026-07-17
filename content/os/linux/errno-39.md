@@ -4,7 +4,6 @@ description: "Fix Linux ENOTEMPTY (errno 39) Directory not empty error. Solution
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enNOTEMPTY", "directory", "errno-39", "rmdir"]
 weight: 5
 ---
 

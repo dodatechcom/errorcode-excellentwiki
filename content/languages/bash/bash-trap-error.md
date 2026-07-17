@@ -4,7 +4,6 @@ description: "Fix bash trap errors when signal handlers are set incorrectly, tra
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["trap", "signal", "cleanup", "err", "exit"]
 weight: 5
 ---
 

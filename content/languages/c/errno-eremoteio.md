@@ -4,7 +4,6 @@ description: "Fix C EREMOTEIO (Remote I/O error) by handling network storage fai
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eremoteio", "remote-io-error", "nfs", "network-storage", "io-error"]
 weight: 5
 ---
 

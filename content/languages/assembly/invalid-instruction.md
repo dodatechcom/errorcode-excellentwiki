@@ -4,7 +4,6 @@ description: "An illegal instruction error occurs when the CPU encounters an opc
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cpu", "instruction", "opcode", "illegal"]
 weight: 5
 ---
 

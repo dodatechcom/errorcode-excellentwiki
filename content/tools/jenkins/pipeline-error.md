@@ -4,7 +4,6 @@ description: "Fix Jenkins pipeline syntax errors. Resolve Groovy DSL and Jenkins
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "pipeline", "syntax", "groovy", "jenkinsfile"]
 weight: 5
 ---
 

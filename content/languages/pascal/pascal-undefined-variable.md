@@ -4,7 +4,6 @@ description: "Undefined variable errors in Pascal occur when using a variable th
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undefined", "variable", "declaration", "scope", "pascal"]
 weight: 5
 ---
 

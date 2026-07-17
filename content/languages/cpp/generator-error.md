@@ -4,7 +4,6 @@ description: "Fix C++23 std::generator errors including premature destruction, i
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["generator", "coroutine", "c++23", "lazy"]
 weight: 5
 ---
 

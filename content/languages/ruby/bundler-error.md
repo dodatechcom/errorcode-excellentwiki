@@ -4,7 +4,6 @@ description: "Fix Bundler::GemNotFound in Ruby. Learn why gems can't be found an
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["dependency-error"]
-tags: ["bundler", "gem-not-found", "dependencies", "ruby"]
 weight: 5
 ---
 

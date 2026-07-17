@@ -4,7 +4,6 @@ description: "Fix Kubernetes NetworkPolicy errors. Resolve network policy blocki
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "networkpolicy", "cni", "network", "isolation", "ingress", "egress"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin CoroutineScope cancelled errors. Learn why scopes get c
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["coroutine-scope", "scope", "cancellation", "kotlin"]
 weight: 5
 ---
 

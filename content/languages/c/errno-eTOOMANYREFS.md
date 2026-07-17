@@ -4,7 +4,6 @@ description: "Fix C ETOOMANYREFS (Too many references) by reducing file descript
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["etoomanyrefs", "too-many-references", "file-descriptor", "connection-limit"]
 weight: 5
 ---
 

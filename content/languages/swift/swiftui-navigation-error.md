@@ -4,7 +4,6 @@ description: "Fix Swift SwiftUI NavigationLink errors. Learn why NavigationLink 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["swiftui", "navigation", "navigationlink", "swift"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "File not found errors in COBOL occur when OPEN statement cannot lo
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "not-found", "open", "file-status", "cobol"]
 weight: 5
 ---
 

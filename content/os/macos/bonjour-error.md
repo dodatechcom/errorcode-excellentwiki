@@ -4,7 +4,6 @@ description: "Fix macOS Bonjour service discovery errors. Causes and solutions f
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bonjour", "mdns", "dns-sd", "service-discovery", "network"]
 weight: 5
 ---
 

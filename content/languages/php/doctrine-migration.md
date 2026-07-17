@@ -4,7 +4,6 @@ description: "Fix Doctrine migration errors. Handle schema diff, execution failu
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["doctrine", "migration", "database"]
 weight: 5
 ---
 

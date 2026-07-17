@@ -4,7 +4,6 @@ description: "Fix Rust permission denied error. Learn why file operations fail w
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["permission", "denied", "file", "chmod", "io", "os-error"]
 weight: 5
 ---
 

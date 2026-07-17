@@ -4,7 +4,6 @@ description: "Julia raises BoundsError when accessing an array or string at an i
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bounds", "index", "array", "boundserror", "range"]
 weight: 5
 ---
 

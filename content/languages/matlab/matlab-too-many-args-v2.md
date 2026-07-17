@@ -4,7 +4,6 @@ description: "Fix MATLAB errors when functions are called with more arguments th
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["arguments", "inputs", "parameters", "excess", "function", "matlab"]
 weight: 5
 ---
 

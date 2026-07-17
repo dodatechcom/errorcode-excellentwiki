@@ -4,7 +4,6 @@ description: "Fix Linux 'WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED' SSH ho
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssh", "host-key", "known-hosts", "man-in-the-middle", "security"]
 weight: 5
 ---
 

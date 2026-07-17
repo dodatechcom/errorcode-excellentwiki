@@ -4,7 +4,6 @@ description: "Fix Blue Screen UNEXPECTED_KERNEL_MODE_TRAP stop code 0x7F on Wind
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "unexpected-kernel-mode", "trap", "hardware", "stop-0x7f"]
 weight: 5
 ---
 

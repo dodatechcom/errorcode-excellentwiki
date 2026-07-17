@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2339 when accessing properties not defined on a t
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2339", "property-access", "type-narrowing", "union-type"]
 weight: 5
 ---
 

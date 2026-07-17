@@ -4,7 +4,6 @@ description: "Fix Docker Compose up failures. Resolve docker-compose errors when
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["docker-compose", "compose", "up", "services", "docker"]
 weight: 5
 ---
 

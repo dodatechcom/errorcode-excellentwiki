@@ -4,7 +4,6 @@ description: "Division by zero in Pascal occurs when dividing an integer by zero
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "arithmetic", "math", "pascal"]
 weight: 5
 ---
 

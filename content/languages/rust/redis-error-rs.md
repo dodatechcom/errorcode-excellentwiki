@@ -4,7 +4,6 @@ description: "Fix Redis client connection errors. Handle server connectivity, au
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redis", "connection", "cache"]
 weight: 5
 ---
 

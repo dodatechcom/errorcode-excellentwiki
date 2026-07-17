@@ -4,7 +4,6 @@ description: "Fix PHP Warning: date(): Timezone database. Set date.timezone in p
 languages: ["php"]
 severities: ["warning"]
 error_types: ["runtime"]
-tags: ["date", "timezone", "date.timezone", "DateTime", "DateTimeZone"]
 date: 2026-07-15
 ---
 

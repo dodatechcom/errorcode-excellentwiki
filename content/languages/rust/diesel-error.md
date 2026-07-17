@@ -4,7 +4,6 @@ description: "Fix Diesel ORM database errors. Handle connection issues, query er
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["diesel", "orm", "database"]
 weight: 5
 ---
 

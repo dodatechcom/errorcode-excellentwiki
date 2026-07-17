@@ -4,7 +4,6 @@ description: "Fix Linux ETIME (errno 47) Stream ioctl timeout error. Solutions f
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enTIME", "streams", "errno-47", "timeout"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP_INVALID_CHUNK when sending malformed chunked 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http-invalid-chunk", "http", "chunked", "transfer-encoding", "streaming", "nodejs"]
 weight: 5
 ---
 

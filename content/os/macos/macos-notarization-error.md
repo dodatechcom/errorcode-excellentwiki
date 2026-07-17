@@ -4,7 +4,6 @@ description: "Fix app notarization errors on Mac when distributing apps. Resolve
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["notarization", "code-signing", "distribution", "developer-id", "stapler"]
 weight: 5
 ---
 

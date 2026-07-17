@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_optional_access when accessing an empty std::opti
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-optional-access", "optional", "empty", "value", "nullptr"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Laravel throws RouteNotFoundException when a named route is not de
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["route", "routing", "named-route", "url-generation", "404"]
 weight: 5
 ---
 

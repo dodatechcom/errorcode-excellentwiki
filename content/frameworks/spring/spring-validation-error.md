@@ -4,7 +4,6 @@ description: "Spring throws MethodArgumentNotValidException when request body va
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["validation", "request-body", "bean-validation", "hibernate-validator"]
 weight: 5
 ---
 

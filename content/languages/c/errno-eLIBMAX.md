@@ -4,7 +4,6 @@ description: "Fix C ELIBMAX (Linking in too many shared libs) by reducing depend
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["elibmax", "too-many-shared-libs", "dynamic-linking", "dependency-limit"]
 weight: 5
 ---
 

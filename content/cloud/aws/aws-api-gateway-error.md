@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS API Gateway Error"
 description: "Fix AWS API Gateway errors. Resolve API Gateway configuration and deployment issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "api-gateway", "rest-api", "lambda", "proxy"]
 weight: 5
 ---
 

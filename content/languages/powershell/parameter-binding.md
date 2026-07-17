@@ -4,7 +4,6 @@ description: "Fix 'Parameter cannot be found' when PowerShell cannot bind an arg
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ParameterBindingException", "parameter", "binding"]
 weight: 5
 ---
 

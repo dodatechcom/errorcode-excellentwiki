@@ -4,7 +4,6 @@ description: "Fix C EAFNOSUPPORT (Address family not supported) by using support
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eafnosupport", "address-family-not-supported", "socket", "af-inet", "af-inet6"]
 weight: 5
 ---
 

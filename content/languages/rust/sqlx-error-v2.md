@@ -4,7 +4,6 @@ description: "Fix sqlx database connection errors. Handle connection pool exhaus
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlx", "database", "postgresql", "mysql", "connection"]
 weight: 5
 ---
 

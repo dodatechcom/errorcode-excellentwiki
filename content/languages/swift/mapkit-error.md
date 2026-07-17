@@ -4,7 +4,6 @@ description: "Fix Swift MapKit errors. Learn why MapKit operations fail and how 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["mapkit", "map", "location", "swift"]
 weight: 5
 ---
 

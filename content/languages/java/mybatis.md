@@ -4,7 +4,6 @@ description: "Fix MyBatis BindingException: Invalid bound statement when mapper 
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mybatis", "sql", "mapper", "binding-exception", "xml"]
 weight: 5
 ---
 

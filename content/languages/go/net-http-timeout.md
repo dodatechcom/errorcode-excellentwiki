@@ -4,7 +4,6 @@ description: "Fix Go context deadline exceeded HTTP client timeout. Configure pr
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["http", "timeout", "client", "context", "deadline"]
 weight: 5
 ---
 

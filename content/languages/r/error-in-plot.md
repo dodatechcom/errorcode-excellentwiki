@@ -4,7 +4,6 @@ description: "Fix R 'error in plot' when creating graphics. Check data types, di
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["plot", "graphics", "visualization", "base-r"]
 weight: 5
 ---
 

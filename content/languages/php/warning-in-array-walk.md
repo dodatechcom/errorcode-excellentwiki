@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_walk() expects at least 2 arguments. Learn 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-walk", "array", "callback"]
 weight: 5
 ---
 

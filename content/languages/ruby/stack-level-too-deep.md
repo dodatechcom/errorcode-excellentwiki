@@ -4,7 +4,6 @@ description: "Fix Ruby SystemStackError: stack level too deep. Resolve infinite 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["stack"]
-tags: ["system_stack_error", "stack_level_too_deep", "recursion", "infinite"]
 weight: 320
 ---
 

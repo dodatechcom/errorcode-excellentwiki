@@ -4,7 +4,6 @@ description: "Fix Python ImportError: lxml not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "lxml", "module-not-found", "pip", "xml"]
 weight: 5
 ---
 

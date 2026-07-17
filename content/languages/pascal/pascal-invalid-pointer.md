@@ -4,7 +4,6 @@ description: "Invalid pointer errors in Pascal occur when using a pointer that i
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pointer", "nil", "dangling", "memory", "pascal"]
 weight: 5
 ---
 

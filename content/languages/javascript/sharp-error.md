@@ -4,7 +4,6 @@ description: "Fix sharp image processing errors. Handle invalid image formats, m
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sharp", "image", "processing"]
 weight: 5
 ---
 

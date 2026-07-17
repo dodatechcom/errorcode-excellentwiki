@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_HEADER_ERROR when invalid headers are sent i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-header-error", "http2", "headers", "nodejs"]
 weight: 5
 ---
 

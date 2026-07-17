@@ -4,7 +4,6 @@ description: "Fix JavaScript InternalError including out of memory, too much rec
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["internalerror", "recursion", "redos", "memory", "call-stack"]
 weight: 80
 ---
 

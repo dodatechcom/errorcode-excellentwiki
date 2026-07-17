@@ -4,7 +4,6 @@ description: "Jenkins pipeline Groovy script fails with syntax or runtime errors
 tools: ["jenkins"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["jenkins", "groovy", "script", "syntax", "pipeline"]
 weight: 5
 ---
 

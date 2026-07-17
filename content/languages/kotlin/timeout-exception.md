@@ -4,7 +4,6 @@ description: "Fix Kotlin TimeoutCancellationException when a coroutine exceeds i
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["timeoutcancellationexception", "coroutine", "timeout", "withtimeout"]
 weight: 5
 ---
 

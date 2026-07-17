@@ -4,7 +4,6 @@ description: "Fix Linux EREMOTE (errno 62) Object is remote error. Solutions for
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eremote", "remote", "errno-62", "nfs", "network"]
 weight: 5
 ---
 

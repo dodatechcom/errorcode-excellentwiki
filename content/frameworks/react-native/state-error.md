@@ -4,7 +4,6 @@ description: "React Native throws a warning or error when updating state on an u
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["state", "unmounted", "update", "lifecycle", "memory-leak"]
 weight: 5
 ---
 

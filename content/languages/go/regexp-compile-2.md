@@ -4,7 +4,6 @@ description: "Fix Go regexp compile error with invalid pattern. Validate regex p
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["regexp", "regex", "compile", "pattern", "parse", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java ReflectiveOperationException by handling reflective acces
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["reflectiveoperationexception", "reflection", "access", "module"]
 weight: 5
 ---
 

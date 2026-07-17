@@ -4,7 +4,6 @@ description: "Fix C ECANCELED (Operation canceled) by handling AIO cancellations
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ecanceled", "operation-canceled", "aio", "async-io", "cancel"]
 weight: 5
 ---
 

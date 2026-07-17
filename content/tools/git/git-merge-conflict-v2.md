@@ -4,7 +4,6 @@ description: "Fix Git merge conflict in a specific file. Resolve CONFLICT messag
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["merge-conflict", "conflict", "merge", "file", "git"]
 weight: 5
 ---
 

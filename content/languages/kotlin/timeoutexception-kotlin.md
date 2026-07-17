@@ -4,7 +4,6 @@ description: "Fix Kotlin TimeoutException when coroutine operations exceed time 
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["timeoutexception", "timeout", "coroutine", "kotlin"]
 weight: 5
 ---
 

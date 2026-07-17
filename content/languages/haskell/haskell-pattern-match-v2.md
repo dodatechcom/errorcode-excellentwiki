@@ -4,7 +4,6 @@ description: "Fix Haskell pattern match failure when a function encounters unhan
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pattern-match", "failure", "case", "non-exhaustive", "haskell"]
 weight: 5
 ---
 

@@ -6,7 +6,6 @@ replacement_function: "std::shuffle"
 languages: ["cpp"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["random_shuffle", "shuffle", "random", "algorithm", "cpp14"]
 weight: 5
 ---
 

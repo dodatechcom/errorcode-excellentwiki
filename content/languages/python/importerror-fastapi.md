@@ -4,7 +4,6 @@ description: "Fix Python ImportError: fastapi not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "fastapi", "module-not-found", "pip", "web-framework"]
 weight: 5
 ---
 

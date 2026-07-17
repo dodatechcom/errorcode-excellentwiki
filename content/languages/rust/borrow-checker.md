@@ -4,7 +4,6 @@ description: "Fix Rust borrow checker error: reference does not live long enough
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["borrow", "borrow-checker", "lifetime", "ownership", "reference", "compile-time"]
 weight: 5
 ---
 

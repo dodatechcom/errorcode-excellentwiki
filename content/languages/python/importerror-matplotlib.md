@@ -4,7 +4,6 @@ description: "Fix Python ImportError: matplotlib not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "matplotlib", "module-not-found", "pip", "visualization"]
 weight: 5
 ---
 

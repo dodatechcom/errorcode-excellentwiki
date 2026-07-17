@@ -4,7 +4,6 @@ description: "React Native Testing Library fails to render a component during te
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testing", "react-native-testing-library", "render", "jest", "component-test"]
 weight: 5
 ---
 

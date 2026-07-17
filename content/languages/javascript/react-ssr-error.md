@@ -4,7 +4,6 @@ description: "Fix React hydration failed and server/client mismatch errors. Reso
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "ssr", "hydration", "server", "client", "mismatch", "nextjs", "render"]
 weight: 5
 ---
 

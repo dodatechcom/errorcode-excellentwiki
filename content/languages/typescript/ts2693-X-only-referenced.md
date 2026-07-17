@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2693: 'X' only refers to a type but is being used
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2693", "type-only", "referenced", "value", "runtime"]
 weight: 5
 ---
 

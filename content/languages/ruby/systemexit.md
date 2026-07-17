@@ -4,7 +4,6 @@ description: "Handle Ruby SystemExit. Understand when exit is called and how to 
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["exit"]
-tags: ["systemexit", "exit", "termination", "cleanup", "at_exit"]
 weight: 170
 ---
 

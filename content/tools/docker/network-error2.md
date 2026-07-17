@@ -4,7 +4,6 @@ description: "Fix Docker network not found error. Create and manage Docker netwo
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["network-error", "network", "not-found", "connect", "docker"]
 weight: 5
 ---
 

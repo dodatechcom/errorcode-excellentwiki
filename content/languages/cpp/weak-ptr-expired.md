@@ -4,7 +4,6 @@ description: "Fix C++ std::weak_ptr expired access when the managed object has b
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["weak-ptr", "expired", "smart-pointer", "shared-ptr"]
 weight: 5
 ---
 

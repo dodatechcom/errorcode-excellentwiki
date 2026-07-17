@@ -4,7 +4,6 @@ description: "A record locked error occurs when attempting to access a record th
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["record", "locked", "concurrency", "cobol"]
 weight: 5
 ---
 

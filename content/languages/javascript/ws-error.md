@@ -4,7 +4,6 @@ description: "Fix WebSocket connection failures in Node.js ws library. Handle co
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ws", "websocket", "connection"]
 weight: 5
 ---
 

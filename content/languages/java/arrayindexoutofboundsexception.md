@@ -4,7 +4,6 @@ description: "Fix Java ArrayIndexOutOfBoundsException by validating array indice
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["arrayindexoutofboundsexception", "array", "index", "bounds"]
 weight: 5
 ---
 

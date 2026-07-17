@@ -4,7 +4,6 @@ description: "Fix C SSL self-signed certificate errors. Trust self-signed certif
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["self-signed", "certificate", "ssl", "tls", "ca"]
 weight: 5
 ---
 

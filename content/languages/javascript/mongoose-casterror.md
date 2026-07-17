@@ -4,7 +4,6 @@ description: "Fix Mongoose CastError when casting values to ObjectId. Handle inv
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mongoose", "mongodb", "casterror", "objectid", "query"]
 weight: 5
 ---
 

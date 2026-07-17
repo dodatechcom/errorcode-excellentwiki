@@ -4,7 +4,6 @@ description: "MySQL rejects authentication for the specified user"
 tools: ["mysql"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["authentication", "password", "user", "permissions"]
 weight: 5
 ---
 

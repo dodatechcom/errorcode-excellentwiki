@@ -4,7 +4,6 @@ description: "Fix Viper configuration file not found errors. Handle config file 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["viper", "config", "configuration"]
 weight: 5
 ---
 

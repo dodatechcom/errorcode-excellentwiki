@@ -4,7 +4,6 @@ description: "Fix notify file watcher errors. Handle platform-specific issues, r
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["notify", "filesystem", "watcher"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Rust unwrap() on Err panic. Learn why calling unwrap on a fail
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["unwrap", "result", "err", "error", "panic", "match"]
 weight: 5
 ---
 

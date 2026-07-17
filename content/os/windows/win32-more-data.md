@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_MORE_DATA (234). Handle partial data returns, al
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-234", "more-data", "partial-data"]
 weight: 5
 ---
 

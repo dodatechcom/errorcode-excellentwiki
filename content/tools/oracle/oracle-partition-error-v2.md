@@ -4,7 +4,6 @@ description: "Oracle INSERT fails because the partition key value does not match
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "partition", "key", "ora-14400", "range", "insert"]
 weight: 5
 ---
 

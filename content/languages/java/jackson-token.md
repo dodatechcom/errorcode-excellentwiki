@@ -4,7 +4,6 @@ description: "Fix JsonProcessingException when Jackson encounters unexpected cha
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "parsing", "unexpected-character", "token"]
 weight: 5
 ---
 

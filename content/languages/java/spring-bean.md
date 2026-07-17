@@ -4,7 +4,6 @@ description: "Fix Spring NoSuchBeanDefinitionException when a bean is not found 
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "spring-boot", "dependency-injection", "bean", "no-such-bean-definition"]
 weight: 5
 ---
 

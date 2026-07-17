@@ -4,7 +4,6 @@ description: "Fix Java IllegalStateException by validating object state before o
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalstateexception", "state", "lifecycle", "precondition"]
 weight: 5
 ---
 

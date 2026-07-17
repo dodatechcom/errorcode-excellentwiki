@@ -4,7 +4,6 @@ description: "Fix React Suspense errors when loading deferred content fails. Han
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "suspense", "lazy", "deferred", "fallback", "async", "loading", "error-boundary"]
 weight: 5
 ---
 

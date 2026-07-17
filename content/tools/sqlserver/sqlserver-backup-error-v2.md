@@ -4,7 +4,6 @@ description: "SQL Server backup fails because the backup device or target path c
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "backup", "device", "disk", "path", "write"]
 weight: 5
 ---
 

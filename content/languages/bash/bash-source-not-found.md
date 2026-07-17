@@ -4,7 +4,6 @@ description: "Fix bash source file not found errors when sourcing scripts that d
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["source", "dot", "include", "file-not-found", "bash"]
 weight: 5
 ---
 

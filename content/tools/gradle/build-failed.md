@@ -4,7 +4,6 @@ description: "Gradle build failed because it could not resolve one or more depen
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "build", "dependencies", "resolution"]
 weight: 5
 ---
 

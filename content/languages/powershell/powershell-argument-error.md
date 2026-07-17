@@ -4,7 +4,6 @@ description: "Fix ArgumentException in PowerShell when invalid arguments are pas
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ArgumentException", "argument", "parameter", "invalid", "value"]
 weight: 5
 ---
 

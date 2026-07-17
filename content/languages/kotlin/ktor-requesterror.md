@@ -4,7 +4,6 @@ description: "Fix Ktor request errors in Kotlin. Learn why Ktor HTTP requests fa
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["ktor", "request", "http", "kotlin"]
 weight: 5
 ---
 

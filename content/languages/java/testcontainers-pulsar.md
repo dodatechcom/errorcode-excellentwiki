@@ -4,7 +4,6 @@ description: "Fix PulsarContainer startup failure in Testcontainers. Check Docke
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "pulsar", "docker", "container", "messaging"]
 weight: 5
 ---
 

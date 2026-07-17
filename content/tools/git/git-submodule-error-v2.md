@@ -4,7 +4,6 @@ description: "Fix Git submodule update errors. Resolve submodule initialization,
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["submodule", "update", "init", "clone", "git"]
 weight: 5
 ---
 

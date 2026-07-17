@@ -4,7 +4,6 @@ description: "Fix C errno 38 ENOSYS (Function not implemented) by checking kerne
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enosys", "errno-38", "not-implemented", "syscall", "kernel"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Dart 'RangeError: Index out of range' error. Learn about valid
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["range", "index", "array", "list", "collection"]
 weight: 5
 ---
 

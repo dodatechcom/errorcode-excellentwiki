@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_filter() expects at least 1 argument. Learn
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-filter", "array", "callback"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes pods stuck in Pending status. Resolve scheduling fa
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "pending", "scheduling", "node", "resource"]
 weight: 5
 ---
 

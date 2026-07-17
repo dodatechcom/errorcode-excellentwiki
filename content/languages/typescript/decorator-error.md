@@ -4,7 +4,6 @@ description: "Fix TypeScript decorator metadata errors. Enable experimental deco
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["decorator-error", "decorator", "experimental-decorators", "emitDecoratorMetadata", "metadata"]
 weight: 5
 ---
 

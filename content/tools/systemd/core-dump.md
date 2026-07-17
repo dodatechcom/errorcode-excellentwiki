@@ -4,7 +4,6 @@ description: "Fix systemd core dump errors. Diagnose and resolve process crashes
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["core-dump", "crash", "segfault", "systemd", "coredump"]
 weight: 5
 ---
 

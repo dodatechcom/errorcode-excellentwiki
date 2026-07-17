@@ -4,7 +4,6 @@ description: "Fix C++ std::system_error with generic category. Handle system-lev
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["system-error", "system_error", "generic", "error-code", "errno"]
 weight: 5
 ---
 

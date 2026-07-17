@@ -4,7 +4,6 @@ description: "Fix 'No database selected' when running a SQL query without select
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["no-database", "use-database", "schema", "connection"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Enum case errors in PHP 8.1+. Handle backed enums, unit enums,
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "enum", "oop"]
 weight: 5
 ---
 

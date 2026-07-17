@@ -4,7 +4,6 @@ description: "Fix PHP dynamic property deprecation warnings. Learn why dynamic p
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dynamic-property", "deprecated", "php", "magic-method"]
 weight: 5
 ---
 

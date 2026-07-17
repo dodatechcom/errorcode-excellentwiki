@@ -4,7 +4,6 @@ description: "Fix Swift RunLoop errors. Learn about RunLoop observer issues, tim
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runloop", "timer", "observer", "main-thread", "modes"]
 weight: 5
 ---
 

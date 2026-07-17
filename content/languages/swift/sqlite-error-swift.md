@@ -4,7 +4,6 @@ description: "Fix Swift SQLite errors. Learn why SQLite operations fail and how 
 languages: ["swift"]
 severities: ["error"]
 error-types: ["database-error"]
-tags: ["sqlite", "database", "sql", "swift"]
 weight: 5
 ---
 

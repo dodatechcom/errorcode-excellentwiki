@@ -4,7 +4,6 @@ description: "Fix macOS NSFileStreamErrorMaximum (NSCocoaErrorDomain Code 2095).
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfstreamerrormaximum", "nscocoaerrordomain", "code-2095", "stream", "cocoa", "foundation"]
 weight: 5
 ---
 

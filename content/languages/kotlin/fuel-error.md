@@ -4,7 +4,6 @@ description: "Fix Fuel HTTP client errors in Kotlin. Learn why Fuel requests fai
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["fuel", "http", "client", "kotlin"]
 weight: 5
 ---
 

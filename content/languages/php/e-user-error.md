@@ -4,7 +4,6 @@ description: "Fix PHP E_USER_ERROR fatal errors triggered by user code via trigg
 languages: ["php"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["e-user-error", "user-error", "trigger-error"]
 weight: 5
 ---
 

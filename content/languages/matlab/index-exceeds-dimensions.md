@@ -4,7 +4,6 @@ description: "Fix 'Index exceeds the number of array elements' when accessing an
 languages: ["matlab"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["index-exceeds", "array", "bounds"]
 weight: 5
 ---
 

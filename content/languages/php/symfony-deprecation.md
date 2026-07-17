@@ -4,7 +4,6 @@ description: "Fix Symfony deprecation warnings. Handle upgrade paths, deprecated
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "deprecated", "upgrade"]
 weight: 5
 ---
 

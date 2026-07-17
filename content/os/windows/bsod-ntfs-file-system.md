@@ -4,7 +4,6 @@ description: "Fix Blue Screen NTFS_FILE_SYSTEM stop code 0x24 caused by Ntfs.sys
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "ntfs-file-system", "ntfs", "filesystem", "stop-0x24"]
 weight: 5
 ---
 

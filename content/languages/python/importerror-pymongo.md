@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pymongo not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pymongo", "module-not-found", "pip", "mongodb"]
 weight: 5
 ---
 

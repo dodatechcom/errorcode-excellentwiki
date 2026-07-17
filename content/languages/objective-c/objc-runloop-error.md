@@ -4,7 +4,6 @@ description: "Fix Objective-C NSRunLoop errors and event loop issues"
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "runloop", "event-loop"]
 weight: 5
 ---
 

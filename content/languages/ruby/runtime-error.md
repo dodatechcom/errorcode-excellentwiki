@@ -4,7 +4,6 @@ description: "Fix Ruby RuntimeError. Understand when raise is called with a gene
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["runtimeerror", "raise", "runtime", "exception"]
 weight: 20
 ---
 

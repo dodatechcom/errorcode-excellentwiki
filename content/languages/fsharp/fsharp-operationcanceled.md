@@ -4,7 +4,6 @@ description: "F# raises OperationCanceledException when an async operation is ca
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cancel", "async", "cancellation", "token", "operation"]
 weight: 5
 ---
 

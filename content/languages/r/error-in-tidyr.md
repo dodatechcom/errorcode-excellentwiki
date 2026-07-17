@@ -4,7 +4,6 @@ description: "Fix R 'error in tidyr' when reshaping data. Check package loading,
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tidyr", "tidyverse", "reshape", "pivot"]
 weight: 5
 ---
 

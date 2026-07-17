@@ -4,7 +4,6 @@ description: "Maven fails with OutOfMemoryError: Java heap space during build ex
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "out-of-memory", "heap", "java", "memory"]
 weight: 5
 ---
 

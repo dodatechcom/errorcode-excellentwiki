@@ -4,7 +4,6 @@ description: "Fix Swift DecodingError when JSON decoding fails. Learn why Codabl
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["decoding", "json", "codable", "swift"]
 weight: 5
 ---
 

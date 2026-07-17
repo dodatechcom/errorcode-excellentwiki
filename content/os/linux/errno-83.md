@@ -4,7 +4,6 @@ description: "Fix Linux ENOKEY (errno 83) Required key not available error. Solu
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enokey", "key", "errno-83", "keyring", "security"]
 weight: 5
 ---
 

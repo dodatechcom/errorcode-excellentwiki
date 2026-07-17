@@ -4,7 +4,6 @@ description: "Fix tonic gRPC errors. Handle transport issues, codec errors, and 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tonic", "grpc", "rpc"]
 weight: 5
 ---
 

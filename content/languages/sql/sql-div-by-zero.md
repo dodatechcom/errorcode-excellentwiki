@@ -4,7 +4,6 @@ description: "Fix 'Division by 0' error when a SQL query divides a value by zero
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["division-by-zero", "math", "numeric", "null"]
 weight: 5
 ---
 

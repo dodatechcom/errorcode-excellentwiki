@@ -1,10 +1,8 @@
 ---
 title: "Azure DiskError: I/O Operation Failed"
 description: "DiskError: I/O operation failed — Fix Azure managed disk I/O errors."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "disk", "managed-disk", "io", "storage", "vm", "ReadWrite"]
 weight: 5
 ---
 

@@ -3,7 +3,6 @@ title: "Windows NTSTATUS Error Codes — Complete Reference"
 description: "Complete reference table of Windows NTSTATUS error codes from Microsoft MS-ERREF. Find error code meanings and quick fixes."
 platforms: ["windows"]
 severities: ["error"]
-tags: ["NTSTATUS", "windows", "reference", "error-codes"]
 weight: 5
 ---
 

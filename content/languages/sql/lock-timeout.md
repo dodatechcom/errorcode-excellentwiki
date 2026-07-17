@@ -4,7 +4,6 @@ description: "Fix 'Lock wait timeout exceeded' when a transaction waits too long
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["lock-timeout", "lock-wait-timeout", "concurrency", "transaction"]
 weight: 5
 ---
 

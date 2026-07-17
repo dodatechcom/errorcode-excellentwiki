@@ -4,7 +4,6 @@ description: "Fix Horizon worker errors in Laravel. Handle queue worker failures
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "horizon", "queue"]
 weight: 5
 ---
 

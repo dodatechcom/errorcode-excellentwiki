@@ -4,7 +4,6 @@ description: "Gradle cannot find a required plugin in any configured repository.
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "plugin", "not-found", "repository", "configuration"]
 weight: 5
 ---
 

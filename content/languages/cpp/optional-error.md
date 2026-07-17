@@ -4,7 +4,6 @@ description: "Fix C++ std::optional errors including bad_optional_access, empty 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["optional", "bad-optional-access", "c++17", "null"]
 weight: 5
 ---
 

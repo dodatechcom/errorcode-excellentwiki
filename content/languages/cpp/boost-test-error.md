@@ -4,7 +4,6 @@ description: "Fix C++ Boost.Test assertion errors. Handle test failures and asse
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["boost", "test", "assertion", "unit-test", "failure"]
 weight: 5
 ---
 

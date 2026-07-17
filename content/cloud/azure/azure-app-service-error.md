@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure App Service Deployment Error"
 description: "Fix Azure App Service deployment errors. Resolve web app deployment issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "app-service", "web-app", "deployment", "publish"]
 weight: 5
 ---
 

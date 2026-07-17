@@ -4,7 +4,6 @@ description: "Fix Laravel TokenMismatchException for CSRF token failures. Handle
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "csrf", "token"]
 weight: 5
 ---
 

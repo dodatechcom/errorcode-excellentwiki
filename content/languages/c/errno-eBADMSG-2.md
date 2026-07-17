@@ -4,7 +4,6 @@ description: "Fix C EBADMSG (Bad message) by validating message format, checking
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ebadmsg", "bad-message", "streams", "message-validation"]
 weight: 5
 ---
 

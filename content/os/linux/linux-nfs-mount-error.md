@@ -4,7 +4,6 @@ description: "Fix Linux 'mount.nfs: <share> failed' errors. Resolve NFS mount is
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["nfs", "mount-failed", "mount", "export", "nfs-server"]
 weight: 5
 ---
 

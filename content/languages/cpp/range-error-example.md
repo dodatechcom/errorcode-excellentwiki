@@ -4,7 +4,6 @@ description: "Example of std::range_error in C++. Handle results that fall outsi
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["range-error", "numeric", "computation", "exception"]
 weight: 50
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Delve debugger errors. Handle breakpoint issues, symbol resolu
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dlv", "debugger", "development"]
 weight: 5
 ---
 

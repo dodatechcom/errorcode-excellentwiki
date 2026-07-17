@@ -4,7 +4,6 @@ description: "Fix Python MemoryError when your program runs out of RAM. Use gene
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["memoryerror", "memory", "ram", "optimization", "generators"]
 weight: 100
 ---
 

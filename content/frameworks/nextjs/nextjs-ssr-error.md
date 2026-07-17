@@ -4,7 +4,6 @@ description: "Next.js throws an error when getServerSideProps fails during serve
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ssr", "serversideprops", "rendering", "data-fetching", "nextjs"]
 weight: 5
 ---
 

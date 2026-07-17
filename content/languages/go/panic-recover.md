@@ -4,7 +4,6 @@ description: "Understand Go panics and recover. Learn when panics occur, how to 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["panic", "recover", "runtime", "goroutine", "error-handling", "stack-trace"]
 weight: 5
 ---
 

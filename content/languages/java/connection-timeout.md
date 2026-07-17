@@ -4,7 +4,6 @@ description: "Fix Java ConnectException: Connection timed out. Increase timeouts
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["connectexception", "connection-timeout", "network", "socket", "http"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix CommitFailedException when Kafka consumer fails to commit offs
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kafka", "consumer", "commit-failed", "offset", "rebalance"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix JavaScript DOMException: Failed to execute 'querySelector' on 
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["domexception", "queryselector", "dom", "selector", "css-selector"]
 weight: 5
 ---
 

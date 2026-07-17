@@ -4,7 +4,6 @@ description: "Flutter throws a FlutterError when setState is called on a State o
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["setstate", "dispose", "state", "lifecycle", "widget"]
 weight: 5
 ---
 

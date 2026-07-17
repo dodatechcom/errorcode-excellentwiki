@@ -4,7 +4,6 @@ description: "Fix Next.js build errors when modules cannot be found. Resolve imp
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "build", "module-not-found", "webpack", "import"]
 weight: 5
 ---
 

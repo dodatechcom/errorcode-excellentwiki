@@ -4,7 +4,6 @@ description: "Fix C integer overflow in signed arithmetic. Prevent undefined beh
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["integer-overflow", "signed", "arithmetic", "undefined-behavior", "overflow"]
 weight: 5
 ---
 

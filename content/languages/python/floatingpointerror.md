@@ -4,7 +4,6 @@ description: "Fix Python FloatingPointError when a floating point operation fail
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["floatingpointerror", "float", "ieee754", "precision", "arithmetic"]
 weight: 5
 ---
 

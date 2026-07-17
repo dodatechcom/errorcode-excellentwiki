@@ -6,7 +6,6 @@ replacement_function: "C++ exceptions / error handling"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["setjmp", "longjmp", "exceptions", "error-handling", "c", "cpp"]
 weight: 5
 ---
 

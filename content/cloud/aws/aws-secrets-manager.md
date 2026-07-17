@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS Secrets Manager Error"
 description: "Fix AWS Secrets Manager errors. Resolve secret retrieval and management issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "secrets-manager", "secret", "credentials", "rotation"]
 weight: 5
 ---
 

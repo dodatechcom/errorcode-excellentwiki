@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_THREAD_EXCEPTION_NOT_HANDLED caused by Ntfs
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "ntfs", "file-system", "disk", "driver"]
 weight: 5
 ---
 

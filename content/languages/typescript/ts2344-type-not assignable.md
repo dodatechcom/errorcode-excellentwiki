@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2344: Type 'X' does not satisfy constraint 'Y'. S
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2344", "type-constraint", "generic", "not-satisfy", "extends"]
 weight: 5
 ---
 

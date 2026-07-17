@@ -4,7 +4,6 @@ description: "Fix Kubernetes NetworkPolicy ingress blocked. Resolve network poli
 tools: ["kubernetes"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kubernetes", "networkpolicy", "ingress", "blocked", "network", "firewall"]
 weight: 5
 ---
 

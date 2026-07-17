@@ -1,10 +1,8 @@
 ---
 title: "GCP Permission Denied: The Caller Does Not Have Permission"
 description: "Permission denied: The caller does not have permission — Fix Google Cloud IAM permission errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "iam", "permission-denied", "access", "authorization", "cloud-platform"]
 weight: 5
 ---
 

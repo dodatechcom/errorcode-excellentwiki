@@ -4,7 +4,6 @@ description: "Fix Python TypeError: unhashable type: 'dict'. Understand why dict
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["typeerror", "dict", "hashable", "unhashable", "set"]
 weight: 5
 ---
 

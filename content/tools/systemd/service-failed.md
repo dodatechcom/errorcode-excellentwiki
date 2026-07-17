@@ -4,7 +4,6 @@ description: "Fix systemd 'Failed to start' service errors. Diagnose why a servi
 tools: ["systemd"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["service-failed", "systemd", "failed", "code-exited"]
 weight: 5
 ---
 

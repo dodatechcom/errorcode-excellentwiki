@@ -4,7 +4,6 @@ description: "Fix Dart 'StateError: No element' error. Learn when first/last/sin
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["state", "empty", "first", "last", "single"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Mac trackpad errors when the trackpad stops responding, clicks
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["trackpad", "click", "scroll", "force-touch", "pointing-device"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Objective-C NSException handling and uncaught exception errors
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "exception-handling", "objective-c-runtime"]
 weight: 5
 ---
 

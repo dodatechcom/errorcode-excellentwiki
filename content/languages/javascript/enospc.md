@@ -4,7 +4,6 @@ description: "Fix Node.js ENOSPC: no space left on device or system limit reache
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["enospc", "disk-full", "inotify", "file-watcher", "system-limit"]
 weight: 5
 ---
 

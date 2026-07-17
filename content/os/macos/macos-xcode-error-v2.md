@@ -4,7 +4,6 @@ description: "Fix Xcode build errors on macOS. Resolve compilation failures, mis
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["xcode", "build", "swift", "objective-c", "sdk", "signing", "macos"]
 weight: 5
 ---
 

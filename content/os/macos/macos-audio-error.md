@@ -4,7 +4,6 @@ description: "Fix macOS audio errors including no sound, crackling, digital dist
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["audio", "sound", "speakers", "headphones", "core-audio", "output"]
 weight: 5
 ---
 

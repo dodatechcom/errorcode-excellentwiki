@@ -4,7 +4,6 @@ description: "Fix Nginx worker process errors. Resolve worker process crashes an
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["worker", "process", "crash", "segfault", "nginx"]
 weight: 5
 ---
 

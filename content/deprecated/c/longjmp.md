@@ -6,7 +6,6 @@ replacement_function: "C++ exceptions / goto cleanup"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["longjmp", "setjmp", "exceptions", "error-handling", "c", "cpp"]
 weight: 5
 ---
 

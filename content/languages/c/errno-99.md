@@ -4,7 +4,6 @@ description: "Fix C errno 99 EADDRNOTAVAIL by checking IP binding, network inter
 languages: ["c"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["eaddrnotavailable", "errno-99", "address", "bind", "network"]
 weight: 40
 ---
 

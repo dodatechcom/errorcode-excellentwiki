@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_unshift() expects at least 2 arguments. Lea
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-unshift", "array", "arguments"]
 weight: 5
 ---
 

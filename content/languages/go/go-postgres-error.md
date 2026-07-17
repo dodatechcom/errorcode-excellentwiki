@@ -4,7 +4,6 @@ description: "Fix PostgreSQL (pq) connection errors. Handle database connectivit
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["postgres", "pq", "database"]
 weight: 5
 ---
 

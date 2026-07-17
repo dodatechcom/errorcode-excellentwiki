@@ -4,7 +4,6 @@ description: "Fix C++ Google Test (gtest) assertion errors. Handle EXPECT and AS
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["gtest", "google-test", "assertion", "expect", "assert"]
 weight: 5
 ---
 

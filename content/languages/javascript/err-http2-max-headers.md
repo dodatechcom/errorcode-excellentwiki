@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_MAX_HEADERS when the number of HTTP/2 header
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-max-headers", "http2", "headers", "limit", "nodejs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C segmentation fault (core dumped) with proven techniques. Deb
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error", "memory-error"]
-tags: ["segfault", "sigsegv", "core-dumped", "memory-access", "null-pointer", "signal-11"]
 weight: 5
 ---
 

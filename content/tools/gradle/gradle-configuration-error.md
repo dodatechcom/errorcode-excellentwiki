@@ -4,7 +4,6 @@ description: "Gradle fails during configuration phase with task creation or file
 tools: ["gradle"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["gradle", "configuration", "task", "evaluation", "buildscript"]
 weight: 5
 ---
 

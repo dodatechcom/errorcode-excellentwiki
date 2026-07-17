@@ -4,7 +4,6 @@ description: "Fix Go XML unmarshal errors. Handle malformed XML, missing fields,
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["xml", "encoding", "parse"]
 weight: 5
 ---
 

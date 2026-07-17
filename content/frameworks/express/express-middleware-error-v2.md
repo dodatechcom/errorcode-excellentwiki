@@ -4,7 +4,6 @@ description: "Fix Express middleware errors caused by missing next() calls that 
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["middleware", "next", "hang", "timeout", "express"]
 weight: 5
 ---
 

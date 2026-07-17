@@ -4,7 +4,6 @@ description: "Fix Linux 'elasticsearch: cluster error' and Elasticsearch failure
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["elasticsearch", "cluster-error", "shard", "node", "search", "logstash"]
 weight: 5
 ---
 

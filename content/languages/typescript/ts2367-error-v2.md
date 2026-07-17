@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2367 when comparing values that can never be equa
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2367", "comparison", "literal-type", "enum", "type-narrowing"]
 weight: 5
 ---
 

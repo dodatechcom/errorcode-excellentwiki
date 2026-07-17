@@ -4,7 +4,6 @@ description: "Fix MATLAB errors when matrix operations have mismatched dimension
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dimensions", "matrix", "mismatch", "size", "array", "matlab"]
 weight: 5
 ---
 

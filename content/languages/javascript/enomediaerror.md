@@ -4,7 +4,6 @@ description: "Fix JavaScript NotSupportedError: The media element does not suppo
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["notsupportederror", "media", "audio", "video", "codec", "html5"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes Secret errors. Resolve Secret not found or invalid 
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["secret", "not-found", "invalid", "credentials", "kubernetes"]
 weight: 5
 ---
 

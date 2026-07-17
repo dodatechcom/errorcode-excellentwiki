@@ -4,7 +4,6 @@ description: "Fix macOS Recovery mode errors when Recovery won't boot, shows 'No
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["recovery", "recovery-mode", "boot", "utilities", "repair"]
 weight: 5
 ---
 

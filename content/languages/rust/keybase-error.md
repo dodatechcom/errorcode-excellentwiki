@@ -4,7 +4,6 @@ description: "Fix keybase identity errors. Handle key operations, proof verifica
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["keybase", "identity", "security"]
 weight: 5
 ---
 

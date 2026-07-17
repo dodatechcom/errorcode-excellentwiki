@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pinecone not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pinecone", "module-not-found", "pip", "vector-db"]
 weight: 5
 ---
 

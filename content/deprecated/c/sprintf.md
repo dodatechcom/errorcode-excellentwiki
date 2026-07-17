@@ -6,7 +6,6 @@ replacement_function: "snprintf"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["sprintf", "snprintf", "buffer-overflow", "security", "c"]
 weight: 5
 ---
 

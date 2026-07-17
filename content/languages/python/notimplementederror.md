@@ -4,7 +4,6 @@ description: "Fix Python NotImplementedError when calling unimplemented methods.
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["notimplementederror", "abstract", "inheritance", "subclass"]
 weight: 65
 ---
 

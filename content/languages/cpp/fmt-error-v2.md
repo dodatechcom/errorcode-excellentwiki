@@ -4,7 +4,6 @@ description: "Fix fmt library format string errors. Handle argument mismatches, 
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fmt", "formatting", "string", "format-spec"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix JavaScript NotAllowedError when a browser or Node.js operation
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["notallowederror", "permission", "denied", "security", "autoplay", "clipboard"]
 weight: 5
 ---
 

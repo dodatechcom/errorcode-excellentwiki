@@ -4,7 +4,6 @@ description: "Fix Linux 'apt install' dependency conflict errors. Resolve broken
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["apt", "install", "dependency", "conflict", "package-manager"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Time Machine errors when backup disk is not found, backup fail
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["time-machine", "backup", "disk", "network", "nas", "macos"]
 weight: 5
 ---
 

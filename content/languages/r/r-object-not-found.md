@@ -4,7 +4,6 @@ description: "Fix R 'object X not found' error when referencing undefined variab
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["object-not-found", "undefined-variable", "scope", "r"]
 weight: 5
 ---
 

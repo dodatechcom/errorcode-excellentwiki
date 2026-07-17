@@ -4,7 +4,6 @@ description: "Fix C++ std::stringstream string stream errors. Handle stringstrea
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stringstream", "string-stream", "conversion", "format", "io"]
 weight: 5
 ---
 

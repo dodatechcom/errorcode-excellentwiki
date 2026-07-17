@@ -4,7 +4,6 @@ description: "MongoDB replica set encounters issues with elections, sync, or mem
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "replica-set", "election", "sync", "high-availability"]
 weight: 5
 ---
 

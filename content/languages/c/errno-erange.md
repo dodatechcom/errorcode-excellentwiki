@@ -4,7 +4,6 @@ description: "Fix C ERANGE (Math result not representable) by handling overflow 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["erange", "math-overflow", "result-not-representable", "range-error"]
 weight: 5
 ---
 

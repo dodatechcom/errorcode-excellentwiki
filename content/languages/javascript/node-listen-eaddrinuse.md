@@ -4,7 +4,6 @@ description: "Error: listen EADDRINUSE — Fix port already in use errors in Nod
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "eaddrinuse", "port", "listen", "server", "address-in-use"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kotlin delegation errors. Learn why delegation fails and how t
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["delegation", "by", "interface", "kotlin"]
 weight: 5
 ---
 

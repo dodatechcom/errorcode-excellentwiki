@@ -4,7 +4,6 @@ description: "Fix Express compression errors. Resolve gzip/deflate compression i
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["compression", "gzip", "deflate", "encoding", "express"]
 weight: 5
 ---
 

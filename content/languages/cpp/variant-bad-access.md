@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_variant_access when using std::get with wrong typ
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-variant-access", "variant", "get", "type-mismatch", "stdexcept"]
 weight: 5
 ---
 

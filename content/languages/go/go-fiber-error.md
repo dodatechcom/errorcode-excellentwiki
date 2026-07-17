@@ -4,7 +4,6 @@ description: "Fix Fiber framework handler errors. Handle request processing, mid
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fiber", "web", "framework"]
 weight: 5
 ---
 

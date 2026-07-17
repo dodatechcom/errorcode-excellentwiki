@@ -4,7 +4,6 @@ description: "Laravel throws ThrottleRequestsException when a request exceeds th
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["throttle", "rate-limit", "middleware", "api", "too-many-requests"]
 weight: 5
 ---
 

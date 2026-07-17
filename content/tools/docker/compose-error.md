@@ -4,7 +4,6 @@ description: "Fix Docker Compose errors. Resolve configuration, service, and bui
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["compose-error", "docker-compose", "yaml", "configuration", "docker"]
 weight: 5
 ---
 

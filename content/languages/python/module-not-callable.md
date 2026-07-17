@@ -4,7 +4,6 @@ description: "Fix Python TypeError when trying to call a module as a function. L
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "module", "callable", "import"]
 weight: 5
 ---
 

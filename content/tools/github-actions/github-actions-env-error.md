@@ -4,7 +4,6 @@ description: "GitHub Actions workflow fails due to environment variable configur
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "environment", "variable", "env", "context"]
 weight: 5
 ---
 

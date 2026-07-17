@@ -4,7 +4,6 @@ description: "Maven release plugin fails with SNAPSHOT version error."
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "release", "snapshot", "version", "deploy"]
 weight: 5
 ---
 

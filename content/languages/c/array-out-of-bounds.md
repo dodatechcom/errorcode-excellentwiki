@@ -4,7 +4,6 @@ description: "Fix C 'array index out of bounds' errors. Prevent buffer overflows
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error", "memory-error"]
-tags: ["array-out-of-bounds", "buffer-overflow", "index-error", "bounds-check", "undefined-behavior"]
 weight: 5
 ---
 

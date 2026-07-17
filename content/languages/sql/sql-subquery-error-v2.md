@@ -4,7 +4,6 @@ description: "Fix SQL subquery errors when a subquery expected to return one row
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["subquery", "scalar", "more-than-one-row", "sql"]
 weight: 5
 ---
 

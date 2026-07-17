@@ -4,7 +4,6 @@ description: "Fix 'unexpected end of file' in Bash caused by unclosed quotes, mi
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unexpected-eof", "unmatched-quote", "parse-error"]
 weight: 5
 ---
 

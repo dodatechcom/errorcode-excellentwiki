@@ -4,7 +4,6 @@ description: "Fix Go Swagger spec generation errors. Handle annotation issues, t
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["swagger", "api-docs", "openapi"]
 weight: 5
 ---
 

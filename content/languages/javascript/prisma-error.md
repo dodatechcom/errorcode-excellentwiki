@@ -4,7 +4,6 @@ description: "Fix Prisma ORM errors including PrismaClientKnownRequestError, con
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["prisma", "orm", "database"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix ElasticsearchContainer startup failure in Testcontainers. Chec
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "elasticsearch", "docker", "container", "search"]
 weight: 5
 ---
 

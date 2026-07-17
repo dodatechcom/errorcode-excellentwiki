@@ -4,7 +4,6 @@ description: "Fix PSRemotingTransportError when PowerShell cannot connect to a r
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["remote", "PSRemoting", "WinRM", "SSH", "session"]
 weight: 5
 ---
 

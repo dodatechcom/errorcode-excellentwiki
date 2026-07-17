@@ -4,7 +4,6 @@ description: "Fix bash unset errors when trying to unset a variable that isn't a
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unset", "nameref", "variable", "bash"]
 weight: 5
 ---
 

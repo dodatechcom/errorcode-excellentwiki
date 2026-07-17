@@ -4,7 +4,6 @@ description: "Fix Python ImportError: starlette not found or ModuleNotFoundError
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "starlette", "module-not-found", "pip", "asgi"]
 weight: 5
 ---
 

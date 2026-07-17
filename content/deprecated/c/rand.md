@@ -6,7 +6,6 @@ replacement_function: "arc4random"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["rand", "arc4random", "random", "security", "c"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux EREMCHG (errno 57) Remote address changed error. Solutio
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eremchg", "remote", "errno-57", "address", "stale"]
 weight: 5
 ---
 

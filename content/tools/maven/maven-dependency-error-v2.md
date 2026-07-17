@@ -4,7 +4,6 @@ description: "Maven cannot find a required artifact in any configured repository
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "artifact", "not-found", "repository", "dependency"]
 weight: 5
 ---
 

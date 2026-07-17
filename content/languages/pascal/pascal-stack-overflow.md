@@ -4,7 +4,6 @@ description: "Stack overflow in Pascal occurs when the call stack exceeds its li
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursion", "memory", "pascal"]
 weight: 5
 ---
 

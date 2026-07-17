@@ -4,7 +4,6 @@ description: "Division by zero in Fortran causes a runtime error when dividing a
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["division", "zero", "runtime", "arithmetic", "fortran"]
 weight: 5
 ---
 

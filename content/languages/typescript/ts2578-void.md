@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2578: Type 'void' is not assignable. Handle void 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2578", "void", "not-assignable", "return-type", "type-mismatch"]
 weight: 5
 ---
 

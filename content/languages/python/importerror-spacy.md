@@ -4,7 +4,6 @@ description: "Fix Python ImportError: spacy not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "spacy", "module-not-found", "pip", "nlp"]
 weight: 5
 ---
 

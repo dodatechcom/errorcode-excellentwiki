@@ -4,7 +4,6 @@ description: "Fix ERR_HTTP_HEADERS_SENT: Cannot set headers after they are sent 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http-headers-sent", "headers", "response", "express", "http"]
 weight: 5
 ---
 

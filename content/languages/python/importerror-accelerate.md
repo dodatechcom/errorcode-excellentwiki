@@ -4,7 +4,6 @@ description: "Fix Python ImportError: accelerate not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "accelerate", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

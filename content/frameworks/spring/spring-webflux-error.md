@@ -4,7 +4,6 @@ description: "Spring WebFlux throws WebExchangeBindException when request body v
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webflux", "reactive", "validation", "request-body", "netty"]
 weight: 5
 ---
 

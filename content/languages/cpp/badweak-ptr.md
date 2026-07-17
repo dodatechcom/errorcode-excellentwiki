@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_weak_ptr when locking an expired weak_ptr. Handle
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-weak-ptr", "weak-ptr", "shared-ptr", "exception"]
 weight: 50
 ---
 

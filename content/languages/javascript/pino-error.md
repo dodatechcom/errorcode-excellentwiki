@@ -4,7 +4,6 @@ description: "Fix Pino logger serialization errors. Handle circular references, 
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pino", "logger", "serialization"]
 weight: 5
 ---
 

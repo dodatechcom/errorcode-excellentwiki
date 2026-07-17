@@ -4,7 +4,6 @@ description: "Handle Python PendingDeprecationWarning when features are planned 
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pendingdeprecationwarning", "deprecated", "migration", "future", "api"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix VBA Division by Zero error (Error 11) when dividing a number b
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["divide-by-zero", "error-11", "arithmetic", "math", "vba"]
 weight: 5
 ---
 

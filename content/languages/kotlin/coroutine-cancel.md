@@ -4,7 +4,6 @@ description: "Fix Kotlin coroutine cancellation errors. Understand structured co
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["coroutine-cancel", "cancellation", "structured-concurrency", "job"]
 weight: 5
 ---
 

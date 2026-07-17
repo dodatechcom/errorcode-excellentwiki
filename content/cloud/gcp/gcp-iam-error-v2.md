@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GCP IAM — permission denied on resource"
 description: "Fix GCP IAM permission denied on resource. Resolve Google Cloud IAM access and binding issues."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "iam", "permission", "denied", "resource", "access", "binding"]
 weight: 5
 ---
 

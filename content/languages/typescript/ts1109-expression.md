@@ -4,7 +4,6 @@ description: "Fix TypeScript TS1109: Expression expected. Resolve syntax errors 
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts1109", "expression", "syntax-error", "expected"]
 weight: 5
 ---
 

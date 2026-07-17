@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2414: Type argument not assignable. Fix generic t
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2414", "type-argument", "generic", "constraint", "not-assignable"]
 weight: 5
 ---
 

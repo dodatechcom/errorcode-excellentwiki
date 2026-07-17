@@ -4,7 +4,6 @@ description: "Fix Ruby TypeError: type mismatch. Learn why incompatible types ca
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["typeerror", "type-mismatch", "incompatible", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TypeScript tsconfig.json compilation errors. Resolve configura
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["tsconfig", "configuration", "compiler-options", "json"]
 weight: 5
 ---
 

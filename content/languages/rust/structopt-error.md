@@ -4,7 +4,6 @@ description: "Fix structopt argument errors. Handle derive macro issues, type co
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["structopt", "cli", "arguments"]
 weight: 5
 ---
 

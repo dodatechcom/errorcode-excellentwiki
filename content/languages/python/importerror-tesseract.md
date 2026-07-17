@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pytesseract not found or ModuleNotFoundErr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pytesseract", "tesseract", "module-not-found", "pip", "ocr"]
 weight: 5
 ---
 

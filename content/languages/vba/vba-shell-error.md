@@ -4,7 +4,6 @@ description: "Fix VBA Shell function errors when launching external processes fa
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["shell", "process", "command", "execute", "external", "vba"]
 weight: 5
 ---
 

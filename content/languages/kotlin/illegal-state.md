@@ -4,7 +4,6 @@ description: "Fix Kotlin IllegalStateException when an object is not in the corr
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalsateexception", "state", "initialization", "check"]
 weight: 5
 ---
 

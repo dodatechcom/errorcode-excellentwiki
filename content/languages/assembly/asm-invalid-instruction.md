@@ -4,7 +4,6 @@ description: "An invalid instruction error occurs when the CPU encounters an opc
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["invalid-instruction", "opcode", "cpu", "illegal", "ud2"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix PrismaClientKnownRequestError with specific error codes. Handl
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["prisma", "database", "orm", "postgresql", "mysql"]
 weight: 5
 ---
 

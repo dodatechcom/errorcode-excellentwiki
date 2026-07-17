@@ -4,7 +4,6 @@ description: "Fix Dart 'type X is not a subtype of type Y' runtime error. Learn 
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "cast", "subtype", "runtime", "typecast"]
 weight: 5
 ---
 

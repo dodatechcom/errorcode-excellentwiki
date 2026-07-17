@@ -4,7 +4,6 @@ description: "Fix Room database migration errors when schema changes aren't hand
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["room", "migration", "database", "schema", "kotlin"]
 weight: 5
 ---
 

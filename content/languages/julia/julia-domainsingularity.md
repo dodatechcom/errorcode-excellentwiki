@@ -4,7 +4,6 @@ description: "Julia raises DomainError when a mathematical function receives a v
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["domain", "math", "singular", "domainerror", "function"]
 weight: 5
 ---
 

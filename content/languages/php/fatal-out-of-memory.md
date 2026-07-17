@@ -4,7 +4,6 @@ description: "Fix PHP Fatal error: Allowed memory size exhausted. Increase memor
 languages: ["php"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["memory", "memory_limit", "generators", "performance", "out-of-memory"]
 date: 2026-07-15
 ---
 

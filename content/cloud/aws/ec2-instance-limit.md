@@ -1,10 +1,8 @@
 ---
 title: "EC2 Instance Limit Exceeded"
 description: "InstanceLimitExceeded - You have requested more instances than your current instance limit"
-cloud: ["aws"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["aws", "ec2", "limits", "quota", "instances"]
 weight: 5
 ---
 

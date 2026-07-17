@@ -4,7 +4,6 @@ description: "Fix C connection timed out (ETIMEDOUT). Set appropriate socket tim
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["etimedout", "connection-timed-out", "socket", "timeout", "errno"]
 weight: 5
 ---
 

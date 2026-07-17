@@ -4,7 +4,6 @@ description: "Fix Vite CSS processing errors. Resolve PostCSS, SCSS, and CSS mod
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "css", "postcss", "scss", "style", "processing"]
 weight: 5
 ---
 

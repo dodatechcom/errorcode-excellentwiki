@@ -4,7 +4,6 @@ description: "Flask-SQLAlchemy raises OperationalError, IntegrityError, or Progr
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlalchemy", "database", "orm", "session"]
 weight: 5
 ---
 

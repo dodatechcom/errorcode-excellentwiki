@@ -4,7 +4,6 @@ description: "Fix macOS AVFoundation camera and AV errors. Causes and solutions 
 platforms: ["macos"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["avfoundation", "camera", "video", "capture", "media"]
 weight: 5
 ---
 

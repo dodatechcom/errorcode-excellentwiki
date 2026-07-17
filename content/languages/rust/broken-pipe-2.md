@@ -4,7 +4,6 @@ description: "Fix Rust broken pipe error. Learn why writing to a closed pipe fai
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["broken", "pipe", "sigpipe", "signal", "stdout", "eof"]
 weight: 5
 ---
 

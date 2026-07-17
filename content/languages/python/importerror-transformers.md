@@ -4,7 +4,6 @@ description: "Fix Python ImportError: transformers not found or ModuleNotFoundEr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "transformers", "module-not-found", "pip", "nlp"]
 weight: 5
 ---
 

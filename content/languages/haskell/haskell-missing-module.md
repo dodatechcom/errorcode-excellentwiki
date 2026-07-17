@@ -4,7 +4,6 @@ description: "GHC raises module not found errors when a required module cannot b
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["module", "import", "missing", "not-found", "compilation"]
 weight: 5
 ---
 

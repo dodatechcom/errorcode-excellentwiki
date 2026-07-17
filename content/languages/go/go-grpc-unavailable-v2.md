@@ -4,7 +4,6 @@ description: "Fix gRPC Unavailable errors when the server is down or unreachable
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "unavailable", "connection", "server-down", "protobuf"]
 weight: 5
 ---
 

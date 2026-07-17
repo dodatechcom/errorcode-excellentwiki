@@ -4,7 +4,6 @@ description: "Fix Python TypeError related to descriptors. Understand how descri
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "descriptor", "class", "attribute"]
 weight: 5
 ---
 

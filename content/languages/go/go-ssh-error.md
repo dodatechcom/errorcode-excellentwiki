@@ -4,7 +4,6 @@ description: "Fix Go SSH handshake errors. Handle key exchange, authentication, 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ssh", "crypto", "remote"]
 weight: 5
 ---
 

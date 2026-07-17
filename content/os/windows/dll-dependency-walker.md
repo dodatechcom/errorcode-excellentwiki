@@ -4,7 +4,6 @@ description: "Fix DLL dependency errors on Windows 10 and 11. Resolve missing DL
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "dependency", "missing-dependency", "load-failed", "import"]
 weight: 5
 ---
 

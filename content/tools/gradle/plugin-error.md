@@ -4,7 +4,6 @@ description: "Fix Gradle plugin not found errors. Resolve plugin resolution and 
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "plugin", "not-found", "resolution", "repository"]
 weight: 5
 ---
 

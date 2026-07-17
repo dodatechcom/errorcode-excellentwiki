@@ -4,7 +4,6 @@ description: "Fix VBA compile error for syntax issues including missing keywords
 languages: ["vba"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["compile-error", "syntax", "parse", "code", "vba"]
 weight: 5
 ---
 

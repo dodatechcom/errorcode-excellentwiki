@@ -4,7 +4,6 @@ description: "Fix Go JSON unmarshal error with invalid characters. Validate JSON
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["json", "unmarshal", "parse", "encoding", "decode", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Swift index out of range errors. Learn why array and string in
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["index-out-of-range", "array", "string", "swift"]
 weight: 5
 ---
 

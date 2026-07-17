@@ -4,7 +4,6 @@ description: "Fix Swift URLError secure connection failed. Learn why SSL/TLS con
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["urlerror", "ssl", "tls", "secure-connection", "swift"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'bash: conditional expression error' when using [[ ]] with inv
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["conditional", "expression", "bracket", "test", "conditional-expr"]
 weight: 5
 ---
 

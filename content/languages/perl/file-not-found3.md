@@ -4,7 +4,6 @@ description: "A file not found error occurs when attempting to open a file that 
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file", "not-found", "directory", "perl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'pacman: package not found' errors. Resolve Arch Linux p
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["pacman", "package-not-found", "arch-linux", "aur", "package-manager", "database"]
 weight: 5
 ---
 

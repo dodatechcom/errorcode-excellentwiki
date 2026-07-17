@@ -4,7 +4,6 @@ description: "Fix ent ORM mutation errors. Handle entity creation, graph travers
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ent", "orm", "graph"]
 weight: 5
 ---
 

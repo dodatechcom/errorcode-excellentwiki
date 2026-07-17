@@ -4,7 +4,6 @@ description: "Fix PHP Cannot modify header information: headers already sent. Le
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["headers", "header-sent", "output", "session", "redirect"]
 weight: 5
 ---
 

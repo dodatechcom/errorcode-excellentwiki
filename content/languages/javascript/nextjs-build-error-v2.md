@@ -4,7 +4,6 @@ description: "Fix Next.js build failures in production. Handle compilation error
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "build", "production", "compilation", "next-build"]
 weight: 5
 ---
 

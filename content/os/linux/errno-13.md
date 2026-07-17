@@ -4,7 +4,6 @@ description: "Fix Linux EACCES (errno 13) Permission Denied error. Fix file perm
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["eacces", "errno-13", "permission-denied"]
 weight: 30
 ---
 

@@ -4,7 +4,6 @@ description: "Webpack fails to process or emit asset files (images, fonts, CSS).
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "asset", "image", "font", "css", "processing"]
 weight: 5
 ---
 

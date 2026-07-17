@@ -4,7 +4,6 @@ description: "SQL Server login fails with authentication error."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "authentication", "login", "password", "credential"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix dialoguer prompt errors. Handle terminal input, validation, an
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dialoguer", "cli", "prompt"]
 weight: 5
 ---
 

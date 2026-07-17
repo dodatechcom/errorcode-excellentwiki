@@ -4,7 +4,6 @@ description: "Fix 'Entry point X could not be located in X.dll' error on Windows
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["dll-error"]
-tags: ["dll", "entry-point", "version-mismatch", "application-error", "runtime"]
 weight: 5
 ---
 

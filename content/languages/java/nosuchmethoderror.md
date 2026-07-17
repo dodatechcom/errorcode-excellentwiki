@@ -4,7 +4,6 @@ description: "Fix Java NoSuchMethodError by recompiling all classes, resolving c
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nosuchmethoderror", "method", "linkage", "classpath", "resolution"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Express Helmet errors when security headers conflict with appl
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["helmet", "security", "headers", "csp", "express"]
 weight: 5
 ---
 

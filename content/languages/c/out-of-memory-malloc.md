@@ -4,7 +4,6 @@ description: "Fix C malloc failure. Handle memory allocation errors gracefully."
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["malloc", "out-of-memory", "allocation", "ENOMEM", "memory"]
 weight: 5
 ---
 

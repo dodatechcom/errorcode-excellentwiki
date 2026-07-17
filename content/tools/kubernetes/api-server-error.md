@@ -4,7 +4,6 @@ description: "Fix Kubernetes kube-apiserver too many open files errors. Resolve 
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["apiserver", "too-many-open-files", "file-descriptors", "control-plane", "ulimit"]
 weight: 5
 ---
 

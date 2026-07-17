@@ -4,7 +4,6 @@ description: "Fix C errno 33 EDOM (Math argument out of domain) by validating in
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["edom", "errno-33", "math", "domain", "out-of-domain"]
 weight: 5
 ---
 

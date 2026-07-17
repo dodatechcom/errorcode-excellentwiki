@@ -4,7 +4,6 @@ description: "MongoDB sharded cluster encounters issues with shard balancing or 
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "shard", "cluster", "balancer", "chunk"]
 weight: 5
 ---
 

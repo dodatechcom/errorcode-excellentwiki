@@ -4,7 +4,6 @@ description: "Fix C EHOSTUNREACH (No route to host) by checking routing, gateway
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["ehostunreach", "no-route-to-host", "routing", "gateway", "firewall"]
 weight: 5
 ---
 

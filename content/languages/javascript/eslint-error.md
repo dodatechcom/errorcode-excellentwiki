@@ -4,7 +4,6 @@ description: "Fix ESLint parsing errors. Handle configuration issues, incompatib
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["eslint", "linting", "parsing"]
 weight: 5
 ---
 

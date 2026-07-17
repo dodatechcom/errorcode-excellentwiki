@@ -4,7 +4,6 @@ description: "Fix TypeScript TS1361: Unterminated template literal. Fix unclosed
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts1361", "template-literal", "syntax-error", "unterminated", "backtick"]
 weight: 5
 ---
 

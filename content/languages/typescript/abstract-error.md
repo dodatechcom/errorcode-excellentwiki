@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Cannot instantiate abstract class' errors. Underst
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["abstract-class", "abstract-method", "instantiation", "polymorphism", "type-error"]
 weight: 5
 ---
 

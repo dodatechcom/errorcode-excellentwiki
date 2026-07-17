@@ -4,7 +4,6 @@ description: "Fix Universal Clipboard not working on Mac when copy/paste between
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["universal-clipboard", "copy-paste", "continuity", "handoff", "clipboard"]
 weight: 5
 ---
 

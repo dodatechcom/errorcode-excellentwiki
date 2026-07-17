@@ -4,7 +4,6 @@ description: "Fix Git submodule not initialized errors. Initialize and update su
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["submodule", "init", "update", "clone", "git"]
 weight: 5
 ---
 

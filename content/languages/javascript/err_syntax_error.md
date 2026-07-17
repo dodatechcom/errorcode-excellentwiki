@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_SYNTAX_ERROR when evaluating code, parsing JSON, o
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-syntax-error", "syntax", "parse", "json", "eval", "nodejs"]
 weight: 5
 ---
 

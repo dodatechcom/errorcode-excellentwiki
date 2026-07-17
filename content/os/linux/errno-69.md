@@ -4,7 +4,6 @@ description: "Fix Linux ENOBUFS (errno 69) No buffer space available error. Solu
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enobufs", "buffer", "errno-69", "socket", "memory"]
 weight: 5
 ---
 

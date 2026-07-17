@@ -4,7 +4,6 @@ description: "Fix Webpack compilation errors. Handle module resolution, loader c
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "bundler", "compilation"]
 weight: 5
 ---
 

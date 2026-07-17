@@ -4,7 +4,6 @@ description: "Fix Nginx connection refused error. Resolve upstream connection fa
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["connection-refused", "upstream", "network", "nginx"]
 weight: 5
 ---
 

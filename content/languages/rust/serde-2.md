@@ -4,7 +4,6 @@ description: "Fix Rust serde deserialization errors. Learn why serde fails to de
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["serde", "deserialization", "json", "struct", "enum", "derive"]
 weight: 5
 ---
 

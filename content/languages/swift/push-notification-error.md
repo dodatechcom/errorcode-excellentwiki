@@ -4,7 +4,6 @@ description: "Fix Swift push notification errors. Learn why APNs notifications f
 languages: ["swift"]
 severities: ["error"]
 error-types: ["network-error"]
-tags: ["apns", "push-notification", "notification", "swift"]
 weight: 5
 ---
 

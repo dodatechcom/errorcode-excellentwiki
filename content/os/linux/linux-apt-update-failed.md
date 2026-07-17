@@ -4,7 +4,6 @@ description: "Fix Linux 'apt update' repository errors. Resolve failed updates, 
 platforms: ["linux"]
 severities: ["warning"]
 error-types: ["system-error"]
-tags: ["apt", "update", "repository", "mirror", "gpg", "package-manager"]
 weight: 5
 ---
 

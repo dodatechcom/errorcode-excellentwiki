@@ -4,7 +4,6 @@ description: "Fix Django Redis connection errors. Resolve Redis cache and connec
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redis", "cache", "connection", "backend", "django"]
 weight: 5
 ---
 

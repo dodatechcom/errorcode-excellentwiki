@@ -4,7 +4,6 @@ description: "Fix JPA EntityNotFoundException when an entity does not exist in t
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jpa", "entity", "not-found", "database", "orm"]
 weight: 5
 ---
 

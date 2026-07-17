@@ -4,7 +4,6 @@ description: "Fix Control-C (Ctrl+C) interrupt handler errors on Windows. Resolv
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["control-c", "ctrl-c", "interrupt", "signal", "console", "handler"]
 weight: 5
 ---
 

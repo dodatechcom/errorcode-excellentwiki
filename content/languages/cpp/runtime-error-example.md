@@ -4,7 +4,6 @@ description: "Example of std::runtime_error in C++. Handle unexpected runtime co
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["runtime-error", "exception", "error-handling", "file-io"]
 weight: 50
 ---
 

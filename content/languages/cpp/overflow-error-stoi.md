@@ -4,7 +4,6 @@ description: "Fix C++ std::overflow_error from stoi when value exceeds int range
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["overflow-error", "stoi", "conversion", "integer", "range"]
 weight: 5
 ---
 

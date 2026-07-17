@@ -4,7 +4,6 @@ description: "Fix Gradle task execution errors. Resolve failures during task run
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "task", "execution", "build", "lifecycle"]
 weight: 5
 ---
 

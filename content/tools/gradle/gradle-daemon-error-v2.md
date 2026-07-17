@@ -4,7 +4,6 @@ description: "Gradle daemon process disconnects or becomes unresponsive during b
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "daemon", "connection", "process", "jvm"]
 weight: 5
 ---
 

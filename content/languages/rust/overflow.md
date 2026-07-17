@@ -4,7 +4,6 @@ description: "Fix Rust arithmetic overflow panic. Learn why integer overflow pan
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "arithmetic", "integer", "wrapping", "checked", "panic"]
 weight: 5
 ---
 

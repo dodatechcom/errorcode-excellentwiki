@@ -4,7 +4,6 @@ description: "Fix Python ImportError: httpx not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "httpx", "module-not-found", "pip", "http"]
 weight: 5
 ---
 

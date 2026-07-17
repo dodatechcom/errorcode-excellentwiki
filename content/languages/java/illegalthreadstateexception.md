@@ -4,7 +4,6 @@ description: "Fix Java IllegalThreadStateException by not restarting threads, us
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalthreadstateexception", "thread", "lifecycle", "concurrency"]
 weight: 5
 ---
 

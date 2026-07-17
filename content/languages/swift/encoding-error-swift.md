@@ -4,7 +4,6 @@ description: "Fix Swift EncodingError when JSON encoding fails. Learn why Codabl
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["encoding", "json", "codable", "swift"]
 weight: 5
 ---
 

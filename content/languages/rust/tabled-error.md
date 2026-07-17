@@ -4,7 +4,6 @@ description: "Fix tabled table formatting errors. Handle column sizing, alignmen
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tabled", "terminal", "table"]
 weight: 5
 ---
 

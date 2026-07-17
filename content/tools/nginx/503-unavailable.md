@@ -4,7 +4,6 @@ description: "Fix Nginx 503 Service Temporarily Unavailable error. Resolve upstr
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["503", "service-unavailable", "overload", "maintenance", "nginx"]
 weight: 5
 ---
 

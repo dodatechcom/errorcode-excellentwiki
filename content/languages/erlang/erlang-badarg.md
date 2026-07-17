@@ -4,7 +4,6 @@ description: "Erlang raises badarg when a BIF receives an argument of unexpected
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["badarg", "argument", "type-error", "bif"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: cryptography not found or ModuleNotFoundEr
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "cryptography", "module-not-found", "pip", "security"]
 weight: 5
 ---
 

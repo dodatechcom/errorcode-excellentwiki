@@ -4,7 +4,6 @@ description: "Fix Linux ETIMEDOUT (errno 74) Connection timed out error. Solutio
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["etimedout", "timeout", "errno-74", "connection", "network"]
 weight: 5
 ---
 

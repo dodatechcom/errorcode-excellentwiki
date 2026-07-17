@@ -4,7 +4,6 @@ description: "Fix Go io read/write errors. Handle EOF, broken pipe, and I/O oper
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["io", "read", "write"]
 weight: 5
 ---
 

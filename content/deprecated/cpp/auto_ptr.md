@@ -6,7 +6,6 @@ replacement_function: "std::unique_ptr"
 languages: ["cpp"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["auto_ptr", "unique_ptr", "smart-pointer", "memory", "cpp11"]
 weight: 5
 ---
 

@@ -1,10 +1,8 @@
 ---
 title: "GCP Cloud Storage: The Bucket Does Not Exist"
 description: "Cloud Storage: The bucket does not exist — Fix Google Cloud Storage bucket lookup errors."
-cloud: ["gcp"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["gcp", "storage", "gcs", "bucket", "not-found", "cloud-storage"]
 weight: 5
 ---
 

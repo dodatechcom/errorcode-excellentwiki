@@ -4,7 +4,6 @@ description: "Fix 'syntax error near unexpected token' in Bash when parsing fail
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["syntax-error", "unexpected-token", "parse-error"]
 weight: 5
 ---
 

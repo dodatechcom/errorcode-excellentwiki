@@ -4,7 +4,6 @@ description: "Dart throws a SocketException when a network connection cannot be 
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["network", "socket", "connectivity", "http", "offline"]
 weight: 5
 ---
 

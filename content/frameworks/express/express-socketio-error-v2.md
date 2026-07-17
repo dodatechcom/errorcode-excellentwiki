@@ -4,7 +4,6 @@ description: "Fix Socket.IO errors when WebSocket connections fail, drop, or can
 frameworks: ["express.js"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["socketio", "websocket", "realtime", "connection", "express"]
 weight: 5
 ---
 

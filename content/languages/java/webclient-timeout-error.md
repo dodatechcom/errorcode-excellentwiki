@@ -4,7 +4,6 @@ description: "Fix WebClient ReadTimeoutException. Configure timeouts, use connec
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webclient", "webflux", "reactive", "timeout", "http"]
 weight: 5
 ---
 

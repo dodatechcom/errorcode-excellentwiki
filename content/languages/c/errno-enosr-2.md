@@ -4,7 +4,6 @@ description: "Fix C ENOSR (No STREAMS resources) by managing STREAMS resource po
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enosr", "no-streams-resources", "streams", "resource-exhaustion"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Gradle version is incompatible with the project or its plugins."
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "version", "compatibility", "upgrade", "wrapper"]
 weight: 5
 ---
 

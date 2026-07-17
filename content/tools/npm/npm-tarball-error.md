@@ -4,7 +4,6 @@ description: "Fix npm tarball extraction errors. Resolve package tarball extract
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["tarball", "extraction", "extract", "corrupt", "npm"]
 weight: 5
 ---
 

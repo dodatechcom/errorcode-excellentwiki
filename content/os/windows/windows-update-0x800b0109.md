@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x800b0109 (certificate chain not trusted
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["windows-update", "0x800b0109", "certificate-chain", "trust", "ssl"]
 weight: 5
 ---
 

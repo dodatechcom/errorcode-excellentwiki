@@ -4,7 +4,6 @@ description: "Fix Homebrew errors when a formula or cask cannot be found, includ
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["homebrew", "brew", "formula", "cask", "package-manager", "macos"]
 weight: 5
 ---
 

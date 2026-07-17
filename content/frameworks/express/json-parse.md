@@ -4,7 +4,6 @@ description: "Express fails to parse request body because it contains invalid JS
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "parse", "body-parser", "syntax"]
 weight: 5
 ---
 

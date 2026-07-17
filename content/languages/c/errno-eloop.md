@@ -4,7 +4,6 @@ description: "Fix C ELOOP (Too many levels of symbolic links) by resolving circu
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eloop", "too-many-symlinks", "symbolic-links", "circular-link"]
 weight: 5
 ---
 

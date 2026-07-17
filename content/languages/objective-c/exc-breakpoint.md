@@ -4,7 +4,6 @@ description: "An EXC_BREAKPOINT occurs when an assertion failure or breakpoint i
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["exc-breakpoint", "breakpoint", "assertion", "objc"]
 weight: 5
 ---
 

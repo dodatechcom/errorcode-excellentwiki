@@ -4,7 +4,6 @@ description: "Fix Ruby ZeroDivisionError: divided by 0. Learn how to prevent div
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["zerodivisionerror", "division-by-zero", "arithmetic", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix provisioning profile errors on Mac when Xcode shows 'No matchi
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["provisioning", "profile", "xcode", "development", "distribution"]
 weight: 5
 ---
 

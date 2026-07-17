@@ -4,7 +4,6 @@ description: "Fix Perl module not found errors. Learn why Perl modules fail to l
 languages: ["perl"]
 severities: ["error"]
 error-types: ["load-error"]
-tags: ["module", "require", "cpan", "perl"]
 weight: 5
 ---
 

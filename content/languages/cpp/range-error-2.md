@@ -4,7 +4,6 @@ description: "Fix C++ std::range_error when mathematically valid computations pr
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["range-error", "math", "computation", "exception"]
 weight: 5
 ---
 

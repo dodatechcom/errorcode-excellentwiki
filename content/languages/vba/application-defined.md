@@ -4,7 +4,6 @@ description: "Fix VBA 'Application-defined error' when the host application reje
 languages: ["vba"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["application-defined", "object-defined", "vba"]
 weight: 5
 ---
 

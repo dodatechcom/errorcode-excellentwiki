@@ -4,7 +4,6 @@ description: "Fix Symfony routing errors. Handle route parameters, controllers, 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "route", "routing"]
 weight: 5
 ---
 

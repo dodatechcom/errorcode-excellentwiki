@@ -4,7 +4,6 @@ description: "Fix Linux NetworkManager connection failures. Resolve network conn
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["networkmanager", "connection-failed", "network", "nmcli", "wifi"]
 weight: 5
 ---
 

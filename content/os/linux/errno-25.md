@@ -4,7 +4,6 @@ description: "Fix Linux ENOTTY (errno 25) Inappropriate ioctl for device error. 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOTTY", "ioctl", "errno-25", "terminal"]
 weight: 5
 ---
 

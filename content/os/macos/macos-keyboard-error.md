@@ -4,7 +4,6 @@ description: "Fix Mac keyboard errors when keys don't respond, repeat too fast, 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["keyboard", "keys", "typing", "input", "backlight"]
 weight: 5
 ---
 

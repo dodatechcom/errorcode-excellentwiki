@@ -4,7 +4,6 @@ description: "Fix Python ValueError when passing invalid arguments. Solutions fo
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["valueerror", "value", "invalid", "input"]
 weight: 20
 ---
 

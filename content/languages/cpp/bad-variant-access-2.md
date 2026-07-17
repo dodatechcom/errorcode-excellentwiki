@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_variant_access when accessing a std::variant with
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-variant-access", "std-variant", "type-safety", "exception"]
 weight: 5
 ---
 

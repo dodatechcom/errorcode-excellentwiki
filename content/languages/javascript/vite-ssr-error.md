@@ -4,7 +4,6 @@ description: "Fix Vite SSR (Server-Side Rendering) errors. Handle SSR module fai
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "ssr", "server-side-rendering", "hydration", "node"]
 weight: 5
 ---
 

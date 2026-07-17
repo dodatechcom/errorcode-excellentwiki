@@ -4,7 +4,6 @@ description: "Fix pulldown-cmark markdown parsing errors. Handle malformed markd
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pulldown-cmark", "markdown", "parse"]
 weight: 5
 ---
 

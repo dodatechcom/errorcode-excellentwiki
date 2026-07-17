@@ -4,7 +4,6 @@ description: "Fix 'COM class not registered' errors on Windows 10 and 11. Regist
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "class-not-registered", "com-error", "coclass", "clsid"]
 weight: 5
 ---
 

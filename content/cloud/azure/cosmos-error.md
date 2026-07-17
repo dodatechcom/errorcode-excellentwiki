@@ -1,10 +1,8 @@
 ---
 title: "Azure CosmosDB: Request Rate Is Too Large"
 description: "CosmosDB: Request rate is too large — Fix Azure Cosmos DB throttling errors (429)."
-cloud: ["azure"]
 error-types: ["quota-error"]
 severities: ["error"]
-tags: ["azure", "cosmosdb", "cosmos", "throttling", "429", "request-rate", "ru"]
 weight: 5
 ---
 

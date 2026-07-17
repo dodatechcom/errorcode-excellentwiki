@@ -4,7 +4,6 @@ description: "Fix Cobra CLI command errors in Go. Handle argument validation, su
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cobra", "cli", "command"]
 weight: 5
 ---
 

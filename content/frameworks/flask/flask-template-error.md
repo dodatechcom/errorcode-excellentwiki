@@ -4,7 +4,6 @@ description: "Flask raises TemplateError when rendering a Jinja2 template with i
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jinja2", "template", "rendering", "syntax", "flask"]
 weight: 5
 ---
 

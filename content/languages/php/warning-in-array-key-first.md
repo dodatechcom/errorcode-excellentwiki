@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array_key_first() expects exactly 1 argument. Lea
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array-key-first", "array", "arguments"]
 weight: 5
 ---
 

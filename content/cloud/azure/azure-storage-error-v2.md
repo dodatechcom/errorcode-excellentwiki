@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure Storage — authentication failed"
 description: "Fix Azure Storage authentication failed. Resolve storage account access key and SAS token issues."
-cloud: ["azure"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["azure", "storage", "authentication", "failed", "access-key", "sas", "blob"]
 weight: 5
 ---
 

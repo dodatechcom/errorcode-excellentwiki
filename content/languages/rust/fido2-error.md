@@ -4,7 +4,6 @@ description: "Fix FIDO2/WebAuthn errors. Handle credential creation, authenticat
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fido2", "webauthn", "security"]
 weight: 5
 ---
 

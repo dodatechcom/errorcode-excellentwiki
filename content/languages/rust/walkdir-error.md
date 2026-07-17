@@ -4,7 +4,6 @@ description: "Fix walkdir directory walk errors. Handle permission issues, symli
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["walkdir", "filesystem", "traversal"]
 weight: 5
 ---
 

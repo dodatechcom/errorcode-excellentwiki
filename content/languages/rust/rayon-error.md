@@ -4,7 +4,6 @@ description: "Fix rayon parallel iteration errors. Handle thread panics, join fa
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rayon", "parallel", "iteration"]
 weight: 5
 ---
 

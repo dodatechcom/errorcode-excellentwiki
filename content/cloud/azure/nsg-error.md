@@ -1,10 +1,8 @@
 ---
 title: "Azure NetworkSecurityGroup Rule Denied Traffic"
 description: "NSG rule denied traffic — Fix Azure Network Security Group configuration errors."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "nsg", "network-security-group", "firewall", "traffic", "denied"]
 weight: 5
 ---
 

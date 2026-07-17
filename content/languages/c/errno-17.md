@@ -4,7 +4,6 @@ description: "Fix C errno 17 EEXIST (File exists) by using O_EXCL flag appropria
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["eexist", "errno-17", "file", "exists", "create"]
 weight: 5
 ---
 

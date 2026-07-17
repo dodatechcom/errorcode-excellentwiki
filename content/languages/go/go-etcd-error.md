@@ -4,7 +4,6 @@ description: "Fix etcd connection timeout errors. Handle cluster connectivity, l
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["etcd", "kv-store", "cluster"]
 weight: 5
 ---
 

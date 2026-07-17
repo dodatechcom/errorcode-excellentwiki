@@ -4,7 +4,6 @@ description: "Fix Next.js Image component errors with unconfigured external imag
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nextjs", "image", "next-image", "optimization", "external"]
 weight: 5
 ---
 

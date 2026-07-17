@@ -4,7 +4,6 @@ description: "Fix PHP PDOException SQLSTATE[HY000] errors. Learn to resolve data
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pdo", "database", "sqlstate", "hy000", "connection", "exception"]
 weight: 5
 ---
 

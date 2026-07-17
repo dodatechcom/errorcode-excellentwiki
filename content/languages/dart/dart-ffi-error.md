@@ -4,7 +4,6 @@ description: "Fix Dart FFI (Foreign Function Interface) errors including symbol 
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ffi", "native", "c", "interop", "memory", "dart"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Docker Python SDK DockerException. Verify Docker daemon is run
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["docker", "sdk", "container", "dockerexception", "daemon"]
 weight: 5
 ---
 

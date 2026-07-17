@@ -4,7 +4,6 @@ description: "Fix PowerShell snap-in loading errors when Add-PSSnapIn fails."
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["PSSnapIn", "Add-PSSnapIn", "legacy", "powershell"]
 weight: 5
 ---
 

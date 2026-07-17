@@ -4,7 +4,6 @@ description: "A null check error occurs when using the ! operator on a null valu
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "check", "operator", "dart"]
 weight: 5
 ---
 

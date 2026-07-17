@@ -4,7 +4,6 @@ description: "Redis rejects write commands because memory usage has reached the 
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "oom", "maxmemory", "memory", "eviction", "policy"]
 weight: 5
 ---
 

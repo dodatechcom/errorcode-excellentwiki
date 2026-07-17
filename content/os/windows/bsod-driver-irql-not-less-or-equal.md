@@ -4,7 +4,6 @@ description: "Fix Blue Screen DRIVER_IRQL_NOT_LESS_OR_EQUAL error on Windows 10 
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "driver-irql", "network-driver", "stop-code"]
 weight: 5
 ---
 

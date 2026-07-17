@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2503: Cannot find namespace 'X'. Resolve namespac
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2503", "namespace", "cannot-find", "reference", "not-found"]
 weight: 5
 ---
 

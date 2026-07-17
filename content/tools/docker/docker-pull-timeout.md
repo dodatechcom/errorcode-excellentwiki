@@ -4,7 +4,6 @@ description: "Fix Docker pull timeout errors. Resolve image pull failures from r
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["pull", "timeout", "registry", "download", "docker"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Lua metatable errors. Learn why metatable operations fail and 
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["metatable", "metamethod", "table", "lua"]
 weight: 5
 ---
 

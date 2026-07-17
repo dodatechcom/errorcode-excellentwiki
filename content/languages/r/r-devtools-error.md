@@ -4,7 +4,6 @@ description: "Fix devtools package check errors including build failures, docume
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["devtools", "package", "check", "build", "r-cmd-check", "r"]
 weight: 5
 ---
 

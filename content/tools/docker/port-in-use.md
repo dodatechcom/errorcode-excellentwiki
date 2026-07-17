@@ -4,7 +4,6 @@ description: "Fix Docker port conflict error. Resolve 'address already in use' w
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["port-in-use", "bind", "address-already-in-use", "port-conflict"]
 weight: 5
 ---
 

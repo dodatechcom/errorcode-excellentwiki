@@ -4,7 +4,6 @@ description: "Fix Perl encoding errors. Learn why Perl string encoding fails and
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["encoding", "utf8", "character", "perl"]
 weight: 5
 ---
 

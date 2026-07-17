@@ -4,7 +4,6 @@ description: "Fix Java SchemaValidationException by correcting XML against its X
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["schemavalidationexception", "xml", "xsd", "schema", "jaxp"]
 weight: 5
 ---
 

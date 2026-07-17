@@ -4,7 +4,6 @@ description: "Fix Blue Screen UNEXPECTED_KERNEL_MODE_TRAP caused by CPU double f
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "unexpected-kernel-mode", "cpu", "double-fault", "hardware"]
 weight: 5
 ---
 

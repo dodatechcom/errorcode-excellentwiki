@@ -4,7 +4,6 @@ description: "Fix Git ambiguous reference errors. Resolve when a ref name matche
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ref", "ambiguous", "branch", "tag", "reference", "git"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C 'use after free' errors detected by Valgrind and AddressSani
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error", "memory-error"]
-tags: ["use-after-free", "dangling-pointer", "valgrind", "invalid-read", "memory-safety"]
 weight: 5
 ---
 

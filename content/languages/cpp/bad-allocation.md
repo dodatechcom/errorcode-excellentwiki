@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_array_new_length when allocating arrays with inva
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-allocation", "array-new", "memory", "new"]
 weight: 50
 ---
 

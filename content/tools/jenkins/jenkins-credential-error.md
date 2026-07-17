@@ -4,7 +4,6 @@ description: "Jenkins cannot find or access configured credentials."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "credential", "secret", "password", "token"]
 weight: 5
 ---
 

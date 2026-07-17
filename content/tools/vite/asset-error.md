@@ -4,7 +4,6 @@ description: "Fix Vite asset handling errors. Resolve static asset import and pu
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "asset", "static", "public", "import"]
 weight: 5
 ---
 

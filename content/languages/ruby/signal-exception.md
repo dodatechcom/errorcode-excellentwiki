@@ -4,7 +4,6 @@ description: "Handle Ruby SignalException. Catch and manage Unix signals in Ruby
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["signal"]
-tags: ["signal_exception", "signal", "sigint", "sigterm", "handler"]
 weight: 180
 ---
 

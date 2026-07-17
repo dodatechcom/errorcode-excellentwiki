@@ -4,7 +4,6 @@ description: "Fix Kubernetes kube-proxy errors. Resolve kube-proxy iptables/IPVS
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "kube-proxy", "iptables", "ipvs", "service", "proxy"]
 weight: 5
 ---
 

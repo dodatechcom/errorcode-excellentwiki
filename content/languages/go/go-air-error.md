@@ -4,7 +4,6 @@ description: "Fix Air live reload errors. Handle file watching, configuration is
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["air", "live-reload", "development"]
 weight: 5
 ---
 

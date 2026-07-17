@@ -4,7 +4,6 @@ description: "Next.js throws not found errors when routes are undefined or pages
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["not-found", "404", "routing", "page", "nextjs"]
 weight: 5
 ---
 

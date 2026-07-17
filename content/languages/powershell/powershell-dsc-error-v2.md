@@ -4,7 +4,6 @@ description: "Fix PowerShell Desired State Configuration MOF compilation errors.
 languages: ["powershell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dsc", "MOF", "PSDesiredStateConfiguration", "configuration", "powershell"]
 weight: 5
 ---
 

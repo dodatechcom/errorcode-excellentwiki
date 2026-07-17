@@ -4,7 +4,6 @@ description: "Fix C EDEADLK (Resource deadlock avoided) by using consistent lock
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["edeadlk", "resource-deadlock", "deadlock-avoidance", "lock-ordering", "fcntl"]
 weight: 5
 ---
 

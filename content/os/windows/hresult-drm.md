@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT DRM errors including DRM_E_DEVICE_OUT_OF_RANGE
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "drm", "device-out-of-range", "content-protection", "drm-e"]
 weight: 5
 ---
 

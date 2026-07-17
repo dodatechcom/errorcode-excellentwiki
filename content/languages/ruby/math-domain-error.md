@@ -4,7 +4,6 @@ description: "Fix Ruby Math::DomainError. Handle invalid mathematical operations
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["math-domain"]
-tags: ["math_domain_error", "math", "domain", "sqrt", "log"]
 weight: 130
 ---
 

@@ -4,7 +4,6 @@ description: "Fix macOS kernel panic caused by memory (RAM) errors. Diagnose fau
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kernel-panic", "memory", "ram", "hardware", "boot", "crash"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Scala ClassCastException when runtime type casts fail. Handle 
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["class-cast", "type-cast", "runtime", "instanceof", "scala"]
 weight: 5
 ---
 

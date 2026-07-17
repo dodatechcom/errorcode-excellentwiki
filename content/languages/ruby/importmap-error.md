@@ -4,7 +4,6 @@ description: "Fix Importmap::MissingStaticFileError in Rails. Learn why import m
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["importmap", "javascript", "module", "rails", "ruby"]
 weight: 5
 ---
 

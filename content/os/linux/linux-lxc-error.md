@@ -4,7 +4,6 @@ description: "Fix Linux 'lxc: container error' and LXC startup failures. Resolve
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["lxc", "container", "lxc-start", "namespace", "cgroup", "apparmor"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "MongoDB client fails to authenticate with the database server."
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "authentication", "password", "credential", "auth"]
 weight: 5
 ---
 

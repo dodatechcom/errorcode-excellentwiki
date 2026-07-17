@@ -4,7 +4,6 @@ description: "Flask raises RuntimeError or AttributeError when a required config
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["config", "configuration", "secret-key", "settings"]
 weight: 5
 ---
 

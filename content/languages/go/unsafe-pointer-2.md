@@ -4,7 +4,6 @@ description: "Fix Go unsafe.Pointer misuse. Avoid invalid pointer arithmetic, us
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unsafe", "pointer", "arithmetic", "memory", "runtime", "cgo"]
 weight: 5
 ---
 

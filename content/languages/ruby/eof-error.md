@@ -4,7 +4,6 @@ description: "Fix Ruby EOFError: end of file reached. Handle end-of-file conditi
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["io"]
-tags: ["eoferror", "eof", "end_of_file", "gets", "readline"]
 weight: 200
 ---
 

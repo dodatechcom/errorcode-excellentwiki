@@ -4,7 +4,6 @@ description: "Fix Swift division by zero errors. Learn why dividing by zero cras
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["division", "zero", "arithmetic", "floating-point", "integer"]
 weight: 5
 ---
 

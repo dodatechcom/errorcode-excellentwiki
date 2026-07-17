@@ -4,7 +4,6 @@ description: "Fix React state update warning on unmounted components. Clean up a
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "state-update", "unmounted", "cleanup", "async", "lifecycle"]
 weight: 5
 ---
 

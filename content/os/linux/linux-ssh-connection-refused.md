@@ -4,7 +4,6 @@ description: "Fix Linux 'ssh: connect to host <host> port 22: Connection refused
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssh", "connection-refused", "sshd", "port-22", "network"]
 weight: 5
 ---
 

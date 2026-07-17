@@ -4,7 +4,6 @@ description: "Laravel throws BindingResolutionException when the service contain
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["service-container", "dependency-injection", "binding", "autoload", "facade"]
 weight: 5
 ---
 

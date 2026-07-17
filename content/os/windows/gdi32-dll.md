@@ -4,7 +4,6 @@ description: "Fix gdi32.dll errors and crashes on Windows 10/11. Resolve GDI han
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["gdi32", "dll", "graphics", "rendering", "gdi", "drawing"]
 weight: 5
 ---
 

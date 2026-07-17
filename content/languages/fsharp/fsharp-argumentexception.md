@@ -4,7 +4,6 @@ description: "F# raises ArgumentException when a function receives an invalid ar
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "argumentexception", "invalid", "nullargument"]
 weight: 5
 ---
 

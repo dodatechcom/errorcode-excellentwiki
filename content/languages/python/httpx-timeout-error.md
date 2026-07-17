@@ -4,7 +4,6 @@ description: "Fix httpx read timeout errors. Configure timeouts, use async clien
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["httpx", "http", "timeout", "async", "client"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Maven invalid Java version errors. Resolve JDK compatibility a
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "java", "version", "jdk", "compiler", "source"]
 weight: 5
 ---
 

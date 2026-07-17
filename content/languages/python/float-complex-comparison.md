@@ -4,7 +4,6 @@ description: "Fix Python TypeError: unsupported operand type when comparing floa
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "float", "complex", "comparison"]
 weight: 5
 ---
 

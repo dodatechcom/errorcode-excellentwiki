@@ -4,7 +4,6 @@ description: "systemd socket-activated service fails to start due to socket issu
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "socket", "activation", "listen", "port"]
 weight: 5
 ---
 

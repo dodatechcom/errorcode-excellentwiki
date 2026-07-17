@@ -4,7 +4,6 @@ description: "Fix PM2 process errors. Handle process crashes, configuration issu
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pm2", "process-manager", "production"]
 weight: 5
 ---
 

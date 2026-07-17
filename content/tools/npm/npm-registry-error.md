@@ -4,7 +4,6 @@ description: "Fix npm registry connection errors. Resolve registry connectivity 
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["registry", "connection", "network", "timeout", "npm"]
 weight: 5
 ---
 

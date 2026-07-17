@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2741: Property 'X' is missing in type 'Y'. Add mi
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2741", "property", "missing", "interface", "type-mismatch"]
 weight: 5
 ---
 

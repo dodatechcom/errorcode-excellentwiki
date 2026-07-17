@@ -4,7 +4,6 @@ description: "Fix Arrow.kt monadic errors. Learn why Arrow.kt functional program
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["arrow", "functional", "either", "option", "kotlin"]
 weight: 5
 ---
 

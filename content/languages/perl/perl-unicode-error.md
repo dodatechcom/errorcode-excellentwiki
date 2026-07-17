@@ -4,7 +4,6 @@ description: "Fix Perl Unicode errors. Learn why Unicode operations fail and how
 languages: ["perl"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unicode", "utf8", "character", "perl"]
 weight: 5
 ---
 

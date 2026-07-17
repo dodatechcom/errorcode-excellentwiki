@@ -4,7 +4,6 @@ description: "Fix Linux ETOOMANYREFS (errno 73) Too many references error. Solut
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["etoomanyrefs", "references", "errno-73", "splice", "pipe"]
 weight: 5
 ---
 

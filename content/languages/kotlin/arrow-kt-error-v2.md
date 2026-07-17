@@ -4,7 +4,6 @@ description: "Fix Arrow.kt monad errors when using Either, Option, or other func
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["arrow", "monad", "Either", "functional", "kotlin"]
 weight: 5
 ---
 

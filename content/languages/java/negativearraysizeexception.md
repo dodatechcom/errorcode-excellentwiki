@@ -4,7 +4,6 @@ description: "Fix Java NegativeArraySizeException by validating array size befor
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["negativearraysizeexception", "array", "size", "allocation"]
 weight: 5
 ---
 

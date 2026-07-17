@@ -4,7 +4,6 @@ description: "Fix Python ConnectionAbortedError when a network connection is abo
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["connectionabortederror", "connection", "network", "abort", "socket"]
 weight: 5
 ---
 

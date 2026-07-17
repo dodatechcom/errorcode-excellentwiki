@@ -6,7 +6,6 @@ replacement_function: "sigaction"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["signal", "sigaction", "signals", "posix", "c"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Vite failed during the pre-transformation phase, unable to process
 tools: ["vite"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["vite", "transform", "module", "esbuild"]
 weight: 5
 ---
 

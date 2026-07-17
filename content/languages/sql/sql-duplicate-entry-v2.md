@@ -4,7 +4,6 @@ description: "Fix SQL duplicate entry errors when inserting a row with a PRIMARY
 languages: ["sql"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["duplicate-entry", "primary-key", "unique-constraint", "sql"]
 weight: 5
 ---
 

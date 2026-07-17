@@ -4,7 +4,6 @@ description: "Fix Swift Codable errors. Learn about common Encodable and Decodab
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["codable", "encodable", "decodable", "serialization", "json"]
 weight: 5
 ---
 

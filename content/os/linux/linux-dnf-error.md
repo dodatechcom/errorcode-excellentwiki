@@ -4,7 +4,6 @@ description: "Fix Linux 'dnf: dependency error' and package installation failure
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["dnf", "dependency-error", "package-manager", "fedora", "rhel", "conflict"]
 weight: 5
 ---
 

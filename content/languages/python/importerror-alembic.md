@@ -4,7 +4,6 @@ description: "Fix Python ImportError: alembic not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "alembic", "module-not-found", "pip", "database-migration"]
 weight: 5
 ---
 

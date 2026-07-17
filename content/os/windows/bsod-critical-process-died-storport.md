@@ -4,7 +4,6 @@ description: "Fix Blue Screen CRITICAL_PROCESS_DIED caused by storport.sys on Wi
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "critical-process", "storport", "storage", "driver"]
 weight: 5
 ---
 

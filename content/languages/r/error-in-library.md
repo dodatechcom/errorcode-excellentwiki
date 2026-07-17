@@ -4,7 +4,6 @@ description: "Fix R 'there is no package called' error when loading packages. In
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["library", "package", "install", "loading"]
 weight: 5
 ---
 

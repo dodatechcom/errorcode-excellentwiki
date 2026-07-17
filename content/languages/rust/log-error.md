@@ -4,7 +4,6 @@ description: "Fix log crate logger errors. Handle log level configuration, outpu
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["log", "logging", "level"]
 weight: 5
 ---
 

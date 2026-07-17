@@ -4,7 +4,6 @@ description: "Fix Fortran namelist I/O errors when reading or writing namelist g
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["namelist", "i-o", "read", "write", "format", "fortran"]
 weight: 5
 ---
 

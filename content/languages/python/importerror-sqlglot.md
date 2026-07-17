@@ -4,7 +4,6 @@ description: "Fix Python ImportError: sqlglot not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "sqlglot", "module-not-found", "pip", "sql"]
 weight: 5
 ---
 

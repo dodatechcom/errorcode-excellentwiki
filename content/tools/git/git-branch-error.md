@@ -4,7 +4,6 @@ description: "Fix Git branch creation, deletion, and checkout errors. Resolve br
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["branch", "checkout", "create", "delete", "git"]
 weight: 5
 ---
 

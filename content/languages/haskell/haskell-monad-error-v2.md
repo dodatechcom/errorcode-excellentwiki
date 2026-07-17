@@ -4,7 +4,6 @@ description: "Fix Haskell MonadFail errors when pattern matching fails in do-not
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["monad", "monadfail", "do-notation", "pattern-match", "haskell"]
 weight: 5
 ---
 

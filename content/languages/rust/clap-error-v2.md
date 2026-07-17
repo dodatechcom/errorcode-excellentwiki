@@ -4,7 +4,6 @@ description: "Fix clap argument validation errors. Handle missing arguments, inv
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["clap", "cli", "arguments", "validation", "parser"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java OutOfMemoryError: Java heap space by increasing JVM memor
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["outofmemoryerror", "heap", "memory", "jvm"]
 weight: 30
 ---
 

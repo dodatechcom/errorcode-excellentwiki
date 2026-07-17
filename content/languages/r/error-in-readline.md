@@ -4,7 +4,6 @@ description: "Fix R 'argument is missing' error in readline(). Provide the promp
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["readline", "input", "prompt", "missing-argument"]
 weight: 5
 ---
 

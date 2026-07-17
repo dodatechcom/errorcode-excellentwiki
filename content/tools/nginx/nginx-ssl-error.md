@@ -4,7 +4,6 @@ description: "Fix Nginx SSL handshake errors. Resolve TLS/SSL certificate and pr
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ssl", "tls", "handshake", "certificate", "nginx"]
 weight: 5
 ---
 

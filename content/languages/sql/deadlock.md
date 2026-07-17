@@ -4,7 +4,6 @@ description: "Fix 'Deadlock found when trying to get lock' when two transactions
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["deadlock", "concurrency", "transaction", "lock"]
 weight: 5
 ---
 

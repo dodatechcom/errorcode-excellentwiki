@@ -4,7 +4,6 @@ description: "F# raises StackOverflowException when the call stack overflows fro
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stackoverflow", "recursion", "stack", "tail-call", "overflow"]
 weight: 5
 ---
 

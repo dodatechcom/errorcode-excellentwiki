@@ -4,7 +4,6 @@ description: "Fix COBOL errors when variables are referenced before being define
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["undefined", "variable", "declaration", "working-storage", "cobol"]
 weight: 5
 ---
 

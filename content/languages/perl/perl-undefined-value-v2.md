@@ -4,7 +4,6 @@ description: "Fix Perl 'Use of uninitialized value' warnings. Initialize variabl
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["warning"]
-tags: ["uninitialized", "undef", "warning", "variable", "perl"]
 weight: 5
 ---
 

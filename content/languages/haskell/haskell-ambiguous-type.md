@@ -4,7 +4,6 @@ description: "Haskell raises ambiguous type variable errors when the compiler ca
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ambiguous", "type", "variable", "polymorphic", "overloaded"]
 weight: 5
 ---
 

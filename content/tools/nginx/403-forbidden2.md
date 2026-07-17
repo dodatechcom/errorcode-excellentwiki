@@ -4,7 +4,6 @@ description: "Fix Nginx 403 Forbidden error. Resolve permission denied and direc
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["403", "forbidden", "permission", "denied", "nginx"]
 weight: 5
 ---
 

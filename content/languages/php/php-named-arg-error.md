@@ -4,7 +4,6 @@ description: "Fix named argument errors in PHP 8.0+. Handle argument order, vari
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "named-arguments", "oop"]
 weight: 5
 ---
 

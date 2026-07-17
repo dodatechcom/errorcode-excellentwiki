@@ -4,7 +4,6 @@ description: "Fix Doctrine ORM entity manager errors. Handle mapping, proxy gene
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["doctrine", "orm", "database"]
 weight: 5
 ---
 

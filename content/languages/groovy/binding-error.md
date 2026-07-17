@@ -4,7 +4,6 @@ description: "A Binding error occurs when accessing a variable that hasn't been 
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["binding", "variable", "scope", "groovy"]
 weight: 5
 ---
 

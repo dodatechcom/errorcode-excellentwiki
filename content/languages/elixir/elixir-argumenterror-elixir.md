@@ -4,7 +4,6 @@ description: "Elixir raises ArgumentError when a function receives an invalid ar
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["argument", "argumenterror", "validation", "invalid"]
 weight: 5
 ---
 

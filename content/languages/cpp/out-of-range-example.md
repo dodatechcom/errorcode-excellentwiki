@@ -4,7 +4,6 @@ description: "Example of std::out_of_range in C++. Handle vector and string inde
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["out-of-range", "vector", "string", "at"]
 weight: 50
 ---
 

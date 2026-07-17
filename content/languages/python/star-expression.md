@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError with starred assignment targets. Learn abou
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "star", "expression", "unpacking", "assignment"]
 weight: 5
 ---
 

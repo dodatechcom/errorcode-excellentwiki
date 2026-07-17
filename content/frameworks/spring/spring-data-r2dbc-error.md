@@ -4,7 +4,6 @@ description: "Spring Data R2DBC throws DataIntegrityViolationException when a re
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["r2dbc", "reactive", "database", "constraint", "spring-data"]
 weight: 5
 ---
 

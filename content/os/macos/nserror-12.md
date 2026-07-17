@@ -4,7 +4,6 @@ description: "Fix macOS NSFileWriteUnsupportedEncoding (NSCocoaErrorDomain Code 
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilewriteunsupportedencoding", "nscocoaerrordomain", "code-518", "file-write", "encoding", "cocoa", "foundation"]
 weight: 5
 ---
 

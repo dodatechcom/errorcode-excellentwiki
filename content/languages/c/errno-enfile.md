@@ -4,7 +4,6 @@ description: "Fix C ENFILE (Too many open files in system) by reducing system-wi
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enfile", "too-many-open-files-system", "system-limit", "file-descriptors"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux ERFKILL (errno 89) Operation not possible due to RF-kill
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["erfkill", "rfkill", "errno-89", "wireless", "wifi", "bluetooth"]
 weight: 5
 ---
 

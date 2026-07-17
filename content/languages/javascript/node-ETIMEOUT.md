@@ -4,7 +4,6 @@ description: "Error: connect ETIMEDOUT — Fix Node.js connection timeout errors
 languages: ["javascript"]
 error-types: ["network-error"]
 severities: ["error"]
-tags: ["nodejs", "etimedout", "timeout", "tcp", "network", "connection"]
 weight: 5
 ---
 

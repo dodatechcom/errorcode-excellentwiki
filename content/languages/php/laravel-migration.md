@@ -4,7 +4,6 @@ description: "Fix Laravel QueryException when Laravel migrations fail. Handle sc
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "migration", "database"]
 weight: 5
 ---
 

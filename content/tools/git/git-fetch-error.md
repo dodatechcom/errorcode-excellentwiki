@@ -4,7 +4,6 @@ description: "Fix Git fetch errors. Resolve remote access, authentication, and n
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fetch", "remote", "network", "authentication", "git"]
 weight: 5
 ---
 

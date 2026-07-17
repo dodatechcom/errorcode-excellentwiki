@@ -4,7 +4,6 @@ description: "Fix Linux ERMSR (errno 44) No STREAMS resources error. Solutions f
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enRMSR", "streams", "errno-44", "resources"]
 weight: 5
 ---
 

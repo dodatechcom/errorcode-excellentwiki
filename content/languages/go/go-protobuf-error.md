@@ -4,7 +4,6 @@ description: "Fix Go protobuf marshal errors. Handle required fields, type misma
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["protobuf", "encoding", "rpc"]
 weight: 5
 ---
 

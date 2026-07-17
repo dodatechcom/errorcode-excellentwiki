@@ -4,7 +4,6 @@ description: "Fix Linux ENOPKG (errno 50) No package found error. Solutions for 
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOPKG", "package", "errno-50", "library"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Dart JSON parsing errors including unexpected characters, malf
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "parsing", "format", "decode", "serialization", "dart"]
 weight: 5
 ---
 

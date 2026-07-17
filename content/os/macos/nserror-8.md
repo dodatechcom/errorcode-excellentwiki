@@ -4,7 +4,6 @@ description: "Fix macOS NSFileWriteIncompatibleEncoding (NSCocoaErrorDomain Code
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["nsfilewriteincompatibleencoding", "nscocoaerrordomain", "code-517", "file-write", "encoding", "cocoa", "foundation"]
 weight: 5
 ---
 

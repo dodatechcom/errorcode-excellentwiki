@@ -4,7 +4,6 @@ description: "Fix Python ImportError: sqlalchemy not found or ModuleNotFoundErro
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "sqlalchemy", "module-not-found", "pip", "database"]
 weight: 5
 ---
 

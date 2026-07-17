@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP_PARSER_COMPLETE when the HTTP parser finishes
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http-parser-complete", "http", "parser", "response", "nodejs"]
 weight: 5
 ---
 

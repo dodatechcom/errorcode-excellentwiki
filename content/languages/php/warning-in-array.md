@@ -4,7 +4,6 @@ description: "Fix PHP Warning: array() expects at least 1 argument. Learn to pro
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "array", "initialization", "arguments"]
 weight: 5
 ---
 

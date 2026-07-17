@@ -4,7 +4,6 @@ description: "GitHub Actions workflow fails due to insufficient permissions."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "permission", "access", "token", "gh-pages"]
 weight: 5
 ---
 

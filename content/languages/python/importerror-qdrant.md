@@ -4,7 +4,6 @@ description: "Fix Python ImportError: qdrant not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "qdrant", "module-not-found", "pip", "vector-db"]
 weight: 5
 ---
 

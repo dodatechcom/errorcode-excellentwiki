@@ -4,7 +4,6 @@ description: "A badarg error occurs when a function receives an argument of an u
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["badarg", "argument", "type-error"]
 weight: 5
 ---
 

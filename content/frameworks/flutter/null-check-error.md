@@ -4,7 +4,6 @@ description: "Flutter throws this error when the ! operator is used on a variabl
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "null-safety", "runtime", "type"]
 weight: 5
 ---
 

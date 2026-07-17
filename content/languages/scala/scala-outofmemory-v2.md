@@ -4,7 +4,6 @@ description: "Fix Scala OutOfMemoryError when JVM heap is exhausted. Learn memor
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["out-of-memory", "heap", "memory", "gc", "jvm", "scala"]
 weight: 5
 ---
 

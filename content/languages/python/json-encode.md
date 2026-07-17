@@ -4,7 +4,6 @@ description: "Fix Python TypeError: not JSON serializable when encoding objects 
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["json", "encode", "serializable", "typeerror"]
 weight: 5
 ---
 

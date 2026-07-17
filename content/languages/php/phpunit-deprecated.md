@@ -4,7 +4,6 @@ description: "Fix PHPUnit deprecated feature usage. Handle migration from old as
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["phpunit", "deprecated", "testing"]
 weight: 5
 ---
 

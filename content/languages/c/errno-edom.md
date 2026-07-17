@@ -4,7 +4,6 @@ description: "Fix C EDOM (Math argument out of domain) by validating inputs befo
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["edom", "math-domain-error", "domain-out-of-range", "math-functions"]
 weight: 5
 ---
 

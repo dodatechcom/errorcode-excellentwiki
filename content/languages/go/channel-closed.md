@@ -4,7 +4,6 @@ description: "Fix Go send on closed channel panic. Learn proper channel lifecycl
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["channel", "closed", "goroutine", "send", "receive", "panic", "concurrency"]
 weight: 5
 ---
 

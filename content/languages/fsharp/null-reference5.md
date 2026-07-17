@@ -4,7 +4,6 @@ description: "A NullReferenceException occurs when attempting to access a member
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "reference", "exception", "nullreferenceexception"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Gradle multi-project build fails during configuration phase."
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "multi-project", "configuration", "subproject", "composite"]
 weight: 5
 ---
 

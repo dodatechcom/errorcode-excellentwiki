@@ -4,7 +4,6 @@ description: "Fix FastAPI request validation errors. Define proper Pydantic mode
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fastapi", "validation", "pydantic", "http", "api"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Devise authentication errors in Rails. Learn why Devise authen
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["authentication-error"]
-tags: ["devise", "authentication", "login", "rails", "ruby"]
 weight: 5
 ---
 

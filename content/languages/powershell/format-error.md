@@ -4,7 +4,6 @@ description: "Fix 'FormatError' when PowerShell encounters invalid format string
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["FormatError", "format", "string"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes ImagePullBackOff errors. Resolve image pull failure
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "imagepull", "backoff", "registry", "pull-secret"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2356: Type 'X' has no properties in common with t
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2356", "no-properties", "in-common", "type-mismatch", "destructuring"]
 weight: 5
 ---
 

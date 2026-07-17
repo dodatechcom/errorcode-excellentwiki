@@ -4,7 +4,6 @@ description: "Fix C++ CMake configuration errors. Resolve CMakeLists.txt issues.
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["cmake", "build-system", "configuration", "cmakelists", "compile"]
 weight: 5
 ---
 

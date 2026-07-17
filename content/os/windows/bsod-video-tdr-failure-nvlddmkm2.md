@@ -4,7 +4,6 @@ description: "Fix Blue Screen VIDEO_TDR_FAILURE caused by nvlddmkm.sys on Window
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "nvidia", "nvlddmkm", "gpu", "tdr", "video"]
 weight: 5
 ---
 

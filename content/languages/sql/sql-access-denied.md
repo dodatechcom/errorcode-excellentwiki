@@ -4,7 +4,6 @@ description: "Fix 'Access denied for user X' when a database user lacks required
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["access-denied", "permission", "grant", "privileges", "authentication"]
 weight: 5
 ---
 

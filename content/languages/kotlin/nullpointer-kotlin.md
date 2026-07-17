@@ -4,7 +4,6 @@ description: "Fix Kotlin NullPointerException with null safety. Learn how to use
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nullpointerexception", "null-safety", "nullable", "kotlin"]
 weight: 5
 ---
 

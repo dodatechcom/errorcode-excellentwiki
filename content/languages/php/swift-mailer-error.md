@@ -4,7 +4,6 @@ description: "Fix SwiftMailer transport errors. Handle SMTP connection, authenti
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["swift-mailer", "mail", "smtp"]
 weight: 5
 ---
 

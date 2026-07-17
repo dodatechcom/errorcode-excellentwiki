@@ -4,7 +4,6 @@ description: "Fix Lua instruction limit errors. Learn why Lua hits instruction l
 languages: ["lua"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["instruction-limit", "performance", "loop", "lua"]
 weight: 5
 ---
 

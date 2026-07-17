@@ -1,10 +1,8 @@
 ---
 title: "[Solution] GKE — cluster upgrade failed"
 description: "Fix GKE cluster upgrade failed. Resolve Google Kubernetes Engine upgrade and version issues."
-cloud: ["gcp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gcp", "gke", "cluster", "upgrade", "failed", "kubernetes", "version"]
 weight: 5
 ---
 

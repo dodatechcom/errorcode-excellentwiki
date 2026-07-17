@@ -4,7 +4,6 @@ description: "Fix Go context deadline exceeded error. Use appropriate timeouts, 
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["context", "deadline", "timeout", "cancel", "runtime"]
 weight: 5
 ---
 

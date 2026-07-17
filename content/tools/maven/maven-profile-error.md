@@ -4,7 +4,6 @@ description: "Maven profile configuration error prevents the build from activati
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "profile", "configuration", "activation", "properties"]
 weight: 5
 ---
 

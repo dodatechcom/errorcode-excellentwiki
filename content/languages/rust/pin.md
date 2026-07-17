@@ -4,7 +4,6 @@ description: "Fix Rust cannot move pinned value error. Learn why pinned values c
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["pin", "pinned", "async", "self-referential", "unsafe", "future"]
 weight: 5
 ---
 

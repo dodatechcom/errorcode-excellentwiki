@@ -4,7 +4,6 @@ description: "Fix Nginx limiting requests 503. Resolve rate limiting and burst c
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "limit", "requests", "503", "rate-limiting", "throttle"]
 weight: 5
 ---
 

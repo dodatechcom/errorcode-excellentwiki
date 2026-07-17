@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS RDS Error — connection or instance error"
 description: "Fix AWS RDS errors. Resolve RDS connection and instance issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "rds", "database", "connection", "instance"]
 weight: 5
 ---
 

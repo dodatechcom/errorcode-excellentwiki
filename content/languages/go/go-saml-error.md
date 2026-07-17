@@ -4,7 +4,6 @@ description: "Fix Go SAML assertion errors. Handle XML signature validation, cer
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["saml", "sso", "auth"]
 weight: 5
 ---
 

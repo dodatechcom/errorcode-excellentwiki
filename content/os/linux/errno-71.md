@@ -4,7 +4,6 @@ description: "Fix Linux ENOTCONN (errno 71) Not connected error. Solutions for s
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotconn", "socket", "errno-71", "not-connected", "connection"]
 weight: 5
 ---
 

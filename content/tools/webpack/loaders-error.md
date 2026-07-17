@@ -4,7 +4,6 @@ description: "Fix webpack 'Module build failed' loader errors. Resolve loader co
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "loader", "build", "module", "transformation"]
 weight: 5
 ---
 

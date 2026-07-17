@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS EFS Mount Error"
 description: "Fix AWS EFS mount errors. Resolve Elastic File System mounting issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "efs", "mount", "filesystem", "nfs"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pycparser not found or ModuleNotFoundError
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pycparser", "module-not-found", "pip", "parser"]
 weight: 5
 ---
 

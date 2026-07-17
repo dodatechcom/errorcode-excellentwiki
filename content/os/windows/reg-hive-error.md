@@ -4,7 +4,6 @@ description: "Fix 'Registry hive error' on Windows 10 and 11. Repair corrupt reg
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "hive", "hive-error", "SYSTEM", "SOFTWARE", "DEFAULT"]
 weight: 5
 ---
 

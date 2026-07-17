@@ -4,7 +4,6 @@ description: "Fix Kotlin IllegalAccessException when trying to access private or
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalaccessexception", "reflection", "private", "access", "modifier"]
 weight: 5
 ---
 

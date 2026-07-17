@@ -4,7 +4,6 @@ description: "Fix Linux ENETRESET (errno 66) Network connection reset error. Sol
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enetreset", "network", "errno-66", "reset", "connection"]
 weight: 5
 ---
 

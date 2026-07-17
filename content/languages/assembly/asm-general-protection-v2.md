@@ -4,7 +4,6 @@ description: "Fix assembly general protection faults when accessing invalid segm
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gpf", "general-protection", "x86", "segment", "privilege", "assembly"]
 weight: 5
 ---
 

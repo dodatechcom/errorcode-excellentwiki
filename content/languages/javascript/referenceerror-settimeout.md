@@ -4,7 +4,6 @@ description: "Fix JavaScript ReferenceError: setTimeout is not defined. This err
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["referenceerror", "settimeout", "setinterval", "not-defined", "browser-api", "nodejs"]
 weight: 5
 ---
 

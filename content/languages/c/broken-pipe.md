@@ -4,7 +4,6 @@ description: "Fix C broken pipe (EPIPE). Handle SIGPIPE signal and write errors 
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["epipe", "broken-pipe", "pipe", "sigpipe", "signal"]
 weight: 5
 ---
 

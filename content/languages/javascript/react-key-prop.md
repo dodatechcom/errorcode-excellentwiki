@@ -4,7 +4,6 @@ description: "Fix React key prop warning. Add unique keys to list items, underst
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "key", "warning", "list", "iterator"]
 weight: 5
 ---
 

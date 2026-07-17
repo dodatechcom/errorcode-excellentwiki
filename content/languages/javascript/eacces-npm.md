@@ -4,7 +4,6 @@ description: "Fix npm ERR! EACCES: permission denied when running npm install. R
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["npm", "eacces", "permission-denied", "node-modules", "install"]
 weight: 5
 ---
 

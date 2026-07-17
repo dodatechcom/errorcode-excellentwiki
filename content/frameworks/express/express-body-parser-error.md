@@ -4,7 +4,6 @@ description: "Fix Express BodyParser errors. Resolve request body parsing failur
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["body-parser", "json", "parse", "request", "express"]
 weight: 5
 ---
 

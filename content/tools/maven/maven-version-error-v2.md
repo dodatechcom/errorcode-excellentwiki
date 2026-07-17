@@ -4,7 +4,6 @@ description: "Maven encounters version range conflicts during dependency resolut
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "version", "range", "conflict", "dependency"]
 weight: 5
 ---
 

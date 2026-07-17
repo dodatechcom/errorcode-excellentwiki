@@ -4,7 +4,6 @@ description: "Fix Kotlin CancellationException when coroutines are cancelled. Le
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["cancellationexception", "coroutine", "cancellation", "kotlin"]
 weight: 5
 ---
 

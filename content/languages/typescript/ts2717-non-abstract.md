@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2717: Non-abstract class 'X' does not implement i
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2717", "non-abstract", "class", "implements", "abstract", "member"]
 weight: 5
 ---
 

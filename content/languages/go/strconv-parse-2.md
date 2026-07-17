@@ -4,7 +4,6 @@ description: "Fix Go strconv.ParseInt invalid syntax error. Validate input strin
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["strconv", "parse", "int", "conversion", "syntax", "runtime"]
 weight: 5
 ---
 

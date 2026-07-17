@@ -4,7 +4,6 @@ description: "Fix TypeScript 'Element implicitly has an any type' errors. Add in
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["type-error"]
-tags: ["implicit-any", "no-index-signature", "dynamic-access", "type-error", "ts7053"]
 weight: 5
 ---
 

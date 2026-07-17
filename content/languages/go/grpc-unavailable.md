@@ -4,7 +4,6 @@ description: "Fix Go gRPC unavailable errors when connection is refused. Handle 
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "unavailable", "connection"]
 weight: 5
 ---
 

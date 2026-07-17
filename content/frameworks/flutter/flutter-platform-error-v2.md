@@ -4,7 +4,6 @@ description: "Flutter throws PlatformException when calling a native platform me
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "platform", "method-channel", "android", "ios", "native"]
 weight: 5
 ---
 

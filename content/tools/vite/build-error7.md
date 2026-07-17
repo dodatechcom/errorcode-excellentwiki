@@ -4,7 +4,6 @@ description: "Fix Vite build errors. Resolve production build failures in the Ro
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "build", "rollup", "production", "bundle"]
 weight: 5
 ---
 

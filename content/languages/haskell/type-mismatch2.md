@@ -4,7 +4,6 @@ description: "A type mismatch occurs when an expression doesn't match the expect
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["type", "mismatch", "compile", "haskell"]
 weight: 5
 ---
 

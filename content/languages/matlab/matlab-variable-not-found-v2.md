@@ -4,7 +4,6 @@ description: "Fix MATLAB errors when variables or functions are not found in the
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["variable", "scope", "workspace", "undefined", "local", "matlab"]
 weight: 5
 ---
 

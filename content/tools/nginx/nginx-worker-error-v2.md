@@ -4,7 +4,6 @@ description: "Fix Nginx worker process exited on signal. Resolve worker process 
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "worker", "process", "signal", "crash", "exit", "segfault"]
 weight: 5
 ---
 

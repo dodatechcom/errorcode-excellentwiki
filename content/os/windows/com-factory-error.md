@@ -4,7 +4,6 @@ description: "Fix 'COM class factory error' on Windows 10 and 11. Resolve ClassF
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "class-factory", "cocreateinstance", "factory-error"]
 weight: 5
 ---
 

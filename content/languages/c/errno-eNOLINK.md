@@ -4,7 +4,6 @@ description: "Fix C ENOLINK (Link has been severed) by handling broken symbolic 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enolink", "link-severed", "broken-symlink", "nfs", "stale-link"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix grpc-gateway transcoding errors. Handle HTTP/gRPC mapping, pat
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc-gateway", "transcoding", "api"]
 weight: 5
 ---
 

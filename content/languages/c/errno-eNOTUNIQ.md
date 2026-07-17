@@ -4,7 +4,6 @@ description: "Fix C ENOTUNIQ (Name not unique on network) by using unique identi
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotuniq", "name-not-unique", "network-name", "duplicate-name"]
 weight: 5
 ---
 

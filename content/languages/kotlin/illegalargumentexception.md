@@ -4,7 +4,6 @@ description: "Fix Kotlin IllegalArgumentException when invalid arguments are pas
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["illegalargumentexception", "argument", "validation", "kotlin"]
 weight: 5
 ---
 

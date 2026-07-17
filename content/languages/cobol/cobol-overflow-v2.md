@@ -4,7 +4,6 @@ description: "Fix COBOL overflow errors when arithmetic calculations exceed the 
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "arithmetic", "numeric", "decimal", "compute", "cobol"]
 weight: 5
 ---
 

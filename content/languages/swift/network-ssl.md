@@ -4,7 +4,6 @@ description: "Fix Swift URLError:secureConnectionFailed errors. Learn why SSL/TL
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["ssl", "tls", "certificate", "security", "https"]
 weight: 5
 ---
 

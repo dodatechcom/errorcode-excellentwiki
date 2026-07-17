@@ -7,7 +7,6 @@ languages: ["python"]
 deprecated_since: "Python 3.0"
 removed_in: "Python 3.0"
 error_message: "SyntaxError: Missing parentheses in call to 'print'"
-tags: ["print", "python2", "python3", "2to3"]
 weight: 60
 ---
 

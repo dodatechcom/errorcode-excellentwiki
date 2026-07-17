@@ -4,7 +4,6 @@ description: "Fix Ruby NameError: uninitialized constant. Learn why Ruby can't f
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nameerror", "uninitialized-constant", "constant", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Winston logger errors. Handle transport failures, configuratio
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["winston", "logger", "logging"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "SQLite fails to allocate memory during query execution or database
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "memory", "oom", "allocation", "large-query"]
 weight: 5
 ---
 

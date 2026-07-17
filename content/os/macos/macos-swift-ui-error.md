@@ -4,7 +4,6 @@ description: "Fix SwiftUI errors on Mac when views fail to compile, preview cras
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["swiftui", "ui-framework", "xcode", "preview", "view"]
 weight: 5
 ---
 

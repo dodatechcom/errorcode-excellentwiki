@@ -4,7 +4,6 @@ description: "React Native Metro bundler fails to connect, causing ECONNREFUSED 
 frameworks: ["react-native"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["metro", "bundler", "econnrefused", "development", "port", "server"]
 weight: 5
 ---
 

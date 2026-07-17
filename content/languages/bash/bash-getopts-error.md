@@ -4,7 +4,6 @@ description: "Fix bash getopts errors when an invalid option is passed to a scri
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["getopts", "options", "flags", "argument-parsing", "bash"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Webpack fails to load or validate its configuration file."
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "config", "webpack.config", "configuration", "validation"]
 weight: 5
 ---
 

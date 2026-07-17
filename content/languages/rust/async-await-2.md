@@ -4,7 +4,6 @@ description: "Fix Rust async/await errors. Learn why async code fails to compile
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["async", "await", "future", "tokio", "runtime"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Xcode build errors on Mac when compilation fails, linker error
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["xcode", "build", "compilation", "linker", "swift", "ios"]
 weight: 5
 ---
 

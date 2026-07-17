@@ -4,7 +4,6 @@ description: "Oracle query references a table or view that does not exist in the
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "table", "view", "not-found", "ora-00942", "schema"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Go interface conversion panic when asserting a concrete type t
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["interface", "conversion", "type", "assertion", "panic", "runtime"]
 weight: 5
 ---
 

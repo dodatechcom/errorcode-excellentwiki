@@ -4,7 +4,6 @@ description: "Flutter throws a SocketException when a network connection is refu
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["network", "socket", "connection", "http", "api"]
 weight: 5
 ---
 

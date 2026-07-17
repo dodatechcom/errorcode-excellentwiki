@@ -4,7 +4,6 @@ description: "Fix JavaScript URIError from decodeURI/decodeURIComponent on inval
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["urierror", "encodeuri", "decodeuri", "unicode", "encoding"]
 weight: 78
 ---
 

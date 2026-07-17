@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_ACCESSDENIED (0x80070005) access denied erro
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-accessdenied", "0x80070005", "access-denied", "permission"]
 weight: 5
 ---
 

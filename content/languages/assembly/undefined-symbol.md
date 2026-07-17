@@ -4,7 +4,6 @@ description: "An undefined symbol error occurs when the linker cannot find the d
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["linker", "symbol", "undefined", "link-time"]
 weight: 5
 ---
 

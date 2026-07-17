@@ -4,7 +4,6 @@ description: "Dart throws null check operator error when the ! operator is used 
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dart", "null", "operator", "nullable", "bang", "type-safety"]
 weight: 5
 ---
 

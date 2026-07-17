@@ -4,7 +4,6 @@ description: "Flutter throws an error when Navigator operations are called with 
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["navigator", "navigation", "route", "push", "pop"]
 weight: 5
 ---
 

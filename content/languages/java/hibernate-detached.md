@@ -4,7 +4,6 @@ description: "Fix DetachedEntityPassivationException when passing detached entit
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hibernate", "jpa", "detached-entity", "passivation", "merge"]
 weight: 5
 ---
 

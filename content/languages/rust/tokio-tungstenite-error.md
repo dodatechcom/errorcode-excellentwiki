@@ -4,7 +4,6 @@ description: "Fix tokio-tungstenite async WebSocket errors. Handle async connect
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tokio-tungstenite", "websocket", "async"]
 weight: 5
 ---
 

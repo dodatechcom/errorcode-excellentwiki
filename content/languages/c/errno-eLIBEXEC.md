@@ -4,7 +4,6 @@ description: "Fix C ELIBEXEC (Cannot exec a shared lib directly) by using a prop
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["elibexec", "cannot-exec-shared-lib", "execve", "dynamic-linking"]
 weight: 5
 ---
 

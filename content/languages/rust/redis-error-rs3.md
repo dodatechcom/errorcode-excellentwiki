@@ -4,7 +4,6 @@ description: "Fix redis cluster connection errors. Handle cluster topology, slot
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["redis", "cluster", "database", "cache", "connection"]
 weight: 5
 ---
 

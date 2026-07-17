@@ -4,7 +4,6 @@ description: "Fix Kubernetes HorizontalPodAutoscaler errors. Resolve HPA metric 
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["hpa", "autoscaler", "metrics", "scaling", "kubernetes"]
 weight: 5
 ---
 

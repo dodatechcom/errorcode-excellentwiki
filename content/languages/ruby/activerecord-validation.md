@@ -4,7 +4,6 @@ description: "Fix ActiveRecord::RecordInvalid in Rails. Learn why model validati
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["activerecord", "validation", "record-invalid", "rails", "ruby"]
 weight: 5
 ---
 

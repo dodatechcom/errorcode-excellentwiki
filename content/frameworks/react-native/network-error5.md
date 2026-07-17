@@ -4,7 +4,6 @@ description: "React Native fetch or XMLHttpRequest fails with a network connecti
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["network", "fetch", "connectivity", "offline", "http"]
 weight: 5
 ---
 

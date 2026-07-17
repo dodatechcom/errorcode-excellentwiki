@@ -4,7 +4,6 @@ description: "Oracle client fails to authenticate with the database."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "authentication", "password", "login", "credential"]
 weight: 5
 ---
 

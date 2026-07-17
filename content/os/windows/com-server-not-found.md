@@ -4,7 +4,6 @@ description: "Fix 'COM server not found' errors on Windows 10 and 11. Locate mis
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "server-not-found", "dcom", "com-server"]
 weight: 5
 ---
 

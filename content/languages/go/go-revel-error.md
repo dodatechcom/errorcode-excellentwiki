@@ -4,7 +4,6 @@ description: "Fix Revel framework controller errors. Handle request handling, te
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["revel", "web", "framework"]
 weight: 5
 ---
 

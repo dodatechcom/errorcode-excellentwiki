@@ -4,7 +4,6 @@ description: "Flask-Mail raises SMTP errors when email sending fails due to conn
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mail", "smtp", "email", "notification", "flask"]
 weight: 5
 ---
 

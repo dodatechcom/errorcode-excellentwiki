@@ -4,7 +4,6 @@ description: "Flutter throws a MissingPluginException when a platform channel me
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["platform-channel", "method-channel", "native", "ios", "android"]
 weight: 5
 ---
 

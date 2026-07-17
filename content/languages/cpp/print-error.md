@@ -4,7 +4,6 @@ description: "Fix C++ std::print and std::println errors including format string
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["print", "println", "c++23", "output"]
 weight: 5
 ---
 

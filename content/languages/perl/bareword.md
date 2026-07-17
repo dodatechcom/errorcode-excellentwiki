@@ -4,7 +4,6 @@ description: "A bareword error occurs when using an unquoted identifier that Per
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["bareword", "strict", "compilation", "perl"]
 weight: 5
 ---
 

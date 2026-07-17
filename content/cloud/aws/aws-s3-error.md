@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS S3 Error — access denied or bucket not found"
 description: "Fix AWS S3 errors. Resolve S3 access denied and bucket not found issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "s3", "bucket", "access-denied", "not-found"]
 weight: 5
 ---
 

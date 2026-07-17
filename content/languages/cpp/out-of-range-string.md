@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range when accessing string characters out of 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["out-of-range", "string", "at", "index", "bounds"]
 weight: 5
 ---
 

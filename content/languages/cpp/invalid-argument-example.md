@@ -4,7 +4,6 @@ description: "Example of std::invalid_argument in C++. Learn to validate paramet
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-argument", "exception", "parameter-validation", "stoi"]
 weight: 50
 ---
 

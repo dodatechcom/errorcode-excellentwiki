@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2694: Namespace 'X' has no exported member 'Y'. A
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2694", "namespace", "exported-member", "access", "not-exported"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix R 'error in par' when setting graphical parameters. Check para
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["par", "graphics", "plot", "parameters"]
 weight: 5
 ---
 

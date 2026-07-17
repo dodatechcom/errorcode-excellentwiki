@@ -4,7 +4,6 @@ description: "Fix Python ImportError: psycopg2 not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "psycopg2", "module-not-found", "pip", "postgresql"]
 weight: 5
 ---
 

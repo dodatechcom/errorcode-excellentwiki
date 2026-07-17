@@ -4,7 +4,6 @@ description: "Fix Objective-C threading and concurrency errors including GCD and
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["high"]
-tags: ["cocoa-touch", "concurrency", "gcd", "threading"]
 weight: 5
 ---
 

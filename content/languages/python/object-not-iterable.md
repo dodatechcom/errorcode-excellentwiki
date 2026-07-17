@@ -4,7 +4,6 @@ description: "Fix Python TypeError when trying to iterate over a non-iterable ob
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "iterable", "iteration", "object"]
 weight: 5
 ---
 

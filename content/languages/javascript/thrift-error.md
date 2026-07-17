@@ -4,7 +4,6 @@ description: "Fix Thrift transport errors. Handle connection failures, serializa
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["thrift", "transport", "serialization"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'crontab: installation error' and cron job failures. Deb
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["crontab", "installation-error", "cron", "scheduled-task", "crontab-edit"]
 weight: 5
 ---
 

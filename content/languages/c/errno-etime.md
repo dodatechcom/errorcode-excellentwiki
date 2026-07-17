@@ -4,7 +4,6 @@ description: "Fix C ETIME (Stream ioctl timeout) by adjusting timeout values and
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["etime", "stream-ioctl-timeout", "streams", "timeout", "ioctl"]
 weight: 5
 ---
 

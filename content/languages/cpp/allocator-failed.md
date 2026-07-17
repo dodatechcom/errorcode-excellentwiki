@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_alloc when operator new fails to allocate memory.
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-alloc", "memory", "new", "allocation"]
 weight: 5
 ---
 

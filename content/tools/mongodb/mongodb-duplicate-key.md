@@ -4,7 +4,6 @@ description: "MongoDB insert or update fails due to duplicate unique key violati
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "duplicate", "key", "unique-index", "constraint"]
 weight: 5
 ---
 

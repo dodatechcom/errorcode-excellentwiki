@@ -1,10 +1,8 @@
 ---
 title: "Azure AKS: Container Health Checks Failed"
 description: "AKS: Container health checks failed — Fix Azure Kubernetes Service health probe failures."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "aks", "kubernetes", "health-check", "probe", "container", "pod"]
 weight: 5
 ---
 

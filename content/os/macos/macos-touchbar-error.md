@@ -4,7 +4,6 @@ description: "Fix Touch Bar errors on MacBook Pro when Touch Bar goes blank, sho
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["touch-bar", "macbook-pro", "controls", "esc", "brightness"]
 weight: 5
 ---
 

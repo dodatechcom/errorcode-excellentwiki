@@ -4,7 +4,6 @@ description: "Redis Pub/Sub fails to deliver messages due to subscription issues
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "pubsub", "subscription", "channel", "message", "publish"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'no matches found' in Bash when a glob pattern doesn't match a
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["no-matches", "glob", "pattern-matching"]
 weight: 5
 ---
 

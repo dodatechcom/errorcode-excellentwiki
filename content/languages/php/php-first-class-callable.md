@@ -4,7 +4,6 @@ description: "Fix first class callable syntax errors in PHP 8.1+. Handle Closure
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["php", "callable", "syntax"]
 weight: 5
 ---
 

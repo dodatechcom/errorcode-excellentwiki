@@ -4,7 +4,6 @@ description: "Fix Kotlin StackOverflowError from infinite recursion. Learn how t
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stackoverflowerror", "infinite-recursion", "recursion", "stack", "kotlin"]
 weight: 5
 ---
 

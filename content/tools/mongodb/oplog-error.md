@@ -4,7 +4,6 @@ description: "MongoDB secondary member falls behind primary because the oplog wi
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oplog", "replication", "replica-set", "secondary"]
 weight: 5
 ---
 

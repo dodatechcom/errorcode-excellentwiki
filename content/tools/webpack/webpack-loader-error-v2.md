@@ -4,7 +4,6 @@ description: "Webpack loader fails while processing CSS, SCSS, or other style fi
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "loader", "css", "scss", "style"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: docx2txt not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "docx2txt", "module-not-found", "pip", "docx"]
 weight: 5
 ---
 

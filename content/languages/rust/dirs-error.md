@@ -4,7 +4,6 @@ description: "Fix dirs home directory errors. Handle platform differences and en
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dirs", "filesystem", "paths"]
 weight: 5
 ---
 

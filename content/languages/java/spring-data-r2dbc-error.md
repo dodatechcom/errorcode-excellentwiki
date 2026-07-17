@@ -4,7 +4,6 @@ description: "Fix Spring Data R2DBC connection errors. Resolve driver configurat
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring-data", "r2dbc", "reactive", "database", "connection"]
 weight: 5
 ---
 

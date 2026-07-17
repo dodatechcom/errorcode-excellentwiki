@@ -4,7 +4,6 @@ description: "Fix Linux ELOOP (errno 40) Too many levels of symbolic links error
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enLOOP", "symlink", "errno-40", "link"]
 weight: 5
 ---
 

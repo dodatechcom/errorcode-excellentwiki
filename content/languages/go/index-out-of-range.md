@@ -4,7 +4,6 @@ description: "Fix Go runtime error index out of range. Understand slice and arra
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "out-of-range", "slice", "array", "bounds", "runtime"]
 weight: 5
 ---
 

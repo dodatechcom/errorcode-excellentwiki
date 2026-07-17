@@ -4,7 +4,6 @@ description: "Fix Rust cannot assign requested address error. Learn why binding 
 languages: ["rust"]
 error_types: ["runtime-error"]
 severities: ["error"]
-tags: ["address", "not-available", "bind", "local", "interface", "io"]
 weight: 5
 ---
 

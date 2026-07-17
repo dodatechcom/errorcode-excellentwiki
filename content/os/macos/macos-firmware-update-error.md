@@ -4,7 +4,6 @@ description: "Fix firmware update errors on macOS when firmware fails to install
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["firmware", "update", "bridgeos", "verification", "macos"]
 weight: 5
 ---
 

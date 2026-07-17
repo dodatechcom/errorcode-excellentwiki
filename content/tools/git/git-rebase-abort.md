@@ -4,7 +4,6 @@ description: "Fix Git rebase abort/continue errors. Handle rebase conflicts and 
 tools: ["git"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["rebase", "abort", "continue", "conflict", "git"]
 weight: 5
 ---
 

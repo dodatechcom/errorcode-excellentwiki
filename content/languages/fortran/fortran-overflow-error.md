@@ -4,7 +4,6 @@ description: "Overflow error in Fortran occurs when an arithmetic result exceeds
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "integer", "arithmetic", "max-value", "fortran"]
 weight: 5
 ---
 

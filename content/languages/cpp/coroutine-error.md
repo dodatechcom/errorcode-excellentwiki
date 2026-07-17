@@ -4,7 +4,6 @@ description: "Fix C++ coroutine errors including unhandled exceptions, coroutine
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["coroutine", "co_await", "co_yield", "async"]
 weight: 5
 ---
 

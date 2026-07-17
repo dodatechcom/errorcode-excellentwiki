@@ -4,7 +4,6 @@ description: "Fix Django signal handler errors. Resolve signal dispatch and hand
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["signal", "handler", "post_save", "pre_delete", "django"]
 weight: 5
 ---
 

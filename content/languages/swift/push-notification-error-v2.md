@@ -4,7 +4,6 @@ description: "Fix Apple Push Notification device token errors when registration 
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["APNs", "push-notification", "device-token", "remote-notification", "swift"]
 weight: 5
 ---
 

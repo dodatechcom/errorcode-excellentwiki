@@ -4,7 +4,6 @@ description: "Fix Kubernetes ImagePullBackOff errors. Resolve issues pulling con
 tools: ["kubernetes"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["imagepullbackoff", "pull-image", "registry", "image"]
 weight: 5
 ---
 

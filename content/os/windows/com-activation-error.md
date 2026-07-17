@@ -4,7 +4,6 @@ description: "Fix 'COM activation error' on Windows 10 and 11. Resolve CoCreateI
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["com", "activation", "cocreateinstance", "com-error"]
 weight: 5
 ---
 

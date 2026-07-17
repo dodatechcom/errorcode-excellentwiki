@@ -4,7 +4,6 @@ description: "Fix PHP Warning: join() invalid arguments. Learn the correct usage
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "join", "array", "implode"]
 weight: 5
 ---
 

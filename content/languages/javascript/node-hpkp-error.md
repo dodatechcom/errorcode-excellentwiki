@@ -4,7 +4,6 @@ description: "Fix HTTP Public Key Pinning errors. Handle key pinning failures an
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hpkp", "certificate", "pinning"]
 weight: 5
 ---
 

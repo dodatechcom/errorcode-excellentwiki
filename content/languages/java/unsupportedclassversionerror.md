@@ -4,7 +4,6 @@ description: "Fix Java UnsupportedClassVersionError by compiling with a compatib
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unsupportedclassversionerror", "classfile", "jdk", "version", "compiler"]
 weight: 5
 ---
 

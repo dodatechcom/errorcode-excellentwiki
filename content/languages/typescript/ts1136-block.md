@@ -4,7 +4,6 @@ description: "Fix TypeScript TS1136: Expected block of statements. Add braces ar
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts1136", "block", "statements", "braces", "syntax-error"]
 weight: 5
 ---
 

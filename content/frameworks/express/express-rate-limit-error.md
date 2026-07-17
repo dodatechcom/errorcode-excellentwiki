@@ -4,7 +4,6 @@ description: "Fix Express rate limit exceeded errors. Resolve request throttling
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rate-limit", "throttle", "429", "too-many-requests", "express"]
 weight: 5
 ---
 

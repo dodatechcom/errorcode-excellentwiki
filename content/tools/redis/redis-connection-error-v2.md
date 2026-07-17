@@ -4,7 +4,6 @@ description: "Redis connection pool runs out of available connections, causing n
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "connection", "pool", "max-connections", "exhausted"]
 weight: 5
 ---
 

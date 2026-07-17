@@ -4,7 +4,6 @@ description: "systemd cannot find the specified service unit."
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "service", "not-found", "unit", "missing"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Flask-Compress raises errors when response compression fails or is
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["compress", "gzip", "deflate", "response", "flask"]
 weight: 5
 ---
 

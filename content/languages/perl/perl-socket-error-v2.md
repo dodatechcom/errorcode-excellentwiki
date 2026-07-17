@@ -4,7 +4,6 @@ description: "Fix Perl socket errors when connections are refused. Handle networ
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["socket", "connection", "network", "tcp", "timeout", "perl"]
 weight: 5
 ---
 

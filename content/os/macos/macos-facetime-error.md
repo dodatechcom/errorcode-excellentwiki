@@ -4,7 +4,6 @@ description: "Fix FaceTime activation errors on Mac when FaceTime won't activate
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["facetime", "activation", "video-call", "apple-id", "camera"]
 weight: 5
 ---
 

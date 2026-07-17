@@ -4,7 +4,6 @@ description: "Fix Git rebase conflict by aborting or resolving. Handle rebase co
 tools: ["git"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rebase", "abort", "conflict", "interactive", "git"]
 weight: 5
 ---
 

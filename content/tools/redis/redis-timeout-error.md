@@ -4,7 +4,6 @@ description: "Redis operation fails due to timeout exceeded."
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "timeout", "slow", "latency", "performance"]
 weight: 5
 ---
 

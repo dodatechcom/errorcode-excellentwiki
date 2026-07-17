@@ -4,7 +4,6 @@ description: "Fix Rails CSRF token errors when form submissions fail authenticit
 languages: ["ruby"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ActionController", "authenticity-token", "CSRF", "rails", "ruby"]
 weight: 5
 ---
 

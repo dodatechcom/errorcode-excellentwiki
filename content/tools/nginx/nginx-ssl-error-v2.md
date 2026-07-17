@@ -4,7 +4,6 @@ description: "Fix Nginx SSL_do_handshake failed. Resolve SSL/TLS handshake failu
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nginx", "ssl", "tls", "handshake", "certificate", "crypto"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Gradle cache corruption errors. Resolve build cache and depend
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "cache", "corruption", "dependency", "clean"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Express 404 route not found errors. Handle missing routes, rou
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["express", "404", "route", "not-found", "middleware"]
 weight: 5
 ---
 

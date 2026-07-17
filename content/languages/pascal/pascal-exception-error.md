@@ -4,7 +4,6 @@ description: "Exception errors in Pascal occur when an unhandled exception is ra
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["exception", "try", "except", "handled", "pascal"]
 weight: 5
 ---
 

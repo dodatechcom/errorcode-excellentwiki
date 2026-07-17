@@ -4,7 +4,6 @@ description: "Fix hyper HTTP/1.1 connection errors. Handle connection pool issue
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hyper", "http", "client", "connection", "keep-alive"]
 weight: 5
 ---
 

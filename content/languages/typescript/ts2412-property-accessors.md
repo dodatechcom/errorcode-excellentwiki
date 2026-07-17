@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2412: Property accessors can only be used with qu
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2412", "property-accessor", "qualified-name", "syntax"]
 weight: 5
 ---
 

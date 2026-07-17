@@ -4,7 +4,6 @@ description: "Fix Laravel ConnectionFailedException when queue connection fails.
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "queue", "connection"]
 weight: 5
 ---
 

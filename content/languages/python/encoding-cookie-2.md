@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when source file cannot be encoded. Learn a
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "encoding", "source", "unicode"]
 weight: 5
 ---
 

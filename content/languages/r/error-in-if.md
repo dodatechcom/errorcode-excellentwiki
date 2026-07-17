@@ -4,7 +4,6 @@ description: "Fix R 'argument is of length zero' error when using empty vectors 
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["length-zero", "if-condition", "null", "empty-vector"]
 weight: 5
 ---
 

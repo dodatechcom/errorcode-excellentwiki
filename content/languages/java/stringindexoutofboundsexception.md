@@ -4,7 +4,6 @@ description: "Fix Java StringIndexOutOfBoundsException by validating char indice
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["stringindexoutofboundsexception", "string", "index", "bounds", "substring"]
 weight: 5
 ---
 

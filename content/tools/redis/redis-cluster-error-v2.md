@@ -4,7 +4,6 @@ description: "Redis Cluster client receives MOVED or ASK redirect responses beca
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "cluster", "moved", "ask", "slot", "redirect", "hash"]
 weight: 5
 ---
 

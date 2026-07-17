@@ -4,7 +4,6 @@ description: "Fix Java VerifyError by recompiling with the correct JDK, avoiding
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["verifyerror", "bytecode", "verification", "classloader"]
 weight: 5
 ---
 

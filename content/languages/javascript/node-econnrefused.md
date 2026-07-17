@@ -4,7 +4,6 @@ description: "Error: connect ECONNREFUSED — Fix Node.js TCP connection refused
 languages: ["javascript"]
 error-types: ["network-error"]
 severities: ["error"]
-tags: ["nodejs", "econnrefused", "tcp", "connection", "network", "net"]
 weight: 5
 ---
 

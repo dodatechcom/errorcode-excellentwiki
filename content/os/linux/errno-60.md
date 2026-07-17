@@ -4,7 +4,6 @@ description: "Fix Linux ENOTSOCK (errno 60) Socket operation on non-socket error
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enotsock", "socket", "errno-60", "file-descriptor", "network"]
 weight: 5
 ---
 

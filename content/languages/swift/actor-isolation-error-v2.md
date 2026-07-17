@@ -4,7 +4,6 @@ description: "Fix Swift actor isolation errors when passing non-sendable types a
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["actor", "isolation", "sendable", "concurrency", "swift"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java TypeNotPresentException by ensuring referenced types are 
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["typenotpresentexception", "type", "classpath", "linkage"]
 weight: 5
 ---
 

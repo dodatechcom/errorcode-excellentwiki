@@ -4,7 +4,6 @@ description: "Fix C++ AddressSanitizer use-after-free errors. Prevent accessing 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["asan", "address-sanitizer", "use-after-free", "memory", "debug"]
 weight: 5
 ---
 

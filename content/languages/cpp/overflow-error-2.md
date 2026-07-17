@@ -4,7 +4,6 @@ description: "Fix C++ std::overflow_error when arithmetic operations exceed the 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["overflow-error", "arithmetic", "integer", "overflow"]
 weight: 5
 ---
 

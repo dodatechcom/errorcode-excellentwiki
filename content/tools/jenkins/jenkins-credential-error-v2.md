@@ -4,7 +4,6 @@ description: "Jenkins credential is missing, expired, or not accessible in the p
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "credential", "secret", "expired", "access"]
 weight: 5
 ---
 

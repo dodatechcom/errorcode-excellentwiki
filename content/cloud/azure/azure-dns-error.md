@@ -1,10 +1,8 @@
 ---
 title: "[Solution] Azure DNS Error"
 description: "Fix Azure DNS errors. Resolve DNS zone and record issues."
-cloud: ["azure"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["azure", "dns", "zone", "record", "domain"]
 weight: 5
 ---
 

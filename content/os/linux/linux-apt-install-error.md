@@ -4,7 +4,6 @@ description: "Fix Linux 'apt install failed' errors. Resolve package dependency 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["apt-install", "package-installation", "dependencies", "broken-packages", "apt"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix RabbitMQContainer startup failure in Testcontainers. Check Doc
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "rabbitmq", "docker", "container", "amqp"]
 weight: 5
 ---
 

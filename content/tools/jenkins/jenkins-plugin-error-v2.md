@@ -4,7 +4,6 @@ description: "Jenkins plugin has compatibility issues with the Jenkins version."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "plugin", "compatibility", "version", "update"]
 weight: 5
 ---
 

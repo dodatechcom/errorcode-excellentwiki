@@ -4,7 +4,6 @@ description: "Fix Linux ENOSYS (errno 38) Function not implemented error. Soluti
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOSYS", "syscall", "errno-38", "kernel"]
 weight: 5
 ---
 

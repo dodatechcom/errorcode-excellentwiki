@@ -4,7 +4,6 @@ description: "Fix Python Built-inFunctionAttribute when trying to call a built-i
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["builtin", "method", "call", "attribute"]
 weight: 5
 ---
 

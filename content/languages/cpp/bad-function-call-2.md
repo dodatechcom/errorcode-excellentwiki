@@ -4,7 +4,6 @@ description: "Fix C++ std::bad_function_call when invoking an empty std::functio
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["bad-function-call", "std-function", "callable", "exception"]
 weight: 5
 ---
 

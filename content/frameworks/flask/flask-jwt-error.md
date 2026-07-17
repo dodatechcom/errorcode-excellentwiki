@@ -4,7 +4,6 @@ description: "Flask-JWT raises authentication errors when JWT tokens are invalid
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jwt", "token", "authentication", "security", "flask"]
 weight: 5
 ---
 

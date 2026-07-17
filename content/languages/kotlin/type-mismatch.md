@@ -4,7 +4,6 @@ description: "Fix Kotlin type mismatch errors at compile time. Use proper type c
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["type-mismatch", "type", "cast", "generics", "nullable"]
 weight: 5
 ---
 

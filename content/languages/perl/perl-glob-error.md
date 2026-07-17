@@ -4,7 +4,6 @@ description: "Fix Perl glob errors. Learn why file globbing fails and how to use
 languages: ["perl"]
 severities: ["error"]
 error-types: ["io-error"]
-tags: ["glob", "file", "pattern", "perl"]
 weight: 5
 ---
 

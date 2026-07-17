@@ -4,7 +4,6 @@ description: "Django raises TemplateSyntaxError when a template contains an inva
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["templates", "syntax", "django-templates"]
 weight: 5
 ---
 

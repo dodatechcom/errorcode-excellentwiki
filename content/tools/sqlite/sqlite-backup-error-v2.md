@@ -4,7 +4,6 @@ description: "SQLite backup or restore operation fails due to file access issues
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "backup", "restore", "dump", "recovery", "export"]
 weight: 5
 ---
 

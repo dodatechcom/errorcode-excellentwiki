@@ -4,7 +4,6 @@ description: "Fix Kotlin General Protection Fault (JVM crash). This is a fatal J
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["general-protection-fault", "jvm", "crash", "fatal", "native"]
 weight: 5
 ---
 

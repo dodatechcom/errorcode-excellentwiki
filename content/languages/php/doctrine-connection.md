@@ -4,7 +4,6 @@ description: "Fix Doctrine DBAL connection errors. Handle database connectivity,
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["doctrine", "connection", "database"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Docker volume permission denied errors on Linux. Resolve bind 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "volume", "permission", "selinux", "bind-mount", "uid", "gid"]
 weight: 5
 ---
 

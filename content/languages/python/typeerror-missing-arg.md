@@ -4,7 +4,6 @@ description: "Fix Python TypeError: missing required positional argument. Add de
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["typeerror", "positional-argument", "function", "signature", "default"]
 weight: 5
 ---
 

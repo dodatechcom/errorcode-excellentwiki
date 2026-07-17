@@ -7,7 +7,6 @@ languages: ["python"]
 deprecated_since: "Python 3.0"
 removed_in: "Python 3.0"
 error_message: "NameError: name 'execfile' is not defined"
-tags: ["execfile", "exec", "python2", "python3", "migration"]
 weight: 35
 ---
 

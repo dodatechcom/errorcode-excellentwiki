@@ -4,7 +4,6 @@ description: "Fix React forwardRef expects a render function error. Understand f
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "forwardref", "ref", "render", "callback", "component", "function"]
 weight: 5
 ---
 

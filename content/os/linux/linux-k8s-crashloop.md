@@ -4,7 +4,6 @@ description: "Fix Kubernetes CrashLoopBackOff status. Resolve pod restart loops 
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "crashloop", "restart", "pod", "container"]
 weight: 5
 ---
 

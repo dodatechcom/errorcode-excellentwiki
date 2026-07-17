@@ -4,7 +4,6 @@ description: "Maven fails with Spring Boot plugin configuration or execution err
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "spring-boot", "plugin", "boot", "repackage"]
 weight: 5
 ---
 

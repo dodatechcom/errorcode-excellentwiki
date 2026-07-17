@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_OUTOFMEMORY (0x8007000E) out of memory error
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-outofmemory", "0x8007000e", "out-of-memory", "allocation"]
 weight: 5
 ---
 

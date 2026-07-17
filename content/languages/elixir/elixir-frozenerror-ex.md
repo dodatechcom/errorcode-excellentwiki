@@ -4,7 +4,6 @@ description: "Elixir raises RuntimeError when attempting function calls inside p
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime", "match", "invocation", "runtimeerror", "frozen"]
 weight: 5
 ---
 

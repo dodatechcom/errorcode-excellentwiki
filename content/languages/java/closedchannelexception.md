@@ -4,7 +4,6 @@ description: "Fix Java ClosedChannelException by checking channel state before o
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["closedchannelexception", "nio", "channel", "selector", "closed"]
 weight: 5
 ---
 

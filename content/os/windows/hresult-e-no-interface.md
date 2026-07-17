@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_NOINTERFACE (0x80004002) no interface error.
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-nointerface", "0x80004002", "no-interface", "com", "queryinterface"]
 weight: 5
 ---
 

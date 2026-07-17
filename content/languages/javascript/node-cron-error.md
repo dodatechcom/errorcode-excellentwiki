@@ -4,7 +4,6 @@ description: "Fix node-cron scheduling errors when cron jobs fail to execute."
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["node-cron", "scheduler", "cron"]
 weight: 5
 ---
 

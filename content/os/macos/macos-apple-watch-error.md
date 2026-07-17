@@ -4,7 +4,6 @@ description: "Fix Apple Watch pairing errors with Mac when unlock doesn't work, 
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["apple-watch", "pairing", "unlock", "continuity", "wearable"]
 weight: 5
 ---
 

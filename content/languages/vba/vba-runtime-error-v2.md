@@ -4,7 +4,6 @@ description: "Fix VBA Run-time error 91 when an object variable has not been set
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["runtime-error", "object", "variable", "not-set", "vba"]
 weight: 5
 ---
 

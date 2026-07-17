@@ -4,7 +4,6 @@ description: "Fix C++ std::domain_error from sqrt of negative number. Use std::a
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["domain-error", "sqrt", "square-root", "negative", "complex"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Webpack chunk fails to load at runtime."
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "chunk", "loading", "runtime", "dynamic-import"]
 weight: 5
 ---
 

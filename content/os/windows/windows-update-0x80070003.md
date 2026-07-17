@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x80070003 (path not found) on Windows 10
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["windows-update", "0x80070003", "path-not-found", "file-missing"]
 weight: 5
 ---
 

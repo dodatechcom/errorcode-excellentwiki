@@ -4,7 +4,6 @@ description: "Fix Python SyntaxError when using the walrus operator incorrectly.
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["syntaxerror", "walrus", "operator", "assignment", "expression"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Jenkins project or resource is not accessible due to permission is
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "permission", "access", "authorization", "role"]
 weight: 5
 ---
 

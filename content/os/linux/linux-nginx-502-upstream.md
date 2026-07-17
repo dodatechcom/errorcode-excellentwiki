@@ -4,7 +4,6 @@ description: "Fix Linux nginx 502 Bad Gateway upstream errors. Resolve proxy iss
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nginx", "502", "bad-gateway", "upstream", "proxy", "reverse-proxy"]
 weight: 5
 ---
 

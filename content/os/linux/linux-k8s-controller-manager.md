@@ -4,7 +4,6 @@ description: "Fix Kubernetes controller-manager errors. Resolve controller recon
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "controller-manager", "reconciliation", "leader-election", "control-plane"]
 weight: 5
 ---
 

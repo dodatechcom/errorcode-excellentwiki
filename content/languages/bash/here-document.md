@@ -4,7 +4,6 @@ description: "Fix 'here-document' errors in Bash when heredoc syntax or delimite
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["here-document", "heredoc", "delimiter"]
 weight: 5
 ---
 

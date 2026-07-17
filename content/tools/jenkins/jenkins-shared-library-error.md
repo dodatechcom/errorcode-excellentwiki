@@ -4,7 +4,6 @@ description: "Jenkins pipeline fails to load or execute shared library code."
 tools: ["jenkins"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["jenkins", "shared-library", "reusable", "library", "global"]
 weight: 5
 ---
 

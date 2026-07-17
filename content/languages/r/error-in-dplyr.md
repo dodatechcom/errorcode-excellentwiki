@@ -4,7 +4,6 @@ description: "Fix R 'error in dplyr' when using dplyr verbs. Check package loadi
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dplyr", "tidyverse", "data-manipulation", "pipe"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kubernetes Node NotReady status. Resolve node heartbeat failur
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["kubernetes", "k8s", "node", "notready", "kubelet", "heartbeat"]
 weight: 5
 ---
 

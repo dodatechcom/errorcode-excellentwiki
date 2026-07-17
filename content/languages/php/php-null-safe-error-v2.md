@@ -4,7 +4,6 @@ description: "Fix PHP null safe operator errors. Learn how the ?-> operator work
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null-safe", "operator", "php", "null"]
 weight: 5
 ---
 

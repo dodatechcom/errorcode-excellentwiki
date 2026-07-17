@@ -4,7 +4,6 @@ description: "Vite fails to compile Vue single-file component templates."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "vue", "template", "sfc", "compilation"]
 weight: 5
 ---
 

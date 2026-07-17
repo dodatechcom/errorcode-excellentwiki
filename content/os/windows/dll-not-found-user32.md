@@ -4,7 +4,6 @@ description: "Fix user32.dll load failed errors on Windows 10 and 11. Resolve us
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "user32", "load-failed", "user-interface", "system-dll"]
 weight: 5
 ---
 

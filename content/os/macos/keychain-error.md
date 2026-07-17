@@ -4,7 +4,6 @@ description: "Fix macOS Keychain 'An error has occurred' error. Reset keychain, 
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["keychain", "password", "icloud-keychain", "access", "unlock"]
 weight: 5
 ---
 

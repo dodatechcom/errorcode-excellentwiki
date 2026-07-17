@@ -4,7 +4,6 @@ description: "Fix Java StackOverflowError caused by infinite recursion or deep c
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["stackoverflowerror", "recursion", "stack", "call-stack"]
 weight: 50
 ---
 

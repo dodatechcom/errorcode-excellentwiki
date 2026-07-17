@@ -4,7 +4,6 @@ description: "Fix Python ImportError: pyarrow not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "pyarrow", "module-not-found", "pip", "arrow"]
 weight: 5
 ---
 

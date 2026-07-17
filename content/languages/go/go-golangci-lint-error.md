@@ -4,7 +4,6 @@ description: "Fix golangci-lint errors. Handle linter configuration, rule violat
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["golangci-lint", "linting", "ci"]
 weight: 5
 ---
 

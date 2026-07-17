@@ -4,7 +4,6 @@ description: "Fix kafka-go no brokers available errors. Handle connection failur
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kafka", "kafka-go", "broker", "message-queue", "streaming"]
 weight: 5
 ---
 

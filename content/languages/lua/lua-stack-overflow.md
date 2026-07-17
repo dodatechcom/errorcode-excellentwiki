@@ -4,7 +4,6 @@ description: "Fix Lua stack overflow errors. Learn why stack overflow occurs and
 languages: ["lua"]
 severities: ["error"]
 error-types: ["memory-error"]
-tags: ["stack-overflow", "recursion", "stack", "lua"]
 weight: 5
 ---
 

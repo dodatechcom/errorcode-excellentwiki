@@ -4,7 +4,6 @@ description: "Jenkins controller node runs out of disk space."
 tools: ["jenkins"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jenkins", "controller", "master", "disk-space", "storage"]
 weight: 5
 ---
 

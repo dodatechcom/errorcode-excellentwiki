@@ -4,7 +4,6 @@ description: "Fix VBA File Not Found error (Error 53) when trying to open or acc
 languages: ["vba"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["file-not-found", "error-53", "path", "file", "vba"]
 weight: 5
 ---
 

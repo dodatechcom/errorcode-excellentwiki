@@ -4,7 +4,6 @@ description: "Fix Octane worker errors in Laravel. Handle Swoole/OpenRoadRunner 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "octane", "server"]
 weight: 5
 ---
 

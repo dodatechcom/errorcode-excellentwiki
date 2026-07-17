@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_MODULE_NOT_FOUND by checking package.json exports,
 languages: ["javascript"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["err-module-not-found", "esm", "commonjs", "package.json", "nodejs"]
 weight: 82
 ---
 

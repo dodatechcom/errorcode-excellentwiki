@@ -4,7 +4,6 @@ description: "Fix glob pattern errors. Handle invalid patterns, path matching, a
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["glob", "pattern", "filesystem"]
 weight: 5
 ---
 

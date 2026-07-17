@@ -4,7 +4,6 @@ description: "Fix Blue Screen CLOCK_WATCHDOG_TIMEOUT error on Windows 10 and 11.
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "clock-watchdog", "cpu", "processor", "stop-code"]
 weight: 5
 ---
 

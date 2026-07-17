@@ -4,7 +4,6 @@ description: "Flutter throws a build error when the application compilation fail
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["build", "compilation", "dart", "android", "ios"]
 weight: 5
 ---
 

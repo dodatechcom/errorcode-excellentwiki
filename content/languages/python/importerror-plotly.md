@@ -4,7 +4,6 @@ description: "Fix Python ImportError: plotly not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "plotly", "module-not-found", "pip", "visualization"]
 weight: 5
 ---
 

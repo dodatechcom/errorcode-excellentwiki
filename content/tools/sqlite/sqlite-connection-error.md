@@ -4,7 +4,6 @@ description: "SQLite fails to open or connect to a database file."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "connection", "open", "file", "permission"]
 weight: 5
 ---
 

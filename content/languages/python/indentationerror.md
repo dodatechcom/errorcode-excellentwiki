@@ -4,7 +4,6 @@ description: "Fix Python IndentationError: unexpected indent or unindent. Unders
 languages: ["python"]
 severities: ["error"]
 error_types: ["syntax"]
-tags: ["indentationerror", "indentation", "syntax", "spacing"]
 weight: 70
 ---
 

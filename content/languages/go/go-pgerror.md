@@ -4,7 +4,6 @@ description: "Fix pgx PostgreSQL error codes. Handle database errors, constraint
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pgx", "postgres", "database"]
 weight: 5
 ---
 

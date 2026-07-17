@@ -4,7 +4,6 @@ description: "Fix Symfony security authentication and authorization errors. Hand
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "security", "auth"]
 weight: 5
 ---
 

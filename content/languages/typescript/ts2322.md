@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2322: Type 'X' is not assignable to type 'Y'. Lea
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2322", "type-assignability", "type-mismatch", "incompatible-types"]
 weight: 5
 ---
 

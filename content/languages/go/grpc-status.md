@@ -4,7 +4,6 @@ description: "Fix Go gRPC status code errors. Handle status codes, error details
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["grpc", "status", "rpc"]
 weight: 5
 ---
 

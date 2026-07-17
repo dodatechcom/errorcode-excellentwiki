@@ -4,7 +4,6 @@ description: "Fix Swift URLError:timedOut errors. Learn why network requests tim
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["timeout", "network", "urlsession", "slow-connection", "deadline"]
 weight: 5
 ---
 

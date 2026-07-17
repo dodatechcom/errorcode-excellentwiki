@@ -4,7 +4,6 @@ description: "Fix SQLAlchemy OperationalError connection failed. Verify connecti
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlalchemy", "database", "connection", "operationalerror", "postgres"]
 weight: 5
 ---
 

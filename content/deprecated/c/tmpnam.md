@@ -6,7 +6,6 @@ replacement_function: "mkstemp"
 languages: ["c"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["tmpnam", "mkstemp", "tempfile", "race-condition", "security", "c"]
 weight: 5
 ---
 

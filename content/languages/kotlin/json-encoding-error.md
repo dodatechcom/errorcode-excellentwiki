@@ -4,7 +4,6 @@ description: "Fix Kotlin JsonEncodingException when encoding objects to JSON. Ch
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["jsonencodingexception", "json", "encode", "serialization", "output"]
 weight: 5
 ---
 

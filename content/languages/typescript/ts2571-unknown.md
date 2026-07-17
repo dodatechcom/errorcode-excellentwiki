@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2571: Object is of type 'unknown'. Narrow unknown
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2571", "unknown", "type-guard", "narrowing", "assertion"]
 weight: 5
 ---
 

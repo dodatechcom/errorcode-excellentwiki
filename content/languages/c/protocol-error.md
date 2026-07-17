@@ -4,7 +4,6 @@ description: "Fix C protocol error (EPROTO). Handle protocol negotiation and com
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eproto", "protocol-error", "socket", "negotiation", "errno"]
 weight: 5
 ---
 

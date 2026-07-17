@@ -4,7 +4,6 @@ description: "Fix Python ImportError: kombu not found or ModuleNotFoundError: No
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "kombu", "module-not-found", "pip", "messaging"]
 weight: 5
 ---
 

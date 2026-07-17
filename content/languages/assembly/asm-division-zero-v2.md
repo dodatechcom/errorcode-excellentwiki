@@ -4,7 +4,6 @@ description: "Fix assembly floating-point exceptions caused by division by zero 
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["fpe", "division", "zero", "floating-point", "exception", "assembly"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'Operand should contain 1 column' when COUNT or aggregate retu
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["count", "aggregate", "operand", "column"]
 weight: 5
 ---
 

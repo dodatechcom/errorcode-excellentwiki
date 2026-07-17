@@ -4,7 +4,6 @@ description: "Fix Blue Screen KMODE_EXCEPTION_NOT_HANDLED stop code 0x1E caused 
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "kmode-exception", "win32kfull", "graphics", "stop-0x1e"]
 weight: 5
 ---
 

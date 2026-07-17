@@ -4,7 +4,6 @@ description: "Fix C errno 110 ETIMEDOUT (Connection timed out) by checking netwo
 languages: ["c"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["etimedout", "errno-110", "timeout", "network", "socket"]
 weight: 30
 ---
 

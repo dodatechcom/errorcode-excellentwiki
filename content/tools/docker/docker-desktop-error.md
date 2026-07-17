@@ -4,7 +4,6 @@ description: "Fix Docker Desktop WSL2 and virtual machine errors. Resolve backen
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["docker-desktop", "wsl2", "virtual-machine", "windows", "macos"]
 weight: 5
 ---
 

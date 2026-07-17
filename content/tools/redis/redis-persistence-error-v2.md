@@ -4,7 +4,6 @@ description: "Redis fails to save data to disk during RDB persistence, potential
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["redis", "rdb", "persistence", "snapshot", "save", "disk"]
 weight: 5
 ---
 

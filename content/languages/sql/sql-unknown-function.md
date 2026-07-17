@@ -4,7 +4,6 @@ description: "Fix 'Unknown function X' when calling a function that does not exi
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unknown-function", "function", "built-in", "custom-function"]
 weight: 5
 ---
 

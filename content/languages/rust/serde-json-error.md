@@ -4,7 +4,6 @@ description: "Fix serde_json errors. Handle invalid JSON, type mismatches, and s
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["serde_json", "json", "serialization"]
 weight: 5
 ---
 

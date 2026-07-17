@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS DynamoDB Query Error"
 description: "Fix AWS DynamoDB query errors. Resolve DynamoDB access and query issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "dynamodb", "query", "table", "database"]
 weight: 5
 ---
 

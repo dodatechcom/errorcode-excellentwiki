@@ -4,7 +4,6 @@ description: "Fix C++ std::invalid_argument when stof receives non-numeric strin
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-argument", "stof", "conversion", "float", "numeric"]
 weight: 5
 ---
 

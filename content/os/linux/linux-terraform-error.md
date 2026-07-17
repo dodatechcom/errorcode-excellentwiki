@@ -4,7 +4,6 @@ description: "Fix Linux 'terraform: provider error' and Terraform failures. Reso
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["terraform", "provider-error", "infrastructure", "iac", "cloud", "hcl"]
 weight: 5
 ---
 

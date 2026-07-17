@@ -4,7 +4,6 @@ description: "A noproc error occurs when trying to send a message or make a call
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["noproc", "process", "not-found", "pid"]
 weight: 5
 ---
 

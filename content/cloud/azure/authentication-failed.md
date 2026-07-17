@@ -1,10 +1,8 @@
 ---
 title: "Azure Authentication Failed"
 description: "AuthenticationFailed - Authentication failed, check your credentials"
-cloud: ["azure"]
 error-types: ["cloud-error"]
 severities: ["error"]
-tags: ["azure", "authentication", "credentials", "identity", "entra-id"]
 weight: 5
 ---
 

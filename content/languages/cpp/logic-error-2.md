@@ -4,7 +4,6 @@ description: "Fix C++ std::logic_error caused by violated preconditions, invalid
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["logic-error", "exception", "precondition", "validation"]
 weight: 5
 ---
 

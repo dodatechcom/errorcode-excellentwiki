@@ -4,7 +4,6 @@ description: "Fix CoreML model loading errors when MLModel cannot be compiled or
 languages: ["swift"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["CoreML", "model", "loading", "MLModel", "swift"]
 weight: 5
 ---
 

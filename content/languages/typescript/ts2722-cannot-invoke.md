@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2722: Cannot invoke object which is possibly 'cal
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2722", "cannot-invoke", "possibly-callable", "function", "type-guard"]
 weight: 5
 ---
 

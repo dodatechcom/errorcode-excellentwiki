@@ -4,7 +4,6 @@ description: "Fix Node.js EPIPE: broken pipe error. Handle broken pipe errors in
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["epipe", "broken-pipe", "stream", "pipe", "signal"]
 weight: 5
 ---
 

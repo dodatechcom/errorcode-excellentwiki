@@ -4,7 +4,6 @@ description: "Fix Python ImportError: openpyxl not found or ModuleNotFoundError:
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "openpyxl", "module-not-found", "pip", "excel"]
 weight: 5
 ---
 

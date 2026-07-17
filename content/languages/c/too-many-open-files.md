@@ -4,7 +4,6 @@ description: "Fix C too many open files (EMFILE). Manage file descriptor limits 
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["emfile", "too-many-open-files", "file-descriptor", "limit", "ulimit"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Maven profile is not active or fails to activate during build."
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "profile", "activation", "configuration", "properties"]
 weight: 5
 ---
 

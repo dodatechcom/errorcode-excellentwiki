@@ -4,7 +4,6 @@ description: "Fix comrak markdown errors. Handle parsing, rendering, and extensi
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["comrak", "markdown", "parse"]
 weight: 5
 ---
 

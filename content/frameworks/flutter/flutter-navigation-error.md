@@ -4,7 +4,6 @@ description: "Flutter throws an error when Navigator.pop is called but there are
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["navigator", "navigation", "pop", "route", "stack"]
 weight: 5
 ---
 

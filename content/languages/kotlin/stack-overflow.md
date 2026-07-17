@@ -4,7 +4,6 @@ description: "Fix Kotlin StackOverflowError when recursion depth exceeds the sta
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["stackoverflowerror", "recursion", "stack", "tailrec"]
 weight: 5
 ---
 

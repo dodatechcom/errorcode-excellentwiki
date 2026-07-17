@@ -4,7 +4,6 @@ description: "Fix Linux ESTALE (errno 80) Stale file handle error. Solutions for
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["estale", "stale", "errno-80", "nfs", "file-handle"]
 weight: 5
 ---
 

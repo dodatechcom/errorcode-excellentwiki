@@ -4,7 +4,6 @@ description: "Fix PowerShell workflow errors when workflows fail to compile, run
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["workflow", "XAML", "activity", "persist", "PSWorkflow"]
 weight: 5
 ---
 

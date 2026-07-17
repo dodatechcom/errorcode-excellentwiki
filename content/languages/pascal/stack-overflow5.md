@@ -4,7 +4,6 @@ description: "A stack overflow occurs when the call stack exceeds its maximum de
 languages: ["pascal"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["stack", "overflow", "recursion", "pascal"]
 weight: 5
 ---
 

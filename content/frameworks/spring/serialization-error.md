@@ -4,7 +4,6 @@ description: "Spring fails to serialize or deserialize JSON during HTTP communic
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["json", "serialization", "jackson", "deserialization", "httpmessage"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix SQLite 'file is encrypted or not a database' error. Resolve en
 tools: ["sqlite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlite", "encrypted", "not-a-database", "format", "cipher"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C EINPROGRESS (Operation now in progress) by handling non-bloc
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["einprogress", "operation-now-in-progress", "non-blocking", "connect", "poll"]
 weight: 5
 ---
 

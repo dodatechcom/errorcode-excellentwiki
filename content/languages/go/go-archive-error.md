@@ -4,7 +4,6 @@ description: "Fix Go tar archive errors. Handle invalid headers, checksum mismat
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["archive", "tar", "extraction"]
 weight: 5
 ---
 

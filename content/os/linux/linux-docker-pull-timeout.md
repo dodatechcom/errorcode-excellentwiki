@@ -4,7 +4,6 @@ description: "Fix Docker image pull timeout errors on Linux. Resolve registry co
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["docker", "pull", "timeout", "registry", "network", "image"]
 weight: 5
 ---
 

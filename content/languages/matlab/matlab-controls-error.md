@@ -4,7 +4,6 @@ description: "Fix MATLAB Control System Toolbox errors when systems are unstable
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["control-system", "stability", "poles", "feedback", "toolbox", "matlab"]
 weight: 5
 ---
 

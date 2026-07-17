@@ -4,7 +4,6 @@ description: "Fix handlebars template errors. Handle template parsing, helper re
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["handlebars", "template", "rendering"]
 weight: 5
 ---
 

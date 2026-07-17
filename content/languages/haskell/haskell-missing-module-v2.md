@@ -4,7 +4,6 @@ description: "Fix Haskell module not found errors. Check package dependencies, i
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["module", "not-found", "import", "cabal", "stack", "haskell"]
 weight: 5
 ---
 

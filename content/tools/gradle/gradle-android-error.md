@@ -4,7 +4,6 @@ description: "Android Gradle build fails due to minimum SDK version configuratio
 tools: ["gradle"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["gradle", "android", "minSdk", "sdk", "compatibility"]
 weight: 5
 ---
 

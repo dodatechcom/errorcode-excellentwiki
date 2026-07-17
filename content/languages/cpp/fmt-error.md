@@ -4,7 +4,6 @@ description: "Fix C++ fmt library formatting errors. Resolve fmt::format string 
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["fmt", "formatting", "format-string", "printf", "print"]
 weight: 5
 ---
 

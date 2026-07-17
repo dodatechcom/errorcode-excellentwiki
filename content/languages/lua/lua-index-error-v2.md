@@ -4,7 +4,6 @@ description: "Fix Lua 'attempt to index a nil value' error when accessing fields
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["index", "nil", "table", "field", "access", "lua"]
 weight: 5
 ---
 

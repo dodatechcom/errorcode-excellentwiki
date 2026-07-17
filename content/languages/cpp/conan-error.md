@@ -4,7 +4,6 @@ description: "Fix C++ Conan package manager errors. Resolve dependency and packa
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["conan", "package-manager", "dependencies", "conanfile", "binary"]
 weight: 5
 ---
 

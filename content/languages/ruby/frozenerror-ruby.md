@@ -4,7 +4,6 @@ description: "Fix Ruby FrozenError: can't modify frozen object. Learn why frozen
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["frozenerror", "frozen", "immutable", "ruby"]
 weight: 5
 ---
 

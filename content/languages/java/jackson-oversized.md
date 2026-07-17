@@ -4,7 +4,6 @@ description: "Fix Jackson StreamConstraintsException when JSON exceeds configure
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["jackson", "json", "stream-constraints", "oversized", "payload-size"]
 weight: 5
 ---
 

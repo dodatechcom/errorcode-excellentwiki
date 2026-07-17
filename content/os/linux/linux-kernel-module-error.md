@@ -4,7 +4,6 @@ description: "Fix Linux 'modprobe: module not found' errors. Locate kernel modul
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["kernel-module", "modprobe", "module-not-found", "driver", "kernel"]
 weight: 5
 ---
 

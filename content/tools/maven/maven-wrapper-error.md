@@ -4,7 +4,6 @@ description: "Maven wrapper fails to download or execute the configured Maven di
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "wrapper", "download", "distribution", "mvnw"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::length_error when containers or operations exceed the
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["length-error", "container", "size-limit", "exception"]
 weight: 5
 ---
 

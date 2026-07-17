@@ -4,7 +4,6 @@ description: "Fix C++ std::runtime_error from locale operations. Handle invalid 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["locale", "runtime-error", "internationalization", "facet"]
 weight: 5
 ---
 

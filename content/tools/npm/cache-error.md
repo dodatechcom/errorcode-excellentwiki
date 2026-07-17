@@ -4,7 +4,6 @@ description: "Fix npm cache error. Clear and rebuild npm cache to resolve packag
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["cache-error", "cache", "corruption", "clean", "npm"]
 weight: 5
 ---
 

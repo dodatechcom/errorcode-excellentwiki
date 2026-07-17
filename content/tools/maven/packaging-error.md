@@ -4,7 +4,6 @@ description: "Fix Maven packaging errors. Resolve JAR, WAR, and EAR packaging co
 tools: ["maven"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["maven", "packaging", "jar", "war", "ear", "assembly"]
 weight: 5
 ---
 

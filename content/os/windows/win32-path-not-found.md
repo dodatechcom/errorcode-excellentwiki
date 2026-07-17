@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_PATH_NOT_FOUND (3). Resolve invalid path errors,
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-3", "path-not-found", "api-error"]
 weight: 5
 ---
 

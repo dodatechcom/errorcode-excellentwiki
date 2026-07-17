@@ -4,7 +4,6 @@ description: "Fix oauth2 token errors. Handle authorization flows, token refresh
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["oauth2", "token", "auth"]
 weight: 5
 ---
 

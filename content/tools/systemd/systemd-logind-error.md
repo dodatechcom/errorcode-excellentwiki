@@ -4,7 +4,6 @@ description: "systemd-logind login management service encounters errors."
 tools: ["systemd"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["systemd", "logind", "login", "session", "seat"]
 weight: 5
 ---
 

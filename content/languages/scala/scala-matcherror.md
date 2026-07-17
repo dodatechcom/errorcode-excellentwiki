@@ -4,7 +4,6 @@ description: "Fix Scala MatchError. Learn why 'a value of type X was not matched
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern-matching", "matcherror", "runtime", "sealed"]
 weight: 5
 ---
 

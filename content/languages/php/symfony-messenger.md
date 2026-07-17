@@ -4,7 +4,6 @@ description: "Fix Symfony Messenger transport errors. Handle message dispatch, f
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["symfony", "messenger", "queue"]
 weight: 5
 ---
 

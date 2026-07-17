@@ -4,7 +4,6 @@ description: "Vite rejects the configuration due to invalid options."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "config", "configuration", "option", "validation"]
 weight: 5
 ---
 

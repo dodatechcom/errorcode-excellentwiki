@@ -4,7 +4,6 @@ description: "Fix Java ConcurrentModificationException by using iterators for re
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["concurrentmodificationexception", "collection", "iterator", "concurrency"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Kitex transport errors. Handle Thrift protocol, connection man
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kitex", "transport", "rpc"]
 weight: 5
 ---
 

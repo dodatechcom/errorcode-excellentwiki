@@ -4,7 +4,6 @@ description: "Fix Go TLS handshake failure and certificate verify failed errors.
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["tls", "ssl", "certificate", "handshake", "x509", "https", "security"]
 weight: 5
 ---
 

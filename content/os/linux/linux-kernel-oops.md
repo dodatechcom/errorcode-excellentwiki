@@ -4,7 +4,6 @@ description: "Fix Linux Kernel Oops 'BUG at' errors. Diagnose kernel bugs from f
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["kernel-oops", "bug", "kernel-bug", "crash", "dmesg"]
 weight: 5
 ---
 

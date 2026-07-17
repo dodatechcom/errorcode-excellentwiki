@@ -4,7 +4,6 @@ description: "Fix SQLite column type mismatch errors. Resolve affinity and type 
 tools: ["sqlite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlite", "type", "mismatch", "affinity", "conversion"]
 weight: 5
 ---
 

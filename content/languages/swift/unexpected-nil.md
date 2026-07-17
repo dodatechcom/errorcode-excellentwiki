@@ -4,7 +4,6 @@ description: "Fix Swift unexpectedly found nil errors. Learn when nil appears un
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nil", "optional", "unexpected-nil", "unwrap", "force-unwrap"]
 weight: 5
 ---
 

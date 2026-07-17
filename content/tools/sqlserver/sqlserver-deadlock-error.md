@@ -4,7 +4,6 @@ description: "SQL Server detects a deadlock between two or more transactions."
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "deadlock", "lock", "transaction", "concurrency"]
 weight: 5
 ---
 

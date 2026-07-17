@@ -4,7 +4,6 @@ description: "Fix USB errors on macOS when USB hub has insufficient power, devic
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["usb", "hub", "power", "peripheral", "device", "macos"]
 weight: 5
 ---
 

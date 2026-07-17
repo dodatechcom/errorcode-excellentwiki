@@ -4,7 +4,6 @@ description: "Fix C network unreachable (ENETUNREACH). Check network configurati
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enetunreach", "network-unreachable", "routing", "socket", "errno"]
 weight: 5
 ---
 

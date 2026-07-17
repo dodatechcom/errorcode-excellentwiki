@@ -4,7 +4,6 @@ description: "React Native AsyncStorage fails to read or write data due to corru
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["asyncstorage", "storage", "corruption", "data", "persistence", "serialization"]
 weight: 5
 ---
 

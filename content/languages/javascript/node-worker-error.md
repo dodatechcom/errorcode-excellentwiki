@@ -4,7 +4,6 @@ description: "Worker thread errors in Node.js — Fix errors in worker_threads m
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["nodejs", "worker", "worker-threads", "thread", "parallel", "shared-arraybuffer"]
 weight: 5
 ---
 

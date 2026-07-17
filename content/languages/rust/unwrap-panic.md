@@ -4,7 +4,6 @@ description: "Fix Rust unwrap() panics on None and Err values. Use proper error 
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["unwrap", "panic", "none", "error", "option", "result", "handling"]
 weight: 5
 ---
 

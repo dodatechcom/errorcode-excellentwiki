@@ -4,7 +4,6 @@ description: "Fix rate limit exceeded errors. Handle 429 responses, implement ba
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["rate-limit", "429", "throttle"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2345 when passing wrong argument types to functio
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2345", "argument-type", "function-call", "callback", "generic"]
 weight: 5
 ---
 

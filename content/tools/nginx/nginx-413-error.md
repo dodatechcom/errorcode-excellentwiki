@@ -4,7 +4,6 @@ description: "Fix Nginx 413 Request Entity Too Large error. Resolve request size
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["413", "entity-too-large", "request-size", "upload", "nginx"]
 weight: 5
 ---
 

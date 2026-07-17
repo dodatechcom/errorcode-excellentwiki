@@ -4,7 +4,6 @@ description: "Fix Kafka no brokers available error. Verify broker addresses, che
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["kafka", "consumer", "broker", "no-brokers", "messaging"]
 weight: 5
 ---
 

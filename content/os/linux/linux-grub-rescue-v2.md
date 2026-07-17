@@ -4,7 +4,6 @@ description: "Fix Linux GRUB rescue 'error: unknown filesystem' errors. Recover 
 platforms: ["linux"]
 severities: ["critical"]
 error-types: ["system-error"]
-tags: ["grub-rescue", "unknown-filesystem", "boot", "recovery", "grub"]
 weight: 5
 ---
 

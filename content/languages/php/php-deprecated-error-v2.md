@@ -4,7 +4,6 @@ description: "Fix PHP deprecated function warnings. Learn why PHP marks function
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["deprecated", "function-usage", "php", "warning"]
 weight: 5
 ---
 

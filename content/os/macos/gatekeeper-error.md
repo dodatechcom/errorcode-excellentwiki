@@ -4,7 +4,6 @@ description: "Fix macOS Gatekeeper error: 'is damaged and can't be opened' or 'c
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["gatekeeper", "code-signing", "quarantine", "notarized", "spctl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java InvalidObjectException by validating deserialized objects
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalidobjectexception", "serialization", "validation", "readobject"]
 weight: 5
 ---
 

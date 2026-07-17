@@ -4,7 +4,6 @@ description: "An allocation error occurs when a Fortran program fails to allocat
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["allocate", "memory", "allocation", "dynamic"]
 weight: 5
 ---
 

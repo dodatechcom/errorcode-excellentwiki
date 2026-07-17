@@ -4,7 +4,6 @@ description: "Fix MySQL client connection errors. Handle driver issues, authenti
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mysql", "database", "connection"]
 weight: 5
 ---
 

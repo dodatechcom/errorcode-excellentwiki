@@ -4,7 +4,6 @@ description: "Fix C not a directory (ENOTDIR). Verify path components are direct
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["enotdir", "not-a-directory", "path", "errno", "filesystem"]
 weight: 5
 ---
 

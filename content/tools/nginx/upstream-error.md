@@ -4,7 +4,6 @@ description: "Fix Nginx 502 Bad Gateway upstream timed out error. Diagnose upstr
 tools: ["nginx"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["502", "bad-gateway", "upstream-timed-out", "proxy"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix ActiveRecord::MigrationError in Rails. Learn why migrations fa
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["activerecord", "migration", "rails", "database", "ruby"]
 weight: 5
 ---
 

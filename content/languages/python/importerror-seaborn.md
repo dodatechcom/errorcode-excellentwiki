@@ -4,7 +4,6 @@ description: "Fix Python ImportError: seaborn not found or ModuleNotFoundError: 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "seaborn", "module-not-found", "pip", "visualization"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Java UnsatisfiedLinkError (JNI Error) by ensuring native libra
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["jnierror", "unsatisfiedlinkerror", "jni", "native", "library"]
 weight: 5
 ---
 

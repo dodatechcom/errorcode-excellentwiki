@@ -4,7 +4,6 @@ description: "Fix Objective-C category-related errors including naming conflicts
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "categories", "method-swizzling"]
 weight: 5
 ---
 

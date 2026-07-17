@@ -4,7 +4,6 @@ description: "Fix CSV reader errors. Handle malformed CSV, delimiter issues, and
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["csv", "reader", "parse"]
 weight: 5
 ---
 

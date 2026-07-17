@@ -4,7 +4,6 @@ description: "Fix Scala 'value X is not a member of Y' error when accessing non-
 languages: ["scala"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["value", "not-member", "member", "method", "import", "scala"]
 weight: 5
 ---
 

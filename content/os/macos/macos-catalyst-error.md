@@ -4,7 +4,6 @@ description: "Fix Mac Catalyst errors when iOS apps fail to run on Mac, show inc
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["catalyst", "ipad-app", "mac-app", "ios-app", "uikit"]
 weight: 5
 ---
 

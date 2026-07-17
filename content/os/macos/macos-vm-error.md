@@ -4,7 +4,6 @@ description: "Fix virtualization errors on Mac when UTM or VMware Fusion VMs fai
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["virtualization", "utm", "vmware", "vm", "hypervisor"]
 weight: 5
 ---
 

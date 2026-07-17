@@ -7,7 +7,6 @@ languages: ["javascript"]
 deprecated_since: "ES3"
 removed_in: "ES2018"
 error_message: "escape is deprecated"
-tags: ["escape", "unescape", "encode", "uri"]
 weight: 90
 ---
 

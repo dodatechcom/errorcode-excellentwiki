@@ -4,7 +4,6 @@ description: "Fix Ruby IOError: stream closed. Handle closed IO streams and mana
 languages: ["ruby"]
 severities: ["error"]
 error_types: ["io"]
-tags: ["ioerror", "stream", "closed", "file", "io"]
 weight: 190
 ---
 

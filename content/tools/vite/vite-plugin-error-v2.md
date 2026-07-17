@@ -4,7 +4,6 @@ description: "Vite plugin fails during module transformation."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "plugin", "transform", "error", "load"]
 weight: 5
 ---
 

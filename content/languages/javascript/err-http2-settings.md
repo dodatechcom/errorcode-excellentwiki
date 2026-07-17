@@ -4,7 +4,6 @@ description: "Fix Node.js ERR_HTTP2_SETTINGS when an HTTP/2 SETTINGS frame opera
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["err-http2-settings", "http2", "settings", "configuration", "nodejs"]
 weight: 5
 ---
 

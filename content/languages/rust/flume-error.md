@@ -4,7 +4,6 @@ description: "Fix flume channel errors. Handle sender/receiver lifecycle, bounde
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flume", "channel", "concurrency"]
 weight: 5
 ---
 

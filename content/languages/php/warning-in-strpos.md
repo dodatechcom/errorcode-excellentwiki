@@ -4,7 +4,6 @@ description: "Fix PHP Warning: strpos() empty needle. Learn to validate strings 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["warning", "strpos", "needle", "empty-string"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix universal binary errors on Mac when apps crash on Intel or App
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["universal-binary", "fat-binary", "lipo", "arm64", "x86_64"]
 weight: 5
 ---
 

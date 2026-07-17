@@ -4,7 +4,6 @@ description: "Vite SSR build or server-side rendering fails."
 tools: ["vite"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["vite", "ssr", "server-side", "render", "node"]
 weight: 5
 ---
 

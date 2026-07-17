@@ -4,7 +4,6 @@ description: "Fix C++ clang-tidy lint errors. Address modernization and code qua
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["clang-tidy", "lint", "modernize", "code-quality", "clang"]
 weight: 5
 ---
 

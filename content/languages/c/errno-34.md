@@ -4,7 +4,6 @@ description: "Fix C errno 34 ERANGE (Math result not representable) by checking 
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["erange", "errno-34", "math", "range", "overflow", "underflow"]
 weight: 5
 ---
 

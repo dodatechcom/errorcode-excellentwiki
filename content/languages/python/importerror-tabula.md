@@ -4,7 +4,6 @@ description: "Fix Python ImportError: tabula not found or ModuleNotFoundError: N
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "tabula", "module-not-found", "pip", "pdf"]
 weight: 5
 ---
 

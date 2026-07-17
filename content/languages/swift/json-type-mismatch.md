@@ -4,7 +4,6 @@ description: "Fix Swift JSON type mismatch errors. Learn why JSONDecoder fails w
 languages: ["swift"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["json", "type-mismatch", "decoding", "codable", "type"]
 weight: 5
 ---
 

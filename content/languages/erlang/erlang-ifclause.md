@@ -4,7 +4,6 @@ description: "Erlang raises if_clause when no clause in an if expression matches
 languages: ["erlang"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["if", "clause", "boolean", "if_clause", "guard"]
 weight: 5
 ---
 

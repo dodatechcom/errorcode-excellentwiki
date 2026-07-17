@@ -4,7 +4,6 @@ description: "Fix Nginx 499 Client Closed Request error. Diagnose client disconn
 tools: ["nginx"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["499", "client-closed", "disconnect", "timeout", "nginx"]
 weight: 5
 ---
 

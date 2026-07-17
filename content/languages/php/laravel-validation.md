@@ -4,7 +4,6 @@ description: "Fix Laravel ValidationException when form validation fails. Handle
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["laravel", "validation", "form"]
 weight: 5
 ---
 

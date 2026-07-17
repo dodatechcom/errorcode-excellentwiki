@@ -4,7 +4,6 @@ description: "Fix Linux systemd 'Dependency failed for <service>' errors. Resolv
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["systemd", "dependency-failed", "service", "boot-order", "required"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Linux 'apt update failed' errors. Resolve repository issues, G
 platforms: ["linux"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["apt-update", "repository", "gpg-key", "apt", "package-manager"]
 weight: 5
 ---
 

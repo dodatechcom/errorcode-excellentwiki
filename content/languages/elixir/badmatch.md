@@ -4,7 +4,6 @@ description: "A MatchError occurs when the right-hand side of a match operator (
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["match", "pattern-matching", "matcherror"]
 weight: 5
 ---
 

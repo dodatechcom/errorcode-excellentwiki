@@ -4,7 +4,6 @@ description: "GitHub Actions cache action fails to restore cached dependencies."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "cache", "restore", "dependencies", "performance"]
 weight: 5
 ---
 

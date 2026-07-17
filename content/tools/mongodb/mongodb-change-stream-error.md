@@ -4,7 +4,6 @@ description: "MongoDB change stream encounters errors during real-time event wat
 tools: ["mongodb"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["mongodb", "change-stream", "real-time", "watch", "resume"]
 weight: 5
 ---
 

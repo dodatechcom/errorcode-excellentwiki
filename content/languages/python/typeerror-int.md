@@ -4,7 +4,6 @@ description: "Fix Python TypeError: int() argument must be a string or bytes-lik
 languages: ["python"]
 severities: ["error"]
 error_types: ["runtime-error"]
-tags: ["typeerror", "int", "type-conversion", "casting"]
 weight: 5
 ---
 

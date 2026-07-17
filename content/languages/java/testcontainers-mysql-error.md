@@ -4,7 +4,6 @@ description: "Fix Testcontainers MySQL container startup failures. Resolve image
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "mysql", "docker", "integration-test", "database"]
 weight: 5
 ---
 

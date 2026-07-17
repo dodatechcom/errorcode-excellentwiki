@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2345: Argument of type 'X' is not assignable to p
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2345", "argument", "parameter", "type-mismatch", "function-call"]
 weight: 5
 ---
 

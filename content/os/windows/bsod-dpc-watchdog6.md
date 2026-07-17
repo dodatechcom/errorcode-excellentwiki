@@ -4,7 +4,6 @@ description: "Fix Blue Screen DPC_WATCHDOG_VIOLATION stop code 0x133 caused by n
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "dpc-watchdog", "ndis", "network", "stop-0x133"]
 weight: 5
 ---
 

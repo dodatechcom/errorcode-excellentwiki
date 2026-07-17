@@ -4,7 +4,6 @@ description: "Fix COBOL invalid key errors when accessing records with invalid k
 languages: ["cobol"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["invalid", "key", "indexed", "access", "status", "cobol"]
 weight: 5
 ---
 

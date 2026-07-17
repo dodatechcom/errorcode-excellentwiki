@@ -4,7 +4,6 @@ description: "Oracle trigger fails because it tries to query or modify the table
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "trigger", "mutating", "ora-04091", "row-level", "constraint"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix SQL Server Error 8152 truncation errors. Resolve data too long
 tools: ["sqlserver"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sqlserver", "8152", "truncation", "string", "binary", "column"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix C++ std::out_of_range when vector.at() receives an out-of-boun
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["out-of-range", "vector", "at", "index", "bounds-check"]
 weight: 5
 ---
 

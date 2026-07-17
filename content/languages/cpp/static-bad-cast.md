@@ -4,7 +4,6 @@ description: "Fix C++ dynamic_cast failures when downcasting polymorphic types. 
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["dynamic-cast", "static-cast", "rtti", "polymorphism"]
 weight: 5
 ---
 

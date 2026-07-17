@@ -4,7 +4,6 @@ description: "Fix 'InvalidOperation' when PowerShell attempts an operation that 
 languages: ["powershell"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["InvalidOperation", "runtime", "operation"]
 weight: 5
 ---
 

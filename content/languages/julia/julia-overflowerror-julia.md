@@ -4,7 +4,6 @@ description: "Julia raises OverflowError when arithmetic operations exceed type 
 languages: ["julia"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["overflow", "arithmetic", "integer", "bigint", "overflowerror"]
 weight: 5
 ---
 

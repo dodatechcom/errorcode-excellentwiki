@@ -4,7 +4,6 @@ description: "Next.js Image component raises errors for missing images, unconfig
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["image", "optimization", "next-image", "responsive", "nextjs"]
 weight: 5
 ---
 

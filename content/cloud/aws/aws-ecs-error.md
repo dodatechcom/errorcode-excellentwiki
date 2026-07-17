@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS ECS Task Failed to Start"
 description: "Fix AWS ECS task failed errors. Resolve ECS task provisioning issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "ecs", "task", "container", "service"]
 weight: 5
 ---
 

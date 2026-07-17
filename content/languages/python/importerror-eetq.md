@@ -4,7 +4,6 @@ description: "Fix Python ImportError: eetq not found or ModuleNotFoundError: No 
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "eetq", "module-not-found", "pip", "llm"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Flutter Web application encounters Cross-Origin Resource Sharing e
 frameworks: ["flutter"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flutter", "web", "cors", "origin", "api", "http", "browser"]
 weight: 5
 ---
 

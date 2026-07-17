@@ -4,7 +4,6 @@ description: "Fix Windows Update error 0x80070002 (File Not Found) on Windows 10
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["update-error"]
-tags: ["windows-update", "file-not-found", "cache", "SoftwareDistribution"]
 weight: 5
 ---
 

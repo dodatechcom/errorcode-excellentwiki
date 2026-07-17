@@ -4,7 +4,6 @@ description: "Fix C cannot assign requested address (EADDRNOTAVAIL). Use availab
 languages: ["c"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["eaddrnotavail", "cannot-assign-address", "network", "bind", "errno"]
 weight: 5
 ---
 

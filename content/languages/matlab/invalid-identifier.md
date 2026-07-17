@@ -4,7 +4,6 @@ description: "Fix 'Invalid expression' or 'Invalid identifier' when MATLAB canno
 languages: ["matlab"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["invalid-identifier", "invalid-expression", "syntax-error"]
 weight: 5
 ---
 

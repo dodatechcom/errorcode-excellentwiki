@@ -4,7 +4,6 @@ description: "Fix 'Unknown column X in field list' when a SQL query references a
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unknown-column", "field-list", "column-not-found"]
 weight: 5
 ---
 

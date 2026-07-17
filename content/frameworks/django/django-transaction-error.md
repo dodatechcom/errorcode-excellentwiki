@@ -4,7 +4,6 @@ description: "Fix Django TransactionManagementError. Resolve database transactio
 frameworks: ["django"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["transaction", "atomic", "database", "commit", "django"]
 weight: 5
 ---
 

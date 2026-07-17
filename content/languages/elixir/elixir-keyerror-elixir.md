@@ -4,7 +4,6 @@ description: "Elixir raises KeyError when accessing a key that does not exist in
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["key", "map", "keyword", "keyerror", "access"]
 weight: 5
 ---
 

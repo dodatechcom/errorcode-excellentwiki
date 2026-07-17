@@ -4,7 +4,6 @@ description: "Laravel throws TransportException when the mailer cannot connect t
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["mail", "email", "smtp", "transport", "notification"]
 weight: 5
 ---
 

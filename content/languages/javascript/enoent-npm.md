@@ -4,7 +4,6 @@ description: "Fix npm ERR! enoent - no such file or directory when running npm i
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["npm", "enoent", "package-json", "node-modules", "install"]
 weight: 5
 ---
 

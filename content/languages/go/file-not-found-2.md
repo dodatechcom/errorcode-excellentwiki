@@ -4,7 +4,6 @@ description: "Fix Go no such file or directory error. Use correct file paths, ch
 languages: ["go"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["file", "not-found", "os", "filesystem", "path", "runtime"]
 weight: 5
 ---
 

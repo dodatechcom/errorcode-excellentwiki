@@ -4,7 +4,6 @@ description: "Fix Monolog handler errors. Handle logging failures, handler confi
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["monolog", "logging", "handler"]
 weight: 5
 ---
 

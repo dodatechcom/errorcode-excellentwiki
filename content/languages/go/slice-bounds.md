@@ -4,7 +4,6 @@ description: "Fix Go runtime error slice bounds out of range. Understand slice e
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["slice", "bounds", "out-of-range", "reslice", "runtime", "capacity"]
 weight: 5
 ---
 

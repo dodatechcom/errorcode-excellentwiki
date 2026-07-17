@@ -4,7 +4,6 @@ description: "Fix 'Data truncation: incorrect datetime value' when inserting dat
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["data-truncation", "type-conversion", "datetime", "varchar", "overflow"]
 weight: 5
 ---
 

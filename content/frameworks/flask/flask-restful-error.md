@@ -4,7 +4,6 @@ description: "Flask-RESTful raises errors related to API resource handling, requ
 frameworks: ["flask"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["restful", "api", "resource", "parser", "flask"]
 weight: 5
 ---
 

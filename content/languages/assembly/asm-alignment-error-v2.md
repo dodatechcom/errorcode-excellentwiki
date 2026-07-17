@@ -4,7 +4,6 @@ description: "Fix assembly SIGBUS errors caused by memory alignment violations w
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["sigbus", "alignment", "memory", "unaligned", "access", "assembly"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Lua syntax errors when parsing fails. Debug unexpected tokens,
 languages: ["lua"]
 error-types: ["syntax-error"]
 severities: ["error"]
-tags: ["syntax", "parse", "token", "compile", "lua"]
 weight: 5
 ---
 

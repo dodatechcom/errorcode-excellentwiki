@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_ACCESS_DENIED (5). Resolve permission issues, UA
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-5", "access-denied", "permissions"]
 weight: 5
 ---
 

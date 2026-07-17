@@ -4,7 +4,6 @@ description: "Fix Docker permission denied error. Resolve Cannot connect to the 
 tools: ["docker"]
 error-types: ["tool-error"]
 severities: ["error"]
-tags: ["permission-denied", "docker-daemon", "socket", "docker"]
 weight: 5
 ---
 

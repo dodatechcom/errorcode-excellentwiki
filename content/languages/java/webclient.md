@@ -4,7 +4,6 @@ description: "Fix WebClientResponseException when WebClient receives HTTP error 
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["spring", "webclient", "reactive", "webflux", "webclient-response"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Next.js Metadata API errors occur when metadata configuration is i
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["metadata", "seo", "head", "title", "nextjs"]
 weight: 5
 ---
 

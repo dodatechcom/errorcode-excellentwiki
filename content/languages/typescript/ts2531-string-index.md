@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2531: Index signature in type 'X' requires proper
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2531", "index-signature", "requires-property", "string-index"]
 weight: 5
 ---
 

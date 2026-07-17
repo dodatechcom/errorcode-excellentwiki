@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_DIR_NOT_EMPTY (145). Resolve directory not empty
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-145", "dir-not-empty", "directory"]
 weight: 5
 ---
 

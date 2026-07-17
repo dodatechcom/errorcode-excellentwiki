@@ -4,7 +4,6 @@ description: "Fix Linux ENOMSG (errno 42) No message of desired type error. Solu
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["enOMSG", "message", "errno-42", "ipc"]
 weight: 5
 ---
 

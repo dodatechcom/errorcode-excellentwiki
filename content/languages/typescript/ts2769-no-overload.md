@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2769: No overload matches this call. Resolve over
 languages: ["typescript"]
 severities: ["error"]
 error-types: ["compile-error"]
-tags: ["ts2769", "overload", "function-call", "type-mismatch", "signature"]
 weight: 5
 ---
 

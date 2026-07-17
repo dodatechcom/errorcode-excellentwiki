@@ -4,7 +4,6 @@ description: "Fix Python ChildProcessError when os.fork() or waitpid() fails. Ch
 languages: ["python"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["childprocesserror", "fork", "process", "waitpid", "os"]
 weight: 5
 ---
 

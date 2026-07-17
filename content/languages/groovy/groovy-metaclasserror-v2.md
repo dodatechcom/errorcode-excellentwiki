@@ -4,7 +4,6 @@ description: "Fix Groovy metaclass errors when dynamic method dispatch fails on 
 languages: ["groovy"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["metaclass", "dynamic", "method", "dispatch", "groovy"]
 weight: 5
 ---
 

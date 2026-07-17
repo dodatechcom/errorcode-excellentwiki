@@ -4,7 +4,6 @@ description: "Fix 'bash: unary operator expected' when a test expression has a m
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["unary-operator", "test", "conditional", "empty", "variable"]
 weight: 5
 ---
 

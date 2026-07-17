@@ -4,7 +4,6 @@ description: "Fix Kotlin InstantiationException when unable to instantiate a cla
 languages: ["kotlin"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["instantiationexception", "reflection", "constructor", "abstract", "interface"]
 weight: 5
 ---
 

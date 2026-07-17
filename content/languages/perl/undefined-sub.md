@@ -4,7 +4,6 @@ description: "An undefined subroutine error occurs when calling a subroutine tha
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["subroutine", "undefined", "function", "perl"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Python ImportError: bs4 not found or ModuleNotFoundError: No m
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["importerror", "beautifulsoup", "bs4", "module-not-found", "pip", "web-scraping"]
 weight: 5
 ---
 

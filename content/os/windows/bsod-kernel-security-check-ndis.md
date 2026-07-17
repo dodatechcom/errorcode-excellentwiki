@@ -4,7 +4,6 @@ description: "Fix Blue Screen KERNEL_SECURITY_CHECK_FAILURE caused by ndis.sys o
 platforms: ["windows"]
 severities: ["critical"]
 error_types: ["bsod"]
-tags: ["bsod", "blue-screen", "kernel-security", "ndis", "network", "driver"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix 'Not a GROUP BY expression in HAVING' when HAVING references n
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["having", "group-by", "aggregate", "filter"]
 weight: 5
 ---
 

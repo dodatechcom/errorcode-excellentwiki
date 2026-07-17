@@ -4,7 +4,6 @@ description: "Redis client cannot establish a connection to the Redis server"
 tools: ["redis"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["connection", "network", "redis", "econnrefused"]
 weight: 5
 ---
 

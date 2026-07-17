@@ -4,7 +4,6 @@ description: "Fix iMessage activation errors on macOS when iMessage fails to act
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["system-error"]
-tags: ["imessage", "activation", "facetime", "apple-id", "macos"]
 weight: 5
 ---
 

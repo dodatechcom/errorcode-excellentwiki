@@ -4,7 +4,6 @@ description: "SQLite database file is corrupted and cannot be read."
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "corruption", "integrity", "repair", "recovery"]
 weight: 5
 ---
 

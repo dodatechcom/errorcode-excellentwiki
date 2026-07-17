@@ -4,7 +4,6 @@ description: "Oracle partition operations fail during maintenance or queries."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "partition", "range", "hash", "maintenance"]
 weight: 5
 ---
 

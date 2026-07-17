@@ -4,7 +4,6 @@ description: "SQL Server transaction fails to commit and must be rolled back due
 tools: ["sqlserver"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlserver", "transaction", "rollback", "commit", "xact"]
 weight: 5
 ---
 

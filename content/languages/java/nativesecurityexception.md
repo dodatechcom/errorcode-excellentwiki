@@ -4,7 +4,6 @@ description: "Fix Java NativeMethodSecurityException by configuring security pol
 languages: ["java"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["nativesecurityexception", "security", "native", "securitymanager"]
 weight: 5
 ---
 

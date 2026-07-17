@@ -4,7 +4,6 @@ description: "Fix 'Registry key not found' errors on Windows 10 and 11. Locate m
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["registry", "key-not-found", "missing-key", "regedit"]
 weight: 5
 ---
 

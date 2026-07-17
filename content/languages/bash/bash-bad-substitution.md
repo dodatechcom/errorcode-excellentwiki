@@ -4,7 +4,6 @@ description: "Fix 'bash: bad substitution' when using variable expansion syntax 
 languages: ["bash"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["bad-substitution", "variable-expansion", "parameter-expansion"]
 weight: 5
 ---
 

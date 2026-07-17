@@ -4,7 +4,6 @@ description: "Fix Perl CGI malformed header errors. Ensure proper HTTP headers, 
 languages: ["perl"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["cgi", "header", "http", "web", "output", "perl"]
 weight: 5
 ---
 

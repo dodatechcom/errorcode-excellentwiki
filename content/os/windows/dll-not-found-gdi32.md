@@ -4,7 +4,6 @@ description: "Fix gdi32.dll errors on Windows 10 and 11. Resolve Graphics Device
 platforms: ["windows"]
 severities: ["error"]
 error_types: ["system-error"]
-tags: ["dll", "gdi32", "graphics", "gdi", "system-dll"]
 weight: 5
 ---
 

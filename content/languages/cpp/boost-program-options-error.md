@@ -4,7 +4,6 @@ description: "Fix C++ Boost.Program_options errors. Handle command-line argument
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["boost", "program-options", "command-line", "argument", "parsing"]
 weight: 5
 ---
 

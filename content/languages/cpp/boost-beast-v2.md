@@ -4,7 +4,6 @@ description: "Fix Boost.Beast WebSocket handshake errors. Handle HTTP upgrade fa
 languages: ["cpp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["boost", "beast", "websocket", "handshake", "http"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix go-kit endpoint errors. Handle transport, encoding, and servic
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["go-kit", "microservice", "endpoint"]
 weight: 5
 ---
 

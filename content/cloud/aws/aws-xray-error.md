@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS X-Ray Trace Error"
 description: "Fix AWS X-Ray trace errors. Resolve X-Ray tracing and analysis issues."
-cloud: ["aws"]
 error-types: ["api-error"]
 severities: ["error"]
-tags: ["aws", "x-ray", "tracing", "debugging", "observability"]
 weight: 5
 ---
 

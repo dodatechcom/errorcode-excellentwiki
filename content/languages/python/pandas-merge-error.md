@@ -4,7 +4,6 @@ description: "Fix pandas merge KeyError when merge key column does not exist. Ve
 languages: ["python"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["pandas", "merge", "keyerror", "dataframe", "join"]
 weight: 5
 ---
 

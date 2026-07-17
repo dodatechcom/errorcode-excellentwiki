@@ -4,7 +4,6 @@ description: "Fix WebSocket connection errors in browsers and Node.js. Handle co
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["websocket", "ws", "connection", "realtime", "protocol"]
 weight: 5
 ---
 

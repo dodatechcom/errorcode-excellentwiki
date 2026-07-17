@@ -4,7 +4,6 @@ description: "Fix Touch ID errors on Mac when fingerprint recognition fails, Tou
 platforms: ["macos"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["touch-id", "fingerprint", "biometric", "security", "enrollment"]
 weight: 5
 ---
 

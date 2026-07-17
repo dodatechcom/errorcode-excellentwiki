@@ -4,7 +4,6 @@ description: "A NameError occurs when calling a function that is not defined or 
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["name", "undefined", "function", "nameerror"]
 weight: 5
 ---
 

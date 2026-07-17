@@ -4,7 +4,6 @@ description: "Oracle operation fails due to insufficient database permissions."
 tools: ["oracle"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["oracle", "permission", "privilege", "grant", "access"]
 weight: 5
 ---
 

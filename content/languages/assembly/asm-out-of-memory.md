@@ -4,7 +4,6 @@ description: "Out of memory errors in Assembly occur when mmap, brk, or stack al
 languages: ["assembly"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["memory", "mmap", "brk", "allocation", "oom"]
 weight: 5
 ---
 

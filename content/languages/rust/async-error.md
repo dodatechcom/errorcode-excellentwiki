@@ -4,7 +4,6 @@ description: "Fix Rust async errors: future is not Send, not a future, or does n
 languages: ["rust"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["async", "await", "future", "send", "tokio", "spawn", "pin"]
 weight: 5
 ---
 

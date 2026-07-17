@@ -4,7 +4,6 @@ description: "Fix Dart FormatException when parsing strings to numbers, dates, o
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["format", "exception", "parsing", "invalid-format", "dart"]
 weight: 5
 ---
 

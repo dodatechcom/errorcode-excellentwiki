@@ -4,7 +4,6 @@ description: "Spring AMQP throws AmqpException when it cannot connect to or comm
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["amqp", "rabbitmq", "messaging", "spring-amqp", "queue"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "SQLite encounters an input/output error while reading from or writ
 tools: ["sqlite"]
 error-types: ["database-error"]
 severities: ["error"]
-tags: ["sqlite", "io", "disk", "filesystem", "write", "read"]
 weight: 5
 ---
 

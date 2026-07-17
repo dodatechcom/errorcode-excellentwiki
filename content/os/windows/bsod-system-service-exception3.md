@@ -4,7 +4,6 @@ description: "Fix Blue Screen SYSTEM_SERVICE_EXCEPTION stop code 0x3B caused by 
 platforms: ["windows"]
 error-types: ["bsod"]
 severities: ["critical"]
-tags: ["bsod", "blue-screen", "system-service-exception", "win32kfull", "graphics", "stop-0x3b"]
 weight: 5
 ---
 

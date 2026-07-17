@@ -4,7 +4,6 @@ description: "Spring throws this exception when it cannot find a bean matching t
 frameworks: ["spring"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["dependency-injection", "beans", "spring-context"]
 weight: 5
 ---
 

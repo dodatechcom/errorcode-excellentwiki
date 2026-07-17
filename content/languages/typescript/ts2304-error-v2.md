@@ -4,7 +4,6 @@ description: "Fix TypeScript TS2304 when referencing undeclared identifiers. Han
 languages: ["typescript"]
 error-types: ["compile-error"]
 severities: ["error"]
-tags: ["ts2304", "cannot-find-name", "undefined-identifier", "import", "global"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix React Server Component errors in Next.js App Router. Handle se
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["react", "server-component", "rsc", "nextjs", "app-router"]
 weight: 5
 ---
 

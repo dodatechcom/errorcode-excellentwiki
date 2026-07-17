@@ -4,7 +4,6 @@ description: "GitHub Actions cannot find the referenced action, either by name o
 tools: ["github-actions"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["github-actions", "action", "reference", "uses"]
 weight: 5
 ---
 

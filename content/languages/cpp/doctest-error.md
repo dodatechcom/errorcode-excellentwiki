@@ -4,7 +4,6 @@ description: "Fix C++ doctest test errors. Resolve test assertion failures."
 languages: ["cpp"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["doctest", "unit-test", "assertion", "test", "testing"]
 weight: 5
 ---
 

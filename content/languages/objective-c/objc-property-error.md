@@ -4,7 +4,6 @@ description: "Fix Objective-C property declaration and synthesis errors"
 languages: ["objective-c"]
 error-types: ["runtime-error"]
 severities: ["medium"]
-tags: ["cocoa-touch", "properties", "objective-c-runtime"]
 weight: 5
 ---
 

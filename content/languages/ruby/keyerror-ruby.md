@@ -4,7 +4,6 @@ description: "Fix Ruby KeyError: key not found. Learn why hash key lookups fail 
 languages: ["ruby"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["keyerror", "hash", "key-not-found", "ruby"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix R 'argument missing, with no default' error when required func
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["missing-argument", "function-call", "default-value"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_UNEXPECTED (0x8000FFFF) catastrophic failure
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-unexpected", "0x8000ffff", "catastrophic-failure", "unexpected"]
 weight: 5
 ---
 

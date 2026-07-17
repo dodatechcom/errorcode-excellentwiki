@@ -4,7 +4,6 @@ description: "Laravel throws AuthenticationException when the user credentials a
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["authentication", "login", "guard", "session", "sanctum"]
 weight: 5
 ---
 

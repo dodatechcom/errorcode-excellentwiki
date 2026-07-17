@@ -4,7 +4,6 @@ description: "Fix Node.js EBADF: bad file descriptor error. Handle closed file d
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["ebadf", "bad-file-descriptor", "fd", "file", "stream"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows ERROR_NO_MORE_FILES (18). Resolve file enumeration err
 platforms: ["windows"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["win32", "error-18", "no-more-files", "enumeration"]
 weight: 5
 ---
 

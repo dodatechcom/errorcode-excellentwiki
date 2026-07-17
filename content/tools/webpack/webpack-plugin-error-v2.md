@@ -4,7 +4,6 @@ description: "Webpack plugin throws an error during initialization or execution.
 tools: ["webpack"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["webpack", "plugin", "undefined", "function", "compatibility"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Windows HRESULT E_POINTER (0x80004003) invalid pointer error. 
 platforms: ["windows"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hresult", "e-pointer", "0x80004003", "invalid-pointer", "null-pointer"]
 weight: 5
 ---
 

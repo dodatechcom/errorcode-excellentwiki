@@ -4,7 +4,6 @@ description: "Vite's server-side rendering encountered an error while executing 
 tools: ["vite"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["vite", "ssr", "server", "rendering"]
 weight: 5
 ---
 

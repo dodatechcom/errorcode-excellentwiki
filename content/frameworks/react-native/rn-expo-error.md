@@ -4,7 +4,6 @@ description: "Expo project throws module not found error when a required native 
 frameworks: ["react-native"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["expo", "module", "not-found", "config-plugin", "managed-workflow"]
 weight: 5
 ---
 

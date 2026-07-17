@@ -4,7 +4,6 @@ description: "Fix 'You have an error in your SQL syntax' caused by malformed SQL
 languages: ["sql"]
 severities: ["error"]
 error-types: ["runtime-error"]
-tags: ["syntax-error", "parse-error", "sql-syntax"]
 weight: 5
 ---
 

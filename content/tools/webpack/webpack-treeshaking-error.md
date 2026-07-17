@@ -4,7 +4,6 @@ description: "Webpack tree shaking fails or produces incorrect results, causing 
 tools: ["webpack"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["webpack", "tree-shaking", "dead-code", "elimination", "esm"]
 weight: 5
 ---
 

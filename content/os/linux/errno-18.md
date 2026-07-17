@@ -4,7 +4,6 @@ description: "Fix Linux EXDEV (errno 18) Invalid cross-device link error. Soluti
 platforms: ["linux"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["exdev", "cross-device", "errno-18", "rename", "link"]
 weight: 5
 ---
 

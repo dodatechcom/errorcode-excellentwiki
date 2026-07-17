@@ -4,7 +4,6 @@ description: "Fix C++ std::source_location issues including incorrect caller inf
 languages: ["cpp"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["source-location", "debugging", "c++20", "diagnostics"]
 weight: 5
 ---
 

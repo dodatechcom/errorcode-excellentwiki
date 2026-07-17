@@ -4,7 +4,6 @@ description: "Fix R 'argument is missing, with no default' error in print(). Pro
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["print", "output", "missing-argument"]
 weight: 5
 ---
 

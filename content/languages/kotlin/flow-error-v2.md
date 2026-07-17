@@ -4,7 +4,6 @@ description: "Fix Kotlin Flow collector errors when collecting flows incorrectly
 languages: ["kotlin"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["flow", "collector", "StateFlow", "SharedFlow", "kotlin"]
 weight: 5
 ---
 

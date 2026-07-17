@@ -4,7 +4,6 @@ description: "Fix Java UnreachableCatchException by removing unreachable catch b
 languages: ["java"]
 severities: ["error"]
 error_types: ["runtime"]
-tags: ["unreachablecatchexception", "exception", "catch", "deadcode"]
 weight: 5
 ---
 

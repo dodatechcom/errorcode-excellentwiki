@@ -1,10 +1,8 @@
 ---
 title: "[Solution] AWS S3 — Access Denied to bucket"
 description: "Fix AWS S3 Access Denied. Resolve S3 bucket access and permission issues."
-cloud: ["aws"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["aws", "s3", "access-denied", "bucket", "permission", "object"]
 weight: 5
 ---
 

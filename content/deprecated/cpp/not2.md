@@ -6,7 +6,6 @@ replacement_function: "lambda"
 languages: ["cpp"]
 error-types: ["deprecated"]
 severities: ["warning"]
-tags: ["not2", "lambda", "negate", "functional", "cpp11"]
 weight: 5
 ---
 

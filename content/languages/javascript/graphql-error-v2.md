@@ -4,7 +4,6 @@ description: "Fix GraphQL server errors including validation errors, resolver er
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["graphql", "apollo", "query", "mutation", "resolver", "server-error"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix F# NullReferenceException when accessing null references. Use 
 languages: ["fsharp"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["null", "reference", "option", "nullable", "fsharp"]
 weight: 5
 ---
 

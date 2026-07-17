@@ -4,7 +4,6 @@ description: "Fix RedpandaContainer startup failure in Testcontainers. Check Doc
 languages: ["java"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["testcontainers", "redpanda", "docker", "container", "kafka"]
 weight: 5
 ---
 

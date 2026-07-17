@@ -4,7 +4,6 @@ description: "Fix PHP readonly property modification errors. Learn how readonly 
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["readonly", "property", "immutable", "php"]
 weight: 5
 ---
 

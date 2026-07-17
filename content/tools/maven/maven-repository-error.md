@@ -4,7 +4,6 @@ description: "Maven cannot connect to a configured repository due to network or 
 tools: ["maven"]
 error-types: ["build-error"]
 severities: ["error"]
-tags: ["maven", "repository", "connection", "network", "authentication"]
 weight: 5
 ---
 

@@ -4,7 +4,6 @@ description: "Fix Apollo Client network errors, GraphQL query failures, and cach
 languages: ["javascript"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["apollo", "graphql", "network-error", "client", "cache"]
 weight: 5
 ---
 

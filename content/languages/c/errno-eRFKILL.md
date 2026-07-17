@@ -4,7 +4,6 @@ description: "Fix C ERFKILL (Operation not possible due to RF-kill) by unblockin
 languages: ["c"]
 severities: ["error"]
 error_types: ["os-error"]
-tags: ["erfkill", "rf-kill", "wireless-blocked", "wifi", "bluetooth"]
 weight: 5
 ---
 

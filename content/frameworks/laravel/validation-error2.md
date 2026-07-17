@@ -4,7 +4,6 @@ description: "Laravel returns a 422 Unprocessable Entity when request validation
 frameworks: ["laravel"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["validation", "form-request", "422", "request"]
 weight: 5
 ---
 

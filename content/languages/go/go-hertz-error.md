@@ -4,7 +4,6 @@ description: "Fix Hertz HTTP framework errors. Handle request processing, routin
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["hertz", "http", "framework"]
 weight: 5
 ---
 

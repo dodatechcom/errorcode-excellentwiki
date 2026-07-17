@@ -4,7 +4,6 @@ description: "GitHub Actions matrix strategy configuration is invalid."
 tools: ["github-actions"]
 error-types: ["runtime-error"]
 severities: ["error"]
-tags: ["github-actions", "matrix", "strategy", "parallel", "configuration"]
 weight: 5
 ---
 
