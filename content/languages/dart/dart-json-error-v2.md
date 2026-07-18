@@ -1,6 +1,6 @@
 ---
-title: "[Solution] Dart FormatException Unexpected Character in JSON"
-description: "Fix Dart JSON parsing errors including unexpected characters, malformed JSON, and type mismatches."
+title: "[Solution] Dart FormatException Unexpected Character - JSON Parse Fix"
+description: "Fix Dart FormatException unexpected character in JSON parsing. Learn why jsonDecode fails, how to validate input, and handle malformed JSON safely."
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
@@ -9,97 +9,89 @@ weight: 5
 
 ## What This Error Means
 
-A `FormatException: Unexpected character` error in JSON parsing occurs when `jsonDecode()` encounters malformed JSON input. This happens with invalid syntax, incorrect quoting, or encoding issues.
+A `FormatException: Unexpected character` is thrown when `jsonDecode` encounters a character it does not expect while parsing a JSON string. The input string is not valid JSON. The error message includes the position and the offending character, which helps identify where the parsing failed.
 
-## Common Causes
+## Why It Happens
 
-- Malformed JSON string (missing quotes, trailing commas)
-- Single quotes instead of double quotes
-- Unescaped special characters
-- BOM (byte order mark) in file
-- Null bytes or control characters
-- Server returning HTML instead of JSON
+The JSON string contains syntax that violates the JSON specification. Common violations include single quotes instead of double quotes, trailing commas after the last property or array element, comments which are not allowed in JSON, and unescaped special characters inside strings.
 
-## How to Fix
+Another frequent cause is receiving HTML or an error page from a server instead of JSON. If the server returns a 403 or 500 page, the response body is HTML, and `jsonDecode` tries to parse `<html>` as JSON.
 
-```dart
-// WRONG: Parsing invalid JSON
-import 'dart:convert';
-var data = jsonDecode("{name: 'Alice'}");  // Error: single quotes
+The error also occurs when the response body is empty or contains only whitespace. An empty string is not valid JSON, so `jsonDecode('')` throws a FormatException.
 
-// CORRECT: Use proper JSON syntax
-var data = jsonDecode('{"name": "Alice"}');
-```
+## How to Fix It
 
-```dart
-// WRONG: Not handling server errors
-var response = await http.get(url);
-var data = jsonDecode(response.body);  // Error if HTML error page
-
-// CORRECT: Validate response first
-var response = await http.get(url);
-if (response.headers['content-type']?.contains('json') == true) {
-  var data = jsonDecode(response.body);
-} else {
-  throw FormatException('Expected JSON, got ${response.headers['content-type']}');
-}
-```
-
-```dart
-// WRONG: Parsing user input directly
-String userInput = getUserInput();
-var data = jsonDecode(userInput);  // May fail
-
-// CORRECT: Try-catch with fallback
-Map<String, dynamic> safeJsonDecode(String input) {
-  try {
-    return jsonDecode(input) as Map<String, dynamic>;
-  } catch (e) {
-    return {};
-  }
-}
-```
-
-## Examples
+Validate the response before parsing:
 
 ```dart
 import 'dart:convert';
 
-// Example 1: Validate JSON before parsing
-bool isValidJson(String source) {
-  try {
-    jsonDecode(source);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-// Example 2: Parse with type safety
-T? safeParseJson<T>(String source) {
-  try {
-    final decoded = jsonDecode(source);
-    if (decoded is T) return decoded;
-    return null;
-  } catch (e) {
+Future<Map<String, dynamic>?> safeParseJson(String responseBody) async {
+  if (responseBody.isEmpty || responseBody.trim().isEmpty) {
     return null;
   }
-}
 
-// Example 3: Handle nested JSON safely
-Map<String, dynamic> parseApiResponse(String body) {
   try {
-    final json = jsonDecode(body);
-    return json as Map<String, dynamic>;
+    final decoded = jsonDecode(responseBody);
+    if (decoded is Map<String, dynamic>) {
+      return decoded;
+    }
+    return null;
   } on FormatException catch (e) {
-    print('Invalid JSON: ${e.message}');
-    return {'error': 'Invalid response'};
+    print('JSON parse error: ${e.message}');
+    return null;
   }
 }
 ```
 
-## Related Errors
+Strip trailing commas if your API returns non-standard JSON:
 
-- [dart-format-error]({{< relref "/languages/dart/dart-format-error" >}}) — format exception
-- [dart-type-error]({{< relref "/languages/dart/dart-type-error" >}}) — type mismatch
-- [dart-io-error]({{< relref "/languages/dart/dart-io-error" >}}) — connection closed
+```dart
+String cleanJson(String raw) {
+  // Remove trailing commas before ] or }
+  return raw.replaceAll(RegExp(r',\s*([\]}])'), r'$1');
+}
+
+final data = jsonDecode(cleanJson(rawResponse));
+```
+
+Check the content type header before parsing:
+
+```dart
+import 'package:http/http.dart' as http;
+
+final response = await http.get(Uri.parse(url));
+
+if (response.headers['content-type']?.contains('application/json') != true) {
+  throw FormatException('Expected JSON but got ${response.headers['content-type']}');
+}
+
+final data = jsonDecode(response.body);
+```
+
+Use `jsonDecode` with try-catch for all external data:
+
+```dart
+try {
+  final map = jsonDecode(responseBody);
+} on FormatException catch (e) {
+  print('Invalid JSON at position ${e.offset}: ${e.source}');
+}
+```
+
+## Common Mistakes
+
+- Not checking if the response is actually JSON before calling jsonDecode
+- Parsing server error pages as JSON when the status code indicates failure
+- Using single quotes in hand-crafted JSON strings
+- Including trailing commas in JSON that was generated by manual string concatenation
+- Not handling empty or null response bodies from network requests
+- Assuming the API always returns valid JSON without checking the content-type header
+
+## Related Pages
+
+- [Dart HTTP Error](/languages/dart/dart-http-error/)
+- [Dart Null Check Error](/languages/dart/dart-null-check-error-v2/)
+- [Dart Cast Error](/languages/dart/dart-cast-error/)
+- [Dart Format Error](/languages/dart/dart-format-error/)
+- [Dart IO Error](/languages/dart/dart-io-error/)

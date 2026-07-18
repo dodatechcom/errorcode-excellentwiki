@@ -1,6 +1,6 @@
 ---
-title: "[Solution] Dart TimeoutException Future Timed Out"
-description: "Fix Dart TimeoutException when async operations exceed their time limit. Handle future timeouts and stream delays."
+title: "[Solution] Dart Future Already Completed Error - Async State Fix"
+description: "Fix Dart 'Future already completed' error. Learn why completer panics on double completion, how to manage async state, and prevent race conditions."
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
@@ -9,101 +9,91 @@ weight: 5
 
 ## What This Error Means
 
-A `TimeoutException` occurs when a `Future` or `Stream` operation takes longer than the specified timeout duration. Dart's `TimeoutException` is thrown by the `timeout()` method.
+A `Future already completed` error is thrown when you call `complete`, `completeError`, or `completeWith` on a `Completer` that has already been completed. This is a state violation. A `Completer` can only transition from pending to completed once. Attempting to complete it a second time throws an `IllegalStateError`.
 
-## Common Causes
+## Why It Happens
 
-- Network request taking too long
-- Database query timeout
-- Long-running computation blocking event loop
-- Deadlock in async operations
-- Too short timeout value
+This error occurs in asynchronous code where a `Completer` is shared across multiple code paths. If two async operations both try to complete the same `Completer`, the second one crashes. Common triggers include network requests with retry logic where the first response completes the future, but the retry also tries to complete it, and event handlers that fire multiple times for the same async result.
 
-## How to Fix
+The error also appears when a `Completer` is completed inside a `try-catch` block that does not guard against double completion:
 
 ```dart
-// WRONG: No timeout configured
-var result = await longRunningOperation();  // May hang forever
+final completer = Completer<String>();
 
-// CORRECT: Add timeout
-var result = await longRunningOperation()
-    .timeout(Duration(seconds: 30), onTimeout: () {
-  throw TimeoutException('Operation timed out');
-});
+// First call succeeds
+completer.complete('done');
+
+// Second call throws: Future already completed
+completer.complete('done again');
 ```
 
-```dart
-// WRONG: Too short timeout
-var response = await http.get(url)
-    .timeout(Duration(milliseconds: 100));  // Too aggressive
+## How to Fix It
 
-// CORRECT: Reasonable timeout with fallback
-var response = await http.get(url)
-    .timeout(Duration(seconds: 10), onTimeout: () {
-  // Return cached data on timeout
-  return cachedResponse;
-});
-```
+Check `isCompleted` before completing a `Completer`:
 
 ```dart
-// WRONG: Not handling stream timeout
-await for (var data in stream) {
-  process(data);  // May never complete
+final completer = Completer<String>();
+
+if (!completer.isCompleted) {
+  completer.complete('result');
 }
-
-// CORRECT: Use timeout on stream
-stream.timeout(Duration(seconds: 5), onTimeout: (event) {
-  // Handle timeout per event
-  event.resume();
-});
 ```
 
-## Examples
+Use `complete` only once with proper control flow:
 
 ```dart
-import 'dart:async';
+Future<String> fetchData() async {
+  final completer = Completer<String>();
 
-// Example 1: Simple timeout
-Future<String> fetchWithTimeout() async {
   try {
-    final result = await fetchData()
-        .timeout(Duration(seconds: 10));
-    return result;
-  } on TimeoutException {
-    return 'Default value';
-  }
-}
-
-// Example 2: Retry with increasing timeout
-Future<T> retryWithTimeout<T>(
-  Future<T> Function() operation, {
-  int maxRetries = 3,
-  Duration initialTimeout = const Duration(seconds: 5),
-}) async {
-  for (int i = 0; i < maxRetries; i++) {
-    try {
-      return await operation().timeout(
-        initialTimeout * (i + 1),
-      );
-    } on TimeoutException {
-      if (i == maxRetries - 1) rethrow;
-      await Future.delayed(Duration(seconds: 1));
+    final result = await api.getData();
+    if (!completer.isCompleted) {
+      completer.complete(result);
+    }
+  } catch (e) {
+    if (!completer.isCompleted) {
+      completer.completeError(e);
     }
   }
-  throw StateError('Unreachable');
-}
 
-// Example 3: Stream timeout
-Stream<int> countWithTimeout() async* {
-  for (int i = 0; i < 10; i++) {
-    await Future.delayed(Duration(seconds: 1));
-    yield i;
-  }
+  return completer.future;
 }
 ```
 
-## Related Errors
+Use `Future.sync` or `Future.microtask` to avoid manual Completer management:
 
-- [dart-io-error]({{< relref "/languages/dart/dart-io-error" >}}) — connection closed
-- [dart-http-error]({{< relref "/languages/dart/dart-http-error" >}}) — connection refused
-- [dart-state-error]({{< relref "/languages/dart/dart-state-error" >}}) — no element in iterable
+```dart
+// Simpler than Completer
+Future<String> fetchData() async {
+  return await api.getData();
+}
+```
+
+Avoid sharing Completers across isolate boundaries. Each isolate has its own event loop and sharing mutable state like Completers causes race conditions.
+
+Guard against timeouts that may complete after the main result:
+
+```dart
+final result = await fetchData().timeout(
+  Duration(seconds: 10),
+  onTimeout: () => 'fallback',
+);
+
+// Do not also complete a Completer for the same operation
+```
+
+## Common Mistakes
+
+- Sharing a single Completer across multiple async operations
+- Not checking `isCompleted` in retry or timeout logic
+- Completing a Completer inside a loop that may iterate more than once
+- Using Completers when plain async/await would be simpler
+- Completing inside both a success and error handler without mutual exclusion
+
+## Related Pages
+
+- [Dart Isolate Error](/languages/dart/dart-isolate-error/)
+- [Dart HTTP Error](/languages/dart/dart-http-error/)
+- [Dart Null Check Error](/languages/dart/dart-null-check-error-v2/)
+- [Dart Widget Rebuild](/languages/dart/dart-widget-rebuild/)
+- [Dart Navigation Error](/languages/dart/dart-navigation-error/)
