@@ -1,103 +1,114 @@
 ---
-title: "[Solution] macOS Spotlight Not Working — Indexing Error Fix"
-description: "Fix macOS Spotlight search not working or stuck indexing. Rebuild Spotlight index, fix metadata corruption, and restore search functionality."
+title: "[Solution] macOS Spotlight Error — Search Not Working"
+description: "Fix macOS Spotlight not working: search returns no results, indexing stuck or paused, Spotlight uses excessive CPU."
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-weight: 5
+weight: 111
 ---
 
-# Spotlight Not Working — Indexing Error
+# Spotlight Error — Search Not Working
 
-Spotlight not working means the macOS search system either returns no results, returns incomplete results, or is stuck "Indexing." Spotlight relies on a metadata index maintained by the `mds` and `mds_stores` processes. When the index is corrupted or incomplete, search stops working.
-
-## Description
-
-Spotlight issues manifest as:
-
-- Search returns no results or "No Results"
-- Spotlight shows "Indexing" indefinitely in Spotlight preferences
-- `mdfind` returns empty results from the terminal
-- Some files are missing from search results
-- Search is extremely slow
+Fix macOS Spotlight not working: search returns no results, indexing stuck or paused, Spotlight uses excessive CPU.
 
 ## Common Causes
 
-- Spotlight index corrupted after disk errors or forced shutdown
-- Excluded folders in Spotlight privacy list
-- `mds` or `mds_stores` process crashed or is hung
-- APFS snapshot conflicts preventing index updates
-- Third-party antivirus interfering with metadata service
+- Spotlight index database corrupted or incomplete
+- mds_stores process crashed preventing indexing
+- Privacy settings excluding folders from search index
+- Low disk space preventing index from being built
 
-## How to Fix Spotlight Indexing Errors
+## How to Fix
 
-### 1. Check if Spotlight is Enabled
+### 1. Check Spotlight Indexing Status
 
 ```bash
-# Check if Spotlight is disabled
 mdutil -s /
-
-# Enable Spotlight if it's off
-sudo mdutil -i on /
+log show --predicate 'subsystem == "com.apple.Spotlight"' --last 5m | head -20
 ```
 
-### 2. Rebuild the Spotlight Index
+### 2. Rebuild Spotlight Index
 
 ```bash
-# Delete the existing index and rebuild
+sudo mdutil -i off /
 sudo mdutil -E /
-
-# Monitor the re-indexing process
-# This may take 30-60 minutes for large disks
+sudo mdutil -i on /
 mdutil -s /
 ```
 
-### 3. Check and Remove Privacy Exclusions
+### 3. Fix Privacy Exclusions
 
 ```bash
-# List excluded volumes
-mdutil -s
-
-# Remove a volume from the exclusion list
-sudo mdutil -i on /Volumes/ExternalDrive
-
-# Or via System Settings → Siri & Spotlight → Spotlight Privacy
+d
+e
+f
+a
+u
+l
+t
+s
+ 
+d
+e
+l
+e
+t
+e
+ 
+c
+o
+m
+.
+a
+p
+p
+l
+e
+.
+S
+p
+o
+t
+l
+i
+g
+h
+t
+ 
+o
+r
+d
+e
+r
+e
+d
+I
+t
+e
+m
+s
 ```
 
-### 4. Restart the Metadata Server
+### 4. Restart Spotlight and mds Processes
 
 ```bash
-# Kill the metadata server to force restart
 sudo killall mds
 sudo killall mds_stores
-
-# They will restart automatically
-# Monitor with:
-ps aux | grep mds
+# They will restart automatically and begin reindexing
 ```
 
-### 5. Check for Spotlight Errors in Console
-
-```bash
-# Open Console.app → Search for "mds" or "Spotlight"
-# Or from terminal:
-log show --predicate 'process == "mds"' --last 1h
-
-# Check system logs for index errors
-log show --predicate 'process == "mds_stores"' --last 30m
-```
-
-## Examples
+## Common Scenarios
 
 This error commonly occurs when:
 
-- After a macOS upgrade that changed the metadata schema
-- A hard drive has bad sectors corrupting the Spotlight database
-- External drives are repeatedly connected/disconnected
-- Anti-virus software locks files that Spotlight needs to index
+- Spotlight search returns no results for files that definitely exist
+- mds_stores uses 100% CPU for extended periods after macOS update
+- Spotlight indexing appears stuck at the same percentage
+- Spotlight finds apps but not documents or emails
 
-## Related Errors
+## Prevent It
 
-- [Finder Error](finder-error) — Spotlight failures can cause Finder to lag
-- [Kernel Panic](kernel-panic) — corrupted metadata service can cause system crashes
-- [Disk Utility Error](disk-utility-error) — disk issues may corrupt the Spotlight index
+- Keep sufficient free disk space for Spotlight index (10%+ of disk)
+- Avoid excluding critical folders from Spotlight search index
+- Restart Mac if Spotlight indexing seems stuck for more than an hour
+- Run 'mdutil -s /' periodically to verify index health

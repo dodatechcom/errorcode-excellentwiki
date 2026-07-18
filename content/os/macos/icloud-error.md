@@ -1,108 +1,131 @@
 ---
-title: "[Solution] macOS iCloud Sync Error — Couldn't Connect to iCloud"
-description: "Fix iCloud sync errors on Mac: couldn't connect to iCloud, sync stuck, data not updating. Check Apple ID, network, and storage settings."
+title: "[Solution] macOS iCloud Error — Cannot Sign In or Sync Data"
+description: "Fix macOS iCloud error: cannot sign in, sync issues across devices, data not updating, iCloud storage full message blocking features."
 platforms: ["macos"]
 severities: ["error"]
 error_types: ["runtime-error"]
-weight: 5
+weight: 115
 ---
 
-# iCloud Sync Error — Couldn't Connect to iCloud
+# iCloud Error — Cannot Sign In or Sync Data
 
-An iCloud sync error occurs when your Mac cannot communicate with Apple's iCloud servers or the sync process fails silently. You may see "Couldn't connect to iCloud," "Syncing paused," or data that doesn't appear on your other devices.
-
-## Description
-
-iCloud synchronization depends on network connectivity, Apple ID authentication, sufficient storage, and a functioning sync daemon. When any of these fail, syncing stops and you may see error dialogs or stale data.
-
-Common error messages:
-
-- `Couldn't connect to iCloud.`
-- `Your iCloud settings could not be updated.`
-- `Syncing with iCloud Paused.`
-- `Not Enough Storage — You don't have enough iCloud storage.`
+Fix macOS iCloud error: cannot sign in, sync issues across devices, data not updating, iCloud storage full message blocking features.
 
 ## Common Causes
 
-- Incorrect or expired Apple ID password / two-factor authentication issue
-- Network firewall blocking iCloud ports
-- iCloud storage is full
-- macOS date and time are incorrect
-- iCloud system status outage on Apple's side
+- Apple ID password or two-factor authentication issue
+- iCloud server outage affecting sync services
+- Corrupted iCloud account cache or preference files
+- iCloud storage full preventing new data from syncing
 
-## How to Fix iCloud Sync Errors
+## How to Fix
 
-### 1. Sign Out and Back Into iCloud
-
-```bash
-# Open System Settings → Apple ID (your name at top) → Sign Out
-# Restart your Mac
-# System Settings → Sign in with your Apple ID
-```
-
-### 2. Check iCloud System Status
+### 1. Check iCloud Status and Sign In
 
 ```bash
-# Open Safari and visit:
-# https://www.apple.com/support/systemstatus/
-# Check that iCloud services are green (operational)
-```
-
-### 3. Reset iCloud Sync Daemon
-
-```bash
-# Force quit the Bird sync process
-killall Bird
-
-# Or reset the sync cache
-defaults delete com.apple.bird
-
-# Restart your Mac and let iCloud re-sync
-```
-
-### 4. Check Date and Time Settings
-
-```bash
-# iCloud requires correct time for authentication
-# System Settings → General → Date & Time → Enable "Set time and date automatically"
-
-# Or from terminal:
-sudo sntp -sS time.apple.com
-```
-
-### 5. Free Up iCloud Storage
-
-```bash
-# Check iCloud storage usage
-# System Settings → Apple ID → iCloud → Manage Account Storage
-
-# Or from terminal:
-du -sh ~/Library/Mobile\ Documents/
-```
-
-### 6. Check Firewall and Network Settings
-
-```bash
-# Ensure these domains are not blocked:
-# *.icloud.com
-# *.apple.com
-# *.mzstatic.com
-
-# Test connectivity
+defaults read MobileMeAccounts
 curl -I https://setup.icloud.com
+# System Settings → Apple ID → Sign Out → Sign In again
 ```
 
-## Examples
+### 2. Clear iCloud Cache and Preferences
+
+```bash
+rm -rf ~/Library/Containers/com.apple.CloudDocs.MobileDocumentsFileProviderProvider
+rm -f ~/Library/Preferences/MobileMeAccounts.plist
+rm -rf ~/Library/Caches/CloudKit/*
+```
+
+### 3. Check iCloud Storage and Manage Space
+
+```bash
+du -sh ~/Library/Mobile\ Documents/
+# System Settings → Apple ID → iCloud → Manage Account Storage
+```
+
+### 4. Reset iCloud Sync and Force Re-Sync
+
+```bash
+#
+ 
+S
+y
+s
+t
+e
+m
+ 
+S
+e
+t
+t
+i
+n
+g
+s
+ 
+→
+ 
+A
+p
+p
+l
+e
+ 
+I
+D
+ 
+→
+ 
+i
+C
+l
+o
+u
+d
+ 
+→
+ 
+T
+o
+g
+g
+l
+e
+ 
+i
+C
+l
+o
+u
+d
+ 
+D
+r
+i
+v
+e
+ 
+o
+f
+f
+/
+o
+n
+```
+
+## Common Scenarios
 
 This error commonly occurs when:
 
-- After changing your Apple ID password, Macs don't re-authenticate automatically
-- iCloud storage is full and new files can't upload
-- Corporate firewall blocks iCloud traffic on port 443
-- macOS was recently updated and the sync daemon needs to be restarted
+- Cannot sign into iCloud with correct Apple ID and password
+- iCloud Drive files not appearing on one or more devices
+- iCloud storage full warning prevents photo and document sync
+- iCloud Mail not downloading new emails on Mac
 
-## Related Errors
+## Prevent It
 
-- [Keychain Error](keychain-error) — iCloud Keychain sync failures
-- [Finder Error](finder-error) — "The operation can't be completed" accessing cloud files
-- [Time Machine Error](time-machine-error) — backup issues when iCloud Drive is involved
+- Maintain sufficient iCloud storage by upgrading plan or managing files
+- Sign out and back into iCloud annually to refresh account tokens
+- Keep macOS updated for iCloud service compatibility improvements
+- Use 'brctl status' to monitor iCloud sync health periodically
