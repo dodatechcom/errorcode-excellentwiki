@@ -1,96 +1,120 @@
 ---
-title: "[Solution] MySQL Duplicate Entry for Key - Fix Unique Constraint Errors"
-description: "Fix MySQL duplicate entry for key errors by using INSERT IGNORE, ON DUPLICATE KEY UPDATE, and proper unique index design patterns"
+title: "[Solution] MySQL Duplicate Entry for Key Error — How to Fix"
+description: "Fix MySQL duplicate entry errors by handling unique constraint violations, using UPSERT, correcting data, and adjusting auto-increment values"
 tools: ["mysql"]
 error-types: ["database-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# MySQL Duplicate Entry for Key
+# MySQL Duplicate Entry for Key Error
 
-This error occurs when an `INSERT` or `UPDATE` statement tries to create a row that duplicates a value in a column with a `UNIQUE` index or `PRIMARY KEY`.
-
-## What This Error Means
-
-MySQL returns this error when a unique constraint is violated:
-
-```
-ERROR 1062 (23000): Duplicate entry 'user@example.com' for key 'users.email_unique'
-```
-
-The error message identifies the duplicate value and the index name. MySQL enforces unique constraints at the index level -- any `INSERT` or `UPDATE` that would create a duplicate entry in a unique index is rejected.
+This error means you are trying to insert or update a row that would create a duplicate value in a column (or combination of columns) that has a UNIQUE index or PRIMARY KEY constraint.
 
 ## Why It Happens
 
-- Two concurrent requests try to insert the same value simultaneously
-- Application logic does not check for existence before inserting
-- Bulk import contains duplicate data
-- A `UNIQUE` index was added to a table that already has duplicates
-- `INSERT` is used instead of `INSERT IGNORE` or `ON DUPLICATE KEY UPDATE`
-- Composite unique index is violated by a combination of column values
+- Inserting a row with a PRIMARY KEY value that already exists
+- Violating a UNIQUE index on a column like `email` or `username`
+- Re-running a migration or script that inserts data without checking for existing rows
+- AUTO_INCREMENT generates a value that collides with an existing row after a manual ID insert
+- Composite unique index is violated by the combination of values
+- Data import or replication replays duplicate records
+
+## Common Error Messages
+
+```
+ERROR 1062 (23000): Duplicate entry '42' for key 'PRIMARY'
+```
+
+```
+ERROR 1062 (23000): Duplicate entry 'user@example.com' for key 'email_unique'
+```
+
+```
+ERROR 1062 (23000): Duplicate entry '100-50' for key 'order_product_unique'
+```
 
 ## How to Fix It
 
-### 1. Use INSERT IGNORE
+### 1. Find the Existing Conflicting Row
 
 ```sql
--- Silently skip duplicates
-INSERT IGNORE INTO users (email, name) VALUES ('user@example.com', 'John');
+-- Check which value is causing the conflict
+SELECT * FROM users WHERE email = 'user@example.com';
+
+-- List all unique indexes on a table
+SHOW INDEX FROM users WHERE Non_unique = 0;
 ```
 
-### 2. Use INSERT ... ON DUPLICATE KEY UPDATE
+### 2. Use INSERT IGNORE or ON DUPLICATE KEY UPDATE
 
 ```sql
--- Update if the key already exists
-INSERT INTO users (email, name) VALUES ('user@example.com', 'John')
-ON DUPLICATE KEY UPDATE name = VALUES(name);
+-- Skip duplicates silently
+INSERT IGNORE INTO users (id, email, name)
+VALUES (1, 'user@example.com', 'John');
+
+-- Update the existing row on conflict
+INSERT INTO users (id, email, name)
+VALUES (1, 'user@example.com', 'John')
+ON DUPLICATE KEY UPDATE
+    name = VALUES(name),
+    updated_at = NOW();
 ```
 
 ### 3. Use REPLACE INTO
 
 ```sql
 -- Delete the existing row and insert the new one
-REPLACE INTO users (email, name) VALUES ('user@example.com', 'John');
--- WARNING: this deletes and re-inserts, which triggers DELETE triggers
+REPLACE INTO users (id, email, name)
+VALUES (1, 'user@example.com', 'John');
 ```
 
-### 4. Find and Remove Duplicates First
+### 4. Fix AUTO_INCREMENT Collision
 
 ```sql
--- Find duplicate emails
-SELECT email, COUNT(*) AS cnt
-FROM users
-GROUP BY email
-HAVING cnt > 1;
+-- Find the maximum ID currently in use
+SELECT MAX(id) FROM users;
 
--- Keep the row with the lowest id
-DELETE u1 FROM users u1
-INNER JOIN users u2
-WHERE u1.email = u2.email AND u1.id > u2.id;
+-- Reset AUTO_INCREMENT to max + 1
+ALTER TABLE users AUTO_INCREMENT = 1001;
 ```
 
-### 5. Add the Unique Index After Cleaning
+### 5. Handle in Application Code
 
-```sql
--- Verify no duplicates exist
-SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1;
+```python
+import mysql.connector
 
--- Now add the constraint
-ALTER TABLE users ADD UNIQUE INDEX email_unique (email);
+try:
+    cursor.execute(
+        "INSERT INTO users (email, name) VALUES (%s, %s)",
+        ('user@example.com', 'John')
+    )
+    db.commit()
+except mysql.connector.IntegrityError as e:
+    if e.errno == 1062:
+        print("User already exists, updating instead")
+        cursor.execute(
+            "UPDATE users SET name = %s WHERE email = %s",
+            ('John', 'user@example.com')
+        )
+        db.commit()
 ```
 
-## Common Mistakes
+## Common Scenarios
 
-- Using `REPLACE INTO` without understanding that it performs a `DELETE` followed by `INSERT`, which fires triggers and changes auto-increment IDs
-- Not considering that `INSERT IGNORE` also ignores other errors (like foreign key violations) -- use `ON DUPLICATE KEY UPDATE` for more precision
-- Assuming `NULL` values are duplicates -- MySQL allows multiple `NULL` values in a unique index
-- Catching the error in application code and retrying without using MySQL's native conflict handling
-- Adding a unique index to a column that has duplicate data without first cleaning it
+- **Migration re-run**: A database migration script inserts seed data but is executed twice. Use `INSERT IGNORE` or check existence first.
+- **Race condition**: Two concurrent requests try to register the same username. Use a unique index plus retry logic.
+- **Manual ID insert then auto-increment**: You manually insert ID 500, then the AUTO_INCREMENT counter still thinks the next value is 500. Reset AUTO_INCREMENT after manual inserts.
+
+## Prevent It
+
+- Always handle `IntegrityError` / duplicate key errors in application code with graceful fallbacks
+- Use `INSERT ... ON DUPLICATE KEY UPDATE` for upsert patterns instead of separate INSERT and UPDATE
+- Reset AUTO_INCREMENT after bulk manual ID inserts to avoid future collisions
 
 ## Related Pages
 
-- [MySQL Table Does Not Exist](/tools/mysql/mysql-table-doesnt-exist)
 - [MySQL Foreign Key Constraint](/tools/mysql/mysql-foreign-key-constraint)
-- [MySQL Data Too Long](/tools/mysql/mysql-data-too-long)
-- [PostgreSQL Duplicate Key](/tools/postgresql/pg-duplicate-key)
+- [MySQL Table Full](/tools/mysql/mysql-table-full)
+- [PostgreSQL Unique Violation](/tools/postgresql/pg-unique-violation)

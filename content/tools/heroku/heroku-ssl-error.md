@@ -1,126 +1,202 @@
 ---
-title: "[Solution] Heroku SSL Certificate Error — Fix SSL Configuration"
-description: "Fix Heroku SSL certificate errors. Resolve custom domain SSL, SNI issues, and certificate provisioning failures."
+title: "[Solution] Heroku SSL Endpoint Configuration Error — How to Fix"
+description: "Fix Heroku SSL endpoint errors by configuring certificates correctly, enabling ACM, verifying DNS targets, using proper SSL/TLS addon, and resolving certificate chain issues."
 tools: ["heroku"]
-error-types: ["tool-error"]
+error-types: ["ssl-error"]
 severities: ["error"]
-weight: 9
+weight: 5
+comments: true
 ---
 
-A Heroku SSL certificate error occurs when SSL cannot be provisioned or validated for your custom domain. Heroku uses SNI-based SSL which auto-provisions certificates, but configuration issues can cause failures.
+A Heroku SSL error occurs when SSL/TLS certificates are not configured correctly for custom domains. This can prevent HTTPS access to your application or cause certificate warnings in browsers.
 
 ## What This Error Means
 
-```
-!    Certificate URL is undefined
-!    No certificate is active for this domain
-```
+Heroku supports SSL/TLS through several mechanisms: Automated Certificate Management (ACM), SSL Endpoint addon, and the newer Heroku SSL addon. SSL errors can occur at certificate provisioning, renewal, or request time. The error may be in the Heroku configuration or in the certificate itself (expired, wrong domain, incomplete chain).
 
-Or browsers show SSL warnings when accessing your site. The SSL certificate for your custom domain is either not provisioned, expired, or misconfigured.
+Unlike router errors (H12) that happen at request time, SSL errors typically occur during certificate setup or when the certificate does not match the requested domain.
 
 ## Why It Happens
 
-- Custom domain is not properly configured
-- DNS is not pointing to Heroku correctly
-- SNI SSL is not enabled for the app
-- The domain has DNSSEC issues
-- Heroku's Let's Encrypt integration failed
-- The domain was recently added and cert is still provisioning
+- The SSL certificate has expired and ACM renewal failed
+- The certificate's Common Name (CN) or Subject Alternative Names (SANs) do not match the custom domain
+- The certificate chain is incomplete (missing intermediate certificates)
+- ACM is not enabled or is disabled for the application
+- DNS is not pointed to Heroku's SSL endpoint
+- The Heroku SSL addon is not provisioned
+- A self-signed certificate is used instead of a trusted CA
+- The private key does not match the certificate
+
+## Common Error Messages
+
+```
+ ▸    ACM: certificate issuance failed — domain not verified
+# or
+ ▸    SSL: certificate is not valid for any names
+# or
+ ▸    SSL: certificate expired
+# or
+ ▸    SSL: certificate chain is incomplete
+```
 
 ## How to Fix It
 
-### Enable SNI SSL
+### 1. Enable Automated Certificate Management
 
 ```bash
-# Check SSL status
-heroku certs:auto
+# Enable ACM for automatic Let's Encrypt certificates
+heroku certs:auto:enable -a my-app
 
-# Enable auto-SSL
-heroku certs:auto:enable
+# Check ACM status
+heroku certs:auto -a my-app
 
-# Check specific domain
-heroku certs:info
+# Refresh ACM if certificates are stuck
+heroku certs:auto:refresh -a my-app
 ```
 
-### Verify DNS Configuration
+ACM automatically provisions and renews Let's Encrypt certificates for your custom domains. This is the recommended approach for most applications.
+
+### 2. Verify DNS Configuration
 
 ```bash
-# Check DNS records
-dig www.your-domain.com +short
-dig your-domain.com +short
+# Check which domains are configured
+heroku domains -a my-app
 
-# Ensure DNS points to Heroku
-# Subdomain: CNAME -> app-name.herokuapp.com
-# Apex: A record -> 75.2.63.163
+# Verify DNS target
+heroku domains -a my-app | grep "DNS Target"
+
+# Test DNS resolution
+dig www.example.com CNAME +short
+# Should return: my-app.herokuapp.com
 ```
 
-### Use Heroku-managed Certificate
+DNS must point to Heroku's DNS target for certificate validation to work.
+
+### 3. Upload a Custom Certificate
 
 ```bash
-# Heroku auto-provisions via Let's Encrypt
-# Wait for provisioning after adding domain
+# Upload a certificate from a CA
+heroku certs:add server.crt server.key -a my-app
 
-# Check provisioning status
-curl -X GET "https://api.heroku.com/apps/my-app/ssl" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Accept: application/vnd.heroku+json; version=3"
+# Upload a certificate with intermediate chain
+heroku certs:add fullchain.pem server.key -a my-app
+
+# Upload a wildcard certificate
+heroku certs:add wildcard.crt server.key -a my-app
 ```
 
-### Upload Custom Certificate (Paid Plans)
+### 4. Check Certificate Details
 
 ```bash
-# For paid plans, you can upload your own cert
-heroku certs:add server.crt server.key
+# List installed certificates
+heroku certs -a my-app
 
-# Check cert info
-heroku certs:info
+# Get certificate details
+heroku certs:info -a my-app
 
-# Remove auto-provisioned cert
-heroku certs:auto:enable --disable
+# Check certificate expiration
+echo | openssl s_client -connect my-app.herokuapp.com:443 2>/dev/null | \
+    openssl x509 -noout -dates
+
+# Verify certificate matches domain
+echo | openssl s_client -connect my-app.herokuapp.com:443 2>/dev/null | \
+    openssl x509 -noout -subject -ext subjectAltName
 ```
 
-### Fix SSL Warning in Browser
+### 5. Fix Incomplete Certificate Chain
 
 ```bash
-# Check certificate details
-echo | openssl s_client -connect www.your-domain.com:443 -servername www.your-domain.com 2>/dev/null | openssl x509 -noout -dates
+# The certificate file must include intermediate certificates
+# Concatenate your certificate and intermediates:
+cat your_domain.crt intermediate.crt root.crt > fullchain.pem
 
-# Check certificate chain
-openssl s_client -connect www.your-domain.com:443 -showcerts
+# Upload the combined chain
+heroku certs:add fullchain.pem your_private.key -a my-app
+
+# Verify the chain:
+openssl s_client -connect my-app.herokuapp.com:443 -showcerts
 ```
 
-### Wait for Let's Encrypt Provisioning
+### 6. Use Heroku SSL Addon
 
 ```bash
-# Let's Encrypt certificates take a few minutes
-# After adding domain and DNS propagation
+# Provision the Heroku SSL addon
+heroku addons:create heroku-ssl -a my-app
 
-# Monitor provisioning
-watch heroku certs:auto
+# This is the newer SSL solution with better performance
+# It works with ACM and custom certificates
 
-# Force renewal
-heroku certs:auto:refresh
+# For the older SSL Endpoint addon:
+heroku addons:create ssl:endpoint -a my-app
 ```
 
-### Fix DNSSEC Issues
+### 7. Configure Strict-Transport-Security
 
 ```bash
-# If using DNSSEC, ensure it does not conflict
-# with Heroku's certificate provisioning
+# Enable HSTS to force HTTPS
+heroku headers:add Strict-Transport-Security "max-age=31536000; includeSubDomains" -a my-app
 
-# Check DNSSEC status
-dig your-domain.com +dnssec +short
+# Or set it in your application code:
 ```
 
-## Common Mistakes
+```python
+# Flask example
+@app.after_request
+def add_hsts(response):
+    if request.is_secure:
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
+```
 
-- Not waiting for DNS propagation before checking SSL
-- Enabling DNSSEC which conflicts with Let's Encrypt
-- Not adding the domain in Heroku before expecting SSL
-- Using Cloudflare proxy mode which can interfere
-- Not checking that SNI is enabled on the account
+### 8. Force HTTPS Redirect
+
+```bash
+# In your application code, redirect HTTP to HTTPS:
+
+# Node.js Express
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
+# Python Flask
+from flask import redirect, request
+
+@app.before_request
+def redirect_to_https():
+    if request.headers.get('X-Forwarded-Proto', 'http') == 'http':
+        return redirect(f"https://{request.host}{request.path}", 301)
+```
+
+## Common Scenarios
+
+### ACM Fails After Domain Migration
+
+A company changes its domain from `old-company.com` to `new-company.com`. ACM cannot issue a certificate for `new-company.com` because the DNS is still pointing to the old hosting provider. Update the CNAME records for `new-company.com` to point to Heroku's DNS target and wait for DNS propagation before ACM succeeds.
+
+### Expired Certificate with No ACM
+
+An application uses a manually uploaded certificate that expired six months ago. ACM was never enabled. Browsers show a security warning. The fix is to either enable ACM (automatic renewal) or upload a new certificate from a CA.
+
+### Certificate for Wrong Domain
+
+A developer uploads a certificate for `www.example.com` but the application domain is `app.example.com`. The certificate validation fails because the domain does not match. Regenerate the certificate with the correct domain in the SANs.
+
+## Prevent It
+
+- Enable ACM on all production apps for automatic certificate management
+- Set up ACM renewal alerts in case automatic renewal fails
+- Use wildcard certificates if you have multiple subdomains
+- Monitor certificate expiration dates with external monitoring tools
+- Test SSL configuration with SSL Labs or similar tools
+- Keep Heroku SSL addon provisioned even if using ACM
+- Use Heroku Pipelines to ensure SSL configuration is consistent across environments
+- Document DNS requirements for SSL certificate validation
 
 ## Related Pages
 
-- [Heroku Domain Error]({{< relref "/tools/heroku/heroku-domain-error" >}}) — App not found by hostname
-- [Heroku Deploy Error]({{< relref "/tools/heroku/heroku-deploy-error" >}}) — Push rejected to Heroku
+- [Heroku Router Error](/tools/heroku/heroku-router-error)
+- [Heroku Config Error](/tools/heroku/heroku-config-error)
+- [Heroku App Not Found](/tools/heroku/heroku-app-not-found)

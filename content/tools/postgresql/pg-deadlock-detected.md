@@ -1,19 +1,27 @@
 ---
-title: "[Solution] PostgreSQL Deadlock Detected - Diagnose and Fix Lock Cycles"
-description: "Fix PostgreSQL deadlock detected errors by analyzing lock wait graphs, adding proper indexes, and restructuring transaction ordering"
+title: "[Solution] PostgreSQL Deadlock Detected Error — How to Fix"
+description: "Fix PostgreSQL deadlock detected errors by analyzing lock graphs, optimizing query order, adding indexes, and implementing retry logic"
 tools: ["postgresql"]
 error-types: ["database-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# PostgreSQL Deadlock Detected
+# PostgreSQL Deadlock Detected Error
 
-A deadlock in PostgreSQL occurs when two or more transactions are waiting for each other to release locks, creating a circular dependency that cannot be resolved. PostgreSQL automatically detects deadlocks and aborts one of the transactions to break the cycle.
+This error means two or more transactions are waiting for each other to release locks, creating a circular dependency that PostgreSQL cannot resolve. PostgreSQL detects deadlocks automatically and rolls back the victim transaction to break the cycle.
 
-## What This Error Means
+## Why It Happens
 
-When PostgreSQL detects a deadlock, it rolls back one of the involved transactions and returns an error to the client:
+- Two transactions acquire locks on the same rows in opposite order
+- A transaction holds a row lock and waits for a lock on another row held by a second transaction
+- Long-running transactions increase the window for lock conflicts
+- Missing indexes cause table-wide locks instead of row-level locks
+- Batch updates touch many rows in an unpredictable order
+- Foreign key constraints acquireSHARE ROW EXCLUSIVE locks on referenced tables
+
+## Common Error Messages
 
 ```
 ERROR: deadlock detected
@@ -21,16 +29,16 @@ DETAIL: Process 12345 waits for ShareLock on transaction 67890; blocked by proce
 Process 67890 waits for ShareLock on transaction 12345; blocked by process 12345.
 ```
 
-The server log provides a detailed `DeadlockDetails` section showing which locks each transaction holds and which it is waiting for. PostgreSQL chooses the victim transaction based on which one has done the least work (fewest row modifications), so it typically aborts the "cheaper" transaction.
+```
+ deadlock detected
+ DETAIL: Process 34567 waits for RowExclusiveLock on table orders; blocked by process 23456.
+  Process 23456 waits for RowExclusiveLock on table inventory; blocked by process 34567.
+```
 
-## Why It Happens
-
-- Two transactions lock rows in opposite order (Transaction A locks row 1 then row 2, Transaction B locks row 2 then row 1)
-- Foreign key constraints cause implicit locks that create unexpected lock ordering
-- Missing indexes cause PostgreSQL to lock more rows than necessary during updates
-- Long-running transactions hold locks while waiting for additional locks
-- Concurrent INSERT and UPDATE operations on the same table with overlapping key ranges
-- Advisory locks acquired in inconsistent order by different sessions
+```
+ ERROR: deadlock detected
+ HINT: See server log for query details.
+```
 
 ## How to Fix It
 
@@ -38,84 +46,100 @@ The server log provides a detailed `DeadlockDetails` section showing which locks
 
 ```bash
 # Enable deadlock logging
-# In postgresql.conf
-log_lock_waits = on
-deadlock_timeout = 1s
-log_min_messages = LOG
+ALTER SYSTEM SET log_lock_waits = on;
+ALTER SYSTEM SET deadlock_timeout = '1s';
+SELECT pg_reload_conf();
+
+# View deadlock details in the log
+tail -f /var/log/postgresql/postgresql-main.log | grep -A 20 "deadlock detected"
 ```
 
-### 2. Always Lock Rows in the Same Order
+### 2. Lock Table and Row Ordering
 
 ```sql
--- WRONG: inconsistent ordering
--- Transaction 1
-BEGIN;
-UPDATE accounts SET balance = balance - 100 WHERE id = 1;
-UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+-- Wrong: two transactions lock rows in different orders
+-- Transaction A: UPDATE accounts WHERE id = 1; UPDATE orders WHERE account_id = 1;
+-- Transaction B: UPDATE orders WHERE account_id = 2; UPDATE accounts WHERE id = 2;
 
--- Transaction 2 (reversed order)
-BEGIN;
-UPDATE accounts SET balance = balance - 50 WHERE id = 2;
-UPDATE accounts SET balance = balance + 50 WHERE id = 1;
-
--- CORRECT: both transactions lock in the same order
-BEGIN;
-UPDATE accounts SET balance = balance - 100 WHERE id = LEAST(1, 2);
-UPDATE accounts SET balance = balance + 100 WHERE id = GREATEST(1, 2);
+-- Right: always lock rows in the same global order (e.g., by primary key ascending)
+-- Both transactions: UPDATE accounts WHERE id = X; THEN UPDATE orders WHERE account_id = X;
 ```
 
-### 3. Add Proper Indexes
+### 3. Use SELECT FOR UPDATE with NOWAIT
 
 ```sql
--- Without an index, PostgreSQL locks many rows during a sequential scan
-CREATE INDEX idx_accounts_id ON accounts(id);
-```
-
-### 4. Use SELECT FOR UPDATE with NOWAIT
-
-```sql
--- Fail immediately instead of waiting and risking deadlock
+-- Fail fast instead of waiting for a lock
 BEGIN;
 SELECT * FROM accounts WHERE id = 1 FOR UPDATE NOWAIT;
--- If lock cannot be acquired, raises an error immediately
+-- If locked by another transaction, this raises an error immediately
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+COMMIT;
 ```
-
-### 5. Reduce Transaction Duration
 
 ```sql
--- Process data in smaller batches
--- WRONG: one giant transaction
-BEGIN;
-UPDATE accounts SET status = 'active' WHERE created_at > '2024-01-01';
-COMMIT;
-
--- BETTER: batch processing
-DO $$
-DECLARE
-    batch_size INT := 1000;
-    affected INT;
-BEGIN
-    LOOP
-        UPDATE accounts SET status = 'active'
-        WHERE id IN (SELECT id FROM accounts WHERE status IS NULL LIMIT batch_size);
-        GET DIAGNOSTICS affected = ROW_COUNT;
-        EXIT WHEN affected = 0;
-        COMMIT;
-    END LOOP;
-END $$;
+-- Or skip locked rows
+SELECT * FROM accounts WHERE id = 1 FOR UPDATE SKIP LOCKED;
 ```
 
-## Common Mistakes
+### 4. Add Indexes to Reduce Lock Scope
 
-- Ignoring deadlock logs and hoping the problem will resolve itself
-- Increasing `deadlock_timeout` to avoid deadlocks -- this just delays detection
-- Using `SERIALIZABLE` isolation level as a blanket fix without understanding the performance cost
-- Not adding indexes on columns used in WHERE and JOIN clauses
-- Mixing ORM-generated queries with hand-written SQL that lock rows differently
+```sql
+-- Without an index, UPDATE locks the entire table
+-- With an index, UPDATE locks only the matching rows
+CREATE INDEX idx_orders_account_id ON orders (account_id);
+CREATE INDEX idx_inventory_product_id ON inventory (product_id);
+```
+
+### 5. Implement Application-Level Retry Logic
+
+```python
+import psycopg2
+import random
+import time
+
+def execute_with_retry(conn, query, params=None, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            cur = conn.cursor()
+            cur.execute(query, params)
+            conn.commit()
+            return cur.fetchall()
+        except psycopg2.errors.DeadlockDetected:
+            conn.rollback()
+            if attempt < max_retries - 1:
+                wait = (2 ** attempt) + random.uniform(0, 1)
+                time.sleep(wait)
+            else:
+                raise
+```
+
+### 6. Reduce Transaction Duration
+
+```sql
+-- Instead of one long transaction doing many things:
+BEGIN;
+-- ... 50 queries ...
+COMMIT;
+
+-- Break into smaller transactions:
+-- Batch 1: BEGIN; ... COMMIT;
+-- Batch 2: BEGIN; ... COMMIT;
+```
+
+## Common Scenarios
+
+- **Inventory deduction race**: Two purchases try to deduct from the same stock. Lock rows in a consistent order (by product_id ascending).
+- **Transfer between accounts**: Account A to B and B to A simultaneously. Always lock the lower ID first.
+- **Batch job processing**: A worker processes rows out of order. Use `FOR UPDATE SKIP LOCKED` with a job queue pattern.
+
+## Prevent It
+
+- Always lock rows in a consistent global order across all transactions
+- Keep transactions as short as possible to reduce the lock conflict window
+- Add appropriate indexes so UPDATE and DELETE operations lock only matching rows
 
 ## Related Pages
 
-- [PostgreSQL Lock Timeout](/tools/postgresql/pg-locks-timeout)
-- [PostgreSQL Serialization Failure](/tools/postgresql/pg-serialization-failure)
-- [PostgreSQL Statement Timeout](/tools/postgresql/pg-statement-timeout)
-- [MySQL Deadlock Detected](/tools/mysql/mysql-deadlock-detected)
+- [PostgreSQL Lock Timeout](/tools/postgresql/pg-lock-timeout)
+- [PostgreSQL Connection Limit](/tools/postgresql/pg-connection-limit)
+- [MySQL Lock Wait Timeout](/tools/mysql/mysql-lock-wait-timeout)

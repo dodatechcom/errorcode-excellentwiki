@@ -1,85 +1,146 @@
 ---
-title: "[Solution] Express BodyParser Error — body parsing error"
-description: "Fix Express BodyParser errors. Resolve request body parsing failures."
+title: "[Solution] Express Body Parsing Error — How to Fix"
+description: "Fix Express body parsing errors. Resolve request body parsing, size limits, and content type issues in Express."
 frameworks: ["express"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-An Express BodyParser error occurs when Express cannot parse the request body. This commonly happens with JSON, URL-encoded, or multipart data.
+An Express body parsing error occurs when the application cannot parse the request body due to missing body parser middleware, incorrect content type, oversized payload, or malformed data. Express does not parse request bodies by default.
 
-## Common Causes
+## Why It Happens
 
-- Missing body parser middleware
-- Invalid JSON in request body
-- Content-Type header does not match parser
-- Request body too large
-- Parsing middleware registered after routes
+Express requires explicit body parser middleware to read `req.body`. Errors occur when `express.json()` or `express.urlencoded()` is not configured, when the request body exceeds the size limit, when the content type doesn't match the parser, or when the body contains malformed JSON or form data.
 
-## How to Fix
+## Common Error Messages
 
-### Register Body Parser
-
-```javascript
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+```
+SyntaxError: Unexpected token } in JSON at position 0
 ```
 
-### Configure Size Limit
+```
+PayloadTooLargeError: request entity too large
+```
+
+```
+TypeError: Cannot read property 'email' of undefined
+```
+
+```
+Error: request entity too large
+```
+
+## How to Fix It
+
+### 1. Configure Body Parser Middleware
+
+Set up body parsing for all content types:
 
 ```javascript
+const express = require('express');
+const app = express();
+
+// Parse JSON bodies
 app.use(express.json({ limit: '10mb' }));
+
+// Parse URL-encoded bodies (form data)
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Parse raw bodies (for webhooks)
+app.use(express.raw({ type: 'application/octet-stream', limit: '50mb' }));
+
+// Parse multipart form data (file uploads)
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+app.use('/upload', upload.single('file'));
 ```
 
-### Handle Parse Errors
+### 2. Handle Body Parsing Errors
+
+Catch and handle parsing errors:
 
 ```javascript
 app.use(express.json());
+
+// Handle JSON parse errors
 app.use((err, req, res, next) => {
-  if (err.type === 'entity.parse.failed') {
-    return res.status(400).json({ error: 'Invalid JSON' });
-  }
-  next(err);
+    if (err.type === 'entity.parse.failed') {
+        return res.status(400).json({
+            error: 'Invalid JSON in request body',
+        });
+    }
+    if (err.type === 'entity.too.large') {
+        return res.status(413).json({
+            error: 'Request body too large',
+        });
+    }
+    next(err);
 });
 ```
 
-### Use Multer for File Uploads
+### 3. Parse Different Content Types
+
+Handle multiple body formats in routes:
 
 ```javascript
-const multer = require('multer');
-app.post('/upload', multer().single('file'), (req, res) => {
-  console.log(req.file);
+app.post('/api/data', express.json(), (req, res) => {
+    const data = req.body;
+    res.json({ received: data, type: 'json' });
+});
+
+app.post('/api/form', express.urlencoded({ extended: true }), (req, res) => {
+    const data = req.body;
+    res.json({ received: data, type: 'form' });
+});
+
+// Or handle both
+app.post('/api/unified', (req, res) => {
+    const contentType = req.headers['content-type'] || '';
+
+    if (contentType.includes('application/json')) {
+        // Body is already parsed by express.json()
+    } else if (contentType.includes('form')) {
+        // Body is already parsed by express.urlencoded()
+    }
+
+    res.json({ received: req.body });
 });
 ```
 
-### Check Content-Type Header
+### 4. Set Appropriate Size Limits
+
+Configure limits based on expected payload sizes:
 
 ```javascript
-// Client must send:
-// Content-Type: application/json
-fetch('/api', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(data),
-});
+// Default: 100kb
+app.use(express.json());
+
+// Custom limit for specific routes
+app.use('/api/upload', express.json({ limit: '50mb' }));
+
+// Different limits for different content types
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ limit: '1mb' }));
+app.use('/webhook', express.raw({ limit: '10mb' }));
 ```
 
-## Examples
+## Common Scenarios
 
-```javascript
-// Example 1: Missing body parser
-app.post('/api', (req, res) => {
-  console.log(req.body); // undefined
-});
-// Fix: add app.use(express.json()) before routes
+**Scenario 1: `req.body` is undefined.**
+This happens when body parser middleware is not registered or is registered after the route. Ensure `express.json()` is called before route definitions.
 
-// Example 2: Invalid JSON
-// POST /api with body: {invalid json}
-// Fix: send valid JSON or handle parse error
-```
+**Scenario 2: POST request with file upload fails.**
+Use `multer` for multipart form data. `express.json()` cannot parse `multipart/form-data`.
 
-## Related Errors
+**Scenario 3: Large JSON payload returns 413.**
+Increase the `limit` option in `express.json()`. The default is 100kb.
 
-- [Express Validation Error]({{< relref "/frameworks/express/express-validation-error" >}}) — validation error
-- [Express File Upload Error]({{< relref "/frameworks/express/express-file-upload-error" >}}) — file upload error
+## Prevent It
+
+1. **Always configure body parser middleware at the app level** before defining routes.
+
+2. **Set reasonable size limits** to prevent denial-of-service attacks from oversized payloads.
+
+3. **Use `multer` for file uploads** — Express body parsers cannot handle `multipart/form-data`.

@@ -1,70 +1,103 @@
 ---
-title: "MonadFail Error in Haskell"
-description: "Haskell raises MonadFail errors when pattern matching fails inside do-notation for monads"
+title: "[Solution] Haskell Monad Error"
+description: "Fix Haskell monad instance constraint errors by resolving type class instance overlap and constraint propagation issues."
 languages: ["haskell"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-## What This Error Means
+## Why It Happens
 
-A `MonadFail` error occurs when pattern matching fails inside `do`-notation for monads that implement `MonadFail`. This happens when a pattern match in a `let` or `<-` binding doesn't match the value.
+Monad instance constraint error
 
-## Common Causes
+## Common Error Messages
 
-- Irrefutable pattern match in do block
-- Using `<-` with pattern that may fail
-- Missing MonadFail instance for custom monad
-- Partial pattern matching in let binding
+1. **No instance for (Monad ...) arising from a use of**
+2. **Constraint resolution failed for Monad instance**
+3. **ambiguous Monad constraint in function signature**
 
-## How to Fix
+## How to Fix It
 
-Use irrefutable patterns:
-
-```haskell
--- WRONG: may fail
-do
-    (x, y) <- return (1, 2)  -- works
-    (a, b) <- return Nothing  -- fails
-
--- Correct: handle failure
-do
-    result <- getValue
-    case result of
-        Just (x, y) -> process x y
-        Nothing -> handleError
-```
-
-Use case in do block:
+### Solution 1: Add explicit type annotations
 
 ```haskell
-do
-    value <- getValue
-    case value of
-        Just x -> process x
-        Nothing -> return default
+-- Add type annotations to resolve ambiguity
+func :: Int -> Int -> Int
+func x y = x + y
+
+-- Annotate polymorphic values
+result :: String
+result = show 42
 ```
 
-Implement MonadFail:
+### Solution 2: Use type constraints to narrow types
 
 ```haskell
-import Control.Monad.Fail
+-- Add constraints to resolve ambiguous types
+process :: Show a => a -> IO ()
+process x = print x
 
-instance MonadFail Maybe where
-    fail _ = Nothing
+-- Use specific type class constraints
+convert :: Read a => String -> a
+convert s = read s
 ```
 
-## Examples
+### Solution 3: Enable common language extensions
 
 ```haskell
-main = do
-    Just x <- return Nothing
-    print x
--- Pattern match failure in a do block: Maybe is not an instance of MonadFail
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
+
+-- Use TypeApplications for explicit type selection
+func :: forall a. Show a => a -> String
+func x = show x
+
+-- Use ScopedTypeVariables for local annotations
+example :: forall a. (Show a, Read a) => a -> String -> a
+example _ input = read input :: a
 ```
+
+## Common Scenarios
+
+### Scenario 1: Type mismatch when using Monad instance constraint error
+
+Type mismatch when using Monad instance constraint error often occurs when developers forget to handle edge cases in their code. For example:
+
+```haskell
+! Example scenario demonstrating the issue
+! This commonly happens in production code
+! Always validate inputs before processing
+```
+
+### Scenario 2: Compilation failure due to Monad instance constraint error
+
+Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+
+```haskell
+! Common pattern that leads to this error
+! Always check types and dimensions
+! Use compiler/runtime flags for early detection
+```
+
+### Scenario 3: Runtime exception from Monad instance constraint error
+
+Performance-related issues can also trigger this error under load:
+
+```haskell
+! Performance scenario example
+! Monitor resource usage in production
+! Add graceful degradation for resource limits
+```
+
+## Prevent It
+
+- **Enable -Wall and -Werror in GHC to catch issues at compile time**
+- **Write type signatures for all top-level functions**
+- **Use hlint and haskell-language-server for real-time error detection**
 
 ## Related Errors
 
-- [Pattern match failure]({{< relref "/languages/haskell/pattern-match" >}})
-- [Type error]({{< relref "/languages/haskell/type-error" >}})
+- [Haskell best practices](/languages/haskell)
+- [Haskell error handling guide](/languages/haskell/_index)

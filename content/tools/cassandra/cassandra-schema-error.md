@@ -1,89 +1,161 @@
 ---
-title: "[Solution] Cassandra Schema Error - Fix Configuration Disagreement"
-description: "Resolve Cassandra schema disagreement errors by repairing schema metadata, forcing agreement across all nodes, and ensuring every node reports the same version"
+title: "[Solution] Cassandra Schema Error — How to Fix"
+description: "Fix Cassandra schema agreement errors by resolving DDL conflicts, repairing schema versions, tuning agreement timeouts, and coordinating schema changes."
 tools: ["cassandra"]
-error-types: ["database-error"]
+error-types: ["schema-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-A Cassandra schema error occurs when the nodes in your cluster disagree on the current schema version. This can manifest as `ConfigurationException`, `InvalidRequestException`, or schema disagreement warnings in the logs.
-
-## What This Error Means
-
-Cassandra propagates schema changes through a gossip-based mechanism. Every node must agree on the same schema version before DDL operations can proceed. When nodes report different schema versions, DDL operations fail with errors like `Schema discrepancy detected` or `This node is not in agreement with the cluster schema`.
-
-The most common symptom is an error during `CREATE TABLE`, `ALTER TABLE`, or `DROP TABLE` operations stating the schema version does not match across all live nodes.
+A Cassandra schema error occurs when schema changes (DDL statements like CREATE TABLE or ALTER KEYSPACE) fail to propagate across all nodes in the cluster. Cassandra requires schema agreement before acknowledging a DDL operation.
 
 ## Why It Happens
 
-- A node was down during a schema change and did not receive the update
-- Network partition prevented schema propagation between datacenters
-- Multiple schema changes issued simultaneously caused a split-brain scenario
-- Node restart during a schema migration left it with an outdated schema
-- Manual schema repair was not performed after a node recovery
-- Bug in older Cassandra versions with schema agreement timeouts
+Cassandra uses a gossip-based schema versioning system. Every node must agree on the schema version before a DDL change is considered successful. If any node is unreachable or slow, schema agreement fails.
+
+- A node is down or unreachable and cannot receive the schema update
+- Schema agreement timeout is too short for large clusters
+- Multiple DDL statements are executed concurrently, causing version conflicts
+- A node has a corrupted schema table that prevents it from converging
+- Network partitions prevent schema gossip messages from reaching some nodes
+- The schema agreement window is too narrow for the cluster size
+- Nodes running different Cassandra versions have incompatible schema formats
+
+## Common Error Messages
+
+```text
+InvalidRequestException: Column family IDs mismatch (existing vs submitted)
+```
+
+The schema change references a table that has a different ID on some nodes, indicating schema divergence.
+
+```text
+SchemaConfigurationError: Failed to reach schema agreement within timeout
+```
+
+The cluster could not reach agreement on the new schema within the configured timeout period.
+
+```text
+ServerError: Schema version mismatch detected: {old_version} vs {new_version}
+```
+
+Two nodes report different schema versions. The cluster is in a split-brain schema state.
+
+```text
+UnavailableException: Cannot send schema agreement — not enough nodes available
+```
+
+Too many nodes are down for the schema agreement protocol to succeed.
 
 ## How to Fix It
 
-### 1. Check Schema Agreement
+### 1. Check Schema Agreement Across Nodes
 
 ```bash
+# Check schema version on each node
 nodetool describecluster
-# Compare the Schema version across all nodes
+
+# Compare schema versions — they should all match
+# Look for lines like:
+# Schema version: af234567-bcde-1234-5678-90abcdef1234
 ```
-
-### 2. Force Schema Agreement
-
-```bash
-# Run on each node that is out of sync
-nodetool resetschemaullid
-```
-
-### 3. Use the Schema Agreement Tool
 
 ```cql
--- In cqlsh, check agreement
-DESCRIBE CLUSTER;
-
--- Retry the DDL statement with increased timeout
--- cqlsh will retry internally
-CREATE TABLE IF NOT EXISTS my_keyspace.my_table (
-    id UUID PRIMARY KEY,
-    name TEXT
-);
+-- Check schema version from CQL
+SELECT * FROM system.schema_versions;
 ```
 
-### 4. Repair After Node Recovery
+If versions differ, the cluster has a schema disagreement. Identify which nodes have the outdated version.
+
+### 2. Repair Schema on Diverged Nodes
 
 ```bash
-# After a node comes back, run
-nodetool repair my_keyspace
-```
+# On the node with the wrong schema version
+nodetool resetlocalschema
 
-### 5. Check for Pending Schema Changes
+# If that doesn't work, try a full restart
+nodetool drain
+sudo systemctl restart cassandra
+
+# Verify after restart
+nodetool describecluster
+```
 
 ```bash
-# Check system schema tables
-nodetool viewbuildstatus
+# Nuclear option: truncate and rebuild schema tables
+# WARNING: This will lose all schema changes not present on the majority
+nodetool stop gossiper
+rm -rf /var/lib/cassandra/data/system/schema_*
+nodetool start gossiper
 ```
 
-### 6. Increase Schema Agreement Timeout
+### 3. Increase Schema Agreement Timeout
 
 ```yaml
 # cassandra.yaml
-schema_agreement_timeout_in_ms: 60000
+schema_agreement_timeout_in_ms: 30000
 ```
 
-## Common Mistakes
+```bash
+# Check current timeout
+nodetool getgossipparsing | grep schema
+```
 
-- Issuing multiple `ALTER TABLE` statements in rapid succession without waiting for agreement
-- Not checking `nodetool describecluster` after recovering from a node outage
-- Manually editing schema files on disk instead of using CQL
-- Ignoring schema disagreement warnings in the Cassandra log file
+The default timeout is often too short for clusters with more than 10 nodes. Increase to 30 seconds or more for large deployments.
 
-## Related Pages
+### 4. Execute DDL Changes Sequentially
 
-- [Cassandra WriteTimeoutException](/tools/cassandra/cassandra-write-timeout)
-- [Cassandra Connection Error](/tools/cassandra/cassandra-connection-error)
-- [Cassandra Truncate Error](/tools/cassandra/cassandra-truncate-error)
+```cql
+-- Bad: Multiple concurrent DDL changes
+CREATE TABLE t1 (id int PRIMARY KEY, name text);
+CREATE TABLE t2 (id int PRIMARY KEY, value text);
+ALTER TABLE existing ADD column1 text;
+
+-- Good: One DDL at a time, wait for agreement
+CREATE TABLE t1 (id int PRIMARY KEY, name text);
+-- Wait for agreement
+DESCRIBE CLUSTER;  -- Check schema version matches on all nodes
+CREATE TABLE t2 (id int PRIMARY KEY, value text);
+-- Wait for agreement again
+DESCRIBE CLUSTER;
+```
+
+```java
+// Java driver: execute DDL and wait for schema agreement
+session.execute("CREATE TABLE t1 (id int PRIMARY KEY, name text)");
+// Driver automatically waits for schema agreement by default
+// You can control this:
+session.execute(
+    SimpleStatement.builder("CREATE TABLE t2 (id int PRIMARY KEY, value text)")
+        .setExecutionProfileName("ddl_profile")
+        .build()
+);
+```
+
+### 5. Fix the Broken Node
+
+```bash
+# Identify the problematic node
+nodetool describecluster | grep "Schema version"
+
+# Check system logs for schema errors
+grep -i "schema" /var/log/cassandra/system.log | tail -20
+
+# If the schema tables are corrupted, rebuild from a healthy node
+nodetool rebuild_schema
+```
+
+## Common Scenarios
+
+**Schema agreement fails during rolling upgrade.** Nodes running different major versions may have incompatible schema formats. Complete the upgrade on all nodes before making DDL changes, or pause DDL operations during the upgrade window.
+
+**Concurrent DDL from CI/CD pipelines.** Multiple automation scripts creating tables simultaneously will conflict. Serialize DDL changes through a migration tool like SchemaLoader or a deployment pipeline that waits for agreement.
+
+**Schema stuck after adding a new datacenter.** The new DC nodes may take time to sync schema. Increase the gossip interval and schema agreement timeout, and verify the new nodes have joined the cluster before running DDL.
+
+## Prevent It
+
+- Use a schema migration tool that serializes DDL changes and waits for agreement before proceeding
+- Monitor schema version consistency across nodes with the `system.schema_versions` table and alert on divergence
+- Never run DDL changes during rolling restarts, compaction-heavy periods, or cluster rebalancing operations

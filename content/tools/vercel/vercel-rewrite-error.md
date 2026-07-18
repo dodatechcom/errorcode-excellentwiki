@@ -1,143 +1,187 @@
 ---
-title: "[Solution] Vercel Rewrites Not Working Error — Fix URL Rewrites"
-description: "Fix Vercel rewrite errors. Resolve URL rewrite configuration issues, path matching, and proxy rewrite failures."
+title: "[Solution] Vercel Rewrite or Redirect Loop Error — How to Fix"
+description: "Fix Vercel rewrite or redirect loops. Resolve infinite redirect cycles, trailing slash conflicts, and misconfigured rules."
 tools: ["vercel"]
 error-types: ["tool-error"]
-severities: ["warning"]
-weight: 7
+severities: ["error"]
+weight: 1
+comments: true
 ---
 
-A Vercel rewrites not working error occurs when your configured URL rewrites are not being applied. Requests go to the original path instead of being rewritten to the target destination.
+A Vercel rewrite or redirect loop error occurs when a redirect rule points to a URL that redirects back to itself or to another rule, creating an infinite cycle that the browser or Vercel terminates.
 
 ## What This Error Means
 
-Rewrites in Vercel transparently redirect requests from one path to another without changing the URL in the browser. When they do not work, visitors see 404 errors or the wrong content is served.
+Redirect loops happen when Rule A redirects to a URL matched by Rule B, and Rule B redirects back to a URL matched by Rule A. Browsers detect this and display an error after approximately 20 hops. Vercel may also terminate the loop before the browser limit is reached.
 
 ## Why It Happens
 
-- The rewrite configuration in vercel.json has incorrect syntax
-- The source path pattern does not match the incoming request
-- The destination URL is unreachable
-- Conflicting rewrite rules override each other
-- The rewrite is placed after a more specific route handler
-- Framework-level routing conflicts with Vercel rewrites
+- Two redirect rules create a circular reference
+- A redirect rule matches its own destination URL
+- Trailing slash rules conflict (add trailing slash vs remove trailing slash)
+- HTTPS redirect combined with a redirect rule that goes to HTTP
+- A rewrite and redirect rule both match the same path
+- The `vercel.json` configuration has conflicting rewrite and redirect entries
+- Middleware creates redirects that conflict with `vercel.json` rules
+
+## Common Error Messages
+
+- `ERR_TOO_MANY_REDIRECTS` — Browser detected infinite redirect loop
+- `The redirect did not complete` — Vercel detected too many redirects
+- `308 Too Many Redirects` — The loop was terminated by Vercel
+- `This page isn't working` — Browser error page for redirect loops
 
 ## How to Fix It
 
-### Configure Rewrites in vercel.json
+### Audit Redirect Rules
 
 ```json
+// vercel.json — check for circular rules
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/old-page",
-      "destination": "/new-page"
+      "destination": "/new-page",
+      "permanent": true
     },
+    {
+      "source": "/new-page",
+      "destination": "/old-page",
+      "permanent": false
+    }
+  ]
+}
+```
+
+### Fix Trailing Slash Conflicts
+
+```javascript
+// next.config.js — choose one approach, not both
+module.exports = {
+  // Option A: Add trailing slashes
+  trailingSlash: true,
+
+  // Option B: Remove trailing slashes (default)
+  // trailingSlash: false,
+};
+```
+
+```json
+// vercel.json — explicit trailing slash rules
+{
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "permanent": false
+    }
+  ]
+}
+```
+
+### Prevent Self-Referencing Redirects
+
+```json
+// WRONG: Redirect matches its own destination
+{
+  "redirects": [
     {
       "source": "/blog/:slug",
-      "destination": "/articles/:slug"
-    },
+      "destination": "/blog/:slug/"
+    }
+  ]
+}
+
+// RIGHT: Use trailingSlash option instead
+// next.config.js
+// { "trailingSlash": true }
+```
+
+### Separate Rewrite and Redirect Rules
+
+```json
+// WRONG: Rewrite and redirect on same path
+{
+  "rewrites": [
+    { "source": "/app/:path*", "destination": "/:path*" }
+  ],
+  "redirects": [
+    { "source": "/:path*", "destination": "/app/:path*" }
+  ]
+}
+
+// RIGHT: Use rewrites only for internal routing
+{
+  "rewrites": [
+    { "source": "/app/:path*", "destination": "/:path*" }
+  ]
+}
+```
+
+### Debug Redirect Loops
+
+```bash
+# Use curl to trace redirect chains
+curl -vL https://your-domain.com/problem-path 2>&1 | grep -E "(< HTTP|< location|< Location)"
+
+# This shows each redirect hop:
+# < HTTP/1.1 301 Moved Permanently
+# < Location: /new-page
+# < HTTP/1.1 301 Moved Permanently
+# < Location: /old-page  ← Loop detected!
+
+# Check for redirect loops in your vercel.json
+cat vercel.json | jq '.redirects[] | {source, destination}'
+```
+
+### Use Rewrites for Internal Routing
+
+```javascript
+// vercel.json — use rewrites instead of redirects for internal routing
+{
+  "rewrites": [
+    // Internal rewrite — no redirect, no loop risk
     {
-      "source": "/api/:path*",
+      "source": "/blog/:slug",
+      "destination": "/blog/[slug]"
+    },
+    // Proxy to external API
+    {
+      "source": "/api/v1/:path*",
       "destination": "https://external-api.com/:path*"
     }
   ]
 }
-```
 
-### Use Path Match Patterns
-
-```json
+// Use beforeFiles and afterFiles for ordered rewrites
 {
-  "rewrites": [
-    {
-      "source": "/products/:id(\\d+)",
-      "destination": "/product-detail?id=:id"
-    },
-    {
-      "source": "/docs/:slug*",
-      "destination": "/documentation/:slug*"
-    },
-    {
-      "source": "/:path((?!api|admin).*)",
-      "destination": "/catch-all/:path"
-    }
-  ]
+  "rewrites": {
+    "beforeFiles": [
+      { "source": "/api/:path*", "destination": "/api-handler/:path*" }
+    ],
+    "afterFiles": [
+      { "source": "/blog/:slug", "destination": "/blog/[slug]" }
+    ],
+    "fallback": [
+      { "source": "/:path*", "destination": "/404" }
+    ]
+  }
 }
 ```
 
-### Next.js Rewrites (next.config.js)
+## Common Scenarios
 
-```javascript
-// next.config.js
-module.exports = {
-  async rewrites() {
-    return [
-      {
-        source: '/old-path/:path*',
-        destination: '/new-path/:path*',
-      },
-      {
-        source: '/external/:path*',
-        destination: 'https://api.example.com/:path*',
-      },
-    ];
-  },
-};
-```
+- **Trailing slash inconsistency:** `trailingSlash: true` in next.config.js redirects `/blog/post` to `/blog/post/`, but a vercel.json rule redirects `/blog/post/` back to `/blog/post`.
+- **HTTP to HTTPS redirect conflict:** A vercel.json rule redirects `http://example.com` to `https://example.com`, but another rule redirects `https://example.com` back to `http://example.com` for a specific path.
+- **Legacy redirect rules:** Old redirect rules from a site migration are still active and conflict with new routing rules.
 
-### Test Rewrites
+## Prevent It
 
-```bash
-# Test a rewrite
-curl -I https://your-domain.com/old-page
-
-# Check response headers for the rewritten path
-curl -v https://your-domain.com/blog/hello-post 2>&1 | grep "< location"
-
-# Use Vercel CLI to test locally
-vercel dev
-```
-
-### Debug Rewrite Issues
-
-```javascript
-// Add debug logging in your route handler
-export default function handler(req, res) {
-  console.log('Original URL:', req.url);
-  console.log('Rewrite source:', req.headers['x-matched-path']);
-  res.json({ url: req.url });
-}
-```
-
-### Check Rewrite Order
-
-```json
-{
-  "rewrites": [
-    {
-      "source": "/admin/:path*",
-      "destination": "/admin-panel/:path*"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/catch-all/:path*"
-    }
-  ]
-}
-```
-
-Rewrites are processed in order. More specific patterns should come first.
-
-## Common Mistakes
-
-- Putting catch-all rewrites before specific ones
-- Using `*` instead of `:path*` for path matching
-- Not testing rewrites locally with `vercel dev`
-- Confusing rewrites with redirects (rewrites preserve the URL)
-- Forgetting that rewrites do not change the browser URL bar
+1. Use `curl -vL` to trace redirect chains before deploying new redirect rules
+2. Prefer rewrites over redirects for internal routing to avoid redirect loops entirely
+3. Test all redirect rules with a variety of URLs in Vercel's preview deployment before merging to production
 
 ## Related Pages
 
-- [Vercel Domain Error]({{< relref "/tools/vercel/vercel-domain-error" >}}) — Domain configuration failed
-- [Vercel Deploy Error]({{< relref "/tools/vercel/vercel-deploy-error" >}}) — Deployment failed
+- [Vercel Rewrite Error]({{< relref "/tools/vercel/vercel-rewrite-error" >}}) — Rewrite misconfiguration
+- [Vercel Middleware Error]({{< relref "/tools/vercel/vercel-middleware-error" >}}) — Middleware runtime error

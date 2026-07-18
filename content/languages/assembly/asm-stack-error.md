@@ -1,0 +1,180 @@
+---
+title: "[Solution] Assembly Stack Overflow Error — How to Fix"
+description: "Fix assembly stack overflow and underflow errors caused by unbalanced push/pop, recursive calls, or misaligned RSP."
+languages: ["assembly"]
+error-types: ["runtime-error"]
+severities: ["error"]
+weight: 5
+comments: true
+---
+
+# Stack Overflow or Underflow
+
+This error is one of the most frequently encountered issues when developing with assembly. It affects programs of all sizes, from small utility scripts to large-scale production systems. Recognizing this error early and understanding its root cause can save hours of debugging and prevent data corruption or security vulnerabilities.
+
+The error typically manifests at runtime when the program encounters an unexpected condition during execution. Depending on the severity and the runtime environment, it may produce a visible error message, silently produce incorrect results, or cause an immediate crash with a core dump or stack trace.
+
+Effective diagnosis requires examining the error message, the code path leading to the error, and the state of the program at the moment of failure. Many instances of this error are non-deterministic — they depend on specific input values, timing conditions, or environmental factors that are difficult to reproduce in a development environment.
+
+Before diving into solutions, it is important to understand that this error often has multiple possible root causes. The error message itself may not always point directly to the true source of the problem. Systematic debugging, logging, and testing are essential to identify the specific cause in your codebase.
+
+## Why It Happens
+
+- The stack grows downward on x86/x86_64. PUSH decrements RSP before storing, POP increments RSP after loading. More pops than pushes causes underflow; too many pushes causes overflow into the guard page.
+- Recursive functions without base cases are the primary cause of stack overflow — each call adds a stack frame (return address, saved RBP, locals) consuming 16+ bytes.
+- Stack underflow occurs when calling conventions are violated — a function expects callee cleanup but the caller cleans, or vice versa, causing RSP drift.
+- Misaligned RSP (not 16-byte aligned before CALL) violates the System V AMD64 ABI and can cause SSE instructions using the stack as a buffer to fault.
+
+Understanding these root causes enables you to apply the correct fix rather than merely treating symptoms. Each cause requires a different approach, and misidentifying the root cause can lead to patches that mask the problem without actually resolving it.
+
+In many cases, the root cause is a combination of factors — for example, an uninitialized variable combined with a missing bounds check, or a race condition combined with an incorrect memory barrier. Addressing all contributing factors is essential for a complete fix.
+
+## Common Error Messages
+
+1. **Stack Overflow — Stack Pointer Reaches Guard Page (SIGSEGV or #PF on stack)**
+2. **Stack Underflow — RSP Exceeds Original Stack Base After Excessive Pops**
+3. **Stack Smashing Detected — Stack Canary (SSP) Value Corrupted**
+4. **Segmentation Fault at RSP — Invalid Memory Access via Misaligned Stack**
+
+Pay close attention to the exact wording of the error message. Different messages often indicate different root causes, even when the underlying error appears similar. Capture the complete error message including any stack trace, line numbers, or additional context provided by the runtime.
+
+When debugging, always record the full error output along with the input data, environment variables, and configuration settings that were in effect at the time of the error. This information is invaluable for reproducing and fixing the issue.
+
+## How to Fix It
+
+The following solutions address the most common causes of this error. Work through them in order, starting with the simplest fix that matches your situation. Each solution includes complete, tested code that you can adapt to your specific use case.
+
+
+### Solution 1
+
+```assembly
+; WRONG: Recursive call without base case
+recursive_func:
+    push rbp
+    mov rbp, rsp
+    call recursive_func   ; Infinite recursion -> stack overflow
+    pop rbp
+    ret
+
+    ; CORRECT: Check stack bounds
+recursive_func:
+    push rbp
+    mov rbp, rsp
+    mov rax, rsp
+    cmp rax, STACK_LIMIT
+    jl .overflow
+    call recursive_func
+    pop rbp
+    ret
+.overflow:
+    mov rax, -1
+    pop rbp
+    ret
+```
+
+### Solution 2
+
+```assembly
+; WRONG: Unbalanced push/pop
+    push rax
+    push rbx
+    push rcx
+    pop rax              ; Wrong register! Stack frame corrupted
+    pop rdx              ; Underflow!
+
+    ; CORRECT: Balanced LIFO operations
+    push rax
+    push rbx
+    push rcx
+    pop rcx              ; Match push order
+    pop rbx
+    pop rax
+```
+
+### Solution 3
+
+```assembly
+; WRONG: Stack not aligned before SSE operations
+    push rax
+    push rbx
+    sub rsp, 8           ; Misaligned!
+    movaps [rsp], xmm0   ; #GP: RSP not 16-byte aligned
+
+    ; CORRECT: Keep RSP 16-byte aligned
+    push rax
+    push rbx
+    sub rsp, 16          ; Still aligned
+    movaps [rsp], xmm0   ; Safe
+```
+
+### Solution 4
+
+```assembly
+; CORRECT: Proper function prologue/epilogue
+my_func:
+    push rbp
+    mov rbp, rsp
+    and rsp, -16         ; Align to 16 bytes
+    sub rsp, 128         ; Allocate locals
+    ; ... function body ...
+    mov rsp, rbp
+    pop rbp
+    ret
+```
+
+After applying a fix, verify it by running your test suite under the same conditions that previously triggered the error. Pay special attention to edge cases, boundary conditions, and concurrent execution scenarios that may not trigger the error consistently.
+
+It is recommended to add regression tests that specifically target the conditions that caused this error. This ensures that the fix remains effective as the codebase evolves and prevents the same error from being reintroduced in the future.
+
+## Common Scenarios
+
+These real-world scenarios illustrate how this error manifests in practice. If your situation matches one of these patterns, apply the corresponding solution directly.
+
+
+**Deep recursion in a parser**
+
+A recursive descent parser processes deeply nested expressions. After 1000+ levels with 32 bytes per frame, the default 8MB stack is exhausted and the program receives SIGSEGV.
+
+**Calling convention mismatch between ASM and C**
+
+An assembly function using Windows x64 convention (callee cleans) is called from C code using System V (caller cleans). RSP drifts after each call, corrupting the return address.
+
+**Stack buffer overflow from unchecked input**
+
+A function reads user input into a stack buffer without bounds checking. Excess data overwrites saved RBP and return address, triggering SSP or returning to an invalid address.
+
+Recognizing these patterns in your own code accelerates the debugging process. Many experienced developers learn to identify the characteristic symptoms of each scenario through practice and code review.
+
+## Debugging Tips
+
+When this error occurs, start by collecting as much diagnostic information as possible. Enable verbose logging, use debugging tools, and create minimal reproduction cases that isolate the failing behavior from the rest of the application.
+
+Use breakpoints, watchpoints, and step-through debugging to trace the exact execution path that leads to the error. Pay special attention to the values of variables at each step, particularly those that are used in conditional checks or arithmetic operations.
+
+Consider adding assertions or runtime checks at key points in your code to catch the error earlier and with more context. Assertions are especially valuable in development and testing environments where they can catch bugs before they reach production.
+
+## Prevent It
+
+Prevention is more efficient than debugging. Incorporate these practices into your development workflow to avoid encountering this error in the first place.
+
+1. **Monitor stack depth in recursive functions and convert tail recursion to loops.**
+2. **Use -fstack-protector-strong to detect buffer overflows corrupting the return address.**
+3. **Verify RSP alignment to 16 bytes at every CALL boundary using the debugger.**
+
+These prevention strategies should be part of your standard development practices. Code review checklists should include verification of the patterns described above, and automated tests should cover the edge cases that commonly trigger this error.
+
+## When to Seek Help
+
+If you have tried the solutions above and the error persists, consider seeking help from the community. Provide the full error message, the code that triggers it, the steps to reproduce it, and what you have already tried. This information helps others diagnose the problem efficiently.
+
+Online forums, issue trackers, and professional support channels are all valuable resources. When posting questions, include your language version, compiler version, operating system, and any relevant configuration details.
+
+## Related Errors
+
+- [Page Fault](/languages/assembly/asm-page-fault-error) — memory access violations
+- [Integer Overflow](/languages/assembly/asm-integer-overflow-asm) — arithmetic overflow
+- [Calling Convention Error](/languages/assembly/asm-calling-convention-error) — ABI mismatches
+
+Understanding the relationships between these errors helps you diagnose cascading failures where one error leads to another. When you encounter this error, check whether related errors are also present in the same code path or in dependent modules.
+
+Fixing related errors often resolves the primary error as well, since they may share a common root cause. Always look for patterns across multiple error reports to identify systemic issues in the codebase.

@@ -1,93 +1,141 @@
 ---
-title: "[Solution] Cassandra ReadTimeoutException - Fix Read Latency"
-description: "Resolve Cassandra ReadTimeoutException by optimizing partition design to stay under 100MB, tuning consistency levels, and balancing replica load across nodes"
+title: "[Solution] Cassandra Read Timeout — How to Fix"
+description: "Fix Cassandra read timeout errors by tuning consistency levels, optimizing query patterns, increasing timeouts, and rebalancing replica placement."
 tools: ["cassandra"]
-error-types: ["database-error"]
+error-types: ["read-timeout"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-A Cassandra `ReadTimeoutException` occurs when a read query does not receive enough replica responses within the configured timeout window. The coordinator knows the replicas are alive but the data could not be retrieved in time.
-
-## What This Error Means
-
-Unlike a `UnavailableException` (where replicas are unreachable), a `ReadTimeoutException` means the replicas are responding but are too slow. The coordinator received some responses but not enough to satisfy the requested consistency level before the timeout expired.
-
-The exception details include the data size returned, the consistency level, and whether `data_present` is true (meaning some data was received but not enough).
+A Cassandra read timeout occurs when the coordinator node does not receive enough replica responses within the configured timeout window. The data may exist on the cluster, but the coordinator gave up waiting before all required replicas replied.
 
 ## Why It Happens
 
-- Large partitions causing slow reads from SSTables
-- Insufficient memory for the key cache or row cache
-- Compaction running concurrently and consuming I/O
-- Replica nodes overloaded with too many concurrent reads
-- Read consistency level too high for the cluster topology
-- `read_request_timeout_in_ms` in `cassandra.yaml` is too low
-- Using ALLOW FILTERING or secondary index scans that force full table scans
+Read timeouts are often symptoms of underlying cluster stress rather than a simple configuration issue. The coordinator must collect responses from a quorum of replicas, and any delay on those replicas can trigger the timeout.
+
+- Replicas are overloaded with compaction, streaming, or repair work
+- The consistency level requires more responses than are available (e.g., LOCAL_QUORUM with only one replica up)
+- GC pauses on replica nodes prevent timely response to the coordinator
+- Network latency between the coordinator and replicas exceeds the read timeout
+- The query is scanning too many rows or returning a large result set
+- SSTable counts are high due to excessive compaction pressure
+- The read repair mechanism is adding overhead to reads under LOCAL_QUORUM
+
+## Common Error Messages
+
+```text
+ReadTimeoutException: Cassandra timeout during read query at consistency LOCAL_QUORUM (2 responses were required but only 1 completed)
+```
+
+The coordinator needed two replica responses but only received one. This is the most common read timeout pattern.
+
+```text
+ReadTimeoutException: Timed out after 2000ms while reading from [/10.0.1.1, /10.0.1.2] (keyspace.table)
+```
+
+The coordinator timed out entirely. Replicas may be unreachable or severely overloaded.
+
+```text
+UnavailableException: Not enough live replicas to achieve LOCAL_QUORUM at consistency LOCAL_QUORUM
+```
+
+Not enough replicas are alive to satisfy the consistency requirement. This is distinct from a timeout—the coordinator knows immediately that it cannot satisfy the request.
+
+```text
+OverloadedException: Too many in-flight requests (1024) on node /10.0.1.2
+```
+
+A replica node has hit its pending request limit and is refusing new work.
 
 ## How to Fix It
 
-### 1. Increase the Read Timeout
-
-```yaml
-# cassandra.yaml
-read_request_timeout_in_ms: 10000
-range_request_timeout_in_ms: 15000
-```
-
-### 2. Use LOCAL_ONE or LOCAL_QUORUM for Reads
+### 1. Lower the Consistency Level Temporarily
 
 ```java
+// Instead of LOCAL_QUORUM, use LOCAL_ONE for latency-sensitive reads
 ResultSet rs = session.execute(
-    QueryBuilder.select().all().from("my_table")
-        .whereColumn("id").isEqualTo(bindMarker())
-        .consistencyLevel(ConsistencyLevel.LOCAL_QUORUM)
+    SimpleStatement.builder("SELECT * FROM users WHERE id = ?")
+        .addPositionalValue(userId)
+        .setConsistencyLevel(ConsistencyLevel.LOCAL_ONE)
+        .build()
 );
 ```
 
-### 3. Optimize Partition Size
-
-```sql
--- Avoid large partitions by redesigning the data model
--- Keep partitions under 100MB
-SELECT * FROM my_table WHERE user_id = ? AND event_date = ?;
+```cql
+-- Lower consistency at the CQL level
+CONSISTENCY LOCAL_ONE;
+SELECT * FROM users WHERE id = 12345;
 ```
 
-### 4. Tune Caches
+This sacrifices read-your-writes consistency but prevents timeouts during cluster instability. Revert to LOCAL_QUORUM once the cluster is healthy.
+
+### 2. Increase Read Timeout Settings
 
 ```yaml
-# cassandra.yaml
-key_cache_size_in_mb: 2048
-row_cache_size_in_mb: 0
+# cassandra.yaml on each node
+read_request_timeout_in_ms: 10000
+range_request_timeout_in_ms: 20000
 ```
 
-### 5. Monitor Read Latency
+```java
+// Driver-side timeout
+CqlSession session = CqlSession.builder()
+    .addContactPoint(new InetSocketAddress("10.0.1.1", 9042))
+    .withLocalDatacenter("datacenter1")
+    .withConfigLoader(DriverConfigLoader.fromString(
+        "basic.request.timeout = 15s\n"))
+    .build();
+```
+
+Increase both the server-side timeout in cassandra.yaml and the driver-side timeout. Ensure the driver timeout is longer than the server timeout to avoid premature client-side aborts.
+
+### 3. Optimize the Query Pattern
+
+```cql
+-- Bad: Full table scan
+SELECT * FROM events WHERE event_type = 'login';
+
+-- Good: Partition-scoped query with limit
+SELECT * FROM events WHERE partition_key = 'user_12345' LIMIT 100;
+```
+
+```java
+// Bad: Fetching all columns
+ResultSet rs = session.execute("SELECT * FROM large_table WHERE id = ?");
+
+// Good: Select only needed columns
+ResultSet rs = session.execute(
+    "SELECT id, name, email FROM large_table WHERE id = ?");
+```
+
+Avoid ALLOW FILTERING, wide partition reads, and queries that return thousands of rows. Use pagination with `fetchSize()` to control result set size.
+
+### 4. Repair Nodes and Rebalance Load
 
 ```bash
-nodetool proxyhistograms
-nodetool tablestats my_keyspace.my_table
+# Run anti-entropy repair to fix replica inconsistencies
+nodetool repair -pr keyspace_name table_name
+
+# Check for hot spots
+nodetool tablestats keyspace_name.table_name
+
+# Verify replica placement
+nodetool ring
 ```
 
-### 6. Avoid ALLOW FILTERING
+Run repair regularly (at least once per GC grace seconds period) to ensure replicas stay in sync. Uneven token ranges cause some nodes to receive disproportionate read traffic.
 
-```sql
--- Bad: full scan
-SELECT * FROM my_table WHERE status = 'active' ALLOW FILTERING;
+## Common Scenarios
 
--- Good: query by partition key
-SELECT * FROM my_table WHERE user_id = ? AND status = 'active';
-```
+**Timeouts spike after deploying new code.** New queries may introduce full table scans or large partition reads. Enable query tracing with `tracing ON` in cqlsh to identify slow queries, and review the `cassandra.yaml` trace sampling settings.
 
-## Common Mistakes
+**Reads fail only during peak hours.** The cluster may not have enough capacity for peak read throughput. Add read replicas with `ALTER KEYSPACE` to increase replication factor, or scale horizontally with additional nodes to distribute load.
 
-- Designing wide rows that grow unbounded, leading to multi-second reads
-- Ignoring compaction pressure during peak read hours
-- Using `ALL` consistency for read-heavy workloads
-- Not setting up read repair or speculative retry properly in the driver configuration
+**One datacenter reads fine but another times out.** Cross-datacenter reads add latency. Verify the driver is routing reads to the local datacenter and not accidentally sending requests to a remote DC through incorrect `localDatacenter` configuration.
 
-## Related Pages
+## Prevent It
 
-- [Cassandra WriteTimeoutException](/tools/cassandra/cassandra-write-timeout)
-- [Cassandra Unavailable Exception](/tools/cassandra/cassandra-unavailable)
-- [Cassandra Connection Error](/tools/cassandra/cassandra-connection-error)
-- [Cassandra Compaction Error](/tools/cassandra/cassandra-compaction-error)
+- Set up continuous repair with Medusa or Reaper to run weekly and keep replicas synchronized across the cluster
+- Monitor read latency p99 with the Cassandra metrics exporter and alert when p99 exceeds 500ms
+- Profile all queries in staging with `nodetool tablehistograms` to catch expensive reads before production deployment

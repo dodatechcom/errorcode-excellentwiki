@@ -1,125 +1,191 @@
 ---
-title: "[Solution] DynamoDB TypeError - Fix Expression Attribute Values"
-description: "Fix DynamoDB TypeError in expressions by ensuring correct DynamoDB-native attribute types, using proper TypeSerializer serialization, and avoiding empty string "
+title: "[Solution] DynamoDB Type Mismatch in Attribute Value — How to Fix"
+description: "Fix DynamoDB ValidationException for type mismatches by correcting attribute value types, matching schema expectations, and validating type conversions in application code."
 tools: ["dynamodb"]
-error-types: ["database-error"]
+error-types: ["type-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-A DynamoDB TypeError occurs when an expression attribute value has an incorrect or unsupported data type. The error message is `SerializationException: Start of structure or map found where not expected` or `One or more parameter values were invalid`.
+A `ValidationException` with a type mismatch error occurs when you provide an attribute value of the wrong DynamoDB type (String, Number, Binary, Boolean, Null, List, Map, or StringSet/NumberSet/BinarySet) for the operation being performed.
 
 ## What This Error Means
 
-DynamoDB requires specific data types for expression attribute values. Each value must be wrapped in a type descriptor (e.g., `{'S': 'value'}` for strings, `{'N': '123'}` for numbers). When a value is provided in the wrong format or an unsupported type is used, DynamoDB returns a `SerializationException` or `TypeError`.
+DynamoDB is a schema-on-read database, but it enforces strict type checking on attribute values. Each value must be wrapped in a type wrapper (e.g., `{'S': 'hello'}` for string, `{'N': '42'}` for number). If you provide a value in a different type than what the operation expects, or mix up the type wrappers, DynamoDB rejects the request.
 
-This is distinct from `ValidationException` because it specifically relates to the serialization format of the attribute values, not the logical validity of the request.
+Type errors can also occur in condition expressions, filter expressions, and update expressions where attribute types must be consistent.
 
 ## Why It Happens
 
-- Passing a Python int where DynamoDB expects a string (or vice versa)
-- Using `None` as an attribute value (not supported in DynamoDB)
-- Providing a list where a map is expected
-- Using nested expressions without proper type descriptors
-- Mixing DynamoDB JSON and JavaScript Object Notation formats
-- Forgetting to convert Python types to DynamoDB format in the SDK
-- Passing empty strings (not supported for keys)
+- Passing a string value where a number is expected (or vice versa)
+- Using the wrong type wrapper, e.g., `{'S': '123'}` instead of `{'N': '123'}` for arithmetic
+- Comparing incompatible types in condition expressions
+- Using `NULL` type where an actual value is required
+- Mismatched set types (StringSet vs NumberSet)
+- Providing a list where a map is expected in expression attribute values
+- DynamoDB Streams records containing unexpected types from schema changes
+
+## Common Error Messages
+
+```
+ValidationException: One or more parameter values were invalid: Type mismatch for number value
+# or
+Type mismatch for Index Key: AttributeValue has a type mismatch with the schema
+# or
+One or more parameter values were invalid: Type mismatch for attribute Status
+# or
+Expected: S, Received: N in ConditionExpression parameter
+```
 
 ## How to Fix It
 
-### 1. Use DynamoDB Type Objects
+### 1. Use Correct Type Wrappers
 
 ```python
-from boto3.dynamodb.types import TypeSerializer, TypeDeserializer
+import boto3
 
-serializer = TypeSerializer()
-
-# Correct serialization
-value = serializer.serialize('hello')  # {'S': 'hello'}
-value = serializer.serialize(123)       # {'N': '123'}
-value = serializer.serialize(True)      # {'BOOL': True}
-```
-
-### 2. Use the Table Resource Instead of Client
-
-```python
-# Table resource handles type conversion automatically
-table = dynamodb.Table('my-table')
-table.put_item(Item={
-    'id': '123',          # String
-    'count': 42,           # Number
-    'active': True,        # Boolean
-    'tags': ['a', 'b'],    # List
-})
-
-# Client requires manual type descriptors
 client = boto3.client('dynamodb')
-client.put_item(
-    TableName='my-table',
-    Item={
-        'id': {'S': '123'},
-        'count': {'N': '42'},
-        'active': {'BOOL': True},
-        'tags': {'L': [{'S': 'a'}, {'S': 'b'}]}
-    }
-)
-```
 
-### 3. Check for Empty Strings
-
-```python
-# DynamoDB does not allow empty strings in keys
-# Use a placeholder or null instead
-item = {
-    'id': '123',
-    'description': ''  # This is OK for non-key attributes
+# Correct type wrappers
+item_correct = {
+    'pk': {'S': 'user#123'},        # String
+    'age': {'N': '30'},             # Number (always as string!)
+    'active': {'BOOL': True},       # Boolean
+    'tags': {'SS': ['admin', 'user']},  # String Set
+    'scores': {'NS': ['95', '87']},     # Number Set
+    'address': {'M': {              # Map
+        'city': {'S': 'NYC'},
+        'zip': {'N': '10001'}
+    }},
+    'hobbies': {'L': [              # List
+        {'S': 'reading'},
+        {'S': 'coding'}
+    ]}
 }
 
-# For keys, use a sentinel value
+client.put_item(TableName='my-table', Item=item_correct)
+```
+
+### 2. Validate Types Before Writing
+
+```python
+def validate_dynamodb_type(value):
+    """Validate that the value uses correct DynamoDB type wrappers."""
+    valid_types = {'S', 'N', 'B', 'BOOL', 'NULL', 'SS', 'NS', 'BS', 'L', 'M'}
+    
+    if not isinstance(value, dict) or len(value) != 1:
+        return False
+    
+    key = next(iter(value))
+    return key in valid_types
+
+# Validate all attribute values
 item = {
-    'id': '123',
-    'sk': 'NONE'  # Instead of empty string
+    'pk': {'S': 'user#123'},
+    'count': 'wrong'  # Missing type wrapper
+}
+
+# This will fail - count should be {'N': '0'}
+```
+
+### 3. Convert Types Safely
+
+```python
+def safe_number(value):
+    """Convert a number to DynamoDB number format."""
+    try:
+        return {'N': str(value)}
+    except (TypeError, ValueError):
+        return {'S': str(value)}
+
+def safe_boolean(value):
+    """Convert to DynamoDB boolean."""
+    return {'BOOL': bool(value)}
+
+# Use in item construction
+item = {
+    'pk': {'S': 'user#123'},
+    'age': safe_number(30),
+    'active': safe_boolean(True)
 }
 ```
 
-### 4. Validate Types Before Sending
+### 4. Fix Index Key Type Mismatches
 
 ```python
-def validate_dynamodb_item(item):
-    for key, value in item.items():
-        if value is None:
-            raise TypeError(f"Attribute '{key}' cannot be None")
-        if isinstance(value, str) and len(value) == 0:
-            if key in ('id', 'sk'):  # If it's a key
-                raise TypeError(f"Key attribute '{key}' cannot be empty string")
+# If table has a Global Secondary Index (GSI) on 'status' with type String (S),
+# you MUST use {'S': 'value'} for that attribute
+
+# Correct for GSI key:
+item = {
+    'pk': {'S': 'user#123'},
+    'status': {'S': 'active'}  # Must match GSI key type (S)
+}
+
+# Wrong - type mismatch:
+item = {
+    'pk': {'S': 'user#123'},
+    'status': {'N': '1'}  # GSI expects String, not Number
+}
 ```
 
-### 5. Use the Correct Format for Expression Values
+### 5. Debug Type Mismatches in Expressions
 
 ```python
-# Correct: ExpressionAttributeValues must use type descriptors
-response = table.query(
-    KeyConditionExpression='pk = :pk',
-    ExpressionAttributeValues={':pk': '123'}  # SDK converts this automatically
-)
+import boto3
 
-# Manual format (if using the client directly)
-response = client.query(
+client = boto3.client('dynamodb')
+
+# Check expression attribute value types match the schema
+# Example: UpdateExpression uses SET #age = :age
+# :age must match the attribute's expected type
+
+# Correct:
+client.update_item(
     TableName='my-table',
-    KeyConditionExpression='pk = :pk',
-    ExpressionAttributeValues={':pk': {'S': '123'}}
+    Key={'pk': {'S': 'user#123'}},
+    UpdateExpression='SET #age = :age',
+    ExpressionAttributeNames={'#age': 'age'},
+    ExpressionAttributeValues={':age': {'N': '31'}}  # Number type
+)
+
+# Wrong - type mismatch:
+client.update_item(
+    TableName='my-table',
+    Key={'pk': {'S': 'user#123'}},
+    UpdateExpression='SET #age = :age',
+    ExpressionAttributeNames={'#age': 'age'},
+    ExpressionAttributeValues={':age': {'S': '31'}}  # Should be {'N': '31'}
 )
 ```
 
-## Common Mistakes
+## Common Scenarios
 
-- Using the low-level client without wrapping values in type descriptors
-- Passing `None` or `null` as an attribute value (use `{'NULL': True}` instead)
-- Not converting Decimal to int/float before sending to DynamoDB
-- Using Python boolean `True` in expression values when using the raw client
+### Numeric IDs Stored as Strings
+
+An application stores user IDs as numbers (`{'N': '12345'}`) in one table and as strings (`{'S': '12345'}`) in another. When performing cross-table lookups, the type mismatch causes errors. Standardize on a single type for IDs across all tables.
+
+### Schema Migration Gone Wrong
+
+During a schema migration, an attribute changes from Number to String. Existing code still writes Number values, causing errors. Implement a transition period where both types are accepted, or use a write-audit process to catch mismatches.
+
+### Boolean vs String Confusion
+
+A service that previously stored status as `{'S': 'true'}` is updated to use `{'BOOL': True}`. Downstream consumers that read the attribute fail to handle boolean values. Ensure all producers and consumers agree on the attribute type.
+
+## Prevent It
+
+- Define a schema validation layer that enforces attribute types before writing to DynamoDB
+- Use DynamoDB typed value helpers to ensure consistent type wrappers
+- Document the expected type for every attribute, especially index keys
+- Run integration tests that verify type correctness for all write operations
+- Use a DynamoDB mapper library that handles type serialization automatically
+- Add pre-commit hooks that validate DynamoDB item structure
+- Monitor for ValidationExceptions and alert when type mismatches increase
 
 ## Related Pages
 
-- [DynamoDB ValidationException](/tools/dynamodb/dynamodb-validation-error)
-- [DynamoDB Size Limit](/tools/dynamodb/dynamodb-size-limit)
-- [DynamoDB Item Not Found](/tools/dynamodb/dynamodb-item-not-found)
+- [DynamoDB Item Size Error](/tools/dynamodb/dynamodb-item-size-error)
+- [DynamoDB Conditional Check Error](/tools/dynamodb/dynamodb-condcheck-error)
+- [DynamoDB Filter Expression Error](/tools/dynamodb/dynamodb-filter-error)

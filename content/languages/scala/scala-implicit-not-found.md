@@ -1,90 +1,114 @@
 ---
-title: "[Solution] Scala Implicit Not Found — Missing Implicit Value for Type"
-description: "Fix Scala implicit not found errors. Learn how to provide implicit values, resolve ambiguity, and debug implicit resolution chains."
+title: "[Solution] Scala Implicit Not Found Error — How to Fix"
+description: "Fix Scala implicit not found errors quickly. Learn why the compiler cannot locate implicits and how to provide them correctly in your codebase."
 languages: ["scala"]
 error-types: ["compile-error"]
 severities: ["error"]
 weight: 10
+comments: true
 ---
-
-## What This Error Means
-
-An "implicit not found" compile error occurs when the Scala compiler cannot find an implicit value of the required type to pass to a method or constructor that expects one. The error message shows the type it was looking for, such as "implicit not found: implicit evidence: scala.Ordering[A]".
 
 ## Why It Happens
 
-The most common cause is calling a method that requires an implicit parameter without having one in scope. For example, calling `.sorted` on a `List[CustomType]` requires an implicit `Ordering[CustomType]`, which the standard library provides for basic types but not for your own types.
+The Scala compiler relies on implicits to automatically resolve values, type classes, and conversions at compile time. When you use a construct that requires an implicit value and the compiler cannot find one in scope, it raises an "implicit not found" error.
 
-Another frequent cause is implicit scope confusion. When implicits are defined in companion objects, the compiler looks in the companion of each type involved. If the implicit is defined in a different package or object, it may not be found.
+The most common cause is simply forgetting to import or define the implicit value that a method or class requires. For example, calling `implicitly[Ordering[Int]]` without an `Ordering[Int]` in scope produces this error.
 
-Ambiguity between multiple implicits of the same type also triggers this error. If two implicits in scope both match, the compiler reports ambiguity rather than choosing one.
+Another frequent cause is scope shadowing. If you define an implicit in a narrow scope and then reference it from a wider scope, the compiler does not see it. Implicits defined inside a method are not visible outside that method.
 
-Finally, importing implicits from the wrong scope or forgetting to import them entirely will cause this error. Cats, Shapeless, and other libraries rely heavily on implicits that must be explicitly imported.
+Implicit conversion conflicts also cause this error. When two implicit conversions are available for the same type, the compiler cannot decide which one to use and reports ambiguity rather than not found, but when only one is partially applicable, you may get a not-found error.
+
+Type class derivation failures are a modern source of this error. With Scala 3's `deriving` mechanism, if a type does not have all the required instances for its fields, the derived instance fails.
+
+Finally, implicit priority rules can hide an implicit you thought was available. An implicit defined in a parent trait may be overridden by one in a child trait, and if the override has a narrower type, the original may no longer be found where expected.
+
+## Common Error Messages
+
+```
+Error: (line, col) implicit not found: implicitly[Ordering[List[String]]]
+```
+
+```
+Error: could not find implicit value for parameter evidence: Ordering[A]
+```
+
+```
+Error: (line, col) No implicit found for parameter ordering: Ordering[MyType]
+```
+
+```
+Error: diverging implicit expansion for type Show[User] starting with method showString in object Show
+```
 
 ## How to Fix It
 
-### Define an implicit Ordering for custom types
+### Import the required implicit explicitly
 
 ```scala
-case class Person(name: String, age: Int)
+import scala.math.Ordering.Implicits._
 
-object Person {
-  implicit val ordering: Ordering[Person] = Ordering.by(_.age)
+val sorted = List(3, 1, 2).sorted
+// Requires implicit Ordering[Int] — available from standard library
+```
+
+### Define a custom implicit for your type
+
+```scala
+case class User(name: String, age: Int)
+
+implicit val userOrdering: Ordering[User] = Ordering.by(_.age)
+
+val users = List(User("Alice", 30), User("Bob", 25))
+val sorted = users.sorted
+// sorted is List(User("Bob",25), User("Alice",30))
+```
+
+### Use given/using in Scala 3
+
+```scala
+// Scala 3
+trait Show[A] {
+  def show(a: A): String
 }
 
-// Now this works
-val people = List(Person("Alice", 30), Person("Bob", 25))
-val sorted = people.sorted
-```
-
-### Import required implicits explicitly
-
-```scala
-import scala.concurrent.ExecutionContext.Implicits.global
-import cats.implicits._
-import cats.syntax.all._
-```
-
-### Provide implicit values as function arguments
-
-```scala
-def mergeSort[T](list: List[T])(implicit ord: Ordering[T]): List[T] = {
-  if (list.length <= 1) list
-  else {
-    val (left, right) = list.splitAt(list.length / 2)
-    merge(mergeSort(left), mergeSort(right))
-  }
+given Show[Int] with {
+  def show(a: Int): String = a.toString
 }
 
-// Call with explicit implicit
-implicit val intOrdering: Ordering[Int] = Ordering.Int
-mergeSort(List(3, 1, 4, 1, 5))
+def printItem[A](item: A)(using s: Show[A]): Unit =
+  println(s.show(item))
+
+printItem(42) // Works — given Show[Int] is found
 ```
 
-### Use context bounds for cleaner syntax
+### Bring implicits into scope with import
 
 ```scala
-def max[T: Ordering](a: T, b: T): T =
-  if (implicitly[Ordering[T]].compare(a, b) > 0) a else b
+object JsonCodec {
+  implicit val intCodec: JsonCodec[Int] = ???
+  implicit val stringCodec: JsonCodec[String] = ???
+}
+
+import JsonCodec._
+// Now all codecs are available
+def encode[A](value: A)(implicit codec: JsonCodec[A]): String = ???
 ```
 
-### Debug implicit resolution with the compiler flag
+### Use summon in Scala 3 as a safer alternative to implicitly
 
-```bash
-# Show implicit search details
-scalac -Xlog-implicits myFile.scala
+```scala
+// Scala 3 — gives better error messages
+val codec = summon[JsonCodec[Int]]
 ```
 
-## Common Mistakes
+## Common Scenarios
 
-- Forgetting to import `scala.concurrent.ExecutionContext.Implicits.global` for Future operations
-- Not defining implicit instances in companion objects where the compiler looks first
-- Mixing implicit versions between major library releases (e.g., Cats 2.x vs 3.x)
-- Assuming implicit resolution works across package boundaries without explicit imports
-- Creating circular implicit dependencies that cause infinite loops during compilation
+- Using a library method that requires a type class instance you have not imported or defined
+- Refactoring code and moving implicits to a different object without updating imports
+- Working with generic code where the implicit must be propagated through type parameters
 
-## Related Pages
+## Prevent It
 
-- [Scala Type Mismatch](/languages/scala/scala-type-mismatch/)
-- [Scala Type Variance Error](/languages/scala/scala-variance-error/)
-- [Scala SBT Resolution Failed](/languages/scala/scala-sbt-error/)
+- Always verify that required implicits are imported before calling methods that need them
+- Keep implicit definitions in companion objects so they are automatically in scope
+- Use `summon` or `implicitly` in tests to verify that all required implicits exist at compile time

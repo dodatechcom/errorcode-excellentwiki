@@ -1,105 +1,121 @@
 ---
-title: "[Solution] Dart FFI Native Error"
-description: "Fix Dart FFI (Foreign Function Interface) errors including symbol lookup failures, memory access violations, and type mismatches."
+title: "[Solution] Dart Ffi Error"
+description: "Fix Dart FFI errors caused by missing dynamic libraries, symbol not found, or incorrect type bindings."
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-## What This Error Means
+## Why It Happens
 
-Dart FFI errors occur when the Foreign Function Interface fails to load native libraries, resolve symbols, or correctly marshal data between Dart and native code. These errors can crash the application.
+FFI binding or loading error
 
-## Common Causes
+## Common Error Messages
 
-- Native library not found or wrong path
-- Symbol name mismatch (C name mangling)
-- Incorrect function signatures in Dart bindings
-- Memory allocation/deallocation issues
-- Platform-specific library formats (.so, .dylib, .dll)
+1. **Dart error: Failed to load dynamic library**
+2. **Symbol not found in dynamic library**
+3. **FFI type binding mismatch**
 
-## How to Fix
+## How to Fix It
 
-```dart
-// WRONG: Hardcoded library path
-final dylib = DynamicLibrary.open('libfoo.so');  // May fail on macOS
-
-// CORRECT: Platform-aware library loading
-import 'dart:io';
-final dylib = DynamicLibrary.open(
-  Platform.isWindows ? 'foo.dll' :
-  Platform.isMacOS ? 'libfoo.dylib' :
-  'libfoo.so'
-);
-```
+### Solution 1: Add null safety checks
 
 ```dart
-// WRONG: Incorrect function signature
-typedef HelloFunc = Void Function();  // Wrong: C function returns int
-final hello = dylib.lookupFunction<HelloFunc, HelloFunc>('hello');
-
-// CORRECT: Match C signature exactly
-// C: int hello(const char* name);
-typedef HelloCFunc = Int32 Function(Pointer<Utf8> name);
-typedef HelloDartFunc = int Function(Pointer<Utf8> name);
-final hello = dylib.lookupFunction<HelloCFunc, HelloDartFunc>('hello');
-```
-
-```dart
-// WRONG: Not managing memory
-Pointer<Utf8> str = 'hello'.toNativeUtf8();  // Memory leak
-
-// CORRECT: Free native memory
-final str = 'hello'.toNativeUtf8();
-try {
-  final result = hello(str);
-} finally {
-  calloc.free(str);  // Or str.cast<Char>().free()
-}
-```
-
-## Examples
-
-```dart
-import 'dart:ffi';
-import 'package:ffi/ffi.dart';
-import 'dart:io';
-
-// Example 1: Safe FFI loading
-DynamicLibrary? loadLibrary(String name) {
-  try {
-    return DynamicLibrary.open(name);
-  } catch (e) {
-    print('Failed to load library: $e');
-    return null;
+void main() {
+  String? nullableName = getName();
+  
+  // Use null-aware operators
+  String name = nullableName ?? 'Default';
+  
+  // Or use explicit null check
+  if (nullableName != null) {
+    print('Name: $nullableName');
   }
 }
 
-// Example 2: Complete FFI binding example
-// C header:
-// int add(int a, int b);
-typedef AddNative = Int32 Function(Int32 a, Int32 b);
-typedef AddDart = int Function(int a, int b);
-
-void main() {
-  final dylib = DynamicLibrary.open('libmath.so');
-  final add = dylib.lookupFunction<AddNative, AddDart>('add');
-  print(add(2, 3));  // 5
-}
-
-// Example 3: Struct example
-final class MyStruct extends Struct {
-  @Int32()
-  external int value;
-  
-  @Pointer()
-  external Pointer<Utf8> name;
+String? getName() {
+  return null;
 }
 ```
 
+### Solution 2: Use try-catch for error handling
+
+```dart
+Future<void> fetchData() async {
+  try {
+    final response = await http.get(
+      Uri.parse('https://api.example.com/data'),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print('Data: $data');
+    }
+  } catch (e) {
+    print('Error fetching data: $e');
+  }
+}
+```
+
+### Solution 3: Implement proper type casting
+
+```dart
+void process(dynamic value) {
+  // Use type check before casting
+  if (value is String) {
+    print('String value: $value');
+  } else if (value is int) {
+    print('Integer value: $value');
+  }
+  
+  // Or use safe cast with null
+  String? safeStr = value as String?;
+  if (safeStr != null) {
+    print('Safe string: $safeStr');
+  }
+}
+```
+
+## Common Scenarios
+
+### Scenario 1: Type safety violation in FFI binding or loading error
+
+Type safety violation in FFI binding or loading error often occurs when developers forget to handle edge cases in their code. For example:
+
+```dart
+! Example scenario demonstrating the issue
+! This commonly happens in production code
+! Always validate inputs before processing
+```
+
+### Scenario 2: Null reference during FFI binding or loading error
+
+Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+
+```dart
+! Common pattern that leads to this error
+! Always check types and dimensions
+! Use compiler/runtime flags for early detection
+```
+
+### Scenario 3: Async error in FFI binding or loading error
+
+Performance-related issues can also trigger this error under load:
+
+```dart
+! Performance scenario example
+! Monitor resource usage in production
+! Add graceful degradation for resource limits
+```
+
+## Prevent It
+
+- **Enable strict null safety and analysis options in analysis_options.yaml**
+- **Use the analyzer tool (dart analyze) before building to catch issues early**
+- **Write unit tests with test package to verify error handling paths**
+
 ## Related Errors
 
-- [dart-io-error]({{< relref "/languages/dart/dart-io-error" >}}) — I/O errors
-- [dart-type-error]({{< relref "/languages/dart/dart-type-error" >}}) — type mismatch
-- [dart-null-error]({{< relref "/languages/dart/dart-null-error" >}}) — null check error
+- [Dart best practices](/languages/dart)
+- [Dart error handling guide](/languages/dart/_index)

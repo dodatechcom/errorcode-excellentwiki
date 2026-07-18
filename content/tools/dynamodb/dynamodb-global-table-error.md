@@ -1,75 +1,59 @@
 ---
-title: "[Solution] DynamoDB Global Table Error - Fix Multi-Region Replication"
-description: "Fix DynamoDB global table replication errors by enabling DynamoDB Streams, resolving cross-region write conflicts, and verifying cross-region IAM permissions se"
+title: "[Solution] DynamoDB Global Table Replication Error — How to Fix"
+description: "Fix DynamoDB global table replication errors by resolving conflicts, checking region connectivity, verifying IAM roles, monitoring replication lag, and handling schema changes."
 tools: ["dynamodb"]
-error-types: ["database-error"]
+error-types: ["global-table-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-A DynamoDB global table error occurs when replication between regions fails or when operations on a global table encounter conflicts. The error may appear as `ReplicaNotFoundException`, `GlobalTableNotFoundException`, or replication lag warnings in CloudWatch.
+A global table replication error occurs when DynamoDB global tables experience conflicts, replication lag, or configuration failures that prevent data from synchronizing across AWS regions. These issues can cause data inconsistency and application errors.
 
 ## What This Error Means
 
-DynamoDB global tables provide multi-region, multi-active replication. Changes written to one replica are automatically propagated to other replicas via DynamoDB Streams. When replication fails, items may become inconsistent across regions, and reads from a replica may return stale data.
+DynamoDB global tables provide multi-region, multi-master replication. When you write to a table in one region, DynamoDB automatically replicates the data to all other replica regions. Replication errors can occur due to network issues, IAM misconfiguration, conflicting writes, or schema mismatches between replicas.
 
-The error types include `ReplicaNotFoundException` (a replica was removed), `GlobalTableNotFoundException` (the global table configuration is missing), and various stream-related errors.
+The error manifests as stale data in some regions, replication lag warnings, or explicit error messages from DynamoDB Streams that power the replication process.
 
 ## Why It Happens
 
-- DynamoDB Streams is not enabled on the table (required for global tables)
-- IAM role lacks permission to write to the replica region
-- Replica was deleted or is in a `CREATING` or `DELETING` state
-- Conflicting writes to the same item in multiple regions (last-write-wins)
-- Replication lag due to network issues or high write throughput
-- Table class mismatch between replica regions
-- AWS account does not have access to the replica region
+- Network connectivity issues between AWS regions
+- IAM roles used for replication lack sufficient permissions
+- Conflicting writes to the same item in different regions (last-writer-wins conflicts)
+- Schema changes applied to one replica but not others
+- DynamoDB Streams is not enabled on the source table
+- Replica table is deleted or in a DELETING state
+- Cross-region replication limits (eventual consistency, ~1 second lag SLA)
+- Throttling on the replica table in the destination region
+
+## Common Error Messages
+
+```
+Global table replication failed: Replication group update in progress
+# or
+An error occurred while replicating data to region us-west-2
+# or
+Replication is delayed due to insufficient write capacity in the replica region
+# or
+GlobalTableNotFoundException: The specified global table does not exist
+```
 
 ## How to Fix It
 
-### 1. Verify Global Table Configuration
+### 1. Check Global Table Status
 
 ```bash
-aws dynamodb describe-global-table --global-table-name my-table
+aws dynamodb describe-global-table \
+    --global-table-name my-global-table
+
+aws dynamodb describe-global-table-settings \
+    --global-table-name my-global-table
 ```
 
-### 2. Enable DynamoDB Streams
+Verify all replica regions are in `ACTIVE` status. Replicas in `CREATING`, `UPDATING`, or `DELETING` states cannot process replication.
 
-```python
-client = boto3.client('dynamodb')
-client.update_table(
-    TableName='my-table',
-    StreamSpecification={
-        'StreamEnabled': True,
-        'StreamViewType': 'NEW_AND_OLD_IMAGES'
-    }
-)
-```
-
-### 3. Check Replica Status
-
-```python
-response = client.describe_global_table(GlobalTableName='my-table')
-for replica in response['GlobalTableDescription']['Replicas']:
-    print(f"Region: {replica['RegionName']}, Status: {replica['ReplicaStatus']}")
-```
-
-### 4. Create a New Replica
-
-```python
-client.update_global_table(
-    GlobalTableName='my-table',
-    ReplicaUpdates=[
-        {
-            'Create': {
-                'RegionName': 'eu-west-1'
-            }
-        }
-    ]
-)
-```
-
-### 5. Verify IAM Permissions
+### 2. Verify IAM Roles for Replication
 
 ```json
 {
@@ -78,51 +62,141 @@ client.update_global_table(
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:DescribeStream",
                 "dynamodb:GetRecords",
                 "dynamodb:GetShardIterator",
-                "dynamodb:ListStreams",
+                "dynamodb:DescribeStream",
+                "dynamodb:ListStreams"
+            ],
+            "Resource": "arn:aws:dynamodb:*:123456789012:table/my-table/stream/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:BatchWriteItem"
+                "dynamodb:DeleteItem"
             ],
-            "Resource": "arn:aws:dynamodb:*:*:table/my-table"
+            "Resource": "arn:aws:dynamodb:*:123456789012:table/my-table"
         }
     ]
 }
 ```
 
-### 6. Handle Write Conflicts
+The DynamoDB service-linked role must have permissions to read from the source stream and write to all replica tables.
 
-```python
-# Use conditional writes to prevent unintended overwrites
-try:
-    table.put_item(
-        Item={
-            'id': '123',
-            'region': 'us-east-1',
-            'data': 'value',
-            'version': 1
-        },
-        ConditionExpression='attribute_not_exists(version) OR version < :ver',
-        ExpressionAttributeValues={':ver': 1}
-    )
-except ClientError as e:
-    if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
-        # Handle conflict - another region wrote first
-        pass
+### 3. Monitor Replication Lag
+
+```bash
+# CloudWatch metric: ReplicationLatency
+aws cloudwatch get-metric-statistics \
+    --namespace AWS/DynamoDB \
+    --metric-name ReplicationLatency \
+    --dimensions Name=TableName,Value=my-table \
+    --start-time $(date -u -d '-1 hour' +%Y-%m-%dT%H:%M:%SZ) \
+    --end-time $(date -u +%Y-%m-%dT%H:%M:%SZ) \
+    --period 300 \
+    --statistics Average
 ```
 
-## Common Mistakes
+High replication lag indicates the replica table cannot keep up with the write rate. Increase write capacity on the replica table or switch to on-demand billing.
 
-- Not enabling DynamoDB Streams before creating a global table
-- Assuming global tables handle all conflict resolution automatically (last-write-wins by default)
-- Not monitoring replication lag in CloudWatch
-- Using a table class (e.g., STANDARD_IA) that is not supported for global tables in all regions
+### 4. Handle Write Conflicts
+
+```python
+import boto3
+from datetime import datetime
+
+client = boto3.client('dynamodb')
+
+# Global tables use last-writer-wins conflict resolution
+# To handle conflicts, include a timestamp attribute
+
+def write_with_timestamp(table_name, key, data):
+    timestamp = datetime.utcnow().isoformat()
+    data['last_updated'] = {'S': timestamp}
+    
+    client.put_item(
+        TableName=table_name,
+        Item={**key, **data}
+    )
+
+# When reading, check for the most recent timestamp
+def read_with_latest_timestamp(table_name, key):
+    response = client.get_item(
+        TableName=table_name,
+        Key=key,
+        ConsistentRead=True
+    )
+    return response.get('Item')
+```
+
+### 5. Add a Replica Region
+
+```bash
+aws dynamodb update-global-table \
+    --global-table-name my-global-table \
+    --replica-updates '[{"Create": {"RegionName": "eu-west-1"}}]'
+```
+
+Adding replicas requires DynamoDB Streams to be enabled. The operation is asynchronous and may take several minutes to complete.
+
+### 6. Remove and Re-add a Stuck Replica
+
+```bash
+# Remove the problematic replica
+aws dynamodb update-global-table \
+    --global-table-name my-global-table \
+    --replica-updates '[{"Delete": {"RegionName": "us-west-2"}}]'
+
+# Wait for deletion to complete, then re-add
+aws dynamodb update-global-table \
+    --global-table-name my-global-table \
+    --replica-updates '[{"Create": {"RegionName": "us-west-2"}}]'
+```
+
+### 7. Check Stream Settings on Source Table
+
+```bash
+aws dynamodb describe-table \
+    --table-name my-table \
+    --query 'Table.StreamSpecification'
+
+# Should show:
+# {
+#     "StreamEnabled": true,
+#     "StreamViewType": "NEW_AND_OLD_IMAGES"
+# }
+```
+
+Streams must be enabled with `NEW_AND_OLD_IMAGES` for global tables. This setting cannot be changed after table creation in some configurations.
+
+## Common Scenarios
+
+### Replication Lag During Traffic Spikes
+
+A Black Friday sale causes a 50x traffic spike to the primary table in us-east-1. The replica in eu-west-1 has lower provisioned capacity and cannot keep up, causing replication lag of several minutes. The fix is to ensure all replicas have adequate capacity for peak loads, or use on-demand billing.
+
+### Conflicting Writes from Mobile Users
+
+A mobile application allows offline writes that sync to DynamoDB when connectivity is restored. Two users simultaneously update the same item in different regions. Global tables use last-writer-wins, so one update is silently lost. Implement application-level conflict resolution with version vectors.
+
+### Schema Change Propagation Failure
+
+A new attribute is added to items in one region, but the application in another region fails because it expects the old schema. Global tables replicate data but do not enforce schema consistency. Use a backward-compatible schema migration strategy across all regions.
+
+## Prevent It
+
+- Use on-demand billing mode for all replica tables to handle traffic spikes
+- Monitor `ReplicationLatency` CloudWatch metric with alarms set at 5 seconds
+- Ensure all replicas have at least the same write capacity as the primary table
+- Avoid schema changes that are not backward-compatible across regions
+- Use DynamoDB Streams for custom replication logic if you need conflict resolution
+- Test global table configuration in a staging environment with multiple regions
+- Implement application-level conflict detection for critical data
+- Keep global tables in the same AWS partition (e.g., commercial, gov-cloud)
 
 ## Related Pages
 
-- [DynamoDB ProvisionedThroughputExceededException](/tools/dynamodb/dynamodb-provisioned-exceeded)
-- [DynamoDB Access Denied](/tools/dynamodb/dynamodb-access-denied)
+- [DynamoDB Throughput Error](/tools/dynamodb/dynamodb-throughput-error)
 - [DynamoDB Backup Error](/tools/dynamodb/dynamodb-backup-error)
+- [DynamoDB Access Denied Error](/tools/dynamodb/dynamodb-access-denied)

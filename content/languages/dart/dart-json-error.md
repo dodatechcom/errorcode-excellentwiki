@@ -1,97 +1,121 @@
 ---
-title: "[Solution] Dart jsonDecode Error"
-description: "Fix Dart 'jsonDecode' errors when parsing JSON strings. Learn about JSON decoding and validation in Dart."
+title: "[Solution] Dart Json Error"
+description: "Fix Dart JSON serialization errors caused by missing keys, type mismatches, or invalid JSON format."
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-## What This Error Means
+## Why It Happens
 
-A `jsonDecode` error in Dart occurs when attempting to parse an invalid JSON string. This happens when the JSON is malformed, contains invalid characters, or does not conform to JSON syntax rules.
+JSON serialization/deserialization error
 
-## Common Causes
+## Common Error Messages
 
-- Malformed JSON string (missing quotes, trailing commas)
-- Single quotes instead of double quotes
-- Null bytes or invalid characters
-- JSON string is actually HTML or plain text
-- Encoding issues (BOM, wrong charset)
+1. **Dart error: type 'Null' is not a subtype**
+2. **LateInitializationError in JSON decode**
+3. **FormatException: Unexpected end of input**
 
-## How to Fix
+## How to Fix It
 
-Decode JSON with error handling:
+### Solution 1: Add null safety checks
 
 ```dart
-import 'dart:convert';
-
-Map<String, dynamic>? parseJson(String jsonString) {
-  try {
-    return jsonDecode(jsonString) as Map<String, dynamic>;
-  } on FormatException catch (e) {
-    print('Invalid JSON: ${e.message}');
-    return null;
-  }
-}
-```
-
-Handle nested JSON safely:
-
-```dart
-import 'dart:convert';
-
-void processApiResponse(String responseBody) {
-  try {
-    final data = jsonDecode(responseBody);
-    final users = (data['users'] as List?)?.map((u) => u as Map<String, dynamic>).toList();
-    print('Users: ${users?.length ?? 0}');
-  } on FormatException {
-    print('Invalid JSON response');
-  } on TypeError catch (e) {
-    print('Unexpected data structure: $e');
-  }
-}
-```
-
-Validate JSON before decoding:
-
-```dart
-import 'dart:convert';
-
-bool isValidJson(String jsonString) {
-  try {
-    jsonDecode(jsonString);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-```
-
-Encode objects to JSON:
-
-```dart
-import 'dart:convert';
-
-Map<String, dynamic> user = {'name': 'John', 'age': 30};
-String jsonString = jsonEncode(user);
-print(jsonString); // {"name":"John","age":30}
-```
-
-## Examples
-
-```dart
-import 'dart:convert';
-
 void main() {
-  String invalidJson = "{'name': 'John'}"; // Single quotes
-  Map<String, dynamic> data = jsonDecode(invalidJson);
-  // FormatException: Unexpected character
+  String? nullableName = getName();
+  
+  // Use null-aware operators
+  String name = nullableName ?? 'Default';
+  
+  // Or use explicit null check
+  if (nullableName != null) {
+    print('Name: $nullableName');
+  }
+}
+
+String? getName() {
+  return null;
 }
 ```
+
+### Solution 2: Use try-catch for error handling
+
+```dart
+Future<void> fetchData() async {
+  try {
+    final response = await http.get(
+      Uri.parse('https://api.example.com/data'),
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print('Data: $data');
+    }
+  } catch (e) {
+    print('Error fetching data: $e');
+  }
+}
+```
+
+### Solution 3: Implement proper type casting
+
+```dart
+void process(dynamic value) {
+  // Use type check before casting
+  if (value is String) {
+    print('String value: $value');
+  } else if (value is int) {
+    print('Integer value: $value');
+  }
+  
+  // Or use safe cast with null
+  String? safeStr = value as String?;
+  if (safeStr != null) {
+    print('Safe string: $safeStr');
+  }
+}
+```
+
+## Common Scenarios
+
+### Scenario 1: Type safety violation in JSON serialization/deserialization error
+
+Type safety violation in JSON serialization/deserialization error often occurs when developers forget to handle edge cases in their code. For example:
+
+```dart
+! Example scenario demonstrating the issue
+! This commonly happens in production code
+! Always validate inputs before processing
+```
+
+### Scenario 2: Null reference during JSON serialization/deserialization error
+
+Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+
+```dart
+! Common pattern that leads to this error
+! Always check types and dimensions
+! Use compiler/runtime flags for early detection
+```
+
+### Scenario 3: Async error in JSON serialization/deserialization error
+
+Performance-related issues can also trigger this error under load:
+
+```dart
+! Performance scenario example
+! Monitor resource usage in production
+! Add graceful degradation for resource limits
+```
+
+## Prevent It
+
+- **Enable strict null safety and analysis options in analysis_options.yaml**
+- **Use the analyzer tool (dart analyze) before building to catch issues early**
+- **Write unit tests with test package to verify error handling paths**
 
 ## Related Errors
 
-- [format-error] — invalid format exceptions
-- [type-cast] — type cast errors
+- [Dart best practices](/languages/dart)
+- [Dart error handling guide](/languages/dart/_index)

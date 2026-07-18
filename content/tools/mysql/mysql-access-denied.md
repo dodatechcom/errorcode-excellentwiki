@@ -1,102 +1,127 @@
 ---
-title: "[Solution] MySQL Access Denied for User - Fix Authentication Errors"
-description: "Fix MySQL access denied errors by resetting passwords, granting privileges, fixing host restrictions, and verifying authentication plugins"
+title: "[Solution] MySQL Access Denied for User Error — How to Fix"
+description: "Fix MySQL access denied errors by verifying credentials, resetting passwords, fixing host permissions, and resolving authentication plugin mismatches"
 tools: ["mysql"]
 error-types: ["database-error"]
 severities: ["error"]
-weight: 5
+weight: 10
+comments: true
 ---
 
-# MySQL Access Denied for User
+# MySQL Access Denied for User Error
 
-This error means MySQL rejected the connection because the username, password, or connecting host does not match any valid user account in the `mysql.user` table.
+This error means MySQL rejected your connection attempt because the username, password, or connecting host does not match a valid user account. MySQL requires all three components — user, host, and password — to match exactly.
 
-## What This Error Means
+## Why It Happens
 
-MySQL returns this error when authentication fails:
+- Incorrect username or password supplied
+- The user account does not exist in `mysql.user`
+- Connecting from a host not listed in the user's `Host` column
+- Authentication plugin mismatch between client and server
+- The account is locked (`account_locked = 'Y'`)
+- Password has expired
+- SSL is required but the client does not provide a certificate
+- `FLUSH PRIVILEGES` was not run after direct table edits
+
+## Common Error Messages
 
 ```
 ERROR 1045 (28000): Access denied for user 'myuser'@'localhost' (using password: YES)
 ```
 
-The `(using password: YES)` or `(using password: NO)` part tells you whether a password was provided. MySQL authentication depends on three factors: the username, the host from which the connection originates, and the password. All three must match a row in the `mysql.user` table.
+```
+ERROR 1045 (28000): Access denied for user 'myuser'@'%' (using password: NO)
+```
 
-## Why It Happens
-
-- The username or password is incorrect
-- The user account does not exist in `mysql.user`
-- The user is connecting from a host not listed in the `Host` column
-- The authentication plugin does not match (e.g., `mysql_native_password` vs `caching_sha2_password`)
-- The user account is locked
-- `FLUSH PRIVILEGES` was not run after modifying privileges
-- The MySQL server was restored from a backup that did not include user accounts
+```
+ERROR 1045 (28000): Access denied for user 'root'@'192.168.1.50' (using password: YES)
+```
 
 ## How to Fix It
 
-### 1. Check If the User Exists
+### 1. Verify the User Exists and Check Permissions
 
 ```sql
-SELECT user, host, plugin, account_locked
+SELECT user, host, plugin, account_locked, password_expired
 FROM mysql.user
 WHERE user = 'myuser';
 ```
 
-### 2. Create the User If Missing
+### 2. Reset the Password
 
 ```sql
--- Create a user for any host
-CREATE USER 'myuser'@'%' IDENTIFIED BY 'secure_password';
+-- MySQL 8.0+
+ALTER USER 'myuser'@'localhost' IDENTIFIED BY 'new_secure_password';
 
--- Create a user for localhost only
-CREATE USER 'myuser'@'localhost' IDENTIFIED BY 'secure_password';
-```
+-- MySQL 5.7
+SET PASSWORD FOR 'myuser'@'localhost' = PASSWORD('new_secure_password');
 
-### 3. Reset the Password
-
-```sql
--- For MySQL 5.7+
-ALTER USER 'myuser'@'localhost' IDENTIFIED BY 'new_password';
-
--- For older versions
-SET PASSWORD FOR 'myuser'@'localhost' = PASSWORD('new_password');
-
--- Apply changes
 FLUSH PRIVILEGES;
 ```
 
-### 4. Fix Host Restrictions
+### 3. Fix Host Restrictions
 
 ```sql
--- Check which hosts are allowed
-SELECT user, host FROM mysql.user WHERE user = 'myuser';
+-- Grant access from a specific IP
+GRANT ALL PRIVILEGES ON mydb.* TO 'myuser'@'192.168.1.%';
 
--- Grant access from a new host
-GRANT ALL PRIVILEGES ON *.* TO 'myuser'@'192.168.1.%' IDENTIFIED BY 'password';
+-- Or allow connections from any host
+GRANT ALL PRIVILEGES ON mydb.* TO 'myuser'@'%';
+
 FLUSH PRIVILEGES;
 ```
 
-### 5. Fix Authentication Plugin
+### 4. Fix Authentication Plugin
 
 ```sql
 -- Check the current plugin
 SELECT user, plugin FROM mysql.user WHERE user = 'myuser';
 
--- Switch to mysql_native_password for compatibility
-ALTER USER 'myuser'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+-- Switch to native password for compatibility
+ALTER USER 'myuser'@'localhost'
+    IDENTIFIED WITH mysql_native_password BY 'password';
+
+-- Or use caching_sha2_password for MySQL 8.0+
+ALTER USER 'myuser'@'localhost'
+    IDENTIFIED WITH caching_sha2_password BY 'password';
+
 FLUSH PRIVILEGES;
 ```
 
-## Common Mistakes
+### 5. Recover Root Access
 
-- Forgetting that MySQL usernames include the host -- `'myuser'@'localhost'` and `'myuser'@'%'` are different accounts
-- Not running `FLUSH PRIVILEGES` after modifying `mysql.user` directly
-- Using the wrong authentication plugin when connecting with older client libraries
-- Assuming `GRANT` automatically creates the user -- in MySQL 5.7+ you must create the user first
-- Not checking whether the account is locked (`account_locked = 'Y'`)
+```bash
+# Stop MySQL
+sudo systemctl stop mysql
+
+# Start in safe mode with skip-grant-tables
+sudo mysqld_safe --skip-grant-tables &
+
+# Connect without password
+mysql -u root
+
+# Reset root password
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_root_password';
+FLUSH PRIVILEGES;
+
+# Restart MySQL normally
+sudo systemctl restart mysql
+```
+
+## Common Scenarios
+
+- **Application credentials outdated**: The DBA rotated the password but the application config was not updated. Use environment variables or a secrets manager.
+- **Connecting from a new server**: Your app moved to a new IP address but the MySQL user only allows the old IP. Update the host grant or use `%`.
+- **Plugin mismatch after upgrade**: MySQL 8.0 defaults to `caching_sha2_password` but older clients only support `mysql_native_password`. Switch the user's plugin.
+
+## Prevent It
+
+- Store database credentials in environment variables or a secrets manager rather than hardcoding them
+- Grant access with specific IP ranges rather than `%` whenever possible
+- Test credential changes in a staging environment before applying to production
 
 ## Related Pages
 
 - [MySQL Connection Refused](/tools/mysql/mysql-connection-refused)
-- [MySQL User Limit](/tools/mysql/mysql-user-limit)
-- [MySQL SSL Error](/tools/mysql/mysql-ssl-error)
+- [MySQL Too Many Connections](/tools/mysql/mysql-too-many-connections)
 - [PostgreSQL Role Does Not Exist](/tools/postgresql/pg-role-does-not-exist)

@@ -1,142 +1,173 @@
 ---
-title: "[Solution] Netlify Redirect Rules Not Working Error — Fix Redirects"
-description: "Fix Netlify redirect rules not working. Resolve redirect configuration issues, path matching, and redirect loops."
+title: "[Solution] Netlify Redirect Loop or Misconfiguration Error — How to Fix"
+description: "Fix Netlify redirect loops and misconfigurations. Resolve infinite redirects, conflicting rules, and broken URL patterns."
 tools: ["netlify"]
 error-types: ["tool-error"]
-severities: ["warning"]
-weight: 6
+severities: ["error"]
+weight: 1
+comments: true
 ---
 
-A Netlify redirect rules not working error occurs when configured redirects are not being applied. Requests either return 404s, serve the wrong content, or create redirect loops.
+A Netlify redirect loop or misconfiguration error occurs when redirect rules in `_redirects` or `netlify.toml` create an infinite cycle or conflict with each other, causing the browser to display a "too many redirects" error.
 
 ## What This Error Means
 
-Netlify processes redirects from netlify.toml or _redirects file. When they do not work, the issue is usually with the syntax, rule order, or conflicting rules.
+Netlify processes redirects in the order they are listed. When a redirect points to a URL that triggers another redirect back to the original, an infinite loop is created. The browser typically terminates the loop after 20 redirects and displays an error page.
 
 ## Why It Happens
 
-- The redirect syntax in netlify.toml or _redirects is wrong
-- Rules are in the wrong order (more specific rules should come first)
-- The from path does not match the incoming request
-- The destination URL is unreachable
-- Conflicting rules override each other
-- The _redirects file is not in the publish directory
-- Force flag is missing when needed
+- Two redirect rules create a circular reference
+- A redirect rule matches its own destination URL
+- Trailing slash rules conflict with path rewriting rules
+- A catch-all pattern `/*` redirects to a path that matches `/*`
+- The redirect source and destination are the same path
+- Custom 404 page redirect creates a loop
+- The `_redirects` file has duplicate rules
+- A condition-based redirect does not account for all scenarios
+
+## Common Error Messages
+
+- `ERR_TOO_MANY_REDIRECTS` — Browser detected infinite redirect loop
+- `This page isn't working` — Redirect loop error page
+- `The page was redirected too many times` — Chrome redirect error
+- `308 Loop detected` — Netlify terminated the redirect chain
 
 ## How to Fix It
 
-### Configure Redirects in netlify.toml
+### Audit Redirect Rules
+
+```bash
+# Check _redirects file
+cat static/_redirects
+
+# Or check netlify.toml redirects
+cat netlify.toml | grep -A 3 "\[\[redirects\]\]"
+
+# List all redirects and look for circular patterns
+```
+
+### Fix Circular Redirects
+
+```bash
+# WRONG: Creates a loop
+/blog          /blog/          301
+/blog/         /blog           301
+
+# RIGHT: Choose one direction
+/blog          /blog/          301
+# Remove the second rule entirely
+```
+
+### Fix Catch-All Patterns
+
+```bash
+# WRONG: Catch-all redirects to a path that matches catch-all
+/*             /index.html     200
+/page          /*              301
+
+# RIGHT: Use specific paths or conditional logic
+/page          /other-page     301
+/*             /index.html     200
+```
+
+### Use Netlify.toml Redirects
 
 ```toml
-# netlify.toml
+# netlify.toml — proper redirect configuration
 [[redirects]]
   from = "/old-page"
   to = "/new-page"
   status = 301
+  force = false
 
+# Use force: true to override other rules
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+# Use conditions to avoid loops
 [[redirects]]
   from = "/blog/:slug"
-  to = "/articles/:slug"
+  to = "/blog/:slug/"
   status = 301
-
-[[redirects]]
-  from = "/api/*"
-  to = "https://external-api.com/:splat"
-  status = 200
+  conditions = {Role = ["admin"]}
 ```
 
-### Use _redirects File
+### Debug Redirect Chains
 
-```
-# _redirects (place in publish directory)
-/old-page          /new-page          301
-/blog/:slug        /articles/:slug    301
-/api/*             https://api.com/:splat  200
+```bash
+# Trace redirects with curl
+curl -vL https://your-domain.com/page 2>&1 | grep -i "location"
+
+# This shows each redirect hop:
+# < HTTP/1.1 301 Moved Permanently
+# < location: /page/
+# < HTTP/1.1 301 Moved Permanently
+# < location: /page  ← Loop detected!
+
+# Check all redirects at once
+curl -sI https://your-domain.com/old-path | grep -i "location"
 ```
 
-### Handle Rewrite vs Redirect
+### Handle Trailing Slash Consistency
 
 ```toml
-# Redirect (changes URL in browser)
-[[redirects]]
-  from = "/old"
-  to = "/new"
-  status = 301
+# netlify.toml — enforce consistent trailing slashes
 
-# Rewrite (keeps original URL, serves different content)
+# Force trailing slashes
+[[redirects]]
+  from = "/:path"
+  to = "/:path/"
+  status = 301
+  conditions = {Role = ["admin"]}
+
+# Remove trailing slashes (alternative)
+[[redirects]]
+  from = "/:path/"
+  to = "/:path"
+  status = 301
+  conditions = {Role = ["admin"]}
+```
+
+### Fix SPA Fallback Issues
+
+```toml
+# netlify.toml — proper SPA fallback without loops
+
+# WRONG: SPA fallback that creates loops
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
+
+# RIGHT: Use a more specific pattern
 [[redirects]]
   from = "/app/*"
-  to = "/index.html"
-  status = 200
-  force = false
-```
-
-### Fix Redirect Loops
-
-```toml
-# WRONG: Creates a loop
-[[redirects]]
-  from = "/app"
-  to = "/app"
-  status = 301
-
-# RIGHT: Use force only when needed
-[[redirects]]
-  from = "/app"
   to = "/app/index.html"
   status = 200
-  force = false
-```
 
-### Test Redirects
-
-```bash
-# Test a redirect
-curl -I https://your-domain.com/old-page
-
-# Should show:
-# HTTP/2 301
-# location: /new-page
-
-# Test with follow redirects
-curl -L https://your-domain.com/old-page
-```
-
-### Debug Redirect Issues
-
-```bash
-# Check if redirects are loaded
-# In Netlify Dashboard:
-# Site > Build & deploy > Post processing > Redirects
-
-# Check for syntax errors in build log
-netlify build 2>&1 | grep -i redirect
-```
-
-### Use Correct Rule Order
-
-```toml
-# Process in order - specific rules first
+# For Next.js or React Router, use the catch-all at the end
 [[redirects]]
-  from = "/api/v1/special"
-  to = "/api/v1/handler"
-  status = 200
-
-[[redirects]]
-  from = "/api/*"
-  to = "/api-handler/:splat"
+  from = "/*"
+  to = "/index.html"
   status = 200
 ```
 
-## Common Mistakes
+## Common Scenarios
 
-- Placing catch-all rules before specific rules
-- Using `/*` instead of `/:splat` for path parameters
-- Not including the _redirects file in the publish directory
-- Using `force: true` unnecessarily which bypasses file existence checks
-- Not testing redirects after deployment
+- **Migration redirect conflicts:** Old site had `/blog` redirect to `/blog/` but new site redirects `/blog/` to `/blog`, creating a loop.
+- **SPA fallback loop:** A catch-all `/*` rule redirects to `/index.html`, but `/index.html` is also matched by another rule that redirects elsewhere.
+- **Custom 404 redirect:** A rule redirects 404 pages to the homepage, but the homepage itself returns a 404 due to a missing file.
+
+## Prevent It
+
+1. Always test redirect rules with `curl -vL` before deploying to production
+2. Use `force: false` (default) for most redirects to avoid overriding other rules
+3. Maintain a documented list of all redirect rules and verify they do not create circular references
 
 ## Related Pages
 
-- [Netlify Form Error]({{< relref "/tools/netlify/netlify-redirect-error" >}}) — Forms not receiving submissions
-- [Netlify Build Error]({{< relref "/tools/netlify/netlify-build-error" >}}) — Build failed
+- [Netlify Redirect Error]({{< relref "/tools/netlify/netlify-redirect-error" >}}) — Redirect misconfiguration
+- [Netlify Headers Error]({{< relref "/tools/netlify/netlify-headers-error" >}}) — Headers issues

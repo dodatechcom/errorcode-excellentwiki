@@ -1,112 +1,169 @@
 ---
-title: "[Solution] Conda SSL Error — Fix Certificate Errors With Channels"
-description: "Fix conda SSL certificate errors when connecting to channels and downloading packages. Update CA bundles and configure corporate proxy SSL settings correctly."
+title: "[Solution] Conda SSL Certificate Verification Failed Error — How to Fix"
+description: "Fix conda SSL certificate verification failed errors. Update CA bundles, configure corporate proxy SSL, and resolve channel connection issues quickly."
 tools: ["conda"]
 error-types: ["ssl-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-This error means conda could not verify the SSL certificate of a channel server. The connection is blocked before any package data is transferred, preventing all installs and updates.
-
-## What This Error Means
-
-conda uses Python's `ssl` module to verify channel certificates. When verification fails, you see:
-
-```
-SSLError
-
-HTTPSConnectionPool(host='repo.anaconda.com', port=443): Max retries exceeded: SSL: CERTIFICATE_VERIFY_FAILED
-```
-
-Or:
-
-```
-CondaSSLError
-
-Encountered an SSL error. SSL validation is disabled.
-```
+This error means conda could not verify the SSL certificate of a channel server. The connection is rejected before any package data is transferred, blocking all installs and updates from HTTPS channels.
 
 ## Why It Happens
 
-- The system CA certificate bundle is outdated or missing (common in Docker images)
-- A corporate proxy is performing SSL inspection with a private CA
-- Python was compiled without proper SSL support
-- The system clock is wrong, making valid certificates appear expired
-- conda's `ssl_verify` setting is pointing to a certificate file that does not exist
+- The system CA certificate bundle is outdated or missing (common in Docker images and minimal installs)
+- A corporate proxy is performing SSL interception with a private CA certificate that conda does not trust
+- Python was compiled from source without proper SSL module support
+- The system clock is set incorrectly, making valid certificates appear expired or not-yet-valid
+- conda's `ssl_verify` configuration points to a certificate file that does not exist or is corrupted
+- A firewall or security appliance is rewriting SSL certificates on the fly
+
+## Common Error Messages
+
+```
+SSLError: HTTPSConnectionPool(host='repo.anaconda.com', port=443):
+Max retries exceeded with url: /pkgs/main/...
+Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED]
+certificate verify failed: self signed certificate in certificate chain'))
+```
+
+```
+CondaSSLError: Encountered an SSL error.
+SSLError(MaxRetryError('HTTPSConnectionPool(...): Max retries exceeded ...
+SSL: CERTIFICATE_VERIFY_FAILED'))
+```
+
+```
+SSLError: HTTPSConnectionPool(host='conda.anaconda.org', port=443):
+Max retries exceeded: SSL: DH_KEY_TOO_SMALL
+```
+
+```
+ReadOnlyError: Conda could not verify the SSL certificate of the URL
+https://repo.anaconda.com/pkgs/main/noarch/...
+```
 
 ## How to Fix It
 
-### Update CA Certificates
+### 1. Update System CA Certificates
 
 ```bash
-# Debian/Ubuntu
-sudo apt update && sudo apt install ca-certificates
+# Debian / Ubuntu
+sudo apt update && sudo apt install --reinstall ca-certificates
 
-# macOS
-brew install openssl
+# macOS (via Homebrew)
+brew install openssl && brew upgrade ca-certificates
 
-# Fedora/RHEL
-sudo dnf install ca-certificates
+# Fedora / RHEL / CentOS
+sudo dnf install --reinstall ca-certificates
+
+# Alpine
+apk add --no-cache ca-certificates
 ```
 
-### Point conda to the System Certificate Bundle
+After updating, update the certificate store:
 
 ```bash
+# Debian / Ubuntu
+sudo update-ca-certificates
+
+# RHEL / Fedora
+sudo update-ca-trust
+```
+
+### 2. Point conda to the System Certificate Bundle
+
+```bash
+# Find the bundle path
+openssl version -d
+
+# Set it in conda config
 conda config --set ssl_verify /etc/ssl/certs/ca-certificates.crt
 ```
 
-### Disable SSL Verification (Temporary Only)
+Verify it works:
+
+```bash
+conda config --show ssl_verify
+conda install numpy  # test download
+```
+
+### 3. Install a Corporate CA Certificate
+
+If your network uses SSL inspection, you must add the proxy's CA certificate:
+
+```bash
+# Copy the corporate CA bundle
+sudo cp corporate-ca-bundle.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
+
+# Point conda to the updated bundle
+conda config --set ssl_verify /etc/ssl/certs/ca-certificates.crt
+```
+
+For per-user configuration:
+
+```bash
+mkdir -p ~/.conda
+cat > ~/.condarc << 'EOF'
+ssl_verify: /home/$USER/.conda/corporate-ca.pem
+EOF
+```
+
+### 4. Disable SSL Verification (Temporary Diagnostic Only)
 
 ```bash
 conda config --set ssl_verify False
 ```
 
-This is insecure. Only use while diagnosing and fix the root cause immediately.
-
-### Install Corporate CA Certificate
+This is insecure and should only be used to confirm the problem is SSL-related. Re-enable verification immediately:
 
 ```bash
-conda config --set ssl_verify /path/to/corporate-ca-bundle.crt
+conda config --set ssl_verify True
 ```
 
-### Fix Python's SSL Module
+### 5. Fix Python's SSL Module
 
 ```bash
 python -c "import ssl; print(ssl.get_default_verify_paths())"
 ```
 
-If this shows missing paths, reinstall Python with SSL support:
+If paths show as missing, reinstall Python with SSL support through conda:
 
 ```bash
 conda install python=3.11 --force-reinstall
 ```
 
-### Sync System Clock
+### 6. Sync the System Clock
+
+An incorrect clock invalidates every certificate on the system:
 
 ```bash
-sudo timedatectl set-ntp true
+# Check current time
 date
+
+# Enable NTP sync
+sudo timedatectl set-ntp true
+
+# Manual sync if NTP is unavailable
+sudo ntpdate time.nist.gov
 ```
 
-An incorrect clock invalidates every certificate on the system.
+## Common Scenarios
 
-### Clear DNS Cache
+**Docker builds fail during conda install.** Minimal Docker images like `python:3.11-slim` often lack CA certificates. Add this to your Dockerfile before any conda commands:
 
-```bash
-sudo systemd-resolve --flush-caches
-nslookup repo.anaconda.com
+```dockerfile
+RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
 ```
 
-## Common Mistakes
+**Corporate laptop cannot reach any channel.** Your company's proxy rewrites SSL certificates. Export the corporate CA bundle and point conda at it. You may also need to configure `http_proxy` and `https_proxy` environment variables.
 
-- Leaving `ssl_verify False` in conda config permanently
-- Not updating CA certificates after cloning a minimal Docker image
-- Forgetting that Python built from source may lack SSL
-- Blaming conda when the problem is a system-level certificate issue
+**conda works in one environment but not another.** Each conda environment has its own Python with potentially different SSL configurations. Run `python -c "import ssl; print(ssl.get_default_verify_paths())"` inside each environment to compare.
 
-## Related Pages
+## Prevent It
 
-- [Conda Channel Error]({{< relref "/tools/conda/conda-channel-error" >}}) -- channel and package lookup errors
-- [Conda Update Error]({{< relref "/tools/conda/conda-update-error" >}}) -- update failures
-- [Conda Environment Error]({{< relref "/tools/conda/conda-environment-error" >}}) -- environment issues
+1. Always install `ca-certificates` in Docker images and CI environments before running conda commands
+2. Never leave `ssl_verify: False` in your `.condarc` permanently — fix the root cause and re-enable verification
+3. Keep your system clock synchronized with NTP to prevent certificate timestamp validation failures

@@ -1,113 +1,212 @@
 ---
-title: "Metadata API Error in Next.js"
-description: "Next.js Metadata API errors occur when metadata configuration is invalid or conflicts exist"
+title: "[Solution] Next.js Metadata or SEO Error — How to Fix"
+description: "Fix Next.js metadata and SEO errors. Resolve meta tags, Open Graph, and structured data issues in Next.js."
 frameworks: ["nextjs"]
-error-types: ["runtime-error"]
-severities: ["error"]
+error-types: ["configuration-error"]
+severities: ["warning"]
 weight: 5
+comments: true
 ---
 
-## What This Error Means
+A Next.js metadata or SEO error occurs when meta tags are missing, duplicated, or incorrectly generated. The Metadata API in Next.js App Router provides a structured way to manage SEO and social sharing metadata.
 
-Metadata API errors occur when the `metadata` export or `generateMetadata` function in pages produces invalid metadata configurations. These errors appear during build or rendering when metadata cannot be properly applied.
+## Why It Happens
 
-## Common Causes
+Metadata errors occur when the `metadata` export is incorrectly structured, when dynamic metadata uses `generateMetadata` incorrectly, when parent layout metadata conflicts with child metadata, when Open Graph images are not properly configured, or when metadata is generated at the wrong rendering level.
 
-- Duplicate metadata keys in same route
-- Invalid `openGraph` or `twitter` configuration
-- `generateMetadata` returns invalid values
-- Missing required fields in metadata objects
-- Conflicting metadata between layout and page
+## Common Error Messages
 
-## How to Fix
-
-Define metadata correctly:
-
-```tsx
-// app/page.tsx
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'My App',
-  description: 'A Next.js application',
-  openGraph: {
-    title: 'My App',
-    description: 'A Next.js application',
-    url: 'https://myapp.com',
-    siteName: 'My App',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'My App',
-    description: 'A Next.js application',
-  },
-};
+```
+Error: Metadata must be an object, but got: [object Promise]
 ```
 
-Use `generateMetadata` for dynamic metadata:
+```
+Error: "metadata.title" must be a string or object, got: undefined
+```
 
-```tsx
-import { Metadata } from 'next';
+```
+Warning: Duplicate Open Graph metadata found
+```
+
+```
+Error: generateMetadata must return an object
+```
+
+## How to Fix It
+
+### 1. Define Static Metadata
+
+Export metadata from page or layout files:
+
+```typescript
+// app/layout.tsx
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: {
+        default: 'My App',
+        template: '%s | My App',
+    },
+    description: 'The best application ever',
+    openGraph: {
+        title: 'My App',
+        description: 'The best application ever',
+        url: 'https://myapp.com',
+        siteName: 'My App',
+        locale: 'en_US',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'My App',
+        description: 'The best application ever',
+    },
+    robots: {
+        index: true,
+        follow: true,
+    },
+};
+
+export default function RootLayout({ children }) {
+    return (
+        <html lang="en">
+            <body>{children}</body>
+        </html>
+    );
+}
+```
+
+```typescript
+// app/page.tsx
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Home',
+    description: 'Welcome to My App',
+};
+
+export default function HomePage() {
+    return <main>Welcome!</main>;
+}
+```
+
+### 2. Generate Dynamic Metadata
+
+Use `generateMetadata` for dynamic pages:
+
+```typescript
+// app/blog/[slug]/page.tsx
+import type { Metadata } from 'next';
 
 type Props = {
-  params: { id: string };
+    params: { slug: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPost(params.id);
+    const post = await getPost(params.slug);
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-    },
-  };
+    if (!post) {
+        return { title: 'Post Not Found' };
+    }
+
+    return {
+        title: post.title,
+        description: post.excerpt,
+        openGraph: {
+            title: post.title,
+            description: post.excerpt,
+            images: [post.coverImage],
+            type: 'article',
+            publishedTime: post.publishedAt,
+            authors: [post.author],
+        },
+    };
+}
+
+export default async function BlogPost({ params }: Props) {
+    const post = await getPost(params.slug);
+    return <article>{post.content}</article>;
 }
 ```
 
-Override parent layout metadata:
+### 3. Override Parent Metadata
 
-```tsx
+Control metadata inheritance in nested layouts:
+
+```typescript
+// app/dashboard/layout.tsx
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Dashboard',
+    robots: { index: false },  // Don't index dashboard pages
+};
+
 // app/dashboard/page.tsx
+import type { Metadata } from 'next';
+
+// Override parent title
 export const metadata: Metadata = {
-  title: 'Dashboard - My App', // Overrides root layout title
-  description: 'Dashboard page',
+    title: 'My Dashboard',  // Will be "My Dashboard | My App" using template
 };
-```
 
-Handle metadata with `generateStaticParams`:
-
-```tsx
-export async function generateStaticParams() {
-  const posts = await getPosts();
-  return posts.map((post) => ({ id: post.id }));
-}
-
-export async function generateMetadata({ params }): Promise<Metadata> {
-  const post = await getPost(params.id);
-  return { title: post.title };
+export default function Dashboard() {
+    return <div>Dashboard content</div>;
 }
 ```
 
-## Examples
+### 4. Add Structured Data (JSON-LD)
 
-```tsx
-export const metadata: Metadata = {
-  title: 'Page',
-  openGraph: {
-    title: 'Page',
-    // Missing required 'description'
-  },
-};
+Include structured data for rich snippets:
+
+```typescript
+// app/blog/[slug]/page.tsx
+export default async function BlogPost({ params }) {
+    const post = await getPost(params.slug);
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.excerpt,
+        image: post.coverImage,
+        datePublished: post.publishedAt,
+        author: {
+            '@type': 'Person',
+            name: post.author.name,
+        },
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <article>
+                <h1>{post.title}</h1>
+                <p>{post.content}</p>
+            </article>
+        </>
+    );
+}
 ```
 
-```text
-Error: Invalid metadata configuration. "openGraph" is missing required field "description".
-```
+## Common Scenarios
 
-## Related Errors
+**Scenario 1: Title shows twice on child pages.**
+Use the `title.template` in the parent layout and `title.absolute` in child pages when needed.
 
-- [App Router error]({{< relref "/frameworks/nextjs/nextjs-app-router-error" >}})
-- [Build error]({{< relref "/frameworks/nextjs/build-error" >}})
+**Scenario 2: Open Graph image not showing on social media.**
+Ensure the image URL is absolute (not relative) and the image dimensions are at least 1200x630.
+
+**Scenario 3: Metadata not updating between pages.**
+Check that `generateMetadata` is properly awaited and returns the correct data for each page.
+
+## Prevent It
+
+1. **Use the Metadata API** instead of manual `<head>` tags for consistent metadata management.
+
+2. **Test with social media debuggers** (Facebook, Twitter) to verify Open Graph metadata.
+
+3. **Use `title.template`** to maintain consistent title formatting across pages.

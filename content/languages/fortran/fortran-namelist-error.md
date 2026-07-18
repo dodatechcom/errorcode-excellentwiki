@@ -1,126 +1,118 @@
 ---
-title: "[Solution] Fortran: namelist read error"
-description: "Fix Fortran namelist I/O errors when reading or writing namelist groups with invalid data or formatting."
+title: "[Solution] Fortran Namelist Error"
+description: "Fix Fortran namelist I/O errors caused by invalid namelist format or mismatched variable types in namelist group."
 languages: ["fortran"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-## What This Error Means
+## Why It Happens
 
-Fortran namelist errors occur when reading or writing namelist groups with incorrect syntax, missing delimiters, or data type mismatches.
+namelist read/write error
 
-## Common Causes
+## Common Error Messages
 
-- Missing ampersand (&) delimiters
-- Variable not in namelist group
-- Data type mismatch
-- Invalid value format
-- Missing or extra variables
+1. **Fortran error: namelist read failed**
+2. **invalid namelist input format**
+3. **namelist variable type mismatch**
 
-## How to Fix
+## How to Fix It
 
-```fortran
-! WRONG: Missing namelist syntax
-program namelist_error
-    implicit none
-    integer :: n
-    real :: x
-    namelist /params/ n, x
-    
-    ! Reading without proper format
-    read(*, *) n, x  ! Not namelist format
-end program
-```
+### Solution 1: Check allocation status before using
 
 ```fortran
-! CORRECT: Proper namelist syntax
-program namelist_safe
+program safe_alloc
     implicit none
-    integer :: n
-    real :: x
-    namelist /params/ n, x
-    
-    ! Write namelist
-    n = 10
-    x = 3.14
-    write(*, nml=params)
-    
-    ! Read namelist
-    rewind(*)
-    read(*, nml=params)
-    print *, n, x
-end program
-```
-
-```fortran
-! CORRECT: Namelist file format
-! params.nml file content:
-! &params
-!   n = 10
-!   x = 3.14
-! /
-
-program namelist_file
-    implicit none
-    integer :: n
-    real :: x
-    namelist /params/ n, x
-    
-    open(10, file='params.nml', status='old')
-    read(10, nml=params)
-    close(10)
-    
-    print *, 'n =', n
-    print *, 'x =', x
-end program
-```
-
-```fortran
-! CORRECT: Handle namelist errors
-program namelist_error_handling
-    implicit none
-    integer :: n, ios
-    real :: x
-    namelist /params/ n, x
-    
-    open(10, file='params.nml', status='old', iostat=ios)
-    if (ios /= 0) then
-        print *, 'Error opening namelist file'
+    integer, allocatable :: arr(:)
+    integer :: ierr
+    allocate(arr(1000), stat=ierr)
+    if (ierr /= 0) then
+        print *, "Allocation failed with error:", ierr
         stop
     end if
-    
-    read(10, nml=params, iostat=ios)
-    if (ios /= 0) then
-        print *, 'Error reading namelist'
-    end if
-    
-    close(10)
-end program
+    arr = 42
+    print *, "Allocation succeeded, arr(1) =", arr(1)
+    deallocate(arr)
+end program safe_alloc
 ```
 
+### Solution 2: Use deallocate before reallocating
+
 ```fortran
-! CORRECT: Multiple namelist groups
-program multi_namelist
+program realloc_example
     implicit none
-    integer :: n
-    real :: x
-    character(len=20) :: name
-    namelist /params/ n, x
-    namelist /info/ name
-    
-    n = 10
-    x = 3.14
-    name = 'test'
-    
-    write(*, nml=params)
-    write(*, nml=info)
-end program
+    integer, allocatable :: data(:)
+    integer :: ierr
+    allocate(data(100))
+    data = 1
+    ! Always deallocate before reallocating
+    if (allocated(data)) deallocate(data)
+    allocate(data(200), stat=ierr)
+    if (ierr /= 0) then
+        print *, "Reallocation failed"
+        stop
+    end if
+    data = 2
+    deallocate(data)
+end program realloc_example
 ```
+
+### Solution 3: Enable runtime bounds checking during development
+
+```fortran
+program bounds_check
+    implicit none
+    integer :: arr(10)
+    integer :: i
+    arr = (/ (i, i = 1, 10) /)
+    ! Compile with -fcheck=all for bounds checking
+    do i = 1, 10
+        print *, "arr(", i, ") =", arr(i)
+    end do
+end program bounds_check
+```
+
+## Common Scenarios
+
+### Scenario 1: Memory allocation failure in Namelist read/write error
+
+Memory allocation failure in Namelist read/write error often occurs when developers forget to handle edge cases in their code. For example:
+
+```fortran
+! Example scenario demonstrating the issue
+! This commonly happens in production code
+! Always validate inputs before processing
+```
+
+### Scenario 2: Resource exhaustion during Namelist read/write error
+
+Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+
+```fortran
+! Common pattern that leads to this error
+! Always check types and dimensions
+! Use compiler/runtime flags for early detection
+```
+
+### Scenario 3: Edge case triggering Namelist read/write error
+
+Performance-related issues can also trigger this error under load:
+
+```fortran
+! Performance scenario example
+! Monitor resource usage in production
+! Add graceful degradation for resource limits
+```
+
+## Prevent It
+
+- **Always validate input parameters before allocation or processing**
+- **Use compiler flags like -fcheck=all for Fortran to catch issues early**
+- **Add proper error handling and cleanup with STAT= and deallocate**
 
 ## Related Errors
 
-- [I/O Error](fortran-io-error-v2) - file operation errors
-- [Format Error](fortran-format-error-v2) - format mismatch
-- [Runtime Error](fortran-runtime-error-v2) - general runtime
+- [Fortran best practices](/languages/fortran)
+- [Fortran error handling guide](/languages/fortran/_index)

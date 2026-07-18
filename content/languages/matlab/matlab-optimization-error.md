@@ -1,74 +1,113 @@
 ---
-title: "[Solution] Optimization: convergence failure in MATLAB"
-description: "Fix MATLAB optimization errors when solvers fail to converge, reach iteration limits, or produce invalid solutions."
+title: "[Solution] MATLAB Optimization Error"
+description: "Fix MATLAB Optimization Toolbox errors caused by non-convergence, invalid constraints, or ill-conditioned problems."
 languages: ["matlab"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-## What This Error Means
+## Why It Happens
 
-Optimization errors occur when MATLAB's optimization solvers cannot find a solution that satisfies convergence criteria within the allowed iterations or function evaluations.
+Optimization toolbox solver error
 
-## Common Causes
+## Common Error Messages
 
-- Initial guess too far from solution
-- Objective function not smooth
-- Constraints infeasible
-- Iteration limit reached
-- Step size too small
-- Numerical gradient issues
+1. **Optimization failed to converge**
+2. **Objective function is undefined at point**
+3. **Constraints are infeasible in optimization**
 
-## How to Fix
+## How to Fix It
 
-```matlab
-% WRONG: Bad initial guess
-x0 = 1000;  % Far from solution
-[x, fval] = fminsearch(@(x) (x-1)^2, x0);  % May not converge
-
-% CORRECT: Better initial guess
-x0 = 0.5;  % Close to expected solution
-[x, fval] = fminsearch(@(x) (x-1)^2, x0);
-```
+### Solution 1: Validate inputs before processing
 
 ```matlab
-% WRONG: Default options
-[x, fval] = fmincon(@(x) x^2, 1, [], [], [], [], 0, 10);
-
-% CORRECT: Set options for better convergence
-options = optimoptions('fmincon', ...
-    'Display', 'iter', ...
-    'MaxIterations', 1000, ...
-    'MaxFunctionEvaluations', 5000, ...
-    'OptimalityTolerance', 1e-8);
-[x, fval] = fmincon(@(x) x^2, 1, [], [], [], [], 0, 10, [], options);
-```
-
-```matlab
-% CORRECT: Check convergence
-[x, fval, exitflag, output] = fminsearch(@(x) (x-1)^2, 0);
-if exitflag <= 0
-    warning('Optimization did not converge');
-    disp(output.message);
-end
-```
-
-```matlab
-% CORRECT: Use multiple starting points
-bestX = [];
-bestFval = Inf;
-for x0 = -10:2:10
-    [x, fval] = fminsearch(@(x) (x-1)^2, x0);
-    if fval < bestFval
-        bestFval = fval;
-        bestX = x;
+% Check input dimensions and types
+function result = safe_process(data)
+    if nargin < 1
+        error('Input data is required');
     end
+    if ~isnumeric(data)
+        error('Input must be numeric');
+    end
+    if any(isnan(data(:)))
+        warning('Input contains NaN values');
+        data(isnan(data)) = 0;
+    end
+    result = process_data(data);
 end
 ```
+
+### Solution 2: Use try-catch for error handling
+
+```matlab
+% Wrap risky operations in try-catch
+try
+    result = complex_operation(input_data);
+    disp(['Operation succeeded: ', num2str(result)]);
+catch ME
+    fprintf('Error: %s\n', ME.message);
+    fprintf('In file: %s, line %d\n', ME.stack(1).file, ME.stack(1).line);
+    result = [];
+end
+```
+
+### Solution 3: Check workspace variables before execution
+
+```matlab
+% Verify variables exist and have correct properties
+if ~exist('config', 'var')
+    config = default_config();
+end
+if ~isfield(config, 'tolerance')
+    config.tolerance = 1e-6;
+end
+% Ensure data is loaded
+if ~exist('data_matrix', 'var')
+    error('data_matrix not found. Run load_data() first.');
+end
+```
+
+## Common Scenarios
+
+### Scenario 1: Input validation failure in Optimization toolbox solver error
+
+Input validation failure in Optimization toolbox solver error often occurs when developers forget to handle edge cases in their code. For example:
+
+```matlab
+! Example scenario demonstrating the issue
+! This commonly happens in production code
+! Always validate inputs before processing
+```
+
+### Scenario 2: Unexpected dimension mismatch in Optimization toolbox solver error
+
+Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+
+```matlab
+! Common pattern that leads to this error
+! Always check types and dimensions
+! Use compiler/runtime flags for early detection
+```
+
+### Scenario 3: Resource limit exceeded during Optimization toolbox solver error
+
+Performance-related issues can also trigger this error under load:
+
+```matlab
+! Performance scenario example
+! Monitor resource usage in production
+! Add graceful degradation for resource limits
+```
+
+## Prevent It
+
+- **Use try-catch blocks around critical operations and check ME.message for details**
+- **Validate input dimensions, types, and ranges before calling toolbox functions**
+- **Enable verbose mode (dbstop if error) for interactive debugging**
 
 ## Related Errors
 
-- [ODE Solver Error](matlab-ode-solver-error) - ODE issues
-- [Assertion Failed](matlab-assertion-failed-v2) - validation
-- [Invalid Function Handle](matlab-invalid-function-handle-v2) - function issues
+- [Matlab best practices](/languages/matlab)
+- [Matlab error handling guide](/languages/matlab/_index)

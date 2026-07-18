@@ -1,157 +1,177 @@
 ---
-title: "[Solution] Netlify Lambda Function Timeout Error — Fix Function Duration"
-description: "Fix Netlify Lambda function timeout errors. Resolve function execution limits, cold start delays, and duration issues."
+title: "[Solution] Netlify Lambda Function Deployment Error — How to Fix"
+description: "Fix Netlify lambda function deployment errors. Resolve function bundling failures, runtime issues, and handler configuration errors."
 tools: ["netlify"]
 error-types: ["tool-error"]
 severities: ["error"]
-weight: 9
+weight: 1
+comments: true
 ---
 
-A Netlify Lambda function timeout error occurs when a serverless function exceeds its maximum execution time. Netlify Functions on the free tier have a 10-second limit, extended to 26 seconds on Pro plans.
+A Netlify lambda function deployment error occurs when your serverless functions fail to deploy or execute. Netlify Functions use AWS Lambda under the hood and require specific bundling and configuration.
 
 ## What This Error Means
 
-When a function runs longer than allowed, Netlify terminates it and returns a timeout error:
-
-```
-Function timed out
-Runtime.ExitError
-```
-
-The function was invoked but did not complete its execution within the duration limit.
+Netlify Functions are Node.js functions in your `netlify/functions` directory (or configured path). They are bundled during the build process and deployed to AWS Lambda. Failures can occur during bundling, deployment, or runtime execution.
 
 ## Why It Happens
 
-- The function performs slow database queries
-- External API calls are unresponsive or slow
-- The function processes large datasets synchronously
-- Cold start initialization takes too long
-- The function has a deadlock or infinite loop
-- Network latency to external services is high
+- The function file is in the wrong directory or not following the naming convention
+- The function exports a handler incorrectly
+- Node.js dependencies are not bundled properly
+- The function exceeds the execution time or size limits
+- The function runtime version is not compatible
+- The `netlify.toml` build command does not include function bundling
+- The function imports modules that are not compatible with the Lambda runtime
+- The function file extension is incorrect
+
+## Common Error Messages
+
+- `Function not found` — The function is not deployed or not in the correct path
+- `Handler missing` — The function does not export a `handler` or `default` export
+- `Function timed out` — Execution exceeded 10 seconds (free) or 26 seconds (paid)
+- `Cannot find module` — Missing dependency in the bundled function
+- `Runtime.ExitError` — Function crashed during initialization
 
 ## How to Fix It
 
-### Reduce Function Execution Time
+### Structure Functions Correctly
 
 ```javascript
-// netlify/functions/fast-query.js
-exports.handler = async (event) => {
-  // Use indexed queries
-  const result = await db.query(
-    'SELECT id, name FROM users WHERE active = $1 LIMIT 100',
-    [true]
-  );
+// netlify/functions/hello.js
+// Netlify expects: exports.handler or module.exports.handler
 
+exports.handler = async (event, context) => {
   return {
     statusCode: 200,
-    body: JSON.stringify(result.rows),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ message: 'Hello from Netlify Functions!' }),
   };
 };
-```
 
-### Move Heavy Work to Background
-
-```javascript
-// netlify/functions/process-order.js
-exports.handler = async (event) => {
-  const { orderId } = JSON.parse(event.body);
-
-  // Queue for background processing
-  await queue.publish('order-processing', { orderId });
-
+// Or use ES module syntax
+export default async (event, context) => {
   return {
-    statusCode: 202,
-    body: JSON.stringify({
-      message: 'Order queued for processing',
-      orderId,
-    }),
+    statusCode: 200,
+    body: JSON.stringify({ message: 'Hello!' }),
   };
 };
 ```
 
-### Use Connection Pooling
+### Configure Function Path
+
+```toml
+# netlify.toml
+[build]
+  command = "npm run build"
+  functions = "netlify/functions"
+
+# If using a custom functions directory
+[functions]
+  directory = "src/functions"
+  node_bundler = "esbuild"
+  included_files = ["src/**/*.json"]
+```
+
+### Fix Handler Exports
 
 ```javascript
-// Keep database connection outside handler
-const { Pool } = require('pg');
+// WRONG: No exported handler
+async function handleRequest(event) {
+  return { statusCode: 200, body: 'OK' };
+}
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 5,
-});
+// RIGHT: Export the handler
+exports.handler = handleRequest;
 
-exports.handler = async (event) => {
-  const client = await pool.connect();
-  try {
-    const result = await client.query('SELECT * FROM users');
-    return { statusCode: 200, body: JSON.stringify(result.rows) };
-  } finally {
-    client.release();
+// RIGHT: Named export with correct signature
+exports.handler = async (event, context) => {
+  const { httpMethod, path, queryStringParameters, body } = event;
+
+  // Handle different HTTP methods
+  switch (httpMethod) {
+    case 'GET':
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ path, query: queryStringParameters }),
+      };
+    case 'POST':
+      return {
+        statusCode: 201,
+        body: JSON.stringify({ received: JSON.parse(body) }),
+      };
+    default:
+      return { statusCode: 405, body: 'Method not allowed' };
   }
 };
 ```
 
-### Cache Repeated Results
+### Bundle Dependencies Correctly
 
-```javascript
-// netlify/functions/cached-data.js
-const cache = new Map();
-
-exports.handler = async (event) => {
-  const cacheKey = 'expensive-data';
-
-  if (cache.has(cacheKey)) {
-    const { data, timestamp } = cache.get(cacheKey);
-    if (Date.now() - timestamp < 60000) {
-      return { statusCode: 200, body: JSON.stringify(data) };
+```json
+// package.json — functions need their own dependencies
+{
+  "name": "my-site",
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  // Function-specific dependencies
+  "netlifyConfig": {
+    "functions": {
+      "external_node_modules": ["sharp", "canvas"]
     }
   }
-
-  const data = await fetchExpensiveData();
-  cache.set(cacheKey, { data, timestamp: Date.now() });
-
-  return { statusCode: 200, body: JSON.stringify(data) };
-};
+}
 ```
-
-### Optimize Dependencies
 
 ```bash
-# Check function size
-ls -la netlify/functions/*.js
+# Install function dependencies
+npm install --save uuid axios
 
-# Use tree-shaking to reduce bundle size
-# Remove unused imports
-# Use dynamic imports for heavy libraries
+# Or use esbuild for automatic bundling
+# netlify.toml
+[functions]
+  node_bundler = "esbuild"
+  # esbuild automatically bundles dependencies
 ```
 
-```javascript
-// Use dynamic imports for heavy modules
-exports.handler = async (event) => {
-  const { default: heavyLib } = await import('heavy-library');
-  const result = heavyLib.process(event.body);
-  return { statusCode: 200, body: JSON.stringify(result) };
-};
+### Test Functions Locally
+
+```bash
+# Install Netlify CLI
+npm install -g netlify-cli
+
+# Run functions locally
+netlify functions:serve
+
+# Invoke a specific function
+netlify functions:invoke hello --payload '{"name": "world"}'
+
+# Test with GET request
+netlify functions:invoke hello --method GET
+
+# Check function logs
+netlify logs --functions
+
+# Test with environment variables
+netlify functions:invoke hello --env API_KEY=abc123
 ```
 
-### Split Large Functions
+## Common Scenarios
 
-```javascript
-// Instead of one large function, split by concern
-// netlify/functions/get-users.js
-// netlify/functions/create-user.js
-// netlify/functions/delete-user.js
-```
+- **Wrong file location:** Functions are placed in `src/api/` instead of `netlify/functions/`, so Netlify does not detect them during the build.
+- **Missing handler:** A function file exists but does not export a `handler` function. The function is deployed but returns "Handler missing" when invoked.
+- **Large dependency tree:** A function imports a heavy library (e.g., `puppeteer`) that exceeds the Lambda size limit, causing the bundle step to fail.
 
-## Common Mistakes
+## Prevent It
 
-- Not testing function execution time locally
-- Using synchronous HTTP calls instead of parallel
-- Not managing database connections properly
-- Including heavy dependencies that slow cold starts
-- Not monitoring function duration in production
+1. Always place functions in the `netlify/functions` directory (or configured path) and export a `handler` function
+2. Use `netlify functions:serve` to test functions locally before deploying
+3. Use esbuild bundler for automatic dependency bundling and keep function sizes under 50 MB
 
 ## Related Pages
 
-- [Netlify Functions Error]({{< relref "/tools/netlify/netlify-functions-error" >}}) — Serverless function error
-- [Netlify Build Error]({{< relref "/tools/netlify/netlify-build-error" >}}) — Build failed
+- [Netlify Lambda Error]({{< relref "/tools/netlify/netlify-lambda-error" >}}) — Lambda deployment error
+- [Netlify Functions Error]({{< relref "/tools/netlify/netlify-functions-error" >}}) — Function execution error

@@ -1,135 +1,209 @@
 ---
-title: "[Solution] Heroku R14 Memory Quota Exceeded Error — Fix Memory Issues"
-description: "Fix Heroku R14 memory quota exceeded errors. Resolve memory leaks, dyno memory limits, and R14 error codes."
+title: "[Solution] Heroku Dyno Crashed or Restarted — How to Fix"
+description: "Fix Heroku dyno crashes and restarts by analyzing R14/R15 memory errors, checking application logs, adjusting dyno sizing, and fixing unhandled exceptions in your code."
 tools: ["heroku"]
-error-types: ["tool-error"]
+error-types: ["dyno-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-A Heroku R14 memory quota exceeded error occurs when your dyno uses more memory than its plan allows. Heroku monitors memory usage and terminates dynos that exceed their quota.
+A Heroku dyno crash or restart occurs when a dyno process exits unexpectedly. Heroku automatically restarts crashed dynos, but frequent crashes impact application availability and performance.
 
 ## What This Error Means
 
-```
-R14 - Memory quota exceeded
-Process running user=app pid=1234 rss=512000 vsz=1048576
-```
+Heroku runs your application in lightweight containers called dynos. Each dyno type has memory and CPU limits. When a dyno crashes, Heroku logs the exit code and restarts it automatically. Common crash reasons include out-of-memory errors, unhandled exceptions, and SIGTERM/SIGKILL signals from the platform.
 
-The dyno's memory usage (RSS) exceeded the plan's quota:
-
-- **Free/Eco**: 512MB
-- **Basic**: 512MB
-- **Standard-1X**: 512MB
-- **Standard-2X**: 1GB
-- **Performance-M**: 2.5GB
-- **Performance-L**: 14GB
+Dyno restarts fall into two categories: intentional (scale-up, deploys, config var changes) and unintentional (crashes, OOM kills). Unintentional restarts indicate underlying application issues that need debugging.
 
 ## Why It Happens
 
-- Memory leak in application code
-- Large objects loaded into memory
-- Unbounded database queries returning too many rows
-- Child processes consuming additional memory
-- Caching too much data in-memory
-- Multiple processes exceeding combined quota
+- Out-of-memory (R14/R15) errors cause the dyno to be killed by the platform
+- Unhandled exceptions or segmentation faults crash the application process
+- The web server crashes due to port binding issues
+- Database connection pool exhaustion causes request failures
+- Long-running requests trigger dyno timeouts (30 seconds for web dynos)
+- Health check failures cause repeated restarts
+- Memory leaks accumulate over time until the dyno is killed
+- The application processes too many concurrent requests for the dyno size
+
+## Common Error Messages
+
+```
+Error R14 (Memory quota exceeded)
+# or
+Error R15 (Memory quota vastly exceeded) — Process killed
+# or
+State changed from up to crashed — Exit code 137
+# or
+at=error code=H13 desc="Connection closed without response"
+```
 
 ## How to Fix It
 
-### Monitor Memory Usage
+### 1. Analyze Crash Logs
+
+```bash
+# View recent dyno crashes
+heroku logs --tail -a my-app | grep -E "(Error|crash|killed|exit)"
+
+# Check for specific error codes
+heroku logs -a my-app | grep "Error R14"
+heroku logs -a my-app | grep "Error R15"
+
+# View the full log for the crashed dyno
+heroku logs -a my-app --dyno web.1
+```
+
+### 2. Fix Memory Issues (R14/R15)
 
 ```bash
 # Check current memory usage
-heroku ps
+heroku ps:stats -a my-app
 
-# View memory stats
-heroku metrics:memory
+# Upgrade to a larger dyno type
+heroku ps:type web=standard-2x -a my-app
 
-# Check for R14 errors
-heroku logs --tail | grep "R14"
+# Or add more dynos and use a max memory configuration
+heroku ps:scale web=3 -a my-app
 ```
 
-### Fix Memory Leaks
+```python
+# In your application, configure memory limits
+# For Node.js:
+# node --max-old-space-size=512 server.js
 
-```javascript
-// Common leak: storing data in module scope
-// WRONG
-const cache = {};
-app.get('/data', (req, res) => {
-  cache[req.query.key] = fetchData(); // Grows forever
-});
+# For Python/Gunicorn:
+# gunicorn --workers 2 --max-requests 1000 app:app
 
-// RIGHT: Use LRU cache with limits
-const LRU = require('lru-cache');
-const cache = new LRU({ max: 500, maxAge: 1000 * 60 * 5 });
+# For Java:
+# java -Xmx256m -jar app.jar
 ```
 
-### Use Streaming
+### 3. Fix Unhandled Exceptions
 
-```javascript
-// Instead of loading entire file into memory
-const fs = require('fs');
+```python
+import logging
+import sys
 
-// WRONG: Loads entire file
-const data = fs.readFileSync('large-file.csv', 'utf8');
+logger = logging.getLogger(__name__)
 
-// RIGHT: Stream the file
-const stream = fs.createReadStream('large-file.csv');
-stream.pipe(res);
+# Add global exception handler
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    logger.critical("Unhandled exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+sys.excepthook = handle_exception
 ```
 
-### Optimize Database Queries
+### 4. Optimize Database Connection Pooling
 
-```sql
--- Add limits to queries
-SELECT * FROM orders WHERE created_at > '2024-01-01' LIMIT 100;
+```python
+# Django example — configure connection pool
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',
+        'CONN_MAX_AGE': 300,  # Reuse connections for 5 minutes
+        'OPTIONS': {
+            'pool': {
+                'min_size': 1,
+                'max_size': 5,  # Match dyno concurrency
+            }
+        }
+    }
+}
 
--- Use pagination
-SELECT * FROM orders ORDER BY id LIMIT 50 OFFSET 0;
+# SQLAlchemy example
+from sqlalchemy import create_engine
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=5,
+    max_overflow=0,
+    pool_pre_ping=True
+)
 ```
 
-### Upgrade Dyno Type
+### 5. Handle SIGTERM Gracefully
+
+```python
+import signal
+import sys
+
+def handle_sigterm(signum, frame):
+    print("Received SIGTERM, shutting down gracefully")
+    # Close database connections
+    # Finish in-flight requests
+    # Clean up resources
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, handle_sigterm)
+```
+
+### 6. Optimize Web Server Configuration
+
+```python
+# Gunicorn configuration for Heroku
+# gunicorn_conf.py
+import multiprocessing
+
+bind = "0.0.0.0:{}".format(os.environ.get('PORT', '8000'))
+workers = multiprocessing.cpu_count() * 2 + 1
+worker_class = 'sync'
+timeout = 30
+keepalive = 5
+max_requests = 1000
+max_requests_jitter = 50
+```
 
 ```bash
-# Check available dyno types
-heroku ps:type
-
-# Upgrade to handle more memory
-heroku ps:type standard-2x
-
-# Check after upgrade
-heroku ps
+# Run with optimized config
+heroku ps:type web=standard-1x -a my-app
 ```
 
-### Add Swap Space
+### 7. Debug with One-Off Dynos
 
 ```bash
-# Heroku adds swap automatically but with limits
-# Check swap usage
-heroku logs | grep "swap"
+# Run a bash session to debug interactively
+heroku run bash -a my-app
 
-# Better to fix the root cause than rely on swap
+# Check memory and processes
+top -b -n 1 | head -20
+ps aux --sort=-%mem | head -10
+
+# Test database connectivity
+heroku pg:ping -a my-app
 ```
 
-### Profile Memory
+## Common Scenarios
 
-```bash
-# For Node.js
-heroku config:set NODE_OPTIONS="--max-old-space-size=400"
+### Memory Leak in a Background Job
 
-# Use memory profiling tools
-heroku config:set NODE_ENV=development
-```
+A Sidekiq worker processes image uploads but never releases memory after each job. After processing 1000 images, the dyno exceeds its memory quota and gets killed by R15. The fix is to add `GC.start` after each job or use a memory-profiling tool to find the leak.
 
-## Common Mistakes
+### Unhandled Promise Rejection in Node.js
 
-- Ignoring R14 errors hoping they go away
-- Not monitoring memory usage regularly
-- Using global variables to cache data indefinitely
-- Not setting NODE_OPTIONS to limit heap size
-- Upgrading dyno size without fixing the underlying leak
+A Node.js API endpoint makes an external HTTP call with `.catch()` missing on some code paths. When the external service is slow, the unhandled rejection crashes the Node process and the dyno exits. Add a global `unhandledRejection` handler to prevent crashes.
+
+### Database Connection Exhaustion
+
+A Rails app uses the default Puma configuration with 5 workers and 16 threads per worker (80 total threads). Each thread opens a database connection. Heroku Postgres allows only 20 connections on the Standard-0 plan. Threads block waiting for connections, requests time out, and the dyno restarts. Reduce thread count to match database connection limits.
+
+## Prevent It
+
+- Use a dyno type appropriate for your application's memory footprint
+- Set memory limits in your runtime (e.g., `NODE_OPTIONS="--max-old-space-size=512"`)
+- Implement graceful shutdown handlers for SIGTERM
+- Monitor dyno memory with `heroku ps:stats` and set up alerts
+- Configure connection pools to match database connection limits
+- Use the Puma web server with thread-safe configuration
+- Add global exception handlers in your application
+- Test dyno behavior with load testing tools before production deployment
 
 ## Related Pages
 
-- [Heroku Dyno Error]({{< relref "/tools/heroku/heroku-dyno-error" >}}) — R14 Memory quota exceeded
-- [Heroku Config Error]({{< relref "/tools/heroku/heroku-config-error" >}}) — Config var not set
+- [Heroku Router Error](/tools/heroku/heroku-router-error)
+- [Heroku Release Error](/tools/heroku/heroku-release-error)
+- [Heroku DB Error](/tools/heroku/heroku-db-error)

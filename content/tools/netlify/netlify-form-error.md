@@ -1,74 +1,87 @@
 ---
-title: "[Solution] Netlify Forms Not Receiving Submissions Error — Fix Form Handling"
-description: "Fix Netlify forms not receiving submissions. Resolve form handling configuration, spam filtering, and submission storage issues."
+title: "[Solution] Netlify Form Submission Not Received Error — How to Fix"
+description: "Fix Netlify form submissions not being received. Resolve form detection failures, spam filtering, and submission handling issues."
 tools: ["netlify"]
 error-types: ["tool-error"]
 severities: ["error"]
-weight: 3
+weight: 1
+comments: true
 ---
 
-A Netlify forms not receiving submissions error occurs when your HTML form is configured for Netlify Forms but submissions are not being captured or stored.
+A Netlify form submission not received error occurs when your HTML form is properly configured for Netlify Forms but submissions are not captured, stored, or appear in the dashboard.
 
 ## What This Error Means
 
-Netlify automatically detects forms with the `netlify` attribute and processes submissions. When forms do not work, submissions may be silently dropped, blocked by spam filters, or not detected by Netlify's form processing.
+Netlify automatically detects forms with the `netlify` attribute during the build process and sets up form handling. When submissions are not received, it usually means the form was not detected, JavaScript intercepted the submission, or spam filtering is blocking entries.
 
 ## Why It Happens
 
-- The form does not have the `netlify` attribute
-- The form action is set to a custom URL instead of Netlify's handler
-- JavaScript prevents the form from submitting normally
-- The form is behind authentication
-- The site has not been redeployed since adding the form
-- Spam filter is blocking submissions
-- Form uses file uploads which require a different setup
+- The form does not have the `netlify` attribute on the `<form>` tag
+- JavaScript prevents the default form submission (e.g., `e.preventDefault()`)
+- The form is behind authentication that Netlify's crawler cannot access
+- The site was not redeployed after adding the form
+- Spam filter is categorizing submissions as spam
+- The form action points to a custom URL instead of Netlify's handler
+- Multiple forms share the same `name` attribute
+- The form is rendered by JavaScript after page load (SPA)
+
+## Common Error Messages
+
+- `Form not detected` — The build did not find a form with the netlify attribute
+- `Submission not found` — The form submission could not be processed
+- `Spam submission blocked` — The submission was flagged by spam protection
+- `Netlify Forms requires a redeploy` — Form was added but site not redeployed
 
 ## How to Fix It
 
-### Add Netlify Attribute
+### Ensure Proper Form Configuration
 
 ```html
-<!-- WRONG: Missing netlify attribute -->
-<form name="contact" method="POST">
-  <input type="text" name="name" />
-  <button type="submit">Send</button>
-</form>
-
-<!-- RIGHT: Include netlify attribute -->
+<!-- Basic Netlify form -->
 <form name="contact" method="POST" netlify>
-  <input type="text" name="name" />
-  <button type="submit">Send</button>
-</form>
-```
-
-### Use Hidden Form Path
-
-```html
-<!-- For form detection to work reliably -->
-<form name="contact" method="POST" action="/success" netlify>
   <input type="hidden" name="form-name" value="contact" />
-  <input type="text" name="name" />
-  <input type="email" name="email" />
+  <input type="text" name="name" placeholder="Name" required />
+  <input type="email" name="email" placeholder="Email" required />
+  <textarea name="message" placeholder="Message" required></textarea>
   <button type="submit">Send</button>
 </form>
 ```
 
-### Handle JavaScript Forms
+### Fix JavaScript-Intercepted Forms
 
 ```javascript
-// For React/Vue/Angular forms
-// Include a hidden form for Netlify detection
+// React/Vue form — add hidden form for Netlify detection
 function ContactForm() {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Use fetch to submit to Netlify's handler
+    const response = await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        'form-name': 'contact',
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      }).toString(),
+    });
+
+    if (response.ok) {
+      setSubmitted(true);
+    }
+  };
+
   return (
     <>
-      {/* Hidden form for Netlify to detect */}
+      {/* Hidden form for Netlify detection */}
       <form name="contact" netlify hidden>
         <input name="name" />
         <input name="email" />
         <input name="message" />
       </form>
 
-      {/* Your JavaScript form */}
+      {/* Your React form */}
       <form onSubmit={handleSubmit}>
         <input name="name" onChange={handleChange} />
         <input name="email" onChange={handleChange} />
@@ -78,64 +91,86 @@ function ContactForm() {
     </>
   );
 }
-
-// Submit via Netlify API
-async function handleSubmit(e) {
-  e.preventDefault();
-  await fetch('/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      'form-name': 'contact',
-      ...formData,
-    }).toString(),
-  });
-}
 ```
 
 ### Enable Spam Filtering
 
-```toml
-# netlify.toml
-[build.processing]
-  skip_processing = false
-
-[build.processing.html]
-  pretty_urls = true
+```html
+<!-- Add honeypot field to catch bots -->
+<form name="contact" method="POST" netlify netlify-honeypot="bot-field">
+  <input type="hidden" name="form-name" value="contact" />
+  <p hidden>
+    <label>Don't fill this out: <input name="bot-field" /></label>
+  </p>
+  <input type="text" name="name" required />
+  <input type="email" name="email" required />
+  <textarea name="message" required></textarea>
+  <button type="submit">Send</button>
+</form>
 ```
 
-### Test Form Detection
+### Verify Form Detection
 
 ```bash
-# Redeploy after adding the form
+# Redeploy after adding forms
 git push origin main
 
-# In Netlify Dashboard:
-# Forms > Verify the form appears in the list
+# Check the deployed HTML for form detection
+curl -s https://your-domain.com/ | grep -i 'netlify'
 
-# Or check with curl
-curl -s https://your-domain.com/ | grep 'netlify'
+# In Netlify Dashboard: Forms > Verify form appears in list
+# If the form is not listed, the netlify attribute may be missing
 ```
 
-### Handle File Uploads
+### Handle File Upload Forms
 
 ```html
-<!-- File uploads require netlify enctype -->
+<!-- File upload forms require specific configuration -->
 <form name="upload" method="POST" netlify enctype="multipart/form-data">
+  <input type="hidden" name="form-name" value="upload" />
   <input type="file" name="file" />
   <button type="submit">Upload</button>
 </form>
 ```
 
-## Common Mistakes
+### Check Form Limits
 
-- Not redeploying after adding the netlify attribute
-- Using JavaScript `fetch` without including the form-name field
-- Having multiple forms with the same name attribute
-- Not including the hidden form-name input for JS submissions
-- Forgetting that Netlify forms only work on published pages
+```bash
+# Netlify forms have these limits:
+# - Free: 100 submissions/month, 100 MB storage
+# - Pro: 25,000 submissions/month, 10 GB storage
+# - Business: 100,000 submissions/month, 100 GB storage
+
+# Check current usage via API
+curl -X GET "https://api.netlify.com/api/v1/sites/SITE_ID/forms" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" | jq '.[] | {name, submission_count}'
+```
+
+### Test Form Submissions
+
+```bash
+# Test form submission via curl
+curl -X POST https://your-domain.com/ \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "form-name=contact&name=Test+User&email=test@example.com&message=Hello"
+
+# Check Netlify Dashboard for the submission
+# Dashboard > Forms > Submissions
+```
+
+## Common Scenarios
+
+- **SPA form detection:** A single-page application renders the form with JavaScript after page load. Netlify's build-time crawler cannot detect dynamically rendered forms.
+- **Form behind login:** The form is on a protected page, and Netlify's crawler cannot access it during the build. The form is never registered.
+- **Duplicate form names:** Two forms share the same `name` attribute. Only one form is registered, and submissions from the other are lost.
+
+## Prevent It
+
+1. Always include a hidden `form-name` input field matching the `name` attribute on the form tag
+2. Verify form detection in the Netlify Dashboard after each deployment before relying on form submissions
+3. Use the `netlify-honeypot` attribute with a hidden honeypot field to reduce spam without impacting legitimate users
 
 ## Related Pages
 
-- [Netlify Functions Error]({{< relref "/tools/netlify/netlify-functions-error" >}}) — Serverless function error
-- [Netlify Redirect Error]({{< relref "/tools/netlify/netlify-redirect-error" >}}) — Redirect rules not working
+- [Netlify Form Error]({{< relref "/tools/netlify/netlify-form-error" >}}) — Form handling issues
+- [Netlify Identity Error]({{< relref "/tools/netlify/netlify-identity-error" >}}) — Identity auth failed

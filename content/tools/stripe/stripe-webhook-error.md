@@ -1,140 +1,169 @@
 ---
-title: "[Solution] Stripe Webhook Error — Signature Verification Failed"
-description: "Fix Stripe webhook signature verification errors. Resolve webhook authentication failures and event handling issues."
+title: "[Solution] Stripe Webhook Signature Verification Failed Error — How to Fix"
+description: "Fix Stripe webhook signature verification errors by using the correct secret, handling raw body correctly, and validating timestamp and payload integrity"
 tools: ["stripe"]
 error-types: ["tool-error"]
 severities: ["error"]
-weight: 8
+weight: 5
+comments: true
 ---
 
-A Stripe webhook error occurs when your server cannot verify that an incoming webhook event actually came from Stripe. Stripe signs every webhook with a unique signature so you can confirm the event is legitimate.
+# Stripe Webhook Signature Verification Failed Error
 
-## What This Error Means
+This error means your webhook endpoint could not verify the signature of the incoming event from Stripe. Stripe signs every webhook with a secret key, and your endpoint must validate this signature to confirm the event is authentic.
 
-When webhook signature verification fails, your endpoint returns an error and Stripe marks the event as failed:
+## Why It Happens
+
+- The `STRIPE_WEBHOOK_SECRET` environment variable is incorrect or missing
+- The webhook endpoint is parsing the request body as JSON before signature verification
+- The webhook secret was rotated and the old secret is still in use
+- The request body was modified by middleware (e.g., body-parser)
+- The webhook is receiving events from a different Stripe endpoint than expected
+- The signature header is missing or malformed
+- Clock skew causes the timestamp verification to fail
+
+## Common Error Messages
+
+```
+No signatures found matching the expected signature
+```
 
 ```
 Webhook signature verification failed
 ```
 
-This means the `Stripe-Signature` header on the incoming request does not match the expected signature computed from the raw request body and your webhook signing secret.
+```
+timestamp_tolerance exceeded
+```
 
-## Why It Happens
-
-- The webhook signing secret is wrong or not set
-- The request body has been modified (e.g., by middleware parsing JSON)
-- You are reading the request as text instead of raw bytes
-- The signing secret was rotated and not updated in your code
-- A proxy or load balancer is modifying the request body
-- You are testing with a tool that does not preserve the raw body
+```
+Error: No signatures found matching the expected signature for payload
+```
 
 ## How to Fix It
 
-### Node.js / Express
+### 1. Use Raw Body for Signature Verification
 
 ```javascript
+// Express.js — CRITICAL: use raw body for Stripe
 const express = require('express');
-const stripe = require('stripe')('sk_test_your_key');
+const stripe = require('stripe')('sk_live_...');
 
 const app = express();
 
-// CRITICAL: Use raw body for webhook route
-app.post(
-  '/webhook',
+// Use raw body for the webhook endpoint only
+app.post('/webhook',
   express.raw({ type: 'application/json' }),
   (req, res) => {
     const sig = req.headers['stripe-signature'];
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
     let event;
+
     try {
       event = stripe.webhooks.constructEvent(
-        req.body,
+        req.body,  // Must be raw Buffer, NOT parsed JSON
         sig,
-        endpointSecret
+        process.env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
       console.error('Webhook signature verification failed:', err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // Handle the event
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        console.log('Payment succeeded:', event.data.object.id);
-        break;
-      case 'payment_intent.payment_failed':
-        console.log('Payment failed:', event.data.object.id);
-        break;
-    }
-
+    handleEvent(event);
     res.json({ received: true });
   }
 );
 ```
 
-### Python / Flask
+### 2. Verify the Correct Webhook Secret
+
+```bash
+# Check your webhook secret in Stripe Dashboard
+# Go to Developers > Webhooks > Select endpoint > Signing secret
+
+# The secret starts with whsec_...
+echo $STRIPE_WEBHOOK_SECRET
+
+# For test mode: whsec_test_...
+# For live mode: whsec_...
+```
+
+### 3. Handle Timestamp Tolerance
 
 ```python
 import stripe
-from flask import Flask, request
+from django.conf import settings
 
-app = Flask(__name__)
-endpoint_secret = os.environ['STRIPE_WEBHOOK_SECRET']
-
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    sig_header = request.headers.get('Stripe-Signature')
-
+def verify_webhook(payload, sig_header):
     try:
         event = stripe.Webhook.construct_event(
-            request.data,  # raw bytes, not request.json
+            payload,
             sig_header,
-            endpoint_secret
+            settings.STRIPE_WEBHOOK_SECRET,
+            tolerance=300  # Allow 5 minutes of clock skew
         )
+        return event
     except stripe.error.SignatureVerificationError as e:
-        return 'Invalid signature', 400
-
-    if event['type'] == 'payment_intent.succeeded':
-        payment_intent = event['data']['object']
-        print(f"Payment {payment_intent['id']} succeeded")
-
-    return 'OK', 200
+        print(f"Invalid signature: {e}")
+        return None
+    except ValueError as e:
+        print(f"Invalid payload: {e}")
+        return None
 ```
 
-### Retrieve Your Webhook Secret
-
-```bash
-# From Stripe CLI
-stripe listen --forward-to localhost:4242/webhook
-# Outputs: whsec_...
-
-# Or from Dashboard
-# Developers > Webhooks > Select endpoint > Signing secret
-```
-
-### Test Webhook Locally
+### 4. Test with Stripe CLI
 
 ```bash
 # Install Stripe CLI
-stripe login
-
-# Forward events to your local server
 stripe listen --forward-to localhost:4242/webhook
 
-# Trigger a test event
+# This gives you a webhook signing secret for testing
+# Use it as STRIPE_WEBHOOK_SECRET
+
+# In another terminal, trigger a test event
 stripe trigger payment_intent.succeeded
 ```
 
-## Common Mistakes
+### 5. Debug Webhook Signature
 
-- Using `express.json()` middleware before the webhook route
-- Reading `req.body` as parsed JSON instead of raw buffer
-- Not including the full webhook secret including the `whsec_` prefix
-- Mixing up test and production webhook secrets
-- Not returning a 2xx response quickly (Stripe expects a response within 20 seconds)
+```javascript
+// Log the signature header for debugging
+app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  console.log('Stripe-Signature:', sig);
+  console.log('Body type:', typeof req.body);
+  console.log('Body is Buffer:', Buffer.isBuffer(req.body));
+
+  // Verify
+  try {
+    const event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+    console.log('Event verified:', event.type);
+  } catch (err) {
+    console.error('Verification failed:', err.message);
+  }
+
+  res.json({ received: true });
+});
+```
+
+## Common Scenarios
+
+- **Body parser mismatch**: The global body parser middleware parses the body as JSON before the webhook handler. Use `express.raw()` specifically for the webhook route.
+- **Secret rotation**: You regenerated the webhook secret in Stripe but did not update the server. Both old and new secrets must be supported during the transition.
+- **Proxy modifying the body**: A reverse proxy or CDN modifies headers or the body. Configure the proxy to pass the raw body through unchanged.
+
+## Prevent It
+
+- Always use `express.raw()` (Node.js) or equivalent raw body parser for webhook endpoints
+- Store webhook secrets in environment variables, never hardcoded in source
+- Use the Stripe CLI to test webhooks locally before deploying to production
 
 ## Related Pages
 
-- [Stripe Authentication Error]({{< relref "/tools/stripe/stripe-authentication-error" >}}) — No API key provided or invalid key
-- [Stripe Rate Limit Error]({{< relref "/tools/stripe/stripe-rate-limit" >}}) — Too Many Requests (429)
+- [Stripe Rate Limit Error](/tools/stripe/stripe-rate-limit-error)
+- [Stripe Idempotency Error](/tools/stripe/stripe-idempotency-error)
+- [Stripe Charge Disputed](/tools/stripe/stripe-charge-disputed)

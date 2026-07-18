@@ -1,103 +1,178 @@
 ---
-title: "Next.js Image Component Error"
-description: "Next.js Image component raises errors for missing images, unconfigured domains, or layout issues"
+title: "[Solution] Next.js Image Optimization Error — How to Fix"
+description: "Fix Next.js Image component errors. Resolve image optimization, loading, and configuration issues in Next.js."
 frameworks: ["nextjs"]
-error-types: ["runtime-error"]
+error-types: ["configuration-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-## What This Error Means
+A Next.js image optimization error occurs when the `next/image` component fails to optimize, load, or display images. The Image component provides built-in optimization but requires proper configuration.
 
-The Next.js Image component error occurs when the `<Image>` component cannot load an image, the image source is invalid, or the external image domain is not configured. These errors appear during development or build time.
+## Why It Happens
 
-## Common Causes
+Next.js Image component automatically optimizes images. Errors occur when external image domains are not allowed in `next.config.js`, when image dimensions are incorrect, when the image source is invalid, when `priority` and `loading` attributes conflict, or when the image optimization service is unavailable.
 
-- External image domain not whitelisted in `next.config.js`
-- Missing `width` and `height` for static imports
-- Image file does not exist at the specified path
-- Using `layout="fill"` without a parent with `position: relative`
-- Invalid image format
+## Common Error Messages
 
-## How to Fix
-
-Configure allowed image domains:
-
-```js
-// next.config.js
-module.exports = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'example.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.cdn.example.com',
-      },
-    ],
-  },
-};
+```
+Error: Invalid src prop (https://example.com/image.png) on next/image, this host is not configured in images.remotePatterns
 ```
 
-Use the Image component correctly:
+```
+Error: Image is missing required "width" or "height" property
+```
+
+```
+Error: Failed to optimize image: undefined
+```
+
+```
+Warning: Image with src "..." was detected as the Largest Contentful Paint (LCP)
+```
+
+## How to Fix It
+
+### 1. Configure Allowed Image Domains
+
+Add external domains to `next.config.js`:
+
+```javascript
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'example.com',
+                pathname: '/images/**',
+            },
+            {
+                protocol: 'https',
+                hostname: '*.amazonaws.com',
+            },
+        ],
+        // Or use domains (deprecated in newer versions)
+        // domains: ['example.com', 'cdn.example.com'],
+        formats: ['image/avif', 'image/webp'],
+        minimumCacheTTL: 60 * 60 * 24, // 24 hours
+    },
+};
+
+module.exports = nextConfig;
+```
+
+### 2. Use Image Component Correctly
+
+Provide required props:
 
 ```tsx
 import Image from 'next/image';
 
-// With static import
-import profilePic from '../public/profile.png';
-
-<Image src={profilePic} alt="Profile" width={200} height={200} />
-
-// With remote image
+// Static image (width and height required)
 <Image
-  src="https://example.com/photo.jpg"
-  alt="Photo"
-  width={500}
-  height={300}
+    src="/images/hero.png"
+    alt="Hero banner"
+    width={1200}
+    height={600}
+    priority
 />
-```
 
-Use `layout="fill"` properly:
-
-```tsx
-<div style={{ position: 'relative', width: '100%', height: '400px' }}>
-  <Image
-    src="https://example.com/hero.jpg"
-    alt="Hero"
+// Remote image with fill
+<Image
+    src="https://example.com/photo.jpg"
+    alt="Photo"
     fill
-    style={{ objectFit: 'cover' }}
-  />
-</div>
-```
+    sizes="(max-width: 768px) 100vw, 50vw"
+/>
 
-Use placeholder for loading states:
-
-```tsx
+// With placeholder
 <Image
-  src={imageUrl}
-  alt="Product"
-  width={400}
-  height={300}
-  placeholder="blur"
-  blurDataURL="/placeholder.png"
+    src="/images/product.jpg"
+    alt="Product"
+    width={400}
+    height={300}
+    placeholder="blur"
+    blurDataURL="data:image/jpeg;base64,..."
 />
 ```
 
-## Examples
+### 3. Handle Dynamic Images
+
+Use dynamic imports for images:
 
 ```tsx
-<Image src="https://unconfigured.com/photo.jpg" alt="Photo" width={100} height={100} />
+import Image from 'next/image';
+import { useState } from 'react';
+
+function ProductImage({ src, alt }: { src: string; alt: string }) {
+    const [error, setError] = useState(false);
+
+    if (error) {
+        return <div className="placeholder">Image not available</div>;
+    }
+
+    return (
+        <Image
+            src={src}
+            alt={alt}
+            width={400}
+            height={300}
+            onError={() => setError(true)}
+            priority
+        />
+    );
+}
 ```
 
-```text
-Error: Invalid src prop (https://unconfigured.com/photo.jpg) on `next/image`,
-host "unconfigured.com" is not configured under images in `next.config.js`
+### 4. Optimize for Performance
+
+Use proper attributes for different scenarios:
+
+```tsx
+// Above the fold — use priority
+<Image
+    src="/hero.jpg"
+    alt="Hero"
+    width={1920}
+    height={1080}
+    priority
+/>
+
+// Below the fold — default lazy loading
+<Image
+    src="/content.jpg"
+    alt="Content"
+    width={800}
+    height={600}
+/>
+
+// Use sizes for responsive images
+<Image
+    src="/responsive.jpg"
+    alt="Responsive"
+    fill
+    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+/>
 ```
 
-## Related Errors
+## Common Scenarios
 
-- [CSS Modules error]({{< relref "/frameworks/nextjs/nextjs-css-modules-error" >}})
-- [Build error]({{< relref "/frameworks/nextjs/build-error" >}})
+**Scenario 1: Image fails to load from external domain.**
+Add the domain to `images.remotePatterns` in `next.config.js`. Restart the dev server after changes.
+
+**Scenario 2: Image blurry or low quality.**
+Use the `quality` prop (default is 75) and ensure the source image is high enough resolution.
+
+**Scenario 3: Large images slow down page.**
+Use the `sizes` prop with `fill` to let the browser choose the right image size, and enable modern formats like AVIF.
+
+## Prevent It
+
+1. **Always specify `alt` text** for accessibility and SEO.
+
+2. **Use `priority` only for above-the-fold images** to avoid degrading LCP.
+
+3. **Configure `remotePatterns`** for all external image sources before deployment.
