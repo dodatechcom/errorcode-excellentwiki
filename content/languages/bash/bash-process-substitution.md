@@ -1,66 +1,121 @@
 ---
-title: "[Solution] Bash Process Substitution Failed"
-description: "Fix 'cannot use process substitution' when Bash fails with <() or >() syntax. Resolve /dev/fd and named pipe issues."
+title: "[Solution] Bash Process Substitution Failed Not Supported Fix"
+description: "Fix 'process substitution failed' or 'not supported' in Bash. Enable process substitution and resolve /dev/fd issues."
 languages: ["bash"]
-severities: ["error"]
 error-types: ["runtime-error"]
+severities: ["error"]
 weight: 5
 ---
 
-# Bash Process Substitution Failed Fix
+# Bash Process Substitution Failed Not Supported Fix
 
-Process substitution errors occur when Bash cannot create a process substitution using `<()` (read from process) or `>()` (write to process).
+The `process substitution failed` or `not supported` error occurs when Bash cannot create process substitution using `<()` or `>()`, often due to missing `/dev/fd` support or shell limitations.
 
 ## What This Error Means
 
-Process substitution creates a temporary named pipe or `/dev/fd` entry that represents the stdout/stdin of a subprocess. Errors occur when `/dev/fd` is unavailable or the shell doesn't support the feature.
+Process substitution lets you treat command output as a file using `<(command)` for input or `>()` for output. This requires `/dev/fd` or `/proc/self/fd` to be available. When the system lacks this support or the shell is too old, the substitution fails.
 
-## Common Causes
+A typical error:
 
-- Using `sh` instead of `bash` (sh doesn't support process substitution)
-- `/dev/fd` not available on the system
-- Named pipe creation failing due to permissions
-- Too many open file descriptors
-
-## How to Fix
-
-### 1. Use bash shebang
-
-```bash
-#!/bin/bash  # NOT #!/bin/sh
-diff <(sort file1) <(sort file2)
+```
+bash: /dev/fd/63: No such file or directory
 ```
 
-### 2. Check /dev/fd availability
+## Why It Happens
+
+Common causes include:
+
+- **Missing `/dev/fd` support** — Some minimal containers or systems lack `/dev/fd`.
+- **Using Bash 3 or older** — Process substitution requires Bash 4.0+.
+- **Shells other than Bash** — `sh`, `dash`, and `zsh` may not support `<()`.
+- **Too many process substitutions** — Running out of file descriptors.
+- **Running inside a subshell** — Some environments restrict `/dev/fd`.
+
+## How to Fix It
+
+### Fix 1: Check Bash version
 
 ```bash
-# Verify /dev/fd exists
-ls -la /dev/fd/
+# Check your Bash version
+bash --version
 
-# If missing, mount it (Linux):
-sudo mount -t devtmpfs devtmpfs /dev
+# Process substitution requires Bash 4.0+
+# If too old, upgrade or use alternatives
 ```
 
-### 3. Use temporary files as alternative
+### Fix 2: Use temporary files as fallback
 
 ```bash
-# Instead of process substitution:
-sort file1 > /tmp/sorted1
-sort file2 > /tmp/sorted2
-diff /tmp/sorted1 /tmp/sorted2
-rm /tmp/sorted1 /tmp/sorted2
+# WRONG: Process substitution not available
+diff <(sort file1.txt) <(sort file2.txt)
+
+# RIGHT: Use temporary files
+sort file1.txt > /tmp/sorted1.txt
+sort file2.txt > /tmp/sorted2.txt
+diff /tmp/sorted1.txt /tmp/sorted2.txt
+rm -f /tmp/sorted1.txt /tmp/sorted2.txt
 ```
 
-### 4. Use named pipes manually
+### Fix 3: Use pipelines instead of process substitution
 
 ```bash
-mkfifo /tmp/pipe1
-sort file1 > /tmp/pipe1 &
-diff /tmp/pipe1 file2
-rm /tmp/pipe1
+# WRONG: Process substitution
+while read line; do
+    echo "$line"
+done < <(grep "error" logfile.txt)
+
+# RIGHT: Use a pipeline
+grep "error" logfile.txt | while read line; do
+    echo "$line"
+done
 ```
 
-## Related Errors
+### Fix 4: Install /dev/fd support
 
-- [Pipe Error](bash-pipe-error) — pipeline failures
-- [Here Document](bash-here-document) — heredoc syntax issues
+```bash
+# On Linux, ensure /dev/fd exists
+ls -la /dev/fd
+
+# If missing, create symlink
+sudo ln -s /proc/self/fd /dev/fd
+
+# Or mount devpts
+sudo mount -t devpts devpts /dev/pts
+```
+
+### Fix 5: Use bash-specific shebang
+
+```bash
+# Ensure the script runs with bash, not sh
+#!/bin/bash
+# NOT #!/bin/sh
+
+# Then use process substitution
+while read -r line; do
+    process_line "$line"
+done < <(find /var/log -name "*.log" -mtime -1)
+```
+
+### Fix 6: Alternative for POSIX shells
+
+```bash
+# Use a function to simulate process substitution
+process_and_diff() {
+    sort "$1" > /tmp/ps_a.txt
+    sort "$2" > /tmp/ps_b.txt
+    diff /tmp/ps_a.txt /tmp/ps_b.txt
+}
+process_and_diff file1.txt file2.txt
+```
+
+## Common Mistakes
+
+- **Using `#!/bin/sh` on a script with process substitution** — `sh` may be `dash` which lacks support.
+- **Assuming process substitution works in Docker containers** — Minimal images may lack `/dev/fd`.
+- **Not handling file descriptor limits** — Too many simultaneous substitutions exhaust FDs.
+
+## Related Pages
+
+- [Bash Substitution Error](bash-substitution-error) — Variable substitution issues
+- [Bash Bad Substitution](bad-substitution) — Incorrect variable expansion
+- [Bash Connection Error](bash-connection-error) — Pipe and redirection errors

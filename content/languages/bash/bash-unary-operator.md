@@ -1,67 +1,117 @@
 ---
-title: "[Solution] Bash Unary Operator Expected"
-description: "Fix 'bash: unary operator expected' when a test expression has a missing or empty operand before the operator."
+title: "[Solution] Bash Unary Operator Expected Error Fix"
+description: "Fix '[: unary operator expected' in Bash. Resolve missing or empty test arguments causing single-operand errors."
 languages: ["bash"]
-severities: ["error"]
 error-types: ["runtime-error"]
+severities: ["error"]
 weight: 5
 ---
 
-# Bash Unary Operator Expected Fix
+# Bash Unary Operator Expected Error Fix
 
-The `unary operator expected` error occurs when a test expression has an empty or missing left-hand operand, making the operator appear unary when it should be binary.
+The `[: unary operator expected` error occurs when the `[` (test) command receives too few arguments, typically because a variable is empty or unquoted.
 
 ## What This Error Means
 
-Unary operators like `-z`, `-n`, `-f`, `-d` take one argument. Binary operators like `=`, `-eq`, `-gt` take two. When a variable is empty, `[` sees the operator as the first argument and expects it to be unary.
+A unary operator tests a single operand (like `-z "$var"` to check if empty). When the operand is missing due to an unset variable, the test command cannot evaluate the expression.
 
-## Common Causes
+A typical error:
 
-- Empty variable before comparison operator
-- Missing left-hand side of comparison
-- Variable not set due to command failure
-- Glob expansion producing unexpected results
-
-## How to Fix
-
-### 1. Quote all variables
-
-```bash
-# WRONG: $file is empty
-if [ $file = "test.txt" ]; then
-
-# RIGHT: quoted
-if [ "$file" = "test.txt" ]; then
+```
+script.sh: line 4: [: unary operator expected
 ```
 
-### 2. Check variable is set first
+## Why It Happens
+
+Common causes include:
+
+- **Empty variable without quotes** — `[ -z $var ]` when `$var` is empty produces `[ -z ]` which is true.
+- **Missing argument entirely** — `[ ]` with no arguments.
+- **Variable with spaces** — Word splitting creates multiple arguments.
+- **Unset positional parameters** — `[ -n $1 ]` when no arguments are passed.
+- **Command substitution returning nothing** — `[ -f $(which cmd) ]` when `cmd` is missing.
+
+## How to Fix It
+
+### Fix 1: Always quote variables in test expressions
 
 ```bash
-# Use -n to check if non-empty
-if [ -n "$file" ] && [ "$file" = "test.txt" ]; then
+# WRONG: Unquoted variable
+if [ -z $name ]; then
+    echo "empty"
+fi
+
+# RIGHT: Quote the variable
+if [ -z "$name" ]; then
+    echo "empty"
+fi
+```
+
+### Fix 2: Provide default values
+
+```bash
+# WRONG: $1 may not exist
+if [ -n $1 ]; then
+    echo "has argument"
+fi
+
+# RIGHT: Use default value
+if [ -n "${1:-}" ]; then
+    echo "has argument"
+fi
+```
+
+### Fix 3: Use -n and -z correctly
+
+```bash
+# RIGHT: Check for empty string
+value=""
+if [ -z "$value" ]; then
+    echo "empty"
+fi
+
+# RIGHT: Check for non-empty string
+value="hello"
+if [ -n "$value" ]; then
+    echo "has value"
+fi
+```
+
+### Fix 4: Guard before test
+
+```bash
+# RIGHT: Check variable exists first
+if [ "${var+x}" ]; then
+    if [ "$var" -gt 0 ]; then
+        echo "positive"
+    fi
+else
+    echo "variable not set"
+fi
+```
+
+### Fix 5: Use [[ ]] for safer testing
+
+```bash
+# RIGHT: Double brackets are more forgiving
+if [[ -z "$var" ]]; then
+    echo "empty"
+fi
+
+# Double brackets don't word-split variables
+if [[ $var == "test" ]]; then
     echo "match"
 fi
 ```
 
-### 3. Use [[ ]] which handles empty vars
+## Common Mistakes
 
-```bash
-# [[ ]] doesn't word-split or glob-expand variables
-if [[ $file = "test.txt" ]]; then
-    echo "match"
-fi
-```
+- **Forgetting quotes around variables** — This is the single most common cause.
+- **Using `[ ]` when `[[ ]]` would be safer** — Double brackets are Bash-specific but safer.
+- **Assuming empty variables evaluate to false** — An unset variable causes a syntax error, not false.
 
-### 4. Provide defaults for potentially empty variables
+## Related Pages
 
-```bash
-file=${file:-""}
-if [ "$file" = "test.txt" ]; then
-    echo "match"
-fi
-```
-
-## Related Errors
-
-- [Binary Operator Expected](bash-binary-comparison) — binary operator issues
-- [Conditional Expression Error](conditional-expr) — conditional errors
+- [Bash Binary Operator Error](bash-binary-operator-error) — Binary comparison issues
+- [Bash Integer Expression Error](bash-integer-expression) — Non-numeric value errors
+- [Bash Test Argument Error](bash-test-argument) — Too many test arguments

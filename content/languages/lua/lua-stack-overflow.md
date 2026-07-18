@@ -1,90 +1,137 @@
 ---
-title: "[Solution] Lua Stack Overflow Fix"
-description: "Fix Lua stack overflow errors. Learn why stack overflow occurs and how to prevent deep recursion."
+title: "[Solution] Lua Stack Overflow Recursion Too Deep Fix"
+description: "Fix Lua stack overflow errors from deep recursion. Learn why recursion overflows the stack and how to implement tail calls."
 languages: ["lua"]
 severities: ["error"]
-error-types: ["memory-error"]
+error-types: ["runtime-error"]
 weight: 5
 ---
 
 ## What This Error Means
 
-A Lua stack overflow occurs when the call stack exceeds its limit, typically caused by infinite or very deep recursion. Each function call adds a frame to the stack.
+A Lua stack overflow error occurs when a script exceeds the maximum call stack depth. This typically happens with infinite or very deep recursion. Lua has a limited call stack size (default around 200 levels, configurable with `luajit-lua53` or `luaL_checkstack`). Each function call adds a frame to the stack, and when it fills up, Lua raises a stack overflow error.
 
-## Common Causes
+## Why It Happens
 
-- Infinite recursion
-- Very deep recursive calls
-- Circular function calls
-- Missing base case
+- Infinite recursion from a function calling itself without a proper base case
+- Mutual recursion between two or more functions without termination
+- Deep recursive traversal of nested data structures
+- Event handlers or callbacks that trigger each other in a loop
+- Metamethods (`__index`, `__newindex`) that trigger themselves recursively
+- Missing base case in tree traversal algorithms
 
-## How to Fix
+## How to Fix It
+
+### Add proper base cases to recursive functions
 
 ```lua
--- WRONG: Infinite recursion
-function countDown(n)
-    countDown(n)  -- No base case
+-- WRONG: No base case causes infinite recursion
+local function factorial(n)
+    return n * factorial(n - 1)  -- stack overflow
 end
 
--- CORRECT: Add base case
-function countDown(n)
-    if n <= 0 then return end
-    print(n)
-    countDown(n - 1)
+-- CORRECT: Include a base case
+local function factorial(n)
+    if n <= 1 then return 1 end
+    return n * factorial(n - 1)
 end
 ```
 
-```lua
--- WRONG: Deep recursion on large input
-function fibonacci(n)
-    if n <= 1 then return n end
-    return fibonacci(n - 1) + fibonacci(n - 2)
-end
+### Convert recursion to iteration for deep structures
 
--- CORRECT: Use iteration
-function fibonacci(n)
-    if n <= 1 then return n end
-    local a, b = 0, 1
-    for i = 2, n do
-        a, b = b, a + b
+```lua
+-- WRONG: Recursive traversal of deep tree
+local function traverse(node)
+    for _, child in ipairs(node.children or {}) do
+        traverse(child)  -- deep trees overflow
     end
-    return b
+end
+
+-- CORRECT: Use an explicit stack to avoid recursion
+local function traverse(root)
+    local stack = { root }
+    while #stack > 0 do
+        local node = table.remove(stack)
+        for _, child in ipairs(node.children or {}) do
+            stack[#stack + 1] = child
+        end
+    end
 end
 ```
 
-## Examples
+### Use tail calls for recursive algorithms
 
 ```lua
--- Example 1: Tail recursion
-function sum(n, acc)
+-- WRONG: Non-tail-recursive call consumes stack
+local function sum(n, acc)
+    if n == 0 then return acc end
+    return sum(n - 1, acc + n)  -- not tail call if arithmetic follows
+end
+
+-- CORRECT: Tail-recursive form (optimized by Lua)
+local function sum(n, acc)
     acc = acc or 0
     if n == 0 then return acc end
-    return sum(n - 1, acc + n)
+    return sum(n - 1, acc + n)  -- Lua optimizes this
 end
+```
 
--- Example 2: Iterative alternative
-function factorial(n)
-    local result = 1
-    for i = 2, n do
-        result = result * i
-    end
-    return result
-end
+### Use an explicit stack for DFS traversals
 
--- Example 3: Trampoline pattern
-function trampoline(fn)
-    return function(...)
-        local result = fn(...)
-        while type(result) == "function" do
-            result = result()
+```lua
+-- WRONG: Recursive DFS on a graph with cycles
+local function dfs(node, visited)
+    visited[node] = true
+    for _, neighbor in ipairs(node.neighbors) do
+        if not visited[neighbor] then
+            dfs(neighbor, visited)  -- cycles or deep graphs overflow
         end
-        return result
+    end
+end
+
+-- CORRECT: Iterative DFS with explicit stack
+local function dfs(start)
+    local visited = {}
+    local stack = { start }
+    while #stack > 0 do
+        local node = table.remove(stack)
+        if not visited[node] then
+            visited[node] = true
+            for _, neighbor in ipairs(node.neighbors) do
+                if not visited[neighbor] then
+                    stack[#stack + 1] = neighbor
+                end
+            end
+        end
     end
 end
 ```
 
-## Related Errors
+### Increase stack size if needed
 
-- [Lua memory error](lua-memory-error) - memory allocation
-- [Lua instruction limit](lua-instruction-limit) - instruction limit
-- [Lua runtime error](lua-runtime-error) - runtime issue
+```lua
+-- For LuaJIT or custom builds, you can increase the limit
+-- In C API: luaL_checkstack(L, n, "message")
+-- In Lua: not directly configurable, but you can restructure code
+
+-- Use coroutine to get a fresh stack
+local co = coroutine.create(function()
+    deepRecursion()
+end)
+coroutine.resume(co)
+```
+
+## Common Mistakes
+
+- Forgetting that mutual recursion also consumes stack space
+- Not realizing that Lua tail calls are optimized but only when they are truly in tail position
+- Using `error()` inside deeply recursive functions, which adds extra stack frames during error propagation
+- Assuming Lua's default stack size is sufficient for all use cases
+- Not considering that anonymous functions in closures still consume stack frames
+
+## Related Pages
+
+- [Lua Coroutine Error](lua-coroutine-error) - coroutine resume failure
+- [Lua Nil Call Error](lua-nil-call-error) - calling nil value
+- [Lua Nil Index Error](lua-nil-index-error) - indexing nil value
+- [Lua Runtime Error](lua-runtime-error) - general runtime issue

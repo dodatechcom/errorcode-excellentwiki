@@ -1,94 +1,130 @@
 ---
-title: "[Solution] R rmarkdown Render Error"
-description: "Fix rmarkdown rendering errors including chunk evaluation failures, pandoc issues, and YAML configuration problems."
+title: "[Solution] R Markdown Knit Error YAML Error Fix"
+description: "Fix R Markdown knit errors and YAML header issues. Resolve document rendering failures in R Markdown and Quarto."
 languages: ["r"]
-error-types: ["runtime-error"]
+error-types: ["compile-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Markdown Knit Error YAML Error Fix
+
+The `R Markdown: knit error` or `YAML error` occurs when the document cannot be rendered due to YAML header issues, code chunk errors, or missing dependencies.
+
 ## What This Error Means
 
-An rmarkdown render error occurs when the `rmarkdown::render()` function fails to produce the output document. This can happen during chunk evaluation, pandoc conversion, or YAML processing.
+R Markdown combines YAML metadata, Markdown text, and R code chunks into a rendered document. Errors in any of these sections prevent knitting.
 
-## Common Causes
+A typical error:
 
-- Code chunk evaluation errors
-- Missing pandoc or LaTeX installation
-- Invalid YAML frontmatter
-- Missing required packages for output format
-- File path issues in chunks
-
-## How to Fix
-
-```r
-# WRONG: Code chunk throws error
-# ```{r}
-# library(nonexistent)  # Error stops rendering
-# ```
-
-# CORRECT: Use error=FALSE or tryCatch
-# ```{r, error=FALSE}
-# tryCatch(library(nonexistent), error = function(e) NULL)
-# ```
+```
+Error in yaml::yaml.load(string, ...) : 
+  Scanner error: while scanning a quoted scalar at line 5, column 1
 ```
 
-```r
-# WRONG: Invalid YAML
-# ---
-# title: "My Report"
-# output: html_document
-# ---
+Or:
 
-# CORRECT: Proper YAML structure
-# ---
-# title: "My Report"
-# author: "Author"
-# date: "`r Sys.Date()`"
-# output:
-#   html_document:
-#     toc: true
-# ---
+```
+Quitting from lines 15-20 (document.Rmd) 
+Error in eval(expr, envir, enclos) : object 'x' not found
 ```
 
-```r
-# WRONG: Hardcoded file paths
-# ```{r}
-# data <- read.csv("/Users/me/data.csv")  # Fails on other machines
-# ```
+## Why It Happens
 
-# CORRECT: Use relative paths or here::here()
-# ```{r}
-# data <- read.csv(here::here("data", "myfile.csv"))
-# # Or use relative path
-# data <- read.csv("../data/myfile.csv")
-# ```
+Common causes include:
+
+- **YAML syntax errors** — Missing colons, wrong indentation, unquoted special characters.
+- **Missing R packages** — Code chunks use packages not installed.
+- **Code chunk errors** — R code in chunks fails during evaluation.
+- **File path issues** — Included files not found.
+- **Encoding problems** — Non-UTF-8 characters in document.
+- **Wrong output format** — Specifying format not installed.
+
+## How to Fix It
+
+### Fix 1: Validate YAML header
+
+```yaml
+---
+title: "My Document"
+author: "Author"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
 ```
 
-## Examples
+### Fix 2: Check YAML indentation
 
-```r
-# Example 1: Render with error diagnostics
-rmarkdown::render("report.Rmd", output_dir = "output")
+```yaml
+---
+# WRONG: Wrong indentation
+output:
+html_document:
+  toc: true
 
-# Example 2: Check pandoc availability
-rmarkdown::find_pandoc()
-
-# Example 3: Render with params
-rmarkdown::render(
-  "report.Rmd",
-  params = list(
-    start_date = "2024-01-01",
-    end_date = "2024-12-31"
-  )
-)
-
-# Example 4: Debug chunk errors
-knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+# RIGHT: Proper 2-space indentation
+output:
+  html_document:
+    toc: true
+---
 ```
 
-## Related Errors
+### Fix 3: Quote special YAML characters
 
-- [error-in-source]({{< relref "/languages/r/error-in-source" >}}) — sourcing R scripts
-- [error-in-eval]({{< relref "/languages/r/error-in-eval" >}}) — evaluation errors
-- [error-in-trycatch]({{< relref "/languages/r/error-in-trycatch" >}}) — tryCatch errors
+```yaml
+---
+# WRONG: Colon in title breaks YAML
+title: My Report: Analysis of Data
+
+# RIGHT: Quote the title
+title: "My Report: Analysis of Data"
+---
+```
+
+### Fix 4: Test code chunks before knitting
+
+```r
+# RIGHT: Run chunks individually first
+# Click "Run Current Chunk" for each chunk
+# Fix any errors before knitting entire document
+```
+
+### Fix 5: Check required packages
+
+```r
+# RIGHT: Ensure all packages are installed
+required_packages <- c("knitr", "rmarkdown", "ggplot2", "dplyr")
+missing <- required_packages[!required_packages %in% installed.packages()]
+if (length(missing)) install.packages(missing)
+```
+
+### Fix 6: Set encoding properly
+
+```r
+# RIGHT: In YAML header
+---
+title: "My Document"
+output:
+  html_document:
+    meta:
+      charset: "UTF-8"
+---
+
+# Or in R script
+rmarkdown::render("document.Rmd", encoding = "UTF-8")
+```
+
+## Common Mistakes
+
+- **Forgetting the three dashes for YAML** — Must start with `---` and end with `---`.
+- **Not checking code chunk errors** — Run each chunk before knitting.
+- **Using tabs instead of spaces in YAML** — YAML requires spaces, not tabs.
+
+## Related Pages
+
+- [R Object Not Found](r-object-not-found) — Undefined variable errors
+- [R Package Not Found](r-package-not-found) — Package installation issues
+- [R Shiny Error](r-shiny-error) — Shiny app errors

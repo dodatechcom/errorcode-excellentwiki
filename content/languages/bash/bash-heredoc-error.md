@@ -1,90 +1,123 @@
 ---
 title: "[Solution] Bash Heredoc Delimiter Not Found Error Fix"
-description: "Fix bash heredoc delimiter errors when the closing delimiter is missing or mismatched."
+description: "Fix 'heredoc: delimiter not found' in Bash. Resolve heredoc EOF marker issues and quoting problems in shell scripts."
 languages: ["bash"]
-error-types: ["runtime-error"]
+error-types: ["syntax-error"]
 severities: ["error"]
 weight: 5
 ---
 
 # Bash Heredoc Delimiter Not Found Error Fix
 
-A bash heredoc error occurs when the closing delimiter of a heredoc is not found, is misspelled, or is indented when it shouldn't be.
+The `heredoc: delimiter not found` error occurs when the closing delimiter of a heredoc is missing, misspelled, or not placed at the beginning of a line.
 
 ## What This Error Means
 
-Heredocs in bash (`<<DELIMITER ... DELIMITER`) read multi-line input until the closing delimiter is found on a line by itself. If the delimiter is missing, the shell reads until EOF and then fails with a "heredoc delimiter not found" error.
+A heredoc allows you to pass a block of text to a command. The delimiter (like `EOF`) marks where the text starts and ends. If Bash reaches the end of the file without finding the closing delimiter, it reports this error.
 
-## Common Causes
+A typical error:
 
-- Misspelled closing delimiter
-- Indented closing delimiter when not using `<<-`
-- Missing newline before closing delimiter
-- Delimiter text appears inside the heredoc body
+```
+script.sh: line 8: warning: here-document at line 1 delimited by end-of-file (wanted `EOF')
+```
 
-## How to Fix
+## Why It Happens
 
-### 1. Match delimiters exactly
+Common causes include:
+
+- **Missing closing delimiter** — The `EOF` marker is never written.
+- **Indented closing delimiter** — The delimiter must start at column 0 unless using `<<-`.
+- **Misspelled delimiter** — Writing `FOE` instead of `EOF`.
+- **Using the wrong delimiter** — Quoted vs unquoted delimiters behave differently.
+- **Tab characters instead of spaces** — `<<-` strips tabs but not spaces.
+
+## How to Fix It
+
+### Fix 1: Always close heredoc at column 0
 
 ```bash
-# WRONG: Mismatched delimiters
+# WRONG: Indented closing delimiter
 cat <<EOF
 Hello World
-END  # Wrong delimiter
+    EOF
 
-# CORRECT: Match exactly
+# RIGHT: Closing delimiter at start of line
 cat <<EOF
 Hello World
 EOF
 ```
 
-### 2. Use <<- for indented delimiters
+### Fix 2: Use heredoc with indented code using <<-
 
 ```bash
-# WRONG: Indented delimiter with <<
-cat <<EOF
-	Hello World
-	EOF  # Error: indentation
-
-# CORRECT: Use <<- to allow tab indentation
-cat <<-EOF
-	Hello World
+# RIGHT: Use <<- to strip leading tabs
+if true; then
+	cat <<-EOF
+	This line is indented with tabs
+	But the output won't have leading tabs
 	EOF
+fi
 ```
 
-### 3. Ensure closing delimiter is on its own line
+### Fix 3: Quote the delimiter to prevent variable expansion
 
 ```bash
-# WRONG: No newline before delimiter
+# WRONG: Variables get expanded
 cat <<EOF
-Hello World
+Home directory: $HOME
 EOF
 
-# CORRECT: Empty line before delimiter is fine, but delimiter must be alone
-cat <<EOF
-Hello World
-
-EOF
-```
-
-### 4. Quote the delimiter to prevent variable expansion
-
-```bash
-# WRONG: Variables expanded inside heredoc
-cat <<EOF
-User: $USER
-Home: $HOME
-EOF
-
-# CORRECT: Quote the delimiter to prevent expansion
+# RIGHT: Quote the delimiter to prevent expansion
 cat <<'EOF'
-User: $USER
+Home directory: $HOME
+This is printed literally
+EOF
+```
+
+### Fix 4: Heredoc with commands
+
+```bash
+# RIGHT: Execute commands inside heredoc
+cat <<EOF
+Current date: $(date)
+User: $(whoami)
 Home: $HOME
 EOF
 ```
 
-## Related Errors
+### Fix 5: Heredoc with cat and redirect
 
-- [Bash Syntax Error](syntax-error) — general syntax issues
-- [Bash Bad Substitution](bad-substitution) — variable expansion errors
-- [Unmatched Quote](unmatched-quote) — quote matching issues
+```bash
+# RIGHT: Write heredoc to a file
+cat > config.txt <<EOF
+host=localhost
+port=3306
+database=myapp
+EOF
+```
+
+### Fix 6: Nested heredocs
+
+```bash
+# RIGHT: Use different delimiters for nesting
+cat <<OUTER
+First level
+$(cat <<INNER
+Second level
+INNER
+)
+OUTER
+```
+
+## Common Mistakes
+
+- **Indenting the closing delimiter** — Without `<<-`, the closing marker must start at column 0.
+- **Using spaces with `<<-`** — `<<-` only strips tab characters, not spaces.
+- **Forgetting that heredoc expands variables by default** — Quote the delimiter to prevent this.
+- **Using heredoc inside functions without proper quoting** — Quoted delimiters prevent expansion.
+
+## Related Pages
+
+- [Bash Bad Substitution](bad-substitution) — Variable expansion issues
+- [Bash Syntax Error](bash-syntax-error) — General syntax errors
+- [Bash Echo Option Error](bash-echo-option-error) — Echo output issues

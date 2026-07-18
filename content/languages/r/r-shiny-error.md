@@ -1,106 +1,127 @@
 ---
-title: "[Solution] R Shiny Reactive Error"
-description: "Fix Shiny reactive errors including reactive expression failures, observer errors, and invalidation issues in Shiny applications."
+title: "[Solution] R Shiny Output Rendering Error Fix"
+description: "Fix Shiny output rendering errors in R. Resolve render function mismatches, UI output binding, and reactive value issues."
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Shiny Output Rendering Error Fix
+
+The `Shiny: output rendering error` occurs when a server-side render function does not match the corresponding UI output function, or when reactive values cause rendering failures.
+
 ## What This Error Means
 
-Shiny reactive errors occur when reactive expressions, observers, or render functions fail. These errors often appear in the Shiny app console or as error messages in the UI.
+Shiny pairs UI output functions (textOutput, plotOutput, tableOutput) with server render functions (renderText, renderPlot, renderTable). Mismatches or missing definitions cause errors.
 
-## Common Causes
+A typical error:
 
-- Reactive expression referencing non-existent inputs
-- Observer depending on a reactive value that hasn't been initialized
-- Circular dependencies between reactives
-- Render function failing due to invalid data
+```
+Error in output$myOutput : argument "output" is missing, with no default
+```
 
-## How to Fix
+Or:
+
+```
+Warning: Error in renderPlot: object 'output' not found
+```
+
+## Why It Happens
+
+Common causes include:
+
+- **Render/output mismatch** — Using renderText with plotOutput.
+- **Missing render function** — UI defines output but server has no render.
+- **Reactive value issues** — Using input/output incorrectly.
+- **Namespace issues** — Functions not available in server scope.
+- **Object not found in reactive** — Referencing undefined variable.
+
+## How to Fix It
+
+### Fix 1: Match output and render functions
 
 ```r
-# WRONG: Accessing non-existent input
-server <- function(input, output, session) {
-  output$plot <- renderPlot({
-    plot(input$missing_input)  # Error: input$missing_input not found
-  })
-}
+# RIGHT: Correct pairs
+# UI
+ui <- fluidPage(
+    textOutput("text1"),      # Matches renderText
+    plotOutput("plot1"),      # Matches renderPlot
+    tableOutput("table1")    # Matches renderTable
+)
 
-# CORRECT: Check if input exists
-server <- function(input, output, session) {
-  output$plot <- renderPlot({
-    req(input$existing_input)  # req() silently validates
-    plot(input$existing_input)
-  })
+# Server
+server <- function(input, output) {
+    output$text1 <- renderText({ "Hello" })      # textOutput
+    output$plot1 <- renderPlot({ plot(1:10) })   # plotOutput
+    output$table1 <- renderTable({ mtcars })     # tableOutput
 }
 ```
 
+### Fix 2: Check render function exists
+
 ```r
-# WRONG: Reactive expression with side effects
-my_reactive <- reactive({
-  data <- read.csv("data.csv")
-  # This runs every time, even if data hasn't changed
+# RIGHT: Define all render functions
+server <- function(input, output) {
+    # Ensure every UI output has a matching render
+    output$myPlot <- renderPlot({
+        req(input$goButton)  # Require input before rendering
+        plot(1:input$slider)
+    })
+}
+```
+
+### Fix 3: Use reactive values correctly
+
+```r
+# WRONG: Using input$ directly in render
+output$plot <- renderPlot({
+    plot(input$x, input$y)  # May fail if input is NULL
 })
 
-# CORRECT: Use eventReactive for explicit triggers
-my_data <- eventReactive(input$load_btn, {
-  read.csv("data.csv")
-})
-```
-
-```r
-# WRONG: Circular dependency
-a <- reactive({ b() + 1 })
-b <- reactive({ a() + 1 })  # Infinite loop!
-
-# CORRECT: Break the cycle
-a <- reactive({ input$x + 1 })
-b <- reactive({ input$y + 1 })
-```
-
-## Examples
-
-```r
-# Example 1: Safe reactive wrapper
-safe_reactive <- function(expr) {
-  reactive({
-    tryCatch(
-      expr,
-      error = function(e) {
-        showNotification(paste("Error:", e$message), type = "error")
-        NULL
-      }
-    )
-  })
-}
-
-# Example 2: Using req() and validate()
-server <- function(input, output, session) {
-  output$summary <- renderPrint({
-    req(input$file)  # Stop if no file uploaded
-    validate(need(
-      input$file$datapath,
-      "No data available"
-    ))
-    summary(read.csv(input$file$datapath))
-  })
-}
-
-# Example 3: Observe with error handling
-observe({
-  req(input$action)
-  tryCatch({
-    perform_action(input$action)
-  }, error = function(e) {
-    showNotification(paste("Failed:", e$message), type = "error")
-  })
+# RIGHT: Use req() to ensure values exist
+output$plot <- renderPlot({
+    req(input$x, input$y)
+    plot(input$x, input$y)
 })
 ```
 
-## Related Errors
+### Fix 4: Handle NULL and empty values
 
-- [object-not-found]({{< relref "/languages/r/object-not-found" >}}) — object not found
-- [error-in-eval]({{< relref "/languages/r/error-in-eval" >}}) — evaluation errors
-- [error-in-source]({{< relref "/languages/r/error-in-source" >}}) — sourcing errors
+```r
+# RIGHT: Conditional rendering
+output$dynamic <- renderUI({
+    if (input$show_text) {
+        textOutput("my_text")
+    } else {
+        plotOutput("my_plot")
+    }
+})
+```
+
+### Fix 5: Use tryCatch for robust rendering
+
+```r
+# RIGHT: Safe render with error handling
+output$plot <- renderPlot({
+    tryCatch({
+        req(input$data)
+        plot(input$data)
+    }, error = function(e) {
+        plot.new()
+        text(0.5, 0.5, paste("Error:", e$message))
+    })
+})
+```
+
+## Common Mistakes
+
+- **Using renderText with plotOutput** — Always match output types.
+- **Forgetting `library(shiny)`** — Load the package first.
+- **Not using `req()`** — Always check that inputs exist before using them.
+
+## Related Pages
+
+- [R Object Not Found](r-object-not-found) — Undefined variable errors
+- [R Connection Error](r-connection-error) — File reading issues
+- [R Plumber Error](r-plumber-error) — API endpoint issues

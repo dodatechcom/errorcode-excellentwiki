@@ -1,65 +1,101 @@
 ---
-title: "[Solution] SQL Subquery Returns More Than 1 Row Fix"
-description: "Fix 'Subquery returns more than 1 row' when a scalar subquery returns multiple results."
+title: "[Solution] SQL Subquery Returns More Than One Row Error Fix"
+description: "Fix 'subquery returns more than one row' in SQL. Use IN, ANY, or ALL operators when subqueries return multiple values."
 languages: ["sql"]
+error-types: ["logic-error"]
 severities: ["error"]
-error-types: ["runtime-error"]
 weight: 5
 ---
 
-This error occurs when a subquery that is expected to return a single value (scalar) returns multiple rows. The message reads: `Subquery returns more than 1 row`.
+# SQL Subquery Returns More Than One Row Error Fix
+
+The `subquery returns more than one row` error occurs when a scalar subquery (expected to return a single value) returns multiple rows instead.
 
 ## What This Error Means
 
-The SQL parser expects a scalar subquery (one row, one column) in contexts like `=`, but the subquery returns multiple rows. This commonly happens in WHERE clauses and SELECT expressions.
+SQL expects a scalar subquery to return exactly one value when used with `=`, `>`, `<`, or in a SELECT list. When the subquery returns multiple rows, the database cannot compare a single value to a result set.
 
-## Common Causes
+A typical error:
 
-- Using `=` instead of `IN` for multi-row subqueries
-- Subquery lacks proper WHERE clause to limit results
-- Missing GROUP BY to aggregate results
-
-## How to Fix
-
-### Fix 1: Use IN instead of =
-
-```sql
--- Wrong: subquery returns multiple rows
-SELECT * FROM orders
-WHERE user_id = (SELECT id FROM users WHERE status = 'active');
-
--- Correct: use IN
-SELECT * FROM orders
-WHERE user_id IN (SELECT id FROM users WHERE status = 'active');
+```
+ERROR: subquery must return only one column
 ```
 
-### Fix 2: Limit the subquery to one row
+Or:
 
-```sql
--- Use LIMIT 1
-SELECT * FROM orders
-WHERE user_id = (SELECT id FROM users WHERE status = 'active' LIMIT 1);
+```
+ERROR: more than one row returned by a subquery used as an expression
 ```
 
-### Fix 3: Use EXISTS for correlated subqueries
+## Why It Happens
+
+Common causes include:
+
+- **Missing WHERE clause** — Subquery returns all rows instead of one.
+- **Using = instead of IN** — `WHERE id = (SELECT id FROM table)` fails if multiple rows.
+- **No GROUP BY in subquery** — Aggregation missing from subquery.
+- **Incorrect correlation** — Subquery not properly filtered.
+- **Using ANY/ALL incorrectly** — Wrong operator for the comparison.
+
+## How to Fix It
+
+### Fix 1: Use IN for multiple values
 
 ```sql
-SELECT * FROM orders o
+-- WRONG: Subquery returns multiple rows
+SELECT * FROM orders
+WHERE user_id = (SELECT id FROM users WHERE active = 1);
+
+-- RIGHT: Use IN
+SELECT * FROM orders
+WHERE user_id IN (SELECT id FROM users WHERE active = 1);
+```
+
+### Fix 2: Use ANY or ALL for comparisons
+
+```sql
+-- RIGHT: Compare against multiple values
+SELECT * FROM products
+WHERE price > ALL (SELECT price FROM products WHERE category = 'budget');
+
+SELECT * FROM products
+WHERE price < ANY (SELECT price FROM products WHERE category = 'premium');
+```
+
+### Fix 3: Add LIMIT 1 for single row expected
+
+```sql
+-- RIGHT: Force single row
+SELECT * FROM orders
+WHERE user_id = (SELECT id FROM users WHERE active = 1 LIMIT 1);
+```
+
+### Fix 4: Add aggregation to subquery
+
+```sql
+-- RIGHT: Aggregate to single value
+SELECT * FROM orders
+WHERE total = (SELECT MAX(total) FROM orders);
+```
+
+### Fix 5: Use EXISTS for existence checks
+
+```sql
+-- RIGHT: Check if any row exists
+SELECT * FROM users u
 WHERE EXISTS (
-    SELECT 1 FROM users u
-    WHERE u.id = o.user_id AND u.status = 'active'
+    SELECT 1 FROM orders o WHERE o.user_id = u.id
 );
 ```
 
-## Examples
+## Common Mistakes
 
-```sql
-SELECT name FROM products
-WHERE category_id = (SELECT id FROM categories WHERE name = 'Electronics');
--- ERROR 1242: Subquery returns more than 1 row
-```
+- **Using `=` with a subquery that returns multiple rows** — Use `IN` instead.
+- **Forgetting that EXISTS is more efficient than IN for large datasets** — EXISTS short-circuits.
+- **Not adding DISTINCT when using IN** — Duplicates can cause unexpected behavior.
 
-## Related Errors
+## Related Pages
 
-- [Column Not Found](column-not-found.md) — missing column in subquery
-- [GROUP BY Error](group-by-error.md) — aggregation issue
+- [SQL Column Ambiguous](sql-column-ambiguous) — Ambiguous column references
+- [SQL Group By Error](sql-group-by-error) — GROUP BY expression issues
+- [SQL Recursive CTE Error](sql-recursive-cte-error) — CTE recursion issues

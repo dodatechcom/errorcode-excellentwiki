@@ -1,77 +1,102 @@
 ---
-title: "[Solution] Bash Readonly: Cannot Modify Error Fix"
-description: "Fix bash readonly variable errors when trying to modify or unset a readonly variable."
+title: "[Solution] Bash Readonly Variable Is Read-Only Error Fix"
+description: "Fix 'readonly: variable is read-only' in Bash. Resolve read-only variable assignment and readonly declaration errors."
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
-# Bash Readonly: Cannot Modify Error Fix
+# Bash Readonly Variable Is Read-Only Error Fix
 
-A bash readonly error occurs when you try to modify, unset, or reassign a variable marked as `readonly`.
+The `readonly: variable is read-only` error occurs when you attempt to modify a variable that has been declared as read-only using `readonly` or `declare -r`.
 
 ## What This Error Means
 
-The `readonly` command makes a variable immutable — it cannot be changed, unset, or reassigned for the lifetime of the shell. Attempting to modify it produces an error.
+Readonly variables cannot be changed after declaration. This is a safety feature to protect constants and important configuration values. Attempting to reassign, unset, or modify a readonly variable fails with this error.
 
-## Common Causes
+A typical error:
 
-- Trying to reassign a readonly variable
-- Attempting to `unset` a readonly variable
-- Trying to use `declare -r` after initial assignment
-- Function parameter reassignment in readonly context
-
-## How to Fix
-
-### 1. Don't modify readonly variables
-
-```bash
-# WRONG: Modifying readonly
-readonly DEBUG=1
-DEBUG=0  # Error: readonly variable
-
-# CORRECT: Use a non-readonly variable if modification needed
-DEBUG=1
-# ... later
-DEBUG=0
+```
+bash: MY_VAR: readonly variable
 ```
 
-### 2. Use readonly intentionally
+## Why It Happens
+
+Common causes include:
+
+- **Reassigning a readonly variable** — `MY_VAR=2` after `readonly MY_VAR=1`.
+- **Using unset on a readonly variable** — `unset MY_VAR` fails.
+- **Sourcing a file that redefines a readonly** — Two files set the same readonly variable.
+- **Function modifying a readonly** — A function tries to change a global readonly.
+- **Loop trying to update a constant** — Accumulator variable was made readonly.
+
+## How to Fix It
+
+### Fix 1: Check before declaring readonly
 
 ```bash
-# CORRECT: Use readonly for constants
-readonly CONFIG_DIR="/etc/myapp"
-readonly MAX_RETRIES=3
-
-# These cannot be accidentally changed
-# CONFIG_DIR="/new/path"  # Would error
-```
-
-### 3. Check if variable is readonly
-
-```bash
-# CORRECT: Check before modifying
-if [[ -R "varname" ]]; then
-    echo "Variable is readonly"
-else
-    varname="new value"
+# RIGHT: Only declare once
+if [ -z "${MY_VAR+x}" ]; then
+    readonly MY_VAR="initial_value"
 fi
 ```
 
-### 4. Use function-local variables
+### Fix 2: Use a regular variable when modification is needed
 
 ```bash
-# CORRECT: Use local for function scope
-my_func() {
-    local result=""
-    result="done"
+# WRONG: Making something readonly that needs changing
+readonly counter=0
+counter=$((counter + 1))  # Error!
+
+# RIGHT: Use regular variable
+counter=0
+counter=$((counter + 1))
+```
+
+### Fix 3: Use functions with local variables
+
+```bash
+# RIGHT: Use local variables that can be modified
+my_function() {
+    local result="$1"
+    result="${result}_modified"
     echo "$result"
 }
 ```
 
-## Related Errors
+### Fix 4: Override readonly in a subshell if needed
 
-- [Unbound Variable](unbound-variable) — unset variable errors
-- [Bash Syntax Error](bash-syntax-error) — general syntax issues
-- [Permission Denied](permission-denied) — access errors
+```bash
+# Subshell can reassign (parent shell is unaffected)
+(
+    readonly VAR="original"
+    VAR="modified"  # Works in subshell
+    echo "$VAR"
+)
+```
+
+### Fix 5: Check if variable is readonly before modifying
+
+```bash
+# RIGHT: Safe modification attempt
+modify_var() {
+    if readonly | grep -q "MY_VAR="; then
+        echo "Cannot modify readonly variable MY_VAR" >&2
+        return 1
+    fi
+    MY_VAR="new_value"
+}
+```
+
+## Common Mistakes
+
+- **Forgetting that readonly is permanent in the shell session** — You cannot undo it.
+- **Sourcing files that conflict** — Check for duplicate readonly declarations across sourced files.
+- **Using readonly for configuration that might change** — Use environment variables instead.
+
+## Related Pages
+
+- [Bash Unset Error](bash-unset-error) — Variable unset issues
+- [Bash Shift Error](bash-shift-error) — Argument shift errors
+- [Bash Unbound Variable](unbound-variable) — Unset variable errors

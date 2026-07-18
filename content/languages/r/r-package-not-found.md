@@ -1,78 +1,106 @@
 ---
-title: "[Solution] R Package Not Found Error"
-description: "Fix R 'there is no package called X' error when installing or loading packages. Check CRAN, Bioconductor, and GitHub sources."
+title: "[Solution] R Package Not Found There Is No Package Error Fix"
+description: "Fix 'there is no package called' in R. Install, load, and troubleshoot R packages from CRAN and other repositories."
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Package Not Found There Is No Package Error Fix
+
+The `there is no package called` error occurs when you try to use a function from a package that is not installed or not loaded in the current R session.
+
 ## What This Error Means
 
-The error `there is no package called 'X'` occurs when you try to load a package with `library()` or `require()` but the package is not installed in your R library paths.
+R packages must be installed on the system and loaded into the session before their functions can be used. This two-step process (install + load) is a common source of errors.
 
-## Common Causes
+A typical error:
 
-- Package not yet installed
-- Package name typo
-- Package removed from CRAN
-- Package only available on GitHub or Bioconductor
-- Multiple R versions with different library paths
+```
+Error: there is no package called 'ggplot2'
+```
 
-## How to Fix
+## Why It Happens
+
+Common causes include:
+
+- **Package not installed** — First time using the package.
+- **Wrong R version** — Package requires newer R version.
+- **Package removed from CRAN** — Archived or deprecated package.
+- **Typo in package name** — Misspelled package name.
+- **Different R library path** — Package installed in different library.
+- **Missing dependencies** — Package needs other packages.
+
+## How to Fix It
+
+### Fix 1: Install the package
 
 ```r
-# WRONG: Package not installed
-library(ggplot2)  # Error: there is no package called 'ggplot2'
-
-# CORRECT: Install first
+# RIGHT: Install from CRAN
 install.packages("ggplot2")
+
+# Install multiple packages
+install.packages(c("dplyr", "tidyr", "readr"))
+```
+
+### Fix 2: Load the package
+
+```r
+# RIGHT: Load after installation
 library(ggplot2)
+
+# Or use require for conditional loading
+if (!require(ggplot2)) {
+    install.packages("ggplot2")
+    library(ggplot2)
+}
 ```
 
-```r
-# WRONG: Typo in package name
-library(dplyr2)  # Error: there is no package called 'dplyr2'
+### Fix 3: Check available packages
 
-# CORRECT: Check available packages
-available.packages()[, "Package"]  # Search for correct name
+```r
+# RIGHT: Search for packages
+available.packages()  # All available
+rownames(available.packages())  # List names
+
+# Check if package is installed
+"ggplot2" %in% rownames(installed.packages())
 ```
 
-```r
-# WRONG: Package on GitHub, not CRAN
-library(devtools)  # May not be installed
+### Fix 4: Use devtools for GitHub packages
 
-# CORRECT: Install from GitHub
+```r
+# RIGHT: Install from GitHub
 install.packages("devtools")
-devtools::install_github("user/package")
+devtools::install_github("tidyverse/ggplot2")
+
+# Or use pak
+install.packages("pak")
+pak::pak("tidyverse/ggplot2")
 ```
 
-## Examples
+### Fix 5: Fix library path issues
 
 ```r
-# Example 1: Check if package is installed
-is_installed <- function(pkg) {
-  requireNamespace(pkg, quietly = TRUE)
-}
-is_installed("ggplot2")  # TRUE or FALSE
+# RIGHT: Check library paths
+.libPaths()
 
-# Example 2: Install from Bioconductor
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("GenomicRanges")
+# Install to specific library
+install.packages("ggplot2", lib = "/path/to/R/libs")
 
-# Example 3: Conditional loading
-if (requireNamespace("fancyplot", quietly = TRUE)) {
-  library(fancyplot)
-  # Use the package
-} else {
-  message("fancyplot not available, using base R plots")
-  # Fallback code
-}
+# Load from specific library
+library(ggplot2, lib.loc = "/path/to/R/libs")
 ```
 
-## Related Errors
+## Common Mistakes
 
-- [error-in-library]({{< relref "/languages/r/error-in-library" >}}) — package or namespace load failed
-- [error-in-install.packages]({{< relref "/languages/r/error-in-install.packages" >}}) — installation problems
-- [object-not-found]({{< relref "/languages/r/object-not-found" >}}) — function not found after missing library
+- **Forgetting to call `library()` after install** — Install is one-time, library is per-session.
+- **Not checking R version compatibility** — Use `install.packages()` with `type = "source"`.
+- **Assuming packages persist across R sessions** — Packages are installed permanently but must be loaded each session.
+
+## Related Pages
+
+- [R Object Not Found](r-object-not-found) — Undefined variable errors
+- [R Connection Error](r-connection-error) — File and URL connection issues
+- [R Keras Error](r-keras-error) — Keras/TensorFlow integration issues

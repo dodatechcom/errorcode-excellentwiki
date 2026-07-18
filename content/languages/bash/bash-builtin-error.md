@@ -1,73 +1,110 @@
 ---
-title: "[Solution] Bash Builtin: Command Not Found Error Fix"
-description: "Fix bash builtin command not found errors when built-in commands are missing or disabled."
+title: "[Solution] Bash Builtin Not A Shell Builtin Error Fix"
+description: "Fix 'builtin: not a shell builtin' in Bash. Resolve builtin command errors when calling shell built-in functions incorrectly."
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
-# Bash Builtin: Command Not Found Error Fix
+# Bash Builtin Not A Shell Builtin Error Fix
 
-A bash builtin error occurs when a shell built-in command is disabled or unavailable, or when the name conflicts with an external command.
+The `builtin: not a shell builtin` error occurs when you try to call `builtin` with a command that is not a shell built-in function.
 
 ## What This Error Means
 
-Bash built-in commands (like `cd`, `echo`, `type`, `enable`) are part of the shell itself. They can be disabled with `enable -n`, and if disabled, bash may look for an external command instead. Some builtins may also be missing in minimal shells.
+The `builtin` command explicitly calls a shell built-in, bypassing any external command with the same name. When the specified command is not a built-in, Bash reports this error.
 
-## Common Causes
+A typical error:
 
-- Built-in command disabled with `enable -n`
-- Running in a minimal shell (like dash) that lacks some builtins
-- PATH overwritten and builtins shadowed
-- Custom function shadows a builtin name
-
-## How to Fix
-
-### 1. Re-enable disabled builtins
-
-```bash
-# WRONG: Builtin disabled
-enable -n echo
-echo "Hello"  # May not work as expected
-
-# CORRECT: Re-enable
-enable echo
-echo "Hello"
+```
+bash: builtin: ls: not a shell builtin
 ```
 
-### 2. Check if a command is builtin
+## Why It Happens
+
+Common causes include:
+
+- **Calling builtin with external commands** — `builtin ls`, `builtin grep`, etc.
+- **Wrong command name** — Typo or incorrect built-in name.
+- **Using builtin in non-Bash shells** — `sh` and `dash` may not support `builtin`.
+- **Function overriding a built-in** — A function shadows a built-in name.
+
+## How to Fix It
+
+### Fix 1: Only use builtin with actual built-ins
 
 ```bash
-# CORRECT: Verify builtin status
-type cd
-# cd is a shell builtin
+# WRONG: ls is not a builtin
+builtin ls -la
 
-type -a echo
-# echo is /usr/bin/echo
-# echo is a shell builtin
-```
-
-### 3. Use builtin explicitly
-
-```bash
-# CORRECT: Force builtin usage
-builtin echo "Using builtin"
+# RIGHT: Use builtin only with built-in commands
+builtin echo "This is a builtin"
 builtin cd /tmp
+builtin source script.sh
+builtin read -p "Enter: " input
 ```
 
-### 4. List all builtins
+### Fix 2: List available builtins
 
 ```bash
-# CORRECT: See all available builtins
-enable
+# RIGHT: Check what builtins exist
+compgen -b
 
-# Check if specific builtin exists
-enable | grep -w "echo"
+# Common bash builtins
+# echo, printf, read, cd, pwd, export, unset, type, which,
+# alias, unalias, history, fc, eval, exec, builtin, enable
 ```
 
-## Related Errors
+### Fix 3: Use command -p to find external commands
 
-- [Command Not Found](command-not-found) — missing commands
-- [No Such File](no-such-file) — missing files
-- [Permission Denied](permission-denied) — access errors
+```bash
+# RIGHT: Use 'command' for external commands
+command ls -la
+command grep "pattern" file.txt
+
+# Use 'builtin' only when you need to bypass a function
+my_echo() {
+    builtin echo "$@"
+}
+```
+
+### Fix 4: Override functions safely
+
+```bash
+# RIGHT: Override cd with custom behavior
+cd() {
+    builtin cd "$@" || return
+    echo "Now in: $(pwd)"
+}
+
+# RIGHT: Override echo using builtin
+echo() {
+    builtin echo "[$(date +%H:%M:%S)] $*"
+}
+```
+
+### Fix 5: Use enable to manage builtins
+
+```bash
+# Disable an external override
+enable -n echo  # Use /bin/echo instead of builtin
+
+# Re-enable builtin
+enable echo
+
+# List enabled builtins
+enable
+```
+
+## Common Mistakes
+
+- **Using `builtin` with external commands** — It is exclusively for shell built-ins.
+- **Assuming all commands are builtins** — Most useful commands (ls, grep, find) are external.
+- **Using builtin for performance** — Builtin is for semantic correctness, not speed.
+
+## Related Pages
+
+- [Bash Exec Error](bash-exec-error) — Command execution issues
+- [Bash Source Error](bash-source-error) — Script loading issues
+- [Bash Recursive Descent](bash-recursive-descent) — Stack overflow issues

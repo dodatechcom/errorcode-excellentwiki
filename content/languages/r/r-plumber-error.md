@@ -1,120 +1,118 @@
 ---
-title: "[Solution] R plumber API Error"
-description: "Fix plumber API errors including endpoint failures, request parsing issues, and deployment problems in plumber APIs."
+title: "[Solution] R Plumber API Route Error Fix"
+description: "Fix Plumber API route errors in R. Resolve endpoint definition issues, parameter parsing, and route configuration errors."
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Plumber API Route Error Fix
+
+The `Plumber API: route error` occurs when a Plumber endpoint is misconfigured, parameters are not parsed correctly, or the API router encounters invalid route definitions.
+
 ## What This Error Means
 
-Plumber API errors occur when a plumber-defined REST API fails during request handling. This can happen due to endpoint configuration issues, request parsing failures, or runtime errors in the API code.
+Plumber creates REST APIs from R functions annotated with special comments. When endpoint definitions are invalid, parameters do not match, or the router cannot find the handler, errors occur.
 
-## Common Causes
+A typical error:
 
-- Endpoint function throws an error
-- Invalid request body or query parameters
-- Missing or incorrect Content-Type header
-- Serialization issues with response objects
-- CORS configuration problems
+```
+Error in plumber.R:3: No path specified for endpoint
+```
 
-## How to Fix
+Or:
+
+```
+Error: Could not find route for GET /api/data
+```
+
+## Why It Happens
+
+Common causes include:
+
+- **Missing @get or @post annotation** — Function not exposed as endpoint.
+- **Wrong parameter names** — Function params don't match API params.
+- **Invalid route path** — Malformed URL pattern.
+- **Serializer issues** — Cannot serialize return value.
+- **File path issues** — Plumber cannot find the API file.
+
+## How to Fix It
+
+### Fix 1: Use correct Plumber annotations
 
 ```r
-# WRONG: Endpoint function throws error
-#* @get /data
-function(req) {
-  data <- read.csv(req$query$file)  # Error if file missing
+# RIGHT: Proper endpoint annotations
+#* @get /api/data
+function(req, res) {
+    list(message = "success", timestamp = Sys.time())
 }
 
-# CORRECT: Validate inputs
-#* @get /data
-function(req) {
-  if (is.null(req$query$file)) {
-    stop("Missing 'file' parameter")
-  }
-  if (!file.exists(req$query$file)) {
-    stop("File not found: ", req=query$file)
-  }
-  read.csv(req$query$file)
+#* @post /api/submit
+function(name, email) {
+    list(received = name, email = email)
 }
 ```
 
+### Fix 2: Match function parameters to API params
+
 ```r
-# WRONG: Not handling serialization
-#* @serializer json
-#* @get /summary
+# RIGHT: Function params match query params
+# GET /api/user?id=123
+#* @get /api/user
+function(id) {
+    # id comes from query string
+    list(user_id = id)
+}
+```
+
+### Fix 3: Use req and res for advanced control
+
+```r
+# RIGHT: Access request/response objects
+#* @get /api/status
+function(req, res) {
+    res$status <- 200
+    list(status = "ok", path = req$path)
+}
+```
+
+### Fix 4: Handle serialization properly
+
+```r
+# RIGHT: Return serializable objects
+#* @get /api/list
 function() {
-  list(mean = mean(1:10), sd = sd(1:10))
+    list(a = 1, b = "text", c = TRUE)
 }
 
-# CORRECT: Ensure serializable output
-#* @serializer json
-#* @get /summary
+# WRONG: Return non-serializable object
+#* @get /api/bad
 function() {
-  result <- tryCatch(
-    list(mean = mean(1:10), sd = sd(1:10)),
-    error = function(e) list(error = e$message)
-  )
-  result
+    environment()  # Cannot serialize!
 }
 ```
 
-```r
-# WRONG: No error handling
-#* @post /process
-function(body) {
-  process_data(body)  # May throw unhandled error
-}
-
-# CORRECT: Wrap in tryCatch
-#* @post /process
-function(body) {
-  tryCatch(
-    {
-      result <- process_data(body)
-      list(status = "success", data = result)
-    },
-    error = function(e) {
-      plumber::list_error(
-        message = e$message,
-        status = 400
-      )
-    }
-  )
-}
-```
-
-## Examples
+### Fix 5: Run Plumber correctly
 
 ```r
-# Example 1: Basic plumber setup with error handling
-# plumber.R
-#* @apiTitle Data API
-#* @apiDescription A simple data API with error handling
-
-#* Echo the message
-#* @param msg The message to echo
-#* @get /echo
-function(msg = "no message") {
-  list(message = msg)
-}
-
-# Example 2: Run plumber API
+# RIGHT: Run from correct directory
 library(plumber)
-pr <- plumber::plumb("plumber.R")
+pr <- plumber::pr("api/plumber.R")
 pr$run(port = 8000)
 
-# Example 3: Test endpoint with error handling
-tryCatch(
-  httr::GET("http://localhost:8000/echo?msg=hello"),
-  error = function(e) cat("Connection failed:", e$message, "\n")
-)
+# Or use pr_run
+pr("api/plumber.R") %>% pr_run(port = 8000)
 ```
 
-## Related Errors
+## Common Mistakes
 
-- [error-in-source]({{< relref "/languages/r/error-in-source" >}}) — sourcing R scripts
-- [error-in-read.csv]({{< relref "/languages/r/error-in-read.csv" >}}) — CSV reading errors
-- [error-in-eval]({{< relref "/languages/r/error-in-eval" >}}) — evaluation errors
+- **Not loading the plumber library** — Always call `library(plumber)`.
+- **Forgetting that R is case-sensitive** — Function name and route must match.
+- **Not checking API is running** — Verify with `curl http://localhost:8000/__swagger__/`.
+
+## Related Pages
+
+- [R Shiny Error](r-shiny-error) — Shiny rendering issues
+- [R Object Not Found](r-object-not-found) — Undefined variable errors
+- [R Connection Error](r-connection-error) — File reading issues

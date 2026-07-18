@@ -1,73 +1,115 @@
 ---
-title: "[Solution] R Cannot Coerce Type Error"
-description: "Fix R 'cannot coerce type' error when type conversion fails. Learn about R type coercion rules and safe conversions."
+title: "[Solution] R Non-Numeric Argument To Mathematical Function Error Fix"
+description: "Fix 'non-numeric argument to mathematical function' in R. Convert data types and validate numeric inputs for math functions."
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Non-Numeric Argument To Mathematical Function Error Fix
+
+The `non-numeric argument to mathematical function` error occurs when you pass a character, factor, or non-numeric value to a function that expects numeric input.
+
 ## What This Error Means
 
-The error `cannot coerce type 'X' to type 'Y'` occurs when R cannot automatically convert an object from one type to another. This often happens with `as.*` conversion functions.
+Mathematical functions in R (sqrt, log, sin, mean, sum, etc.) require numeric arguments. When you pass text, factors, or other non-numeric types, R cannot perform the calculation.
 
-## Common Causes
+A typical error:
 
-- Converting a list to atomic vector when list contains mixed types
-- Attempting to coerce complex objects (e.g., S4 classes) to simple types
-- Passing non-numeric data to numeric conversion functions
-- Incompatible data types in type casts
-
-## How to Fix
-
-```r
-# WRONG: Converting list with mixed types
-my_list <- list(1, "two", TRUE)
-as.numeric(my_list)  # Warning: NAs introduced
-
-# CORRECT: Check and handle types individually
-sapply(my_list, function(x) as.numeric(x))
+```
+Error in sqrt("hello") : non-numeric argument to mathematical function
 ```
 
-```r
-# WRONG: Converting factor to numeric directly
-f <- factor(c(1.5, 2.5, 3.5))
-as.numeric(f)  # Returns integers 1, 2, 3 — not the values!
+## Why It Happens
 
-# CORRECT: Convert via character first
-as.numeric(as.character(f))  # Returns 1.5, 2.5, 3.5
+Common causes include:
+
+- **Character strings in numeric columns** — CSV import reads numbers as text.
+- **Factors used in math** — Factors look like numbers but are categorical.
+- **Mixed types in vector** — Some elements are text, others numeric.
+- **Date not converted to numeric** — Dates in character format.
+- **NULL or NA propagation** — NULL values cause type errors.
+
+## How to Fix It
+
+### Fix 1: Check and convert types
+
+```r
+# RIGHT: Check type first
+class(my_vector)
+is.numeric(my_vector)
+is.character(my_vector)
+
+# Convert character to numeric
+my_vector <- as.numeric(my_vector)
 ```
 
-```r
-# WRONG: Using as.vector on complex object
-complex_obj <- structure(list(a = 1), class = "CustomClass")
-as.vector(complex_obj)  # Error or unexpected result
+### Fix 2: Fix factor to numeric conversion
 
-# CORRECT: Unlist first or use as.numeric on elements
-as.vector(unlist(complex_obj))
+```r
+# WRONG: Factor directly to numeric
+f <- factor(c("1", "2", "3"))
+result <- sqrt(f)  # Error!
+
+# RIGHT: Convert via character first
+result <- sqrt(as.numeric(as.character(f)))
 ```
 
-## Examples
+### Fix 3: Clean data before math operations
 
 ```r
-# Example 1: Type checking before conversion
-safe_as_numeric <- function(x) {
-  if (is.numeric(x)) return(x)
-  if (is.character(x)) return(as.numeric(x))
-  stop("Cannot convert ", class(x), " to numeric")
+# RIGHT: Remove non-numeric values
+data <- c("1", "2", "abc", "4")
+numeric_data <- as.numeric(data[!is.na(as.numeric(data))])
+result <- sqrt(numeric_data)
+```
+
+### Fix 4: Use suppressWarnings for known conversions
+
+```r
+# RIGHT: Handle NAs from conversion
+data <- c("1", "2", "abc", "4")
+numeric_data <- suppressWarnings(as.numeric(data))
+# NA introduced for "abc"
+result <- sqrt(numeric_data[!is.na(numeric_data)])
+```
+
+### Fix 5: Validate before math
+
+```r
+# RIGHT: Safe math function
+safe_sqrt <- function(x) {
+    if (!is.numeric(x)) {
+        stop("Input must be numeric, got: ", class(x))
+    }
+    if (any(x < 0)) {
+        stop("Cannot take square root of negative numbers")
+    }
+    sqrt(x)
 }
-
-# Example 2: Using unlist for list conversion
-lst <- list(a = 1, b = 2, c = 3)
-as.numeric(unlist(lst))  # 1 2 3
-
-# Example 3: Handling type coercion warnings
-result <- suppressWarnings(as.numeric(c("1", "abc", "3")))
-# result: 1 NA 3
 ```
 
-## Related Errors
+### Fix 6: Fix data import issues
 
-- [non-numeric-argument]({{< relref "/languages/r/non-numeric-argument" >}}) — non-numeric argument to math function
-- [non-vector-argument]({{< relref "/languages/r/non-vector-argument" >}}) — value cannot be used as logical
-- [error-in-paste]({{< relref "/languages/r/error-in-paste" >}}) — paste() conversion issues
+```r
+# RIGHT: Force numeric during import
+df <- read.csv("data.csv", stringsAsFactors = FALSE)
+df$column <- as.numeric(df$column)
+
+# Or use readr with column types
+library(readr)
+df <- read_csv("data.csv", col_types = cols(column = col_double()))
+```
+
+## Common Mistakes
+
+- **Not checking `class()` before math operations** — Always verify type.
+- **Forgetting that factors look like numbers** — Use `as.character()` first.
+- **Assuming `as.numeric()` always works** — It returns NA for non-parseable strings.
+
+## Related Pages
+
+- [R Object Not Found](r-object-not-found) — Undefined variable errors
+- [R Type Error](r-type-error) — Type conversion errors
+- [R Readr Error](r-readr-error) — Data import issues

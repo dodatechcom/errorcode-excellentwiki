@@ -1,78 +1,122 @@
 ---
-title: "[Solution] R Error — Object 'X' Not Found"
-description: "Fix R 'object X not found' error when referencing undefined variables. Check variable names, scope, and ensure proper assignment."
+title: "[Solution] R Object Not Found Error Fix"
+description: "Fix 'object not found' in R. Resolve undefined variable errors with proper initialization, scoping, and library loading."
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Object Not Found Error Fix
+
+The `object not found` error occurs when R encounters a variable, function, or data frame that has not been defined in the current environment.
+
 ## What This Error Means
 
-The error `Error: object 'X' not found` occurs when R cannot find an object with the given name in the current environment or any parent environments. This is one of the most common R errors.
+R looks for objects in the current environment, parent environments, and loaded packages. When an object is not found in any of these locations, R throws this error.
 
-## Common Causes
+A typical error:
 
-- Typo in variable name
-- Variable defined in a different scope (e.g., inside a function)
-- Missing `library()` call for package functions
-- Using an object before creating it
-
-## How to Fix
-
-```r
-# WRONG: Typo in variable name
-my_variable <- 10
-print(my_varible)  # Error: object 'my_varible' not found
-
-# CORRECT: Check spelling
-print(my_variable)
+```
+Error: object 'my_var' not found
 ```
 
-```r
-# WRONG: Variable defined inside function scope
-my_function <- function() {
-  local_var <- 42
-}
-print(local_var)  # Error: object 'local_var' not found
+## Why It Happens
 
-# CORRECT: Return the value or use <<-
-my_function <- function() {
-  local_var <- 42
-  return(local_var)
+Common causes include:
+
+- **Typo in variable name** — `my_var` vs `my_varr`.
+- **Object not created yet** — Using a variable before assignment.
+- **Wrong environment** — Object exists in a different scope.
+- **Package not loaded** — Function requires `library()` call.
+- **Case sensitivity** — R is case-sensitive: `Data` != `data`.
+- **Data frame column not selected** — Referencing column before selecting it.
+
+## How to Fix It
+
+### Fix 1: Check if object exists
+
+```r
+# RIGHT: Check before using
+if (exists("my_var")) {
+    print(my_var)
+} else {
+    my_var <- default_value
 }
-result <- my_function()
+```
+
+### Fix 2: Load required packages
+
+```r
+# WRONG: Function not found
+df %>% filter(x > 5)
+
+# RIGHT: Load the package first
+library(dplyr)
+df %>% filter(x > 5)
+```
+
+### Fix 3: Verify variable names
+
+```r
+# RIGHT: Check available objects
+ls()                    # List all objects
+ls.str()               # List with structure
+objects()               # Same as ls()
+
+# Check if specific object exists
+exists("my_dataframe")
+```
+
+### Fix 4: Check data frame columns
+
+```r
+# WRONG: Column not found
+df$nonexistent_column
+
+# RIGHT: Check columns first
+names(df)
+colnames(df)
+
+# Or use proper selection
+df[["existing_column"]]
+```
+
+### Fix 5: Use proper scoping
+
+```r
+# WRONG: Variable inside function not accessible outside
+my_func <- function() {
+    inner_var <- 42
+}
+my_func()
+print(inner_var)  # Error!
+
+# RIGHT: Return the value
+my_func <- function() {
+    inner_var <- 42
+    return(inner_var)
+}
+result <- my_func()
 print(result)
 ```
 
-```r
-# WRONG: Calling package function without loading library
-ggplot(iris, aes(x = Sepal.Length))  # Error: object 'ggplot' not found
-
-# CORRECT: Load library first
-library(ggplot2)
-ggplot(iris, aes(x = Sepal.Length))
-```
-
-## Examples
+### Fix 6: Use exists with envir parameter
 
 ```r
-# Example 1: Forgetting to create an object
-x <- y + 1  # Error: object 'y' not found
-
-# Example 2: Variable in different environment
-f <- function() {
-  internal_var <- "hello"
-}
-print(internal_var)  # Error: object 'internal_var' not found
-
-# Example 3: Using ls() and exists() to debug
-exists("my_variable")  # FALSE if not found
-ls()  # List all objects in current environment
+# RIGHT: Check specific environment
+exists("my_var", envir = .GlobalEnv)
+exists("my_var", envir = parent.frame())
 ```
 
-## Related Errors
+## Common Mistakes
 
-- [unused-argument]({{< relref "/languages/r/unused-argument" >}}) — argument not used in function
-- [error-in-if]({{< relref "/languages/r/error-in-if" >}}) — condition is missing or length zero
-- [non-vector-argument]({{< relref "/languages/r/non-vector-argument" >}}) — value cannot be used as logical
+- **Not checking package functions** — Always verify function is loaded.
+- **Case sensitivity** — `MyVar` and `myvar` are different objects.
+- **Forgetting that R creates objects lazily** — Variables must exist before use.
+
+## Related Pages
+
+- [R Package Not Found](r-package-not-found) — Package installation issues
+- [R Dimension Error](r-dimension-error) — Dimension mismatch issues
+- [R Type Error](r-type-error) — Type conversion errors

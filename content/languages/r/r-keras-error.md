@@ -1,82 +1,103 @@
 ---
-title: "[Solution] R Keras / TensorFlow Error"
-description: "Fix Keras and TensorFlow errors in R including installation issues, GPU configuration, and model training failures."
+title: "[Solution] R Keras Tensor Shape Mismatch Error Fix"
+description: "Fix 'Keras: tensor shape mismatch' in R. Resolve tensor dimension errors in Keras model training and prediction."
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Keras Tensor Shape Mismatch Error Fix
+
+The `Keras: tensor shape mismatch` error occurs when the input data shape does not match the expected shape of a Keras model layer, during training or prediction.
+
 ## What This Error Means
 
-Keras/TensorFlow errors in R occur when the R interface to Python-based Keras fails. This can happen during installation, configuration, or model training and inference.
+Keras models have fixed input shapes defined at model creation. When you feed data with different dimensions (wrong number of features, batch size, or time steps), the tensor shapes do not match.
 
-## Common Causes
+A typical error:
 
-- Python environment not properly configured
-- TensorFlow version mismatch with Keras
-- GPU driver or CUDA issues
-- Memory exhaustion during training
-- Invalid model architecture or tensor shapes
-
-## How to Fix
-
-```r
-# WRONG: Missing Python configuration
-library(keras)
-model <- keras_model_sequential()  # Error: Python not found
-
-# CORRECT: Configure Python first
-library(reticulate)
-use_python("/usr/bin/python3")
-library(keras)
+```
+Error: Input 0 of layer "dense" is incompatible with the layer: 
+expected axis -1 of input shape to have value 10 but received input with shape [32, 5]
 ```
 
-```r
-# WRONG: Version mismatch
-install_keras()  # Installs latest, may conflict
+## Why It Happens
 
-# CORRECT: Pin compatible versions
-library(reticulate)
-virtualenv_create("keras-env")
-virtualenv_install("keras-env", packages = c("tensorflow==2.12.0", "keras==2.12.0"))
-use_virtualenv("keras-env")
+Common causes include:
+
+- **Wrong input shape** — Data has different number of features than model expects.
+- **Missing batch dimension** — Single sample needs batch axis.
+- **Reshape not applied** — Data needs reshaping for CNN/RNN layers.
+- **Feature count mismatch** — Training and test data have different features.
+- **Model architecture change** — Modified model without retraining.
+
+## How to Fix It
+
+### Fix 1: Check input shape
+
+```r
+# RIGHT: Check model expected input
+library(keras)
+model <- load_model("my_model.h5")
+model$input_shape
+
+# Check actual data shape
+dim(x_train)
 ```
 
+### Fix 2: Reshape data to match model
+
 ```r
-# WRONG: Training with incompatible tensor shapes
+# RIGHT: Reshape for dense layers
+x_train <- array(x_train, dim = c(nrow(x_train), ncol(x_train)))
+
+# RIGHT: Reshape for CNN (add channel dimension)
+x_train <- array(x_train, dim = c(nrow(x_train), 28, 28, 1))
+
+# RIGHT: Reshape for RNN (add time steps)
+x_train <- array(x_train, dim = c(nrow(x_train), 10, ncol(x_train)))
+```
+
+### Fix 3: Add batch dimension for single sample
+
+```r
+# RIGHT: Single sample prediction
+sample <- x_test[1, ]
+dim(sample)  # (10,)
+
+# Add batch dimension
+sample <- array_reshape(sample, c(1, length(sample)))
+predict(model, sample)
+```
+
+### Fix 4: Use Input layer with correct shape
+
+```r
+# RIGHT: Define model with explicit input shape
 model <- keras_model_sequential() %>%
-  layer_dense(units = 32, input_shape = c(10)) %>%
-  layer_dense(units = 1)
-fit(model, x_train, y_train)  # Error if dimensions mismatch
+    layer_dense(units = 64, activation = "relu", input_shape = c(10)) %>%
+    layer_dense(units = 1)
 
-# CORRECT: Verify shapes before training
-cat("x_train shape:", dim(x_train), "\n")
-cat("y_train shape:", dim(y_train), "\n")
+summary(model)
 ```
 
-## Examples
+### Fix 5: Pad sequences for RNN
 
 ```r
-# Example 1: Install Keras properly
-install.packages("keras")
+# RIGHT: Pad sequences to same length
 library(keras)
-install_keras()
-
-# Example 2: Check TensorFlow version
-library(tensorflow)
-tf$constant("Hello TensorFlow")
-
-# Example 3: GPU memory management
-library(keras)
-config <- tf$ConfigProto()
-config$gpu_options$allow_growth = TRUE
-session <- tf$Session(config = config)
-k_set_session(session)
+x_train <- pad_sequences(x_train, maxlen = 100, padding = "post")
 ```
 
-## Related Errors
+## Common Mistakes
 
-- [error-in-library]({{< relref "/languages/r/error-in-library" >}}) — package load failed
-- [error-in-install.packages]({{< relref "/languages/r/error-in-install.packages" >}}) — installation issues
-- [error-in-source]({{< relref "/languages/r/error-in-source" >}}) — sourcing errors
+- **Forgetting that Keras expects 4D arrays for CNNs** — Batch, Height, Width, Channels.
+- **Not using `array_reshape`** — R matrices are column-major, Keras expects row-major.
+- **Mixing training and prediction shapes** — Ensure consistency.
+
+## Related Pages
+
+- [R Package Not Found](r-package-not-found) — Package installation issues
+- [R Object Not Found](r-object-not-found) — Undefined variable errors
+- [R Type Error](r-type-error) — Type conversion errors

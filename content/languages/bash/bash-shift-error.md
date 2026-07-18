@@ -1,82 +1,110 @@
 ---
-title: "[Solution] Bash Shift: Shift Count Out of Range Error Fix"
-description: "Fix bash shift errors when shifting more positions than available positional parameters."
+title: "[Solution] Bash Shift Too Many Arguments Error Fix"
+description: "Fix 'shift: can't shift that many' in Bash. Resolve positional parameter shift errors in shell script argument handling."
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
-# Bash Shift: Shift Count Out of Range Error Fix
+# Bash Shift Too Many Arguments Error Fix
 
-A bash shift error occurs when `shift` tries to remove more positional parameters than currently exist.
+The `shift: can't shift that many` error occurs when you try to shift more positional parameters than are currently available.
 
 ## What This Error Means
 
-The `shift` command removes positional parameters from the front of the list. `shift N` removes N parameters. If N exceeds the count of available parameters, bash reports "shift count out of range."
+The `shift` command removes positional parameters from the front of the list. `shift N` removes N parameters. If you try to shift more parameters than exist, Bash throws this error.
 
-## Common Causes
+A typical error:
 
-- Shifting more than the number of remaining arguments
-- Not checking argument count before shifting
-- Using shift in a loop without proper termination
-- Hardcoding shift count when argument count varies
+```
+bash: shift: can't shift that many
+```
 
-## How to Fix
+## Why It Happens
 
-### 1. Check argument count before shifting
+Common causes include:
+
+- **Shifting more than available** — `shift 3` when only 2 parameters remain.
+- **Not checking argument count** — Shifting without verifying `$#` first.
+- **Wrong shift amount in a loop** — Shifting by variable without bounds checking.
+- **Processing optional arguments incorrectly** — Not all expected arguments were provided.
+
+## How to Fix It
+
+### Fix 1: Check argument count before shifting
 
 ```bash
-# WRONG: Shifting without checking
-shift 3  # Error if fewer than 3 args
-
-# CORRECT: Check first
-if [[ $# -ge 3 ]]; then
-    shift 3
+# RIGHT: Check before shift
+if [ $# -ge 2 ]; then
+    shift 2
 else
     echo "Not enough arguments"
     exit 1
 fi
 ```
 
-### 2. Use shift in argument parsing
+### Fix 2: Use while loop with bounds checking
 
 ```bash
-# CORRECT: Safe shift pattern
-while [[ $# -gt 0 ]]; do
+# RIGHT: Process arguments safely
+while [ $# -gt 0 ]; do
     case "$1" in
-        -h|--help) show_help; shift ;;
-        -f|--file) FILE="$2"; shift 2 ;;
-        --) shift; break ;;
-        *) echo "Unknown: $1"; shift ;;
+        -f) FILE="$2"; shift 2 ;;
+        -v) VERBOSE=1; shift ;;
+        *)  echo "Unknown: $1"; shift ;;
     esac
 done
 ```
 
-### 3. Use shift to consume all args
+### Fix 3: Shift by variable with validation
 
 ```bash
-# CORRECT: Shift one at a time
-while [[ $# -gt 0 ]]; do
-    process "$1"
-    shift
-done
+# RIGHT: Validate shift amount
+shift_amount=${1:-1}
+if [ "$shift_amount" -le "$#" ] && [ "$shift_amount" -gt 0 ]; then
+    shift "$shift_amount"
+else
+    echo "Cannot shift by $shift_amount (have $# args)"
+    exit 1
+fi
 ```
 
-### 4. Preserve args before consuming
+### Fix 4: Use getopts for option parsing
 
 ```bash
-# CORRECT: Save original args
-ALL_ARGS=("$@")
-while [[ $# -gt 0 ]]; do
-    echo "Processing: $1"
-    shift
+# RIGHT: Use getopts instead of manual shifting
+while getopts "f:vh" opt; do
+    case "$opt" in
+        f) FILE="$OPTARG" ;;
+        v) VERBOSE=1 ;;
+        h) usage ;;
+        *) usage ;;
+    esac
 done
-# Original still in ALL_ARGS
+shift $((OPTIND - 1))
 ```
 
-## Related Errors
+### Fix 5: Safe positional parameter access
 
-- [Positional Parameters](exit-status) — argument handling
-- [Bash For Error](bash-for-error) — loop errors
-- [Too Many Arguments](too-many-arguments) — argument limit exceeded
+```bash
+# RIGHT: Access without shifting
+first="${1:-}"
+second="${2:-}"
+third="${3:-}"
+
+# Process remaining args
+shift "$(( $# > 3 ? 3 : $# ))"
+```
+
+## Common Mistakes
+
+- **Not checking `$#` before shift** — Always verify argument count.
+- **Shifting inside functions that are called with varying args** — Functions receive their own `$#`.
+- **Using shift in loops without termination condition** — Can lead to infinite loops.
+
+## Related Pages
+
+- [Bash Getopts Error](bash-getopts-error) — Option parsing issues
+- [Bash Shift Error](bash-shift-error) — Argument handling errors
+- [Bash Source Error](bash-source-error) — Script loading issues

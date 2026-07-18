@@ -1,85 +1,106 @@
 ---
-title: "[Solution] R readr Parsing Error"
-description: "Fix readr parsing errors when importing delimited files. Handle column type mismatches, encoding issues, and malformed data."
+title: "[Solution] R Readr Parsing Failure Column Mismatch Error Fix"
+description: "Fix readr parsing failures and column mismatches in R. Resolve CSV import errors with proper column type specifications."
 languages: ["r"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
+# R Readr Parsing Failure Column Mismatch Error Fix
+
+The `readr: parsing failure` or `column mismatch` error occurs when the readr package encounters data that does not match expected column types or column counts.
+
 ## What This Error Means
 
-A readr parsing error occurs when the `readr` package cannot parse a file due to unexpected data types, encoding issues, or malformed delimiters. The error typically shows the problematic line and column.
+The readr package (read_csv, read_tsv) uses heuristics to guess column types. When data contains unexpected formats, wrong number of columns, or malformed rows, parsing fails.
 
-## Common Causes
+A typical error:
 
-- Column type mismatch (e.g., text in a numeric column)
-- Incorrect delimiter specification
-- Encoding issues with special characters
-- Inconsistent column counts across rows
-- Header row issues
+```
+Error: 5 parsing failures.
+row col           expected    actual         file
+ 3  -- 5 columns         4 columns 'data.csv'
+```
 
-## How to Fix
+## Why It Happens
+
+Common causes include:
+
+- **Inconsistent column counts** — Some rows have extra or missing delimiters.
+- **Mixed data types** — A column has numbers in some rows, text in others.
+- **Embedded commas in quoted fields** — CSV fields containing commas.
+- **Encoding issues** — Non-UTF-8 characters in the file.
+- **Header row mismatch** — Column names don't align with data.
+
+## How to Fix It
+
+### Fix 1: Inspect parsing problems
 
 ```r
-# WRONG: Letting readr guess types incorrectly
+# RIGHT: Check parsing issues
 library(readr)
-data <- read_csv("data.csv")  # Parsing error
+result <- read_csv("data.csv", show_col_types = FALSE)
+problems(result)
+```
 
-# CORRECT: Specify column types explicitly
+### Fix 2: Specify column types explicitly
+
+```r
+# RIGHT: Force column types
 data <- read_csv("data.csv", col_types = cols(
-  id = col_integer(),
-  name = col_character(),
-  date = col_date(),
-  amount = col_double()
+    id = col_integer(),
+    name = col_character(),
+    date = col_date(),
+    amount = col_double()
 ))
 ```
 
-```r
-# WRONG: Wrong delimiter
-data <- read_csv("data.tsv")  # Tab-separated file
+### Fix 3: Skip problematic rows
 
-# CORRECT: Use read_tsv for tab-separated files
-data <- read_tsv("data.tsv")
-# Or specify delimiter
-data <- read_delim("data.tsv", delim = "\t")
+```r
+# RIGHT: Skip bad rows
+data <- read_csv("data.csv", skip_bad_rows = TRUE)
+
+# Or skip specific rows
+data <- read_csv("data.csv", skip = 1)  # Skip first row
 ```
 
-```r
-# WRONG: Ignoring encoding
-data <- read_csv("data.csv")  # Error with non-UTF-8 data
+### Fix 4: Handle different delimiters
 
-# CORRECT: Specify encoding
+```r
+# RIGHT: Use correct read function
+data <- read_tsv("data.tsv")      # Tab-separated
+data <- read_delim("data.txt", delim = "|")  # Pipe-separated
+data <- read_csv2("data.csv")     # Semicolon-separated (European)
+```
+
+### Fix 5: Fix encoding issues
+
+```r
+# RIGHT: Specify encoding
 data <- read_csv("data.csv", locale = locale(encoding = "latin1"))
+
+# Or use readr with encoding
+data <- read_file("data.csv") %>%
+    encoding = "UTF-8"
 ```
 
-## Examples
+### Fix 6: Use read.csv as fallback
 
 ```r
-# Example 1: Preview file to understand structure
-problems <- read_csv("data.csv", n_max = 100)
-problems(problems)  # Show any parsing issues
-
-# Example 2: Skip problematic lines
-data <- read_csv("data.csv", skip_empty_rows = TRUE)
-
-# Example 3: Use read_csv with progress and show_col_types
-data <- read_csv(
-  "data.csv",
-  show_col_types = FALSE,
-  progress = FALSE
-)
-
-# Example 4: Handle malformed CSV
-data <- read_csv(
-  "data.csv",
-  na = c("", "NA", "N/A", "."),
-  trim_ws = TRUE
-)
+# RIGHT: Base R read.csv is more forgiving
+data <- read.csv("data.csv", stringsAsFactors = FALSE, na.strings = c("", "NA"))
 ```
 
-## Related Errors
+## Common Mistakes
 
-- [error-in-read.csv]({{< relref "/languages/r/error-in-read.csv" >}}) — base R CSV reading
-- [error-in-read.table]({{< relref "/languages/r/error-in-read.table" >}}) — base R table reading
-- [error-in-parse]({{< relref "/languages/r/error-in-parse" >}}) — parsing errors
+- **Not checking `problems()` after import** — Always inspect parsing issues.
+- **Assuming readr auto-detects all types correctly** — Explicit types are safer.
+- **Forgetting that readr is stricter than base R** — Use `show_col_types = FALSE` for cleaner output.
+
+## Related Pages
+
+- [R Connection Error](r-connection-error) — File reading issues
+- [R Type Error](r-type-error) — Type conversion errors
+- [R Dataframe Error](r-dataframe-error) — Data frame creation issues

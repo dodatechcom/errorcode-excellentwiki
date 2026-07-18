@@ -1,103 +1,141 @@
 ---
-title: "[Solution] Perl Regular Expression Compilation Error"
-description: "Fix Perl regex compilation errors. Handle invalid patterns, unescaped metacharacters, and modifier issues."
+title: "[Solution] Perl Regular Expression Compilation Failed Fix"
+description: "Fix Perl 'Compilation failed in regular expression' errors. Learn why regex compilation fails and how to write correct Perl patterns."
 languages: ["perl"]
-error-types: ["runtime-error"]
 severities: ["error"]
+error-types: ["compile-error"]
 weight: 5
 ---
 
 ## What This Error Means
 
-A regex compilation error in Perl occurs when a regular expression pattern is syntactically invalid. Perl's regex engine compiles patterns at runtime and throws errors for malformed patterns.
+The Perl `Compilation failed in regular expression` error occurs when a regular expression cannot be compiled by the Perl regex engine. The error message specifies the problematic portion of the regex, helping identify the exact syntax issue.
 
-## Common Causes
+## Why It Happens
 
-- Unescaped metacharacters (e.g., `.`, `(`, `[` without backslash)
-- Unmatched brackets or parentheses
-- Invalid modifiers
-- Missing closing delimiter
-- Incomplete quantifiers (e.g., `{3`)
+- Unclosed parentheses, brackets, or quantifiers
+- Invalid escape sequences in the pattern
+- Mismatched quantifiers (e.g., `{3,1}` where min > max)
+- Using regex features not available in the current Perl version
+- Unescaped special characters in literal portions of the regex
+- Variable interpolation inside regex contains invalid syntax
+- Lookahead/lookbehind assertions have invalid syntax
+- The regex is too complex for the engine to compile
 
-## How to Fix
+## How to Fix It
 
-```perl
-# WRONG: Unescaped metacharacter
-my $pattern = "file.txt";
-if ($string =~ /$pattern/) { }  # . matches any char
-
-# CORRECT: Quote metacharacters
-use quotemeta;
-my $pattern = quotemeta("file.txt");
-if ($string =~ /$pattern/) { }
-
-# Or use \Q...\E
-if ($string =~ /\Q$file\E/) { }
-```
+### Fix unbalanced parentheses
 
 ```perl
-# WRONG: Unmatched parentheses
-my $regex = /(foo|bar/;  # Error: unmatched (
+# WRONG: Unclosed capture group
+my $text = "hello world";
+if ($text =~ /(hello/) {  # missing closing paren
+    print "Matched\n";
+}
 
-# CORRECT: Match all delimiters
-my $regex = /(foo|bar)/;
+# CORRECT: Balance all groups
+if ($text =~ /(hello)/) {
+    print "Matched\n";
+}
 ```
+
+### Escape special characters properly
+
+```perl
+# WRONG: Unescaped period in literal match
+my $ip = "192.168.1.1";
+if ($ip =~ /192.168.1.1/) {  # matches more than intended
+    print "IP found\n";
+}
+
+# CORRECT: Escape literal dots
+if ($ip =~ /192\.168\.1\.1/) {
+    print "IP found\n";
+}
+```
+
+### Fix quantifier syntax
 
 ```perl
 # WRONG: Invalid quantifier
-my $regex = /a{3/;  # Error: missing }
-
-# CORRECT: Complete quantifier
-my $regex = /a{3}/;
-# Or: /a{3,5}/
-```
-
-```perl
-# WRONG: Wrong modifier
-my $regex = /pattern/xq;  # x and q may conflict
-
-# CORRECT: Use compatible modifiers
-my $regex = /pattern/x;  # Extended mode
-my $regex = /pattern/g;  # Global match
-```
-
-## Examples
-
-```perl
-# Example 1: Debug regex with use re 'debug'
-use re 'debug';
-if ($string =~ /pattern/) { }
-# Shows compiled regex and optimization info
-
-# Example 2: Test regex safely
-sub test_regex {
-    my ($pattern, $test_string) = @_;
-    eval {
-        if ($test_string =~ /$pattern/) {
-            return 1;
-        }
-    };
-    if ($@) {
-        warn "Invalid regex: $@";
-        return 0;
-    }
-    return 0;
+my $text = "abc123";
+if ($text =~ /[a-z]{3,1}/) {  # min > max
+    print "Matched\n";
 }
 
-# Example 3: Common regex patterns
-# Email validation
-my $email_re = qr{^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$};
-
-# IP address
-my $ip_re = qr{^(\d{1,3}\.){3}\d{1,3}$};
-
-# Use qr// for precompiled patterns
-my $re = qr/^\d+$/;
-if ($string =~ $re) { print "Is a number\n"; }
+# CORRECT: Valid quantifier range
+if ($text =~ /[a-z]{1,3}/) {
+    print "Matched\n";
+}
 ```
 
-## Related Errors
+### Use qr// for precompiled patterns
 
-- [perl-compilation-error]({{< relref "/languages/perl/perl-compilation-error" >}}) — syntax error
-- [perl-runtime-error]({{< relref "/languages/perl/perl-runtime-error" >}}) — runtime error
-- [perl-encoding-error]({{< relref "/languages/perl/perl-encoding-error" >}}) — encoding error
+```perl
+# CORRECT: Compile regex once for reuse
+my $email_pattern = qr{[\w.+-]+@[\w-]+\.[\w.-]+};
+
+if ($email =~ $email_pattern) {
+    print "Valid email\n";
+}
+
+if ($other_email =~ $email_pattern) {
+    print "Valid email\n";
+}
+```
+
+### Validate regex from user input
+
+```perl
+# WRONG: Using user input directly in regex
+my $user_pattern = $user_input;
+if ($text =~ /$user_pattern/) {  # may fail compilation
+    print "Matched\n";
+}
+
+# CORRECT: Wrap in eval to catch compilation errors
+my $compiled = eval { qr/$user_input/ };
+if ($@) {
+    warn "Invalid regex: $@";
+} else {
+    if ($text =~ $compiled) {
+        print "Matched\n";
+    }
+}
+```
+
+### Use /x modifier for complex patterns
+
+```perl
+# CORRECT: Use /x for readable complex patterns
+my $phone_pattern = qr{
+    ^               # start of string
+    \(?             # optional opening paren
+    (\d{3})         # area code
+    \)?             # optional closing paren
+    [-.\s]?         # optional separator
+    (\d{3})         # prefix
+    [-.\s]?         # optional separator
+    (\d{4})         # line number
+    $               # end of string
+}x;
+
+if ($phone =~ $phone_pattern) {
+    print "Phone: ($1) $2-$3\n";
+}
+```
+
+## Common Mistakes
+
+- Not using `use re 'strict'` to catch common regex mistakes
+- Forgetting that `/` needs to be escaped inside `m//` and `s///`
+- Not using `qr//` for patterns that are reused multiple times
+- Confusing `$` (end of string in regex) with `\z` (absolute end of string)
+- Using greedy quantifiers when non-greedy (lazy) quantifiers are needed
+
+## Related Pages
+
+- [Perl Syntax Error V2](perl-syntax-error-v2) - syntax error
+- [Perl UTF8 Error](perl-utf8-error) - malformed UTF-8
+- [Perl Compilation Error](perl-compilation-error) - compile error
+- [Perl Strict Error](perl-strict-error) - strict mode violation
