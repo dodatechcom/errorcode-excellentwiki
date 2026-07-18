@@ -1,77 +1,63 @@
 ---
-title: "[Solution] Nginx Upstream Timed Out"
-description: "Fix Nginx upstream timed out error. Resolve upstream server timeout issues."
+title: "[Solution] Nginx Upstream Error"
+description: "Fix Nginx upstream errors. Learn why this happens and how to resolve it quickly."
 tools: ["nginx"]
-error-types: ["runtime-error"]
+error-types: ["tool-error"]
 severities: ["error"]
 weight: 5
 ---
 
-An upstream timed out error means Nginx waited too long for a response from the upstream server. The backend process is slow or unresponsive.
+# Nginx Upstream Error
 
-## Common Causes
+Nginx upstream errors occur when backend servers are unreachable or fail to respond.
 
-- Backend application is slow to respond
-- Database queries are taking too long
-- Upstream server is overloaded with requests
-- Network latency between Nginx and upstream
-- Timeout values too low for the workload
+## Why This Happens
 
-## How to Fix
+- No upstream servers
+- Upstream timed out
+- Connection refused
+- Server returned error
 
-### Increase Proxy Timeout
+## Common Error Messages
 
-```nginx
-location / {
-    proxy_pass http://backend;
-    proxy_read_timeout 300s;
-    proxy_connect_timeout 60s;
-    proxy_send_timeout 300s;
-}
-```
+- `upstream_no_servers`
+- `upstream_timeout_error`
+- `upstream_connection_error`
+- `upstream_server_error`
 
-### Check Backend Performance
+## How to Fix It
 
-```bash
-curl -w "time_total: %{time_total}\n" http://127.0.0.1:8080/
-```
+### Solution 1: Check upstream status
 
-### Monitor Upstream Health
+Verify backend servers are running:
 
 ```bash
-sudo tail -f /var/log/nginx/error.log | grep upstream
+curl http://backend-server:port
 ```
 
-### Optimize Backend
+### Solution 2: Fix upstream configuration
 
-```bash
-# Add caching
-# Optimize database queries
-# Scale backend horizontally
-```
-
-### Configure Keepalive
+Ensure upstream servers are correctly configured:
 
 ```nginx
 upstream backend {
     server 127.0.0.1:8080;
-    keepalive 32;
+    server 127.0.0.1:8081;
 }
 ```
 
-## Examples
+### Solution 3: Check network connectivity
 
-```nginx
-# Default 60s timeout
-# upstream timed out (110: Connection timed out)
-# Fix: increase proxy_read_timeout
+Verify Nginx can reach backend servers.
 
-# Slow API endpoint
-proxy_read_timeout 600s;
-# For endpoints that take up to 10 minutes
-```
 
-## Related Errors
+## Common Scenarios
 
-- [Nginx 504 Timeout]({{< relref "/tools/nginx/nginx-504-error" >}}) — gateway timeout
-- [Nginx 502 Bad Gateway]({{< relref "/tools/nginx/nginx-502-error" >}}) — upstream invalid response
+- **No upstream servers:** Check if backend servers are running.
+- **Upstream timeout:** Increase proxy_read_timeout.
+
+## Prevent It
+
+- Monitor upstream health
+- Set up health checks
+- Use connection pooling

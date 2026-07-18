@@ -1,94 +1,93 @@
 ---
-title: "[Solution] sqlc Code Generation Error Fix"
-description: "Fix sqlc code generation errors. Handle query validation, type mapping, and configuration issues."
+title: "[Solution] Go sqlc Error — How to Fix"
+description: "Fix Go sqlc errors. Handle query definition issues, code generation failures, type mismatches, and migration integration."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# sqlc Code Generation Error
+# Go sqlc Error
 
-Fix sqlc code generation errors. Handle query validation, type mapping, and configuration issues..
+Fix Go sqlc errors. Handle query definition issues, code generation failures, type mismatches, and migration integration.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- sqlc.yaml configuration file has incorrect paths or driver settings
+- SQL queries use syntax not supported by the configured database engine
+- Generated Go code does not match the expected package structure
+- Schema migrations are out of sync with the queries sqlc validates against
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+sqlc: query parse error
+```
+```
+sqlc: column not found in result
+```
+```
+sqlc: invalid config
+```
+```
+sqlc: migration directory not found
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
-
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
-
-### Fix 2: Add proper error handling
+### Solution 1: Validate sqlc configuration
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
+// sqlc.yaml
+db:
+  postgres:
+    engine: postgresql
+    dsn: postgresql://localhost/mydb
+queries:
+  - query.sql
+gen:
+  go:
+    package: db
+    out: db
 ```
 
-### Fix 3: Add retry and timeout logic
+### Solution 2: Use correct SQL syntax for the target engine
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+// PostgreSQL: $1, $2 placeholders
+// MySQL: ? placeholders
+// -- name: GetUser :one
+// SELECT * FROM users WHERE id = $1;
 ```
 
-## Examples
+### Solution 3: Check generated code structure
 
 ```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
+// After sqlc generate:
+// db/queries.sql.go - query functions
+// db/models.go - model structs
+// db/db.go - DB interface
+import "myproject/db"
+queries := db.New(conn)
 ```
 
-## Related Errors
+### Solution 4: Integrate with migrations
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+```go
+// Use migrate before sqlc:
+err := migrate.Up(conn, migrationsDir)
+// Then sqlc-generated code works correctly
+```
+
+## Common Scenarios
+
+- sqlc generate fails because the SQL query references a table not in the schema
+- Generated code uses wrong package name causing import errors
+- sqlc validates against old schema after migration changes
+
+## Prevent It
+
+- Keep sqlc.yaml configuration in sync with your schema files
+- Run sqlc generate after every schema migration change
+- Use sqlc verify to validate queries against the schema before generating

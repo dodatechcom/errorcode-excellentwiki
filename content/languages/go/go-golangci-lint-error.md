@@ -1,94 +1,100 @@
 ---
-title: "[Solution] golangci-lint Linter Error Fix"
-description: "Fix golangci-lint errors. Handle linter configuration, rule violations, and CI integration."
+title: "[Solution] Go golangci-lint Error — How to Fix"
+description: "Fix Go golangci-lint errors. Handle linter configuration, exclusions, performance, and CI integration."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# golangci-lint Linter Error
+# Go golangci-lint Error
 
-Fix golangci-lint errors. Handle linter configuration, rule violations, and CI integration..
+Fix Go golangci-lint errors. Handle linter configuration, exclusions, performance, and CI integration.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- golangci-lint runs too slowly on large codebases because too many linters are enabled
+- Linter exclusions do not work as expected because of configuration syntax
+- False positives from linters that do not understand project-specific patterns
+- golangci-lint version mismatch causes different results locally and in CI
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+golangci-lint: timeout exceeded
+```
+```
+golangci-lint: unknown linter
+```
+```
+golangci-lint: can't load package
+```
+```
+level=error msg="Timeout exceeded"
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
+### Solution 1: Configure golangci-lint
 
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+```yaml
+# .golangci.yml
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+  disable:
+    - depguard
+linters-settings:
+  errcheck:
+    check-blank: true
+issues:
+  exclude-rules:
+    - path: _test.go
+      linters: [errcheck]
 ```
 
-### Fix 2: Add proper error handling
+### Solution 2: Exclude false positives
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
+```yaml
+issues:
+  exclude-rules:
+    - path: generated/
+      linters: [staticcheck]
+    - path: _test.go
+      text: "SA1019"
 ```
 
-### Fix 3: Add retry and timeout logic
+### Solution 3: Run with timeout
 
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+```bash
+golangci-lint run --timeout 5m ./...
+# Or skip specific linters
+# golangci-lint run --disable errcheck ./...
 ```
 
-## Examples
+### Solution 4: Pin version in CI
 
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
+```yaml
+# .github/workflows/lint.yml
+- uses: golangci/golangci-lint-action@v4
+  with:
+    version: v1.57.2
 ```
 
-## Related Errors
+## Common Scenarios
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- golangci-lint times out because the codebase is too large
+- A new linter version introduces false positives
+- Configuration file syntax differs between versions
+
+## Prevent It
+
+- Pin golangci-lint version in CI and locally
+- Use issue exclusion rules to suppress known false positives
+- Run golangci-lint only on changed files in pull requests

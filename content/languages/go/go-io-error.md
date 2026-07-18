@@ -1,94 +1,85 @@
 ---
-title: "[Solution] io Read/Write Error Fix"
-description: "Fix Go io read/write errors. Handle EOF, broken pipe, and I/O operation failures."
+title: "[Solution] Go io Error — How to Fix"
+description: "Fix Go io errors. Handle io.Copy, io.Reader, io.Writer, and EOF handling."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# io Read/Write Error
+# Go io Error
 
-Fix Go io read/write errors. Handle EOF, broken pipe, and I/O operation failures..
+Fix Go io errors. Handle io.Copy, io.Reader, io.Writer, and EOF handling.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- io.Copy fails because the reader returns an error
+- io.ReadAll consumes too much memory because the reader is unbounded
+- io.EOF is not handled correctly causing infinite loops
+- io.Writer does not flush data because of buffering
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+io: read/write on closed pipe
+```
+```
+io: unexpected EOF
+```
+```
+io: copy loop
+```
+```
+io: unavailable
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
+### Solution 1: Copy data safely
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+n, err := io.Copy(dst, src)
+if err != nil && err != io.EOF { log.Fatal(err) }
 ```
 
-### Fix 2: Add proper error handling
+### Solution 2: Read bounded data
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+// Bad: unbounded read
+data, _ := io.ReadAll(reader)
+
+// Good: bounded read
+buf := make([]byte, 1024)
+n, err := reader.Read(buf)
+```
+
+### Solution 3: Handle EOF properly
+
+```go
+for {
+    _, err := reader.Read(buf)
+    if err == io.EOF { break }
+    if err != nil { return err }
+    process(buf)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Solution 4: Use io.LimitReader
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+limitedReader := io.LimitReader(reader, 1024*1024) // 1MB max
+data, _ := io.ReadAll(limitedReader)
 ```
 
-## Examples
+## Common Scenarios
 
-```go
-package main
+- io.Copy reads all data from a slow reader causing memory exhaustion
+- io.EOF is not checked causing infinite loops in read loops
+- io.Writer does not flush buffered data before closing
 
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
+## Prevent It
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
-```
-
-## Related Errors
-
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- Use io.LimitReader to bound reads
+- Check for io.EOF after every read operation
+- Use bufio.Writer.Flush() before closing

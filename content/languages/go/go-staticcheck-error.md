@@ -1,94 +1,81 @@
 ---
-title: "[Solution] Staticcheck Analysis Error Fix"
-description: "Fix Staticcheck analysis errors. Handle lint violations, code quality issues, and performance warnings."
+title: "[Solution] Go Staticcheck Error — How to Fix"
+description: "Fix Go staticcheck errors. Handle lint violations, unused code, deprecated APIs, and code style issues."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# Staticcheck Analysis Error
+# Go Staticcheck Error
 
-Fix Staticcheck analysis errors. Handle lint violations, code quality issues, and performance warnings..
+Fix Go staticcheck errors. Handle lint violations, unused code, deprecated APIs, and code style issues.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- staticcheck finds deprecated function calls that should be replaced
+- Unused variables and imports cause staticcheck warnings
+- Static check errors are in generated code and should be ignored
+- Different staticcheck configurations conflict across packages
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+SA1019: .* is deprecated
+```
+```
+SA4006: this value of .* is never used
+```
+```
+S1034: assign .* to .* instead
+```
+```
+staticcheck: unused function
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
-
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
-
-### Fix 2: Add proper error handling
+### Solution 1: Fix deprecated API calls
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
+// Before: ioutil.ReadAll(r)
+// After: io.ReadAll(r)
+// Before: ioutil.ReadFile(f)
+// After: os.ReadFile(f)
 ```
 
-### Fix 3: Add retry and timeout logic
+### Solution 2: Remove unused code
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+// staticcheck will flag unused variables, imports, and functions
+// Remove them or use _ for unused imports you want to keep
+import _ "github.com/lib/pq"
 ```
 
-## Examples
+### Solution 3: Suppress specific checks
 
 ```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
+// nolint:staticcheck // SA1019: legacy code temporarily retained
+var deprecatedVar = "old"
 ```
 
-## Related Errors
+### Solution 4: Run staticcheck in CI
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+```go
+// go install honnef.co/go/tools/cmd/staticcheck@latest
+// staticcheck ./...
+// Or use golangci-lint which includes staticcheck
+```
+
+## Common Scenarios
+
+- staticcheck flags a deprecated function that is still needed for compatibility
+- Generated code triggers staticcheck warnings
+- Staticcheck runs very slowly on large codebases
+
+## Prevent It
+
+- Use nolint directives for intentional suppressions
+- Exclude generated code from staticcheck analysis
+- Run staticcheck incrementally on changed packages in CI

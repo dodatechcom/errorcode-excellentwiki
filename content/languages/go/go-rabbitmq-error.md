@@ -1,94 +1,85 @@
 ---
-title: "[Solution] amqp Connection Refused Fix"
-description: "Fix AMQP (RabbitMQ) Go client connection errors. Handle connection recovery, channel management, and prefetch settings."
+title: "[Solution] Go RabbitMQ Error — How to Fix"
+description: "Fix Go RabbitMQ errors. Handle connection, channel, publish, consume, and queue configuration."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# amqp Connection Refused
+# Go RabbitMQ Error
 
-Fix AMQP (RabbitMQ) Go client connection errors. Handle connection recovery, channel management, and prefetch settings..
+Fix Go RabbitMQ errors. Handle connection, channel, publish, consume, and queue configuration.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- RabbitMQ connection fails because of wrong URL or credentials
+- Channel is closed because of prefetch count issues
+- Publish fails because exchange is not declared
+- Consumer does not receive messages because queue is not bound
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+amqp: connection refused
+```
+```
+amqp: channel closed
+```
+```
+amqp: exchange not found
+```
+```
+amqp: queue not found
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
+### Solution 1: Connect to RabbitMQ
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+conn, _ := amqp.Dial("amqp://guest:guest@localhost:5672/")
+defer conn.Close()
+ch, _ := conn.Channel()
+defer ch.Close()
 ```
 
-### Fix 2: Add proper error handling
+### Solution 2: Declare queue and publish
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+q, _ := ch.QueueDeclare("orders", true, false, false, false, nil)
+ch.Publish("", q.Name, false, false, amqp.Publishing{
+    ContentType: "application/json",
+    Body:        body,
+})
+```
+
+### Solution 3: Consume messages
+
+```go
+msgs, _ := ch.Consume(q.Name, "", false, false, false, false, nil)
+for msg := range msgs {
+    process(msg.Body)
+    msg.Ack(false)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Solution 4: Declare exchange
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+ch.ExchangeDeclare("logs", "topic", true, false, false, false, nil)
+ch.QueueBind(q.Name, "logs.*", "logs", false, nil)
 ```
 
-## Examples
+## Common Scenarios
 
-```go
-package main
+- RabbitMQ connection fails because of wrong URL format
+- Messages are not delivered because exchange is not declared
+- Consumer stops receiving messages because channel is closed
 
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
+## Prevent It
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
-```
-
-## Related Errors
-
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- Always declare exchanges and queues before publishing
+- Use message acknowledgments to prevent message loss
+- Set up connection recovery with notify

@@ -1,94 +1,89 @@
 ---
-title: "[Solution] GORM Record Not Found Fix"
-description: "Fix GORM record not found errors. Handle query results, association loading, and soft deletes."
+title: "[Solution] Go GORM Error — How to Fix"
+description: "Fix Go GORM errors. Handle connection pooling, migration failures, query timeouts, association errors, and scope issues."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# GORM Record Not Found
+# Go GORM Error
 
-Fix GORM record not found errors. Handle query results, association loading, and soft deletes..
+Fix Go GORM errors. Handle connection pooling, migration failures, query timeouts, association errors, and scope issues.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- Database connection pool is not configured leading to too many open connections
+- GORM model tags are incorrect causing migration or query failures
+- Query scopes are applied in the wrong order producing unexpected SQL
+- Association operations fail because of foreign key constraints
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+sql: connection pool is closed
+```
+```
+gorm: model required for migration
+```
+```
+record not found
+```
+```
+gorm: invalid association
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
+### Solution 1: Configure connection pool properly
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+sqlDB, _ := db.DB()
+sqlDB.SetMaxOpenConns(25)
+sqlDB.SetMaxIdleConns(10)
+sqlDB.SetConnMaxLifetime(5 * time.Minute)
 ```
 
-### Fix 2: Add proper error handling
+### Solution 2: Use proper model tags
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+type User struct {
+    gorm.Model
+    Name  string `gorm:"size:100;not null"`
+    Email string `gorm:"uniqueIndex;size:200"`
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Solution 3: Handle GORM errors with errors.Is
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
+var user User
+result := db.Where("email = ?", email).First(&user)
+if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+    // Handle not found
 }
 ```
 
-## Examples
+### Solution 4: Use transactions for multi-table operations
 
 ```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
+err := db.Transaction(func(tx *gorm.DB) error {
+    if err := tx.Create(&order).Error; err != nil { return err }
+    if err := tx.Create(&payment).Error; err != nil { return err }
+    return nil
+})
 ```
 
-## Related Errors
+## Common Scenarios
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- A GORM query returns all rows instead of just one because Where clause is missing
+- Migration creates wrong column types because struct tags are missing
+- Concurrent database operations cause connection pool exhaustion
+
+## Prevent It
+
+- Configure MaxOpenConns and MaxIdleConns on the underlying sql.DB
+- Always check for gorm.ErrRecordNotFound instead of checking for nil
+- Use db.Transaction() for operations that must be atomic

@@ -1,77 +1,69 @@
 ---
-title: "[Solution] Nginx Reverse Proxy Error"
-description: "Fix Nginx reverse proxy errors. Resolve proxy_pass configuration issues."
+title: "[Solution] Nginx Proxy Error"
+description: "Fix Nginx proxy errors. Learn why this happens and how to resolve it quickly."
 tools: ["nginx"]
-error-types: ["runtime-error"]
+error-types: ["tool-error"]
 severities: ["error"]
 weight: 5
 ---
 
-A reverse proxy error occurs when Nginx cannot properly forward requests to the backend server. This can be caused by misconfiguration, connectivity issues, or protocol mismatches.
+# Nginx Proxy Error
 
-## Common Causes
+Nginx proxy errors occur when proxying requests to backend servers fails.
 
-- proxy_pass directive has incorrect URL or port
-- Backend server is not running on the expected address
-- Missing or incorrect proxy headers
-- WebSocket upgrade not configured
-- Buffer size too small for backend response
+## Why This Happens
 
-## How to Fix
+- Proxy timeout
+- Connection refused
+- Invalid header
+- Buffer overflow
 
-### Verify proxy_pass Configuration
+## Common Error Messages
+
+- `proxy_timeout_error`
+- `proxy_connection_error`
+- `proxy_header_error`
+- `proxy_buffer_error`
+
+## How to Fix It
+
+### Solution 1: Configure proxy
+
+Set up proxy_pass:
 
 ```nginx
 location /api/ {
-    proxy_pass http://127.0.0.1:8080;
-}
-```
-
-### Add Required Proxy Headers
-
-```nginx
-location / {
     proxy_pass http://backend;
     proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
 }
 ```
 
-### Configure WebSocket Proxy
+### Solution 2: Fix timeout issues
+
+Increase proxy timeout:
 
 ```nginx
-location /ws/ {
-    proxy_pass http://backend;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-}
+proxy_read_timeout 300s;
+proxy_connect_timeout 60s;
 ```
 
-### Increase Buffer Size
+### Solution 3: Fix buffer issues
+
+Configure proxy buffers:
 
 ```nginx
 proxy_buffer_size 128k;
 proxy_buffers 4 256k;
 ```
 
-## Examples
 
-```nginx
-# Missing trailing slash
-proxy_pass http://127.0.0.1:8080;
-# Location: /api/users
-# Proxied to: http://127.0.0.1:8080/api/users
+## Common Scenarios
 
-# Trailing slash strips location prefix
-proxy_pass http://127.0.0.1:8080/;
-# Location: /api/users
-# Proxied to: http://127.0.0.1:8080/users
-```
+- **Proxy timeout:** Increase proxy_read_timeout.
+- **Connection refused:** Check backend server status.
 
-## Related Errors
+## Prevent It
 
-- [Nginx 502 Bad Gateway]({{< relref "/tools/nginx/nginx-502-error" >}}) — upstream invalid response
-- [Nginx Upstream Error]({{< relref "/tools/nginx/nginx-upstream-error" >}}) — upstream timed out
+- Configure timeouts appropriately
+- Monitor proxy performance
+- Set up buffering

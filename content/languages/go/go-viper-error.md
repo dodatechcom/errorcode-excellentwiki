@@ -1,94 +1,104 @@
 ---
-title: "[Solution] Viper Config File Not Found Fix"
-description: "Fix Viper configuration file not found errors. Handle config file loading, environment variable binding, and defaults."
+title: "[Solution] Go Viper Error — How to Fix"
+description: "Fix Go Viper configuration errors. Handle config file loading, remote config, environment binding, type assertion, and watch failures."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# Viper Config File Not Found
+# Go Viper Error
 
-Fix Viper configuration file not found errors. Handle config file loading, environment variable binding, and defaults..
+Fix Go Viper configuration errors. Handle config file loading, remote config, environment binding, type assertion, and watch failures.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- The config file path is incorrect or the file format is not recognized by Viper
+- Viper cannot connect to the remote config store such as Consul or etcd
+- Environment variable bindings conflict with config file values causing unexpected results
+- Type assertions on Viper values fail when the actual type differs from expected
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+viper.ConfigFileNotFoundError: config file not found
+```
+```
+viper: unable to read config: error
+```
+```
+viper: unable to unmarshal: error
+```
+```
+panic: interface conversion: interface {} is type, not type
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
-
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
-
-### Fix 2: Add proper error handling
+### Solution 1: Set up Viper with defaults and config search
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
-```
-
-### Fix 3: Add retry and timeout logic
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+v := viper.New()
+v.SetDefault("server.port", 8080)
+v.SetConfigName("config")
+v.SetConfigType("yaml")
+v.AddConfigPath(".")
+v.SetEnvPrefix("APP")
+v.AutomaticEnv()
+if err := v.ReadInConfig(); err != nil {
+    if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+        log.Println("no config file found, using defaults")
     }
 }
 ```
 
-## Examples
+### Solution 2: Use type-safe config retrieval
 
 ```go
-package main
+if v.IsSet("server.port") {
+    port := v.GetInt("server.port")
+}
+type Config struct {
+    Server struct {
+        Host string `mapstructure:"host"`
+        Port int    `mapstructure:"port"`
+    } `mapstructure:"server"`
+}
+var config Config
+v.Unmarshal(&config)
+```
 
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
+### Solution 3: Handle remote config errors
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+```go
+v.AddRemoteProvider("consul", "localhost:8500", "config/app")
+v.SetConfigType("yaml")
+if err := v.ReadRemoteConfig(); err != nil {
+    log.Printf("remote config error: %v", err)
 }
 ```
 
-## Related Errors
+### Solution 4: Watch for config changes
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+```go
+v.WatchConfig()
+v.OnConfigChange(func(e fsnotify.Event) {
+    log.Printf("config changed: %s", e.Name)
+    var newConfig Config
+    v.Unmarshal(&newConfig)
+    applyConfig(newConfig)
+})
+```
+
+## Common Scenarios
+
+- A config file is not found because the path is relative and the working directory changed
+- Viper returns wrong type when accessing nested config values
+- Config hot-reload fails because the file watcher stops after the first change
+
+## Prevent It
+
+- Always set multiple AddConfigPath locations for fallback
+- Use mapstructure tags on structs for proper Viper unmarshaling
+- Test config loading in different working directories to catch path issues

@@ -1,94 +1,90 @@
 ---
-title: "[Solution] crypto Hash Error Fix"
-description: "Fix Go crypto hash errors. Handle unsupported algorithms, hash computation failures, and key issues."
+title: "[Solution] Go crypto Error — How to Fix"
+description: "Fix Go crypto errors. Handle encryption, hashing, key management, and cryptographic operations."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# crypto Hash Error
+# Go crypto Error
 
-Fix Go crypto hash errors. Handle unsupported algorithms, hash computation failures, and key issues..
+Fix Go crypto errors. Handle encryption, hashing, key management, and cryptographic operations.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- Cryptographic operation fails because of wrong algorithm usage
+- Key is not properly generated causing weak encryption
+- Hash function output is not in the expected format
+- Certificate verification fails because of wrong CA
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+crypto: invalid key size
+```
+```
+crypto: decryption failed
+```
+```
+crypto: hash not available
+```
+```
+crypto: tls: bad certificate
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
+### Solution 1: Use crypto correctly
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+import "crypto/aes"
+import "crypto/cipher"
+
+key := make([]byte, 32) // 256-bit key
+rand.Read(key)
+block, _ := aes.NewCipher(key)
+gcm, _ := cipher.NewGCM(block)
 ```
 
-### Fix 2: Add proper error handling
+### Solution 2: Hash passwords
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+import "golang.org/x/crypto/bcrypt"
+
+hashed, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+err := bcrypt.CompareHashAndPassword(hashed, []byte(password))
+```
+
+### Solution 3: Generate RSA keys
+
+```go
+import "crypto/rsa"
+import "crypto/rand"
+
+privateKey, _ := rsa.GenerateKey(rand.Reader, 2048)
+pubKey := &privateKey.PublicKey
+```
+
+### Solution 4: Verify certificates
+
+```go
+certPool := x509.NewCertPool()
+certPool.AppendCertsFromPEM(caCert)
+tlsConfig := &tls.Config{
+    RootCAs: certPool,
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+## Common Scenarios
 
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+- Cryptographic operation fails because of wrong key size
+- Hash comparison fails because of encoding issues
+- TLS handshake fails because of certificate verification error
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
-```
+## Prevent It
 
-## Examples
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
-```
-
-## Related Errors
-
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- Use bcrypt for password hashing, not raw SHA256
+- Always use cryptographically secure random number generators
+- Verify certificates against the correct CA certificate pool

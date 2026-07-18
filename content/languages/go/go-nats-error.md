@@ -1,94 +1,86 @@
 ---
-title: "[Solution] nats Connection Refused Fix"
-description: "Fix NATS Go client connection errors. Handle server connectivity, reconnection, and cluster discovery."
+title: "[Solution] Go NATS Error — How to Fix"
+description: "Fix Go NATS errors. Handle connection, pub/sub, request-reply, and JetStream."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# nats Connection Refused
+# Go NATS Error
 
-Fix NATS Go client connection errors. Handle server connectivity, reconnection, and cluster discovery..
+Fix Go NATS errors. Handle connection, pub/sub, request-reply, and JetStream.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- NATS connection fails because of wrong server URL
+- Subscription does not receive messages because of wrong subject
+- JetStream publish fails because stream is not configured
+- NATS connection drops and is not automatically reconnected
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+nats: connection refused
+```
+```
+nats: no servers available
+```
+```
+nats: timeout
+```
+```
+nats: stream not found
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
-
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
-
-### Fix 2: Add proper error handling
+### Solution 1: Connect to NATS
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
+import "github.com/nats-io/nats.go"
+
+nc, err := nats.Connect("nats://localhost:4222")
+if err != nil { log.Fatal(err) }
+defer nc.Drain()
 ```
 
-### Fix 3: Add retry and timeout logic
+### Solution 2: Publish and subscribe
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+nc.Subscribe("orders.new", func(msg *nats.Msg) {
+    fmt.Printf("Received: %s\n", string(msg.Data))
+})
+nc.Publish("orders.new", []byte("order-123"))
 ```
 
-## Examples
+### Solution 3: Request-reply
 
 ```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
+nc.Subscribe("api.getUser", func(msg *nats.Msg) {
+    msg.Respond([]byte(`{"name":"Alice"}`))
+})
+resp, _ := nc.Request("api.getUser", []byte(`{"id":1}`), time.Second)
 ```
 
-## Related Errors
+### Solution 4: Use JetStream
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+```go
+js, _ := nc.JetStream()
+js.AddStream(&nats.StreamConfig{Name: "ORDERS", Subjects: []string{"orders.*"}})
+js.Publish("orders.new", []byte("order-123"))
+sub, _ := js.Subscribe("orders.new", handler)
+```
+
+## Common Scenarios
+
+- NATS connection fails because server is not running
+- JetStream messages are not delivered because stream is not created
+- Request times out because no subscriber is listening
+
+## Prevent It
+
+- Handle connection errors with reconnection callbacks
+- Create JetStream streams before publishing
+- Use nc.Drain() to cleanly disconnect

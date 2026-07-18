@@ -1,94 +1,92 @@
 ---
-title: "[Solution] Swagger Spec Generation Error Fix"
-description: "Fix Go Swagger spec generation errors. Handle annotation issues, type resolution, and documentation generation."
+title: "[Solution] Go Swagger Error — How to Fix"
+description: "Fix Go Swagger errors. Handle OpenAPI spec generation, validation, and code generation."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# Swagger Spec Generation Error
+# Go Swagger Error
 
-Fix Go Swagger spec generation errors. Handle annotation issues, type resolution, and documentation generation..
+Fix Go Swagger errors. Handle OpenAPI spec generation, validation, and code generation.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- Swagger spec is invalid because of wrong schema definition
+- Code generation fails because of missing annotations
+- Swagger UI does not render because of spec format errors
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+swagger: invalid spec
+```
+```
+swagger: missing required field
+```
+```
+swagger: schema validation failed
+```
+```
+swagger: code generation failed
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
-
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
-
-### Fix 2: Add proper error handling
+### Solution 1: Generate Swagger spec
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
-```
-
-### Fix 3: Add retry and timeout logic
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
-```
-
-## Examples
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
+// @title My API
+// @version 1.0
+// @description API Server
+// @host localhost:8080
+// @BasePath /
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+    router := gin.Default()
+    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 ```
 
-## Related Errors
+### Solution 2: Validate spec
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+```bash
+swagger validate api/swagger.json
+# Or use swagger-cli
+npx @apidevtools/swagger-cli validate api/swagger.json
+```
+
+### Solution 3: Generate client code
+
+```bash
+swagger generate client -f api/swagger.json -A myapi
+```
+
+### Solution 4: Define models
+
+```go
+// User represents a user
+// swagger:model User
+type User struct {
+    // Name of the user
+    // required: true
+    Name string `json:"name"`
+    // Email address
+    // required: true
+    // example: alice@example.com
+    Email string `json:"email"`
+}
+```
+
+## Common Scenarios
+
+- Swagger spec is invalid because of missing required fields
+- Code generation fails because of wrong model definitions
+- Swagger annotations do not produce correct OpenAPI spec
+
+## Prevent It
+
+- Use swagger annotations consistently across all handlers
+- Validate the spec with swagger validate before generating code
+- ['Test the API with generated client', '```go\n// Use generated client for testing\nclient := client.NewHTTPClientWithConfig(nil, &client.TransportConfig{\n    Host: "localhost:8080",\n})\n```']

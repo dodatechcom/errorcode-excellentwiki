@@ -1,94 +1,90 @@
 ---
-title: "[Solution] net dial Connection Refused Fix"
-description: "Fix Go net dial connection refused errors. Handle TCP/UDP connections, timeouts, and network configuration."
+title: "[Solution] Go net Error — How to Fix"
+description: "Fix Go net errors. Handle TCP/UDP connections, DNS resolution, timeouts, and network configuration."
 languages: ["go"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
+comments: true
 ---
 
-# net dial Connection Refused
+# Go net Error
 
-Fix Go net dial connection refused errors. Handle TCP/UDP connections, timeouts, and network configuration..
+Fix Go net errors. Handle TCP/UDP connections, DNS resolution, timeouts, and network configuration.
 
-## What This Error Means
+## Why It Happens
 
-Common error scenarios include:
+- Connection is refused because the target port is not listening
+- DNS resolution fails because of network configuration issues
+- Connection times out because of too short timeout settings
+- Connection is reset because the server closed the connection
 
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+## Common Error Messages
 
-## Common Causes
-
-```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+```
+dial tcp: connection refused
+```
+```
+lookup: no such host
+```
+```
+i/o timeout
+```
+```
+connection reset by peer
 ```
 
-## How to Fix
+## How to Fix It
 
-### Fix 1: Verify configuration and setup
+### Solution 1: Create TCP connection with timeout
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+conn, err := net.DialTimeout("tcp", "host:8080", 5*time.Second)
+if err != nil { log.Fatal(err) }
+defer conn.Close()
 ```
 
-### Fix 2: Add proper error handling
+### Solution 2: Configure DNS resolution
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+resolver := &net.Resolver{
+    PreferGo: true,
+    Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+        return net.Dial("udp", "8.8.8.8:53")
+    },
+}
+addrs, _ := resolver.LookupHost(ctx, "example.com")
+```
+
+### Solution 3: Set connection deadlines
+
+```go
+conn, _ := net.Dial("tcp", "host:8080")
+conn.SetDeadline(time.Now().Add(5 * time.Second))
+conn.SetReadDeadline(time.Now().Add(30 * time.Second))
+conn.SetWriteDeadline(time.Now().Add(30 * time.Second))
+```
+
+### Solution 4: Handle connection reuse
+
+```go
+client := &http.Client{
+    Transport: &http.Transport{
+        MaxIdleConns:        100,
+        MaxIdleConnsPerHost: 10,
+        IdleConnTimeout:     90 * time.Second,
+    },
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+## Common Scenarios
 
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+- Connection to database is refused because the port is wrong
+- DNS resolution fails because the resolver is not reachable
+- HTTP client connections are not being reused causing high latency
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
-```
+## Prevent It
 
-## Examples
-
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
-```
-
-## Related Errors
-
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- Use net.DialTimeout for connections with timeouts
+- Configure custom DNS resolver for reliable resolution
+- Tune http.Transport settings for connection reuse
