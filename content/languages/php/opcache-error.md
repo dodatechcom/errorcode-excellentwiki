@@ -1,109 +1,101 @@
 ---
-title: "PHP Opcache Error / JIT Compilation Failed"
-description: "Fix PHP Opcache and JIT compilation errors. Learn to resolve opcache corruption, JIT failures, and performance issues."
-languages: ["php"]
-error-types: ["runtime-error"]
-severities: ["error"]
-weight: 5
+title: "[Solution] PHP OPcache Error — Invalid File"
+description: "Fix PHP OPcache errors. Resolve 'OPcache error: Invalid file' by clearing the cache, validating paths, and configuring OPcache correctly."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+language: "php"
+tags: ["php", "opcache", "performance"]
+severity: "error"
 ---
 
-# PHP Opcache Error / JIT Compilation Failed
+# PHP OPcache Error
 
-Opcache errors occur when the PHP opcode cache encounters corruption, invalid bytecode, or JIT compiler failures. These errors can cause script execution to fail or produce unexpected behavior.
+## Error Message
+
+```
+opcache_invalidate(): Failed to force revalidation of script: /var/www/app/cache/config.php
+```
 
 ## Common Causes
 
-- Corrupted opcache files after code deployment
-- Shared memory exhaustion with too many cached scripts
-- JIT compiler encountering unsupported opcodes
-- File changes not detected due to stale cache
+- The OPcache has stale or corrupted entries for files that have been modified or deleted
+- The script path does not exist in the OPcache's file table (e.g., after deployment)
+- OPcache's validate_timestamps is set to 0, preventing automatic revalidation
 
-## How to Fix
+## Solutions
 
-### Clear Opcache
+### Solution 1: Clear OPcache After Deployment
+
+Reset or invalidate the OPcache when deploying new code to ensure fresh bytecode is used.
 
 ```php
 <?php
-// Clear opcache via CLI
+// Clear the entire OPcache
 opcache_reset();
-// Or restart PHP-FPM
-// sudo systemctl restart php8.2-fpm
+echo "OPcache cleared successfully\n";
+
+// Or invalidate a specific file
+$configPath = '/var/www/app/config/routes.php';
+if (opcache_invalidate($configPath, true)) {
+    echo "Invalidated: $configPath\n";
+} else {
+    echo "Failed to invalidate: $configPath\n";
+}
+
+// Check OPcache status
+$status = opcache_get_status(false);
+if ($status !== false) {
+    echo "Cached scripts: " . $status['opcache_statistics']['num_cached_scripts'] . "\n";
+    echo "Memory used: " . round($status['memory_usage']['used_memory'] / 1024 / 1024, 2) . "MB\n";
+}
 ?>
 ```
 
-```bash
-# Clear opcache from CLI
-php -r "opcache_reset();"
+### Solution 2: Create an OPcache Management Script
 
-# Restart PHP-FPM
-sudo systemctl restart php8.2-fpm
-
-# Restart Nginx/Apache
-sudo systemctl restart nginx
-sudo systemctl restart apache2
-```
-
-### Increase Opcache Memory
-
-```ini
-; php.ini
-opcache.memory_consumption = 256
-opcache.interned_strings_buffer = 16
-opcache.max_accelerated_files = 10000
-opcache.revalidate_freq = 0
-opcache.validate_timestamps = 1
-```
-
-### Configure JIT Settings
-
-```ini
-; php.ini
-opcache.enable=1
-opcache.jit=1255
-opcache.jit_buffer_size=128M
-```
-
-### Disable JIT if Causing Issues
-
-```ini
-; php.ini
-opcache.jit=0
-opcache.jit_buffer_size=0
-```
-
-## Examples
+Use a dedicated script to validate and refresh the OPcache during maintenance windows.
 
 ```php
 <?php
-// Example 1: Check opcache status
-$status = opcache_get_status();
-if ($status === false) {
-    echo 'Opcache is disabled or not available';
-} else {
-    echo 'Memory usage: ' . $status['memory_usage']['used_memory'];
-    echo 'Scripts cached: ' . $status['opcache_statistics']['num_cached_scripts'];
+// opcache-clear.php — run from CLI or a deployment script
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    die('CLI only');
 }
 
-// Example 2: Force revalidation
-opcache_invalidate('/var/www/app/config.php', true);
+echo "Clearing OPcache...\n";
+$start = microtime(true);
 
-// Example 3: List cached files
-$files = opcache_get_status();
-if (isset($files['scripts'])) {
-    echo count($files['scripts']) . ' scripts cached';
+// Reset the entire cache
+opcache_reset();
+
+$elapsed = round((microtime(true) - $start) * 1000, 2);
+echo "OPcache cleared in {$elapsed}ms\n";
+
+// Verify new files are being compiled
+$status = opcache_get_status(false);
+if ($status !== false) {
+    $stats = $status['opcache_statistics'];
+    echo "Cached scripts: {$stats['num_cached_scripts']}\n";
+    echo "Memory used: " . round($status['memory_usage']['used_memory'] / 1024 / 1024, 2) . "MB\n";
+    echo "Restart count: {$stats['restart_count']}\n";
+}
+
+// Invalidate a specific file that was just updated
+$updatedFile = '/var/www/app/routes/api.php';
+if (opcache_invalidate($updatedFile, true)) {
+    echo "Invalidated: $updatedFile\n";
 }
 ?>
 ```
 
-```bash
-# Example: Check JIT status
-php -i | grep "JIT"
-# jit => 1255
-# jit_buffer_size => 134217728
-```
+## Prevention Tips
+
+- Add `opcache_invalidate()` calls to your deployment script
+- Set opcache.validate_timestamps=1 in development for automatic cache refresh
+- Use `opcache_get_status()` to monitor cache usage and detect issues
 
 ## Related Errors
 
-- [PHP Fatal Error: Allowed memory size exhausted]({{< relref "/languages/php/fatal-error" >}})
-- [PHP Fatal error: Call to undefined function]({{< relref "/languages/php/call-to-undefined" >}})
-- [PHP PDOException: SQLSTATE[HY000]]({{< relref "/languages/php/pdo-error" >}})
+- [Memory Limit Error]({{< relref "/languages/php/memory-limit-error" >}})
+- [Memory Exhausted]({{< relref "/languages/php/memory-exhausted" >}})
