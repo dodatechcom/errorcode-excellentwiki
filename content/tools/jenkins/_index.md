@@ -1,6 +1,4 @@
 ---
-title: "Jenkins Errors"
-description: "Common Jenkins error codes and solutions."
+title: "Jenkins CI/CD Errors"
+description: "Common Jenkins error codes, pipeline failures, and build troubleshooting solutions."
 ---
-
-Browse all Jenkins error codes and solutions.

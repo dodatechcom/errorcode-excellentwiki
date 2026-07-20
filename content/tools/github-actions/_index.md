@@ -1,6 +1,4 @@
 ---
 title: "GitHub Actions Errors"
-description: "Common GitHub Actions error codes and solutions."
+description: "Common GitHub Actions CI/CD workflow errors, pipeline failures, and troubleshooting solutions."
 ---
-
-Browse all GitHub Actions error codes and solutions.

@@ -1,78 +1,28 @@
 ---
-title: "[Solution] Jenkins Node Offline"
-description: "Fix Jenkins node offline errors. Resolve agent connectivity and workspace issues."
+title: "[Solution] Jenkins Node Offline Error"
+description: "Fix Jenkins node offline errors. Resolve agent connectivity and availability issues."
 tools: ["jenkins"]
-error-types: ["runtime-error"]
+error-types: ["tool-error"]
 severities: ["error"]
-weight: 5
 ---
 
-# Jenkins Node Offline
+# Jenkins Node Offline Error
 
-A node offline error means Jenkins cannot communicate with a build agent. The agent machine may be down, the JNLP connection may have dropped, or the agent's disk is full.
+A node goes offline when Jenkins cannot communicate with the agent.
 
 ## Common Causes
 
-- The agent machine is powered off or unreachable
-- The JNLP agent process has crashed or been killed
-- The agent's disk is full, preventing communication
-- Network or firewall changes block the connection
+- Agent machine is down
+- JNLP agent lost connection
+- SSH connection timed out
+- Agent JVM crashed
 
 ## How to Fix
 
-### Check Node Status
-
+```bash
+# Jenkins > Manage Jenkins > Manage Nodes > Click node > "Reconnect"
 ```
-Jenkins > Manage Jenkins > Manage Nodes
-```
-
-### Reconnect JNLP Agent
 
 ```bash
-# On the agent machine
-java -jar agent.jar \
-  -url http://jenkins.example.com \
-  -secret @secret-file \
-  -name agent-name \
-  -workDir /home/jenkins
+java -jar agent.jar -url http://jenkins:8080 -secret @secret-file -name my-agent -retry 3
 ```
-
-### Restart Agent via SSH
-
-```bash
-ssh agent-user@agent-host "sudo systemctl restart jenkins-agent"
-```
-
-### Set Node to Launch Agents via SSH
-
-```groovy
-// In node configuration
-// Launch method: Launch agents via SSH
-// Host: agent-host.example.com
-// Credentials: SSH credentials for agent
-```
-
-### Verify Agent Can Reach Jenkins
-
-```bash
-# On the agent machine
-curl -I http://jenkins.example.com:8080
-telnet jenkins.example.com 8080
-```
-
-## Examples
-
-```bash
-# Agent machine restarted, JNLP not running
-# Node 'build-agent' is offline
-# Fix: re-launch the agent JNLP jar
-
-# Disk full on agent
-# Node 'build-agent' is offline: No space left on device
-# Fix: free disk space and restart agent
-```
-
-## Related Errors
-
-- [Build Failed]({{< relref "/tools/jenkins/build-failed" >}}) — build step returned error
-- [Credential Error]({{< relref "/tools/jenkins/credential-error2" >}}) — credential not found

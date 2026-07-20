@@ -1,6 +1,4 @@
 ---
 title: "SQLite Errors"
-description: "Common SQLite error codes and solutions."
+description: "Common SQLite database error codes, their causes, and solutions for troubleshooting embedded database issues."
 ---
-
-Browse all SQLite error codes and solutions.
