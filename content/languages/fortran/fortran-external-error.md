@@ -1,118 +1,100 @@
 ---
-title: "[Solution] Fortran External Error"
-description: "Resolve Fortran external procedure linkage errors caused by mismatched interfaces or missing EXTERNAL declarations."
+title: "[Solution] Fortran External Attribute — External Procedure Declaration"
+description: "Fix Fortran external attribute errors. Actionable solutions with code examples."
 languages: ["fortran"]
-error-types: ["runtime-error"]
+error-types: ["compile-time"]
 severities: ["error"]
-weight: 5
-comments: true
+weight: 1132
 ---
 
-## Why It Happens
+The `external` attribute declares a procedure as external. Errors involve using external when a module use would be better, or forgetting external for procedures passed as arguments.
 
-external procedure linkage error
+## Common Causes
 
-## Common Error Messages
+- Passing a procedure as an argument without external declaration
+- Using external when the procedure is already in a module
+- External declaration conflicts with module procedure of same name
+- Forgetting that external procedures lack automatic interfaces
 
-1. **Fortran error: external procedure not found**
-2. **undefined reference to external procedure**
-3. **interface mismatch in external call**
+## How to Fix
 
-## How to Fix It
-
-### Solution 1: Check allocation status before using
-
-```fortran
-program safe_alloc
-    implicit none
-    integer, allocatable :: arr(:)
-    integer :: ierr
-    allocate(arr(1000), stat=ierr)
-    if (ierr /= 0) then
-        print *, "Allocation failed with error:", ierr
-        stop
-    end if
-    arr = 42
-    print *, "Allocation succeeded, arr(1) =", arr(1)
-    deallocate(arr)
-end program safe_alloc
-```
-
-### Solution 2: Use deallocate before reallocating
+### 1. Declare procedures passed as arguments
 
 ```fortran
-program realloc_example
-    implicit none
-    integer, allocatable :: data(:)
-    integer :: ierr
-    allocate(data(100))
-    data = 1
-    ! Always deallocate before reallocating
-    if (allocated(data)) deallocate(data)
-    allocate(data(200), stat=ierr)
-    if (ierr /= 0) then
-        print *, "Reallocation failed"
-        stop
-    end if
-    data = 2
-    deallocate(data)
-end program realloc_example
+external :: my_func
+call apply(my_func, 5.0)
 ```
 
-### Solution 3: Enable runtime bounds checking during development
+### 2. Use interface blocks for external procedures
 
 ```fortran
-program bounds_check
-    implicit none
-    integer :: arr(10)
-    integer :: i
-    arr = (/ (i, i = 1, 10) /)
-    ! Compile with -fcheck=all for bounds checking
-    do i = 1, 10
-        print *, "arr(", i, ") =", arr(i)
-    end do
-end program bounds_check
+interface
+  function my_func(x) result(y)
+    real, intent(in) :: x
+    real :: y
+  end function
+end interface
 ```
 
-## Common Scenarios
-
-### Scenario 1: Memory allocation failure in External procedure linkage error
-
-Memory allocation failure in External procedure linkage error often occurs when developers forget to handle edge cases in their code. For example:
+### 3. Prefer module procedures over external
 
 ```fortran
-! Example scenario demonstrating the issue
-! This commonly happens in production code
-! Always validate inputs before processing
+module funcs
+contains
+  pure function my_func(x) result(y)
+    real, intent(in) :: x
+    real :: y
+    y = x ** 2
+  end function
+end module
 ```
 
-### Scenario 2: Resource exhaustion during External procedure linkage error
-
-Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+### 4. Use external for procedure arguments in Fortran 77 style
 
 ```fortran
-! Common pattern that leads to this error
-! Always check types and dimensions
-! Use compiler/runtime flags for early detection
+subroutine apply(f, x)
+  external :: f
+  real, intent(in) :: x
+  real :: result
+  result = f(x)
+  print *, result
+end subroutine
 ```
 
-### Scenario 3: Edge case triggering External procedure linkage error
-
-Performance-related issues can also trigger this error under load:
+### 5. Do not use external for module procedures
 
 ```fortran
-! Performance scenario example
-! Monitor resource usage in production
-! Add graceful degradation for resource limits
+use my_module
+! Do NOT also declare: external :: my_module_func
 ```
 
-## Prevent It
+## Examples
 
-- **Always validate input parameters before allocation or processing**
-- **Use compiler flags like -fcheck=all for Fortran to catch issues early**
-- **Add proper error handling and cleanup with STAT= and deallocate**
+Using external with an interface:
+
+```fortran
+program external_demo
+  implicit none
+  interface
+    function double_it(x) result(y)
+      real, intent(in) :: x
+      real :: y
+    end function
+  end interface
+  external :: double_it
+
+  print *, double_it(5.0)
+end program
+
+function double_it(x) result(y)
+  real, intent(in) :: x
+  real :: y
+  y = x * 2.0
+end function
+```
 
 ## Related Errors
 
-- [Fortran best practices](/languages/fortran)
-- [Fortran error handling guide](/languages/fortran/_index)
+- [Fortran Interface Error](../fortran-interface-error)
+- [Fortran Module Error](../fortran-module-error)
+- [Fortran Pure Function](../fortran-pure-function)

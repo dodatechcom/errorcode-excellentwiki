@@ -1,103 +1,112 @@
 ---
-title: "[Solution] Haskell Stm Error"
-description: "Resolve Haskell STM transaction errors including nested retry issues and deadlock detection in concurrent code."
+title: "[Solution] Haskell STM — Software Transactional Memory Errors"
+description: "Fix STM errors. Actionable solutions with code examples."
 languages: ["haskell"]
-error-types: ["runtime-error"]
+error-types: ["compile-time"]
 severities: ["error"]
-weight: 5
-comments: true
+weight: 1022
 ---
 
-## Why It Happens
+STM (Software Transactional Memory) provides composable concurrency primitives. Errors arise from mixing IO and STM actions, using the wrong retry semantics, or attempting I/O inside an STM block.
 
-STM transaction error
+## Common Causes
 
-## Common Error Messages
+- Using `IO` actions inside `atomically` (STM blocks must be pure of IO)
+- Forgetting that `retry` blocks the transaction until a TVar changes
+- Using `STM` values outside `atomically` or `unsafeIOToSTM`
+- Deadlock from circular TVar dependencies
 
-1. **STM transaction threw exception**
-2. **Deadlock detected in STM transaction**
-3. **retry called outside STM transaction**
+## How to Fix
 
-## How to Fix It
-
-### Solution 1: Add explicit type annotations
-
-```haskell
--- Add type annotations to resolve ambiguity
-func :: Int -> Int -> Int
-func x y = x + y
-
--- Annotate polymorphic values
-result :: String
-result = show 42
-```
-
-### Solution 2: Use type constraints to narrow types
+### 1. Never use IO inside atomically
 
 ```haskell
--- Add constraints to resolve ambiguous types
-process :: Show a => a -> IO ()
-process x = print x
+import Control.Concurrent.STM
 
--- Use specific type class constraints
-convert :: Read a => String -> a
-convert s = read s
+-- WRONG
+bad = atomically $ do
+  putStrLn "hello"  -- IO action, not allowed
+  return ()
+
+-- CORRECT: use STM primitives only
+good = atomically $ do
+  tv <- newTVar 0
+  modifyTVar tv (+1)
 ```
 
-### Solution 3: Enable common language extensions
+### 2. Use STM combinators for concurrency
 
 ```haskell
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
+import Control.Concurrent.STM
 
--- Use TypeApplications for explicit type selection
-func :: forall a. Show a => a -> String
-func x = show x
-
--- Use ScopedTypeVariables for local annotations
-example :: forall a. (Show a, Read a) => a -> String -> a
-example _ input = read input :: a
+transfer :: TVar Int -> TVar Int -> Int -> STM ()
+transfer from to amount = do
+  bal <- readTVar from
+  if bal >= amount
+    then do
+      modifyTVar from (subtract amount)
+      modifyTVar to (+ amount)
+    else retry  -- wait until 'from' changes
 ```
 
-## Common Scenarios
-
-### Scenario 1: Type mismatch when using STM transaction error
-
-Type mismatch when using STM transaction error often occurs when developers forget to handle edge cases in their code. For example:
+### 3. Run STM with atomically
 
 ```haskell
-! Example scenario demonstrating the issue
-! This commonly happens in production code
-! Always validate inputs before processing
+import Control.Concurrent.STM
+import Control.Concurrent (forkIO)
+
+main = do
+  account <- newTVarIO 100
+  forkIO $ atomically $ modifyTVar account (+50)
+  final <- readTVarIO account
+  print final
 ```
 
-### Scenario 2: Compilation failure due to STM transaction error
-
-Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+### 4. Use TMVar and TQueue for communication
 
 ```haskell
-! Common pattern that leads to this error
-! Always check types and dimensions
-! Use compiler/runtime flags for early detection
+import Control.Concurrent.STM
+
+example :: IO ()
+example = do
+  q <- newTQueueIO
+  atomically $ writeTQueue q "task1"
+  msg <- atomically $ readTQueue q
+  putStrLn msg
 ```
 
-### Scenario 3: Runtime exception from STM transaction error
-
-Performance-related issues can also trigger this error under load:
+### 5. Handle exceptions with catchSTM
 
 ```haskell
-! Performance scenario example
-! Monitor resource usage in production
-! Add graceful degradation for resource limits
+import Control.Concurrent.STM
+import Control.Exception (catch, SomeException)
+
+safeTransfer :: TVar Int -> TVar Int -> Int -> IO ()
+safeTransfer from to amt =
+  atomically (transfer from to amt)
+    `catch` \(_ :: SomeException) -> putStrLn "transfer failed"
 ```
 
-## Prevent It
+## Examples
 
-- **Enable -Wall and -Werror in GHC to catch issues at compile time**
-- **Write type signatures for all top-level functions**
-- **Use hlint and haskell-language-server for real-time error detection**
+A thread-safe counter:
+
+```haskell
+import Control.Concurrent.STM
+import Control.Concurrent (forkIO, threadDelay)
+
+main :: IO ()
+main = do
+  counter <- newTVarIO 0
+  forkIO $ atomically $ modifyTVar counter (+1)
+  forkIO $ atomically $ modifyTVar counter (+1)
+  threadDelay 100000
+  val <- readTVarIO counter
+  putStrLn ("Counter: " ++ show val)
+```
 
 ## Related Errors
 
-- [Haskell best practices](/languages/haskell)
-- [Haskell error handling guide](/languages/haskell/_index)
+- [Haskell TVar Error](../haskell-tvar)
+- [Haskell MVar Error](../haskell-mvar)
+- [Haskell Concurrency Error](../haskell-concurrency)
