@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Cache Error — cache corruption"
+title: "[Solution] npm Cache Error -- cache corruption"
 description: "Fix npm cache error. Clear and rebuild npm cache to resolve package installation issues."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Cache Error — cache corruption
+# npm Cache Error -- cache corruption
 
 Cache errors occur when the npm cache becomes corrupted, causing failed installations or incorrect package versions.
 
@@ -79,5 +79,5 @@ npm ci
 
 ## Related Errors
 
-- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) — registry connection issues
-- [Lifecycle Error]({{< relref "/tools/npm/lifecycle-error" >}}) — lifecycle script error
+- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) -- registry connection issues
+- [Lifecycle Error]({{< relref "/tools/npm/lifecycle-error" >}}) -- lifecycle script error

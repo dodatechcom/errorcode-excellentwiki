@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Cannot Find Module — Cannot find module 'X'"
+title: "[Solution] npm Cannot Find Module -- Cannot find module 'X'"
 description: "Fix npm 'Cannot find module' error. Resolve missing Node.js module issues."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Cannot Find Module — Cannot find module 'X'
+# npm Cannot Find Module -- Cannot find module 'X'
 
 This error means Node.js cannot locate the specified module in the `node_modules` directory or along the resolution path. The module is either not installed or the path is incorrect.
 
@@ -77,5 +77,5 @@ node -e "require('typescript')"
 
 ## Related Errors
 
-- [ERESOLVE]({{< relref "/tools/npm/peer-deps" >}}) — peer dependency resolution failure
-- [Image Not Found]({{< relref "/tools/docker/image-not-found" >}}) — Docker image not found
+- [ERESOLVE]({{< relref "/tools/npm/peer-deps" >}}) -- peer dependency resolution failure
+- [Image Not Found]({{< relref "/tools/docker/image-not-found" >}}) -- Docker image not found

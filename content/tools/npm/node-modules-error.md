@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm node_modules Error — module resolution failed"
+title: "[Solution] npm node_modules Error -- module resolution failed"
 description: "Fix npm node_modules issues. Resolve module resolution and dependency installation problems."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm node_modules Error — module resolution failed
+# npm node_modules Error -- module resolution failed
 
 node_modules errors occur when packages are missing, corrupted, or incorrectly installed. This causes import/require failures at runtime.
 
@@ -79,5 +79,5 @@ npm ls
 
 ## Related Errors
 
-- [Workspace Error]({{< relref "/tools/npm/workspace-error" >}}) — workspace configuration issues
-- [Cache Error]({{< relref "/tools/npm/cache-error" >}}) — npm cache corruption
+- [Workspace Error]({{< relref "/tools/npm/workspace-error" >}}) -- workspace configuration issues
+- [Cache Error]({{< relref "/tools/npm/cache-error" >}}) -- npm cache corruption

@@ -1,89 +1,58 @@
 ---
-title: "[Solution] npm Lifecycle Script Error"
-description: "Fix npm lifecycle script error. Resolve issues with preinstall, postinstall, and other lifecycle scripts."
+title: "[Solution] npm install ELIFECYCLE Lifecycle Error"
+description: "Resolve ELIFECYCLE lifecycle script errors in npm install by debugging postinstall failures, fixing dependencies, and checking scripts."
 tools: ["npm"]
 error-types: ["tool-error"]
 severities: ["error"]
 weight: 5
 ---
 
-# npm Lifecycle Script Error — lifecycle script failed
+# npm install ELIFECYCLE Lifecycle Error
 
-Lifecycle script errors occur when scripts defined in `package.json` (like `preinstall`, `postinstall`, `prepare`) fail during `npm install` or `npm publish`.
+This guide helps you diagnose and resolve npm install ELIFECYCLE Lifecycle Error errors encountered when running npm commands.
 
 ## Common Causes
 
-- Script references a command not installed globally
-- Missing build tools (node-gyp, python, make)
-- Script has syntax errors
-- Permission issues running scripts
+- Package postinstall or prepare script is failing during installation
+- System missing required build tools like python or make
+- Lifecycle script has a non-zero exit code due to environment issues
 
 ## How to Fix
 
-### Check Which Script Failed
+### Check the Full Error Output
 
 ```bash
 npm install --verbose
 ```
 
-### Skip Lifecycle Scripts Temporarily
+### Install Build Dependencies
 
 ```bash
-npm install --ignore-scripts
-```
-
-### Rebuild Native Modules
-
-```bash
-npm rebuild
-```
-
-### Install Missing Build Tools
-
-```bash
-# Ubuntu/Debian
 sudo apt-get install build-essential python3
-
-# macOS
-xcode-select --install
 ```
 
-### Check Script in package.json
-
-```json
-{
-  "scripts": {
-    "postinstall": "node scripts/setup.js"
-  }
-}
-```
-
-### Use --ignore-scripts Flag
+### Disable Lifecycle Scripts Temporarily
 
 ```bash
 npm install --ignore-scripts
-node scripts/setup.js  # Run manually
 ```
 
 ## Examples
 
 ```bash
-# Example 1: Missing build tools
-npm install
-# gyp ERR! build error
-# Fix: sudo apt-get install build-essential python3
+# Postinstall script fails
+npm install node-sass
+# Fix: Install build tools
+sudo apt-get install build-essential python3
 
-# Example 2: Script not found
-npm install
-# sh: 1: scripts/postinstall.sh: not found
-# Fix: verify script path in package.json
-
-# Example 3: Skip scripts temporarily
+# Lifecycle error with ESM package
+npm install esm-package
+# Fix: Skip scripts temporarily
 npm install --ignore-scripts
-npm rebuild
+
 ```
 
 ## Related Errors
 
-- [Lifecycle Error]({{< relref "/tools/npm/lifecycle-error" >}}) — script execution failure
-- [Cache Error]({{< relref "/tools/npm/cache-error" >}}) — npm cache corruption
+- [Node-gyp Error]({{< relref "/tools/npm/node-gyp-error" >}}) -- build tool error
+- [Build Failed]({{< relref "/tools/npm/build-failed" >}}) -- compilation error

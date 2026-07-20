@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Workspace Error — workspace link error"
+title: "[Solution] npm Workspace Error -- workspace link error"
 description: "Fix npm workspace link errors. Resolve workspace dependency linking issues."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -68,5 +68,5 @@ npm install
 
 ## Related Errors
 
-- [npm Run Script Error]({{< relref "/tools/npm/npm-run-script-error" >}}) — script execution failed
-- [npm Peer]({{< relref "/tools/npm/npm-peer" >}}) — ERESOLVE unable to resolve
+- [npm Run Script Error]({{< relref "/tools/npm/npm-run-script-error" >}}) -- script execution failed
+- [npm Peer]({{< relref "/tools/npm/npm-peer" >}}) -- ERESOLVE unable to resolve

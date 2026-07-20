@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm ERESOLVE — Unable to Resolve Dependency Tree"
+title: "[Solution] npm ERESOLVE -- Unable to Resolve Dependency Tree"
 description: "Fix npm ERESOLVE unable to resolve dependency tree error. Resolve peer dependency conflicts with npm."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm ERESOLVE — Unable to Resolve Dependency Tree
+# npm ERESOLVE -- Unable to Resolve Dependency Tree
 
 ERESOLVE occurs when npm cannot automatically resolve conflicting peer dependency requirements between packages. This is common when different packages require incompatible versions of the same dependency.
 
@@ -73,5 +73,5 @@ npm install --legacy-peer-deps
 
 ## Related Errors
 
-- [Module Not Found]({{< relref "/tools/npm/module-not-found" >}}) — missing module after install
-- [Dependency Failed]({{< relref "/tools/systemd/dependency-failed" >}}) — service dependency failures
+- [Module Not Found]({{< relref "/tools/npm/module-not-found" >}}) -- missing module after install
+- [Dependency Failed]({{< relref "/tools/systemd/dependency-failed" >}}) -- service dependency failures

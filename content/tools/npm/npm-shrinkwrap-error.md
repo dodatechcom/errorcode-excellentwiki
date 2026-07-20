@@ -70,5 +70,5 @@ node -e "JSON.parse(require('fs').readFileSync('npm-shrinkwrap.json'))"
 
 ## Related Errors
 
-- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) — integrity check failed
-- [npm Ci Error]({{< relref "/tools/npm/npm-ci-error" >}}) — package-lock out of sync
+- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) -- integrity check failed
+- [npm Ci Error]({{< relref "/tools/npm/npm-ci-error" >}}) -- package-lock out of sync

@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Peer Dependency Conflict — ERESOLVE unable to resolve
+# npm Peer Dependency Conflict -- ERESOLVE unable to resolve
 
 Peer dependency conflicts occur when two packages require incompatible versions of the same dependency. npm cannot automatically resolve these conflicts.
 
@@ -82,5 +82,5 @@ npm ls peer-deps
 
 ## Related Errors
 
-- [Audit Vulnerabilities]({{< relref "/tools/npm/audit-vulnerabilities" >}}) — security vulnerabilities found
-- [Lifecycle Error]({{< relref "/tools/npm/lifecycle-error" >}}) — lifecycle script error
+- [Audit Vulnerabilities]({{< relref "/tools/npm/audit-vulnerabilities" >}}) -- security vulnerabilities found
+- [Lifecycle Error]({{< relref "/tools/npm/lifecycle-error" >}}) -- lifecycle script error

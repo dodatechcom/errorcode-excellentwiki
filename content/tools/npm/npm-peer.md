@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Peer Dependency Error — ERESOLVE unable to resolve"
+title: "[Solution] npm Peer Dependency Error -- ERESOLVE unable to resolve"
 description: "Fix npm peer dependency resolution errors. Resolve ERESOLVE conflicts."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -70,5 +70,5 @@ npm install --legacy-peer-deps
 
 ## Related Errors
 
-- [npm Audit]({{< relref "/tools/npm/npm-audit" >}}) — security vulnerabilities found
-- [npm Version Error]({{< relref "/tools/npm/npm-version" >}}) — version conflict error
+- [npm Audit]({{< relref "/tools/npm/npm-audit" >}}) -- security vulnerabilities found
+- [npm Version Error]({{< relref "/tools/npm/npm-version" >}}) -- version conflict error

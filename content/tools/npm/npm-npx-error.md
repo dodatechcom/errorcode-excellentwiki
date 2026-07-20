@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm npx Error — command not found"
+title: "[Solution] npm npx Error -- command not found"
 description: "Fix npm npx command not found errors. Resolve npx execution issues."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -69,5 +69,5 @@ npx <command>
 
 ## Related Errors
 
-- [npm Run Script Error]({{< relref "/tools/npm/npm-run-script-error" >}}) — script execution failed
-- [npm Global Error]({{< relref "/tools/npm/npm-global-error" >}}) — global install permission error
+- [npm Run Script Error]({{< relref "/tools/npm/npm-run-script-error" >}}) -- script execution failed
+- [npm Global Error]({{< relref "/tools/npm/npm-global-error" >}}) -- global install permission error

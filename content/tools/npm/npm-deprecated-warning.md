@@ -65,5 +65,5 @@ npm info request deprecated
 
 ## Related Errors
 
-- [npm Audit]({{< relref "/tools/npm/npm-audit" >}}) — security vulnerabilities found
-- [npm Peer]({{< relref "/tools/npm/npm-peer" >}}) — ERESOLVE unable to resolve
+- [npm Audit]({{< relref "/tools/npm/npm-audit" >}}) -- security vulnerabilities found
+- [npm Peer]({{< relref "/tools/npm/npm-peer" >}}) -- ERESOLVE unable to resolve

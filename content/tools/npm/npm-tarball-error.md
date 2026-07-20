@@ -68,5 +68,5 @@ npm install
 
 ## Related Errors
 
-- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) — integrity check failed
-- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) — npm cache error
+- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) -- integrity check failed
+- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) -- npm cache error

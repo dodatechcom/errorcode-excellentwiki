@@ -71,5 +71,5 @@ npm outdated
 
 ## Related Errors
 
-- [npm Peer]({{< relref "/tools/npm/npm-peer" >}}) — ERESOLVE unable to resolve
-- [npm Run Script Error]({{< relref "/tools/npm/npm-run-script-error" >}}) — script error
+- [npm Peer]({{< relref "/tools/npm/npm-peer" >}}) -- ERESOLVE unable to resolve
+- [npm Run Script Error]({{< relref "/tools/npm/npm-run-script-error" >}}) -- script error

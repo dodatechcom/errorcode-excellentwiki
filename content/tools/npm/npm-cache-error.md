@@ -68,5 +68,5 @@ npm config get cache
 
 ## Related Errors
 
-- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) — integrity check failed
-- [npm Tarball Error]({{< relref "/tools/npm/npm-tarball-error" >}}) — tarball extraction error
+- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) -- integrity check failed
+- [npm Tarball Error]({{< relref "/tools/npm/npm-tarball-error" >}}) -- tarball extraction error

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Run Script Error — script execution failed"
+title: "[Solution] npm Run Script Error -- script execution failed"
 description: "Fix npm run script errors. Resolve script execution failures in npm."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -65,5 +65,5 @@ npm run lint
 
 ## Related Errors
 
-- [npm Npx Error]({{< relref "/tools/npm/npm-npx-error" >}}) — npx command not found
-- [npm Workspace Error]({{< relref "/tools/npm/npm-workspace-error" >}}) — workspace link error
+- [npm Npx Error]({{< relref "/tools/npm/npm-npx-error" >}}) -- npx command not found
+- [npm Workspace Error]({{< relref "/tools/npm/npm-workspace-error" >}}) -- workspace link error

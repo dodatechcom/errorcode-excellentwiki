@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm 404 Not Found — package not found"
+title: "[Solution] npm 404 Not Found -- package not found"
 description: "Fix npm 404 not found error. Resolve missing package issues in npm."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm 404 Not Found — package not found
+# npm 404 Not Found -- package not found
 
 This error occurs when npm cannot find a package in the registry. The package may not exist, have been unpublished, or may require a different name.
 
@@ -77,5 +77,5 @@ npm info react
 
 ## Related Errors
 
-- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) — registry connection issues
-- [Node Modules Error]({{< relref "/tools/npm/node-modules-error" >}}) — node_modules issues
+- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) -- registry connection issues
+- [Node Modules Error]({{< relref "/tools/npm/node-modules-error" >}}) -- node_modules issues

@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Publish Failed — npm ERR! code E403
+# npm Publish Failed -- npm ERR! code E403
 
 Publish errors occur when npm cannot upload your package to the registry. Common issues include authentication, naming conflicts, and version problems.
 
@@ -81,5 +81,5 @@ npm publish
 
 ## Related Errors
 
-- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) — registry connection issues
-- [Version Error]({{< relref "/tools/npm/version-error" >}}) — invalid semver version
+- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) -- registry connection issues
+- [Version Error]({{< relref "/tools/npm/version-error" >}}) -- invalid semver version

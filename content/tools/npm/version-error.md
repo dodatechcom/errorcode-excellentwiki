@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Version Error — invalid semver"
+title: "[Solution] npm Version Error -- invalid semver"
 description: "Fix npm invalid semver error. Resolve semantic versioning issues in package.json."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Version Error — invalid semver
+# npm Version Error -- invalid semver
 
 Invalid semver errors occur when version strings don't follow Semantic Versioning format. npm requires valid semver for package versions.
 
@@ -76,5 +76,5 @@ npm version patch
 
 ## Related Errors
 
-- [Publish Error]({{< relref "/tools/npm/publish-error" >}}) — npm publish failed
-- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) — registry connection issues
+- [Publish Error]({{< relref "/tools/npm/publish-error" >}}) -- npm publish failed
+- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) -- registry connection issues

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Workspace Error — workspace configuration failed"
+title: "[Solution] npm Workspace Error -- workspace configuration failed"
 description: "Fix npm workspace errors. Resolve issues with npm workspaces and monorepo configurations."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Workspace Error — workspace configuration failed
+# npm Workspace Error -- workspace configuration failed
 
 Workspace errors occur in monorepo setups when npm cannot properly resolve or link workspace packages. Issues arise from incorrect configuration or dependency conflicts.
 
@@ -87,5 +87,5 @@ npm run test --workspaces
 
 ## Related Errors
 
-- [Node Modules Error]({{< relref "/tools/npm/node-modules-error" >}}) — module resolution issues
-- [Peer Dependency]({{< relref "/tools/npm/peer-dep" >}}) — peer dependency conflict
+- [Node Modules Error]({{< relref "/tools/npm/node-modules-error" >}}) -- module resolution issues
+- [Peer Dependency]({{< relref "/tools/npm/peer-dep" >}}) -- peer dependency conflict

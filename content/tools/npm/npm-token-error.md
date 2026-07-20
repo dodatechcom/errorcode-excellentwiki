@@ -66,5 +66,5 @@ npm whoami
 
 ## Related Errors
 
-- [npm Registry Error]({{< relref "/tools/npm/npm-registry-error" >}}) — registry connection error
-- [npm Pack Error]({{< relref "/tools/npm/npm-pack-error" >}}) — npm pack error
+- [npm Registry Error]({{< relref "/tools/npm/npm-registry-error" >}}) -- registry connection error
+- [npm Pack Error]({{< relref "/tools/npm/npm-pack-error" >}}) -- npm pack error

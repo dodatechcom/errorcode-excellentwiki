@@ -62,5 +62,5 @@ npm config get prefix
 
 ## Related Errors
 
-- [npm Npx Error]({{< relref "/tools/npm/npm-npx-error" >}}) — npx command not found
-- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) — npm cache error
+- [npm Npx Error]({{< relref "/tools/npm/npm-npx-error" >}}) -- npx command not found
+- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) -- npm cache error

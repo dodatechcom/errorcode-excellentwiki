@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Registry Error — registry connection failed"
+title: "[Solution] npm Registry Error -- registry connection failed"
 description: "Fix npm registry error. Resolve network and authentication issues with npm registry."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Registry Error — registry connection failed
+# npm Registry Error -- registry connection failed
 
 Registry errors occur when npm cannot connect to the package registry. This may be due to network issues, registry downtime, or configuration problems.
 
@@ -78,5 +78,5 @@ curl -I https://registry.npmjs.org/
 
 ## Related Errors
 
-- [Cache Error]({{< relref "/tools/npm/cache-error" >}}) — npm cache corruption
-- [Package Not Found]({{< relref "/tools/npm/package-not-found2" >}}) — 404 not found
+- [Cache Error]({{< relref "/tools/npm/cache-error" >}}) -- npm cache corruption
+- [Package Not Found]({{< relref "/tools/npm/package-not-found2" >}}) -- 404 not found

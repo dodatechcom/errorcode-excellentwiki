@@ -66,5 +66,5 @@ npm cache verify
 
 ## Related Errors
 
-- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) — npm cache error
-- [npm Tarball Error]({{< relref "/tools/npm/npm-tarball-error" >}}) — tarball extraction error
+- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) -- npm cache error
+- [npm Tarball Error]({{< relref "/tools/npm/npm-tarball-error" >}}) -- tarball extraction error

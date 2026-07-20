@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Audit Vulnerabilities — vulnerabilities found"
+title: "[Solution] npm Audit Vulnerabilities -- vulnerabilities found"
 description: "Fix npm audit vulnerabilities. Understand and resolve security vulnerabilities in dependencies."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -7,7 +7,7 @@ severities: ["error"]
 weight: 5
 ---
 
-# npm Audit Vulnerabilities — vulnerabilities found
+# npm Audit Vulnerabilities -- vulnerabilities found
 
 `npm audit` reports security vulnerabilities in your project's dependencies. These range from low to critical severity and may affect your application.
 
@@ -79,5 +79,5 @@ npm audit --json | jq '.vulnerabilities.lodash'
 
 ## Related Errors
 
-- [Peer Dependency]({{< relref "/tools/npm/peer-dep" >}}) — peer dependency conflict
-- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) — registry connection issues
+- [Peer Dependency]({{< relref "/tools/npm/peer-dep" >}}) -- peer dependency conflict
+- [Registry Error]({{< relref "/tools/npm/registry-error" >}}) -- registry connection issues

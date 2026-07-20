@@ -68,5 +68,5 @@ tar -tzf my-package-1.0.0.tgz
 
 ## Related Errors
 
-- [npm Token Error]({{< relref "/tools/npm/npm-token-error" >}}) — token authentication failed
-- [npm Registry Error]({{< relref "/tools/npm/npm-registry-error" >}}) — registry connection error
+- [npm Token Error]({{< relref "/tools/npm/npm-token-error" >}}) -- token authentication failed
+- [npm Registry Error]({{< relref "/tools/npm/npm-registry-error" >}}) -- registry connection error

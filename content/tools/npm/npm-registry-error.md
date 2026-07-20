@@ -66,5 +66,5 @@ npm install
 
 ## Related Errors
 
-- [npm Token Error]({{< relref "/tools/npm/npm-token-error" >}}) — token authentication failed
-- [npm Pack Error]({{< relref "/tools/npm/npm-pack-error" >}}) — npm pack error
+- [npm Token Error]({{< relref "/tools/npm/npm-token-error" >}}) -- token authentication failed
+- [npm Pack Error]({{< relref "/tools/npm/npm-pack-error" >}}) -- npm pack error

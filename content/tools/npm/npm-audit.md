@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm Audit — vulnerability found"
+title: "[Solution] npm Audit -- vulnerability found"
 description: "Fix npm audit vulnerability errors. Resolve security vulnerabilities in dependencies."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -68,5 +68,5 @@ npm audit fix --force
 
 ## Related Errors
 
-- [npm Deprecated Warning]({{< relref "/tools/npm/npm-deprecated-warning" >}}) — deprecated package warning
-- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) — integrity check failed
+- [npm Deprecated Warning]({{< relref "/tools/npm/npm-deprecated-warning" >}}) -- deprecated package warning
+- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) -- integrity check failed

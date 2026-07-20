@@ -1,5 +1,5 @@
 ---
-title: "[Solution] npm ci Error — package-lock out of sync"
+title: "[Solution] npm ci Error -- package-lock out of sync"
 description: "Fix npm ci errors. Resolve package-lock.json synchronization issues."
 tools: ["npm"]
 error-types: ["tool-error"]
@@ -66,5 +66,5 @@ git add package-lock.json
 
 ## Related Errors
 
-- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) — integrity check failed
-- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) — npm cache error
+- [npm Integrity Error]({{< relref "/tools/npm/npm-integrity-error" >}}) -- integrity check failed
+- [npm Cache Error]({{< relref "/tools/npm/npm-cache-error" >}}) -- npm cache error
