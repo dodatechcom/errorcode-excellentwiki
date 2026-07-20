@@ -7,75 +7,103 @@ severities: ["error"]
 weight: 5
 ---
 
-# blake3 Hash Error
+# BLAKE3 Error
 
-Fix blake3 hash errors. Handle input processing, key derivation, and output encoding..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+BLAKE3 errors occur when using the `blake3` crate for hashing — incorrect output length, streaming errors, and keyed hashing issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use blake3::Hasher;
+
+// Wrong output size
+let mut hasher = Hasher::new();
+hasher.update(b"hello");
+let mut output = [0u8; 16]; // BLAKE3 produces 32-byte default output
+hasher.finalize_xof(&mut output); // Using XOF with fixed output
+
+// Not finalizing the hasher
+let mut hasher = Hasher::new();
+hasher.update(b"data");
+// Forgot to finalize — hash never computed
+
+// Keyed hash without correct key length
+let key = [0u8; 16]; // Must be 32 bytes for keyed hashing
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use correct output sizes**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use blake3::Hasher;
+
+let mut hasher = Hasher::new();
+hasher.update(b"hello world");
+let hash = hasher.finalize(); // 32 bytes
+println!("Hash: {}", hash.to_hex());
 ```
 
-### Fix 2: Add proper error handling
+2. **Use streaming for large data**
 
 ```rust
-use anyhow::Result;
+use blake3::Hasher;
+use std::io::Read;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+fn hash_file(path: &str) -> Result<String, std::io::Error> {
+    let mut file = std::fs::File::open(path)?;
+    let mut hasher = Hasher::new();
+    let mut buf = [0u8; 8192];
+    loop {
+        let n = file.read(&mut buf)?;
+        if n == 0 { break; }
+        hasher.update(&buf[..n]);
+    }
+    Ok(hasher.finalize().to_hex().to_string())
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use keyed hashing for HMAC-like operations**
 
 ```rust
-use std::time::Duration;
+use blake3::Hasher;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let key = blake3::Key::new(b"0123456789abcdef0123456789abcdef");
+let mut hasher = Hasher::new_keyed(&key);
+hasher.update(b"message to authenticate");
+let hash = hasher.finalize();
+println!("Keyed hash: {}", hash.to_hex());
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use blake3::Hasher;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    // Simple hash
+    let hash = blake3::hash(b"Hello, BLAKE3!");
+    println!("Hash: {}", hash);
+
+    // Incremental hashing
+    let mut hasher = Hasher::new();
+    hasher.update(b"Hello, ");
+    hasher.update(b"world!");
+    let hash = hasher.finalize();
+    assert_eq!(hash, blake3::hash(b"Hello, world!"));
+
+    // Derive subkeys
+    let key = blake3::Hasher::new_keyed(&[0u8; 32]);
+    let mut hasher = key;
+    hasher.update(b"derive key 1");
+    let subkey1 = hasher.finalize();
+
+    println!("Subkey1: {}", subkey1);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [HMAC Error]({{< relref "/languages/rust/hmac-error" >}}) — MAC operations
+- [SHA2 Error]({{< relref "/languages/rust/sha2-error" >}}) — SHA-2 hashing
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto operations

@@ -10,64 +10,123 @@ comments: true
 
 # Color Eyre Error
 
-Fix color-eyre error reporting issues. Resolve report configuration, hook setup, and span trace problems.
+Color Eyre errors occur when using the `color-eyre` crate for error reporting. Issues include panics in the install hook, missing span traces, and incompatible panic handlers.
 
-## Why It Happens
-
-- Color eyre hook is not installed before error creation
-- Span trace is not captured due to missing features
-- Report is downcasted incorrectly
-- Multiple error sources conflict in the report
-
-## Common Error Messages
-
-- `error: coloreyre failed`
-- `thread panicked at 'color-eyre crate operation failed'`
-- `Error: unable to complete color-eyre crate operation`
-- `Fatal: color-eyre crate configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure color-eyre crate is properly configured
-use color-eyre_crate::prelude::*;
+use color_eyre::eyre::{Result, WrapErr};
 
-fn main() {
-    // Initialize properly
-    println!("Correct color-eyre crate configuration");
+// Not installing color_eyre before using it
+fn main() -> Result<()> {
+    // color_eyre not installed — still uses default handler
+    let _file = std::fs::read_to_string("missing.txt")?;
+    Ok(())
 }
+
+// Panic handler conflicts with other crates
+// e.g., using both color-eyre and panic-console
 ```
 
-### Fix 2: Handle errors explicitly
+## How to Fix
+
+1. **Install color_eyre at program start**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
+use color_eyre::eyre::{Result, WrapErr};
+
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
+    let config = std::fs::read_to_string("config.toml")
+        .wrap_err("Failed to read configuration")?;
+
+    println!("Config loaded: {} bytes", config.len());
     Ok(())
 }
 ```
 
-### Fix 3: Add proper error context
+2. **Add span traces for detailed backtraces**
 
 ```rust
-use std::error::Error;
+use color_eyre::eyre::{Result, WrapErr, Section};
+use tracing_subscriber::EnvFilter;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
+fn main() -> Result<()> {
+    color_eyre::install()?;
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
+
+    let result = process_data("input.txt")
+        .section("While processing input file")?;
+
+    println!("Result: {}", result);
+    Ok(())
+}
+
+fn process_data(path: &str) -> Result<String> {
+    let data = std::fs::read_to_string(path)
+        .wrap_err_with(|| format!("Failed to read '{}'", path))?;
+    Ok(data)
+}
+```
+
+3. **Configure custom panic and error hooks**
+
+```rust
+use color_eyre::config::HookBuilder;
+
+fn main() -> color_eyre::Result<()> {
+    let (panic_hook, eyre_hook) = HookBuilder::default()
+        .panic_section(format!(
+            "This is a bug. Consider reporting it at {}",
+            env!("CARGO_PKG_HOMEPAGE").unwrap_or("the issue tracker")
+        ))
+        .into_hooks();
+
+    color_eyre::eyre::set_hook(eyre_hook)?;
+    std::panic::set_hook(Box::new(panic_hook));
+
+    println!("Hooks installed successfully");
     Ok(())
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with color-eyre crate
-2. Integrating color-eyre crate into an existing codebase
-3. Upgrading color-eyre crate to a newer version
+```rust
+use color_eyre::eyre::{Result, WrapErr, Report};
+use std::fmt;
 
-## Prevent It
+#[derive(Debug)]
+struct ConfigError(String);
+impl fmt::Display for ConfigError { fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { write!(f, "{}", self.0) } }
+impl std::error::Error for ConfigError {}
 
-- Read the color-eyre crate documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+fn load_config(path: &str) -> Result<serde_json::Value> {
+    let content = std::fs::read_to_string(path)
+        .wrap_err_with(|| format!("Cannot read config at '{}'", path))?;
+    let value: serde_json::Value = serde_json::from_str(&content)
+        .wrap_err("Invalid JSON in config file")?;
+    Ok(value)
+}
+
+fn main() -> Result<()> {
+    color_eyre::install()?;
+    match load_config("config.json") {
+        Ok(cfg) => println!("Loaded: {}", cfg),
+        Err(e) => {
+            eprintln!("Error report:\n{:?}", e);
+            // color-eyre automatically shows the full error chain with colors
+        }
+    }
+    Ok(())
+}
+```
+
+## Related Errors
+
+- [Anyhow Error]({{< relref "/languages/rust/rust-anyhow-error" >}}) — similar error context chaining
+- [Tracing Error]({{< relref "/languages/rust/rust-tracing-error" >}}) — tracing integration
+- [Error Handling]({{< relref "/languages/rust/rust-error-handling-rs" >}}) — general error handling

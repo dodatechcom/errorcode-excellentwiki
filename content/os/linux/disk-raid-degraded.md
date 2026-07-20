@@ -6,30 +6,62 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 10
 ---
+# Linux: Degraded RAID Array
 
-# Linux: disk-raid-degraded — disk RAID array degraded
-
-Fix Linux disk-raid-degraded errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A degraded RAID array has lost one or more member disks but continues operating with reduced redundancy. This requires immediate attention.
 
 ## Common Causes
 
-- Disk failed
-- Rebuild in progress
-- Multiple failures
-- Controller issue
+- A member disk has physically failed or disconnected
+- A disk developed bad sectors and was ejected from the array
+- Cable or connection issue causing intermittent detection
+- Disk timeout causing the kernel to mark it as failed
+- Read errors on a disk causing it to be kicked out
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-raid-degraded.md' mode='w' encoding='UTF-8'>
+### 1. Check RAID Status
 
-## Common Scenarios
+```bash
+cat /proc/mdstat
+sudo mdadm --detail /dev/md0
+```
 
-- Array degraded
-- Disk failure detected
-- Rebuild running
+### 2. Identify the Failed Disk
 
-## Prevent It
+```bash
+sudo mdadm --detail /dev/md0 | grep -i "faulty\|removed\|failed"
+dmesg | grep -i raid | tail -20
+```
 
-- Monitor array status
-- Replace failed disks quickly
-- Keep hot spares
+### 3. Replace the Failed Disk
+
+```bash
+# Mark as failed
+sudo mdadm --manage /dev/md0 --fail /dev/sdX1
+
+# Remove from array
+sudo mdadm --manage /dev/md0 --remove /dev/sdX1
+
+# Add replacement disk
+sudo mdadm --manage /dev/md0 --add /dev/sdY1
+```
+
+### 4. Monitor Rebuild
+
+```bash
+watch -n 5 cat /proc/mdstat
+```
+
+## Examples
+
+```bash
+$ cat /proc/mdstat
+Personalities : [raid1]
+md0 : active raid1 sdb1[1]
+      976762584 blocks super 1.2 [2/1] [_U]
+
+$ sudo mdadm --detail /dev/md0 | grep -E "State|Failed"
+    State : clean, degraded
+   Failed Devices : 1
+```

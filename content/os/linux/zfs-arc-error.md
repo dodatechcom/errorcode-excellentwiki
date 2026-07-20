@@ -7,29 +7,59 @@ error-types: ["filesystem-error"]
 weight: 8
 ---
 
-# Linux: zfs-arc-error — ZFS ARC cache error
+# Linux: ZFS Arc Error Error
 
-Fix Linux zfs-arc-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+ZFS arc error errors occur when the ZFS filesystem encounters pool, dataset, or data integrity issues.
 
 ## Common Causes
 
-- ARC too large
-- Memory pressure
-- ARC corruption
-- Eviction pressure
+- Pool device failure or removal
+- Checksum mismatch from data corruption
+- Pool or dataset space exhaustion
+- Snapshot or clone conflicts
+- ZFS feature flag incompatibility
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/zfs-arc-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Pool Status
 
-## Common Scenarios
+```bash
+sudo zpool status -v
+sudo zpool list
+sudo zfs list -r -t filesystem,volume
+```
 
-- ARC consuming all memory
-- System OOM from ARC
-- Slow due to ARC pressure
+### 2. Check for Errors
 
-## Prevent It
+```bash
+sudo zpool status -x
+sudo zpool events -v | tail -20
+```
 
-- Limit ARC size
-- Monitor memory usage
-- Set appropriate zfs_arc_max
+### 3. Repair Pool
+
+```bash
+sudo zpool scrub tank
+sudo zpool clear tank
+sudo zpool replace tank <old-device> <new-device>
+```
+
+### 4. Check Dataset Properties
+
+```bash
+sudo zfs get all tank | grep -i "arc-error"
+```
+
+## Examples
+
+```bash
+$ sudo zpool status tank
+  pool: tank
+ state: ONLINE
+  scan: scrub repaired 0B in 00:00:00
+
+$ sudo zfs list
+NAME              USED  AVAIL  REFER  MOUNTPOINT
+tank              500G   1.5T   200G  /tank
+tank/data         300G   1.5T   300G  /tank/data
+```

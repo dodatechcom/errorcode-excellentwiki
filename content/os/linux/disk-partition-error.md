@@ -6,30 +6,57 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: Disk Partition Error
 
-# Linux: disk-partition-error — disk partition error
-
-Fix Linux disk-partition-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Partition errors occur when the partition table is corrupt, misaligned, or contains overlapping entries, preventing access to disk data.
 
 ## Common Causes
 
-- Partition table corrupted
-- Overlapping partitions
-- Bad partition table
-- Too many partitions
+- Partition table corruption from improper shutdown or disk errors
+- Overlapping partition entries from manual editing mistakes
+- Misaligned partitions causing performance degradation
+- Using legacy MBR for disks larger than 2TB
+- Deleted or modified partition table without backup
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-partition-error.md' mode='w' encoding='UTF-8'>
+### 1. List Current Partitions
 
-## Common Scenarios
+```bash
+sudo fdisk -l
+sudo parted -l
+sudo gdisk -l /dev/sdX
+```
 
-- Partition table error
-- Overlapping partitions
-- Cannot mount
+### 2. Check Alignment
 
-## Prevent It
+```bash
+sudo parted /dev/sdX align-check optimal 1
+```
 
-- Backup partition table
-- Use proper tools
-- Verify before writing
+### 3. Repair with TestDisk
+
+```bash
+sudo testdisk /dev/sdX
+# Select: [Analyse] -> [Quick Search] -> [Backup]
+```
+
+### 4. Recreate Partition Table Safely
+
+```bash
+# Use fdisk with caution
+sudo fdisk /dev/sdX
+# d (delete), n (new), w (write changes)
+```
+
+## Examples
+
+```bash
+$ sudo fdisk -l /dev/sda
+Disk /dev/sda: 3 TB, 3000592982016 bytes
+Partition table type: MBR
+Warning: Partition 1 extends past the end of the disk
+
+$ sudo parted /dev/sda print
+Error: Can't have a partition outside the disk!
+```

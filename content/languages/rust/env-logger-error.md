@@ -7,75 +7,67 @@ severities: ["error"]
 weight: 5
 ---
 
-# env_logger Initialization Error
+# Env Logger Error
 
-Fix env_logger initialization errors. Handle environment variable parsing, filter configuration, and output..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Env logger errors occur when using the `env_logger` crate — incorrect initialization and log level configuration.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Not initializing before use
+log::info!("This won't appear"); // No logger initialized
+
+// Wrong RUST_LOG format
+// RUST_LOG="info;my_crate=debug" // Wrong syntax
+
+// Using after fork()
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Initialize at program start**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+env_logger::init();
+log::info!("Logger initialized");
 ```
 
-### Fix 2: Add proper error handling
+2. **Use Builder for custom configuration**
 
 ```rust
-use anyhow::Result;
+use env_logger::Builder;
+use log::LevelFilter;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let mut builder = Builder::new();
+builder.filter_level(LevelFilter::Debug);
+builder.init();
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Set RUST_LOG correctly**
 
-```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+```bash
+RUST_LOG=info cargo run
+RUST_LOG=my_crate=debug,hyper=info cargo run
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use log::{info, debug, warn};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    env_logger::Builder::from_env(
+        env_logger::Env::default().default_filter_or("info")
+    ).init();
+
+    info!("Application started");
+    debug!("Debug: port=8080");
+    warn!("Warning: deprecated");
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Log Error]({{< relref "/languages/rust/rust-log-error-rs" >}}) — log facade
+- [Tracing Error]({{< relref "/languages/rust/rust-tracing-error" >}}) — tracing crate
+- [Color Eyre Error]({{< relref "/languages/rust/rust-color-eyre-error" >}}) — error reporting

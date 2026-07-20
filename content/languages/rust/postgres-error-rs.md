@@ -7,75 +7,76 @@ severities: ["error"]
 weight: 5
 ---
 
-# postgres Connection Error
+# Postgres Error (rust-postgres)
 
-Fix PostgreSQL client connection errors. Handle SSL, connection pooling, and query errors..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Postgres errors occur when using the `postgres` crate — connection, query, and type mapping failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let client = Client::connect("host=localhost user=wrong dbname=test", NoTls)?;
+
+// Type mismatch
+let row = client.query_one("SELECT $1", &[&42i32])?;
+let val: i64 = row.get(0); // Wrong type
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure connection correctly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use postgres::{Client, NoTls};
+
+let client = Client::connect(
+    "host=localhost port=5432 user=postgres password=secret dbname=mydb",
+    NoTls,
+)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Use correct types in queries**
 
 ```rust
-use anyhow::Result;
+use postgres::Row;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let row = client.query_one("SELECT id, name FROM users WHERE id = $1", &[&1i32])?;
+let id: i32 = row.get(0);
+let name: String = row.get(1);
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use ToSql/FromSql traits**
 
 ```rust
-use std::time::Duration;
+use postgres::types::ToSql;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let name: &str = "Alice";
+let row = client.query_one("SELECT $1::text", &[&name])?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use postgres::{Client, NoTls, Error};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Error> {
+    let mut client = Client::connect("host=localhost user=postgres dbname=test", NoTls)?;
+
+    client.execute("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT)", &[])?;
+
+    client.execute("INSERT INTO users (name) VALUES ($1)", &[&"Alice"])?;
+
+    for row in client.query("SELECT id, name FROM users", &[])? {
+        let id: i32 = row.get(0);
+        let name: String = row.get(1);
+        println!("{}: {}", id, name);
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [SQLx Error]({{< relref "/languages/rust/sqlx-error" >}}) — SQLx async
+- [Sea ORM Error]({{< relref "/languages/rust/sea-orm-error" >}}) — SeaORM
+- [MySQL Error]({{< relref "/languages/rust/mysql-error-rs" >}}) — MySQL

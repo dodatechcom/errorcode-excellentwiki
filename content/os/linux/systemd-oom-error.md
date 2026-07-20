@@ -7,53 +7,57 @@ error-types: ["runtime-error"]
 weight: 12
 ---
 
-# Linux: systemd-oom-error — systemd OOMD service failure
+# Linux: systemd Oom Error Error
 
-Fix Linux systemd-oom-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd oom error errors occur when the systemd oom error component fails to operate correctly.
 
 ## Common Causes
 
-- OOMD not running
-- PSI not configured
-- PSI not available
-- Killing wrong processes
+- Misconfiguration in unit files or systemd configuration
+- Permission or ownership issues on required paths
+- Dependency failures from other systemd units
+- Resource limits or system constraints reached
+- SELinux or AppArmor policy blocking operations
 
 ## How to Fix
 
-### 1. Check Status
+### 1. Check systemd Unit Status
+
 ```bash
-systemctl status systemd-oomd
-journalctl -u systemd-oomd
+sudo systemctl status systemd-oom-error
+sudo journalctl -u systemd-oom-error --no-pager -n 50
 ```
 
-### 2. Enable PSI
+### 2. Verify Configuration Files
+
 ```bash
-cat /proc/pressure/memory
+ls /etc/systemd/*.conf /usr/lib/systemd/*.conf 2>/dev/null
+systemctl cat systemd-oom-error
 ```
 
-### 3. Configure
+### 3. Check System Logs
+
 ```bash
-sudo tee /etc/systemd/oomd.conf << EOF
-[OOMPolicy]
-OOMScoreAdjust=-900
-SwapFreeLimitPercentage=20
-EOF
+sudo journalctl -xe --no-pager -n 30
+sudo dmesg | tail -20
 ```
 
-### 4. Use earlyoom
+### 4. Restart and Re-evaluate
+
 ```bash
-sudo apt install earlyoom
-sudo systemctl enable --now earlyoom
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-oom-error
 ```
 
-## Common Scenarios
+## Examples
 
-- OOMD fails to start
-- Wrong processes killed
-- System freezes instead
+```bash
+$ sudo systemctl status systemd-oom-error
+* systemd-oom-error.service - systemd Oom Error
+   Loaded: loaded (/usr/lib/systemd/system/systemd-oom-error.service; static)
+   Active: failed (Result: exit-code)
 
-## Prevent It
-
-- Ensure kernel supports PSI
-- Protect critical services
-- Monitor OOMD decisions
+$ sudo journalctl -u systemd-oom-error -n 10
+Jul 20 14:30:45 server systemd[oom-error][12345]: Failed to process configuration
+Jul 20 14:30:45 server systemd[1]: systemd-oom-error.service: Main process exited, code=exited, status=1/FAILURE
+```

@@ -7,29 +7,58 @@ error-types: ["process-error"]
 weight: 8
 ---
 
-# Linux: selinux-error — SELinux error
+# Linux: SELinux Error
 
-Fix Linux selinux-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+SELinux errors occur when SELinux policies block access to files, ports, or processes.
 
 ## Common Causes
 
-- Policy violation
-- Context mismatch
-- Labeling error
-- Boolean not set
+- File context label incorrect
+- Policy missing for new application
+- Boolean setting preventing access
+- Port not defined in policy
+- Application running in wrong domain
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/selinux-error.md' mode='w' encoding='UTF-8'>
+### 1. Check SELinux Status
 
-## Common Scenarios
+```bash
+getenforce
+sestatus
+```
 
-- SELinux denied access
-- Context mismatch
-- Boolean not set
+### 2. Check Denied Operations
 
-## Prevent It
+```bash
+sudo ausearch -m AVC -ts recent | tail -20
+sudo sealert -a /var/log/audit/audit.log 2>/dev/null | head -30
+```
 
-- Check SELinux logs
-- Fix file contexts
-- Set required booleans
+### 3. Fix File Context
+
+```bash
+sudo restorecon -Rv /path
+sudo semanage fcontext -a -t httpd_sys_content_t /web(/.*)?
+sudo restorecon -Rv /web
+```
+
+### 4. Set Booleans
+
+```bash
+sudo setsebool -P httpd_can_network_connect on
+```
+
+## Examples
+
+```bash
+$ getenforce
+Enforcing
+
+$ sudo ausearch -m AVC -ts recent | tail -3
+type=AVC msg=audit(123456.789): avc: denied { read } for pid=12345 comm="nginx" name="shadow"
+
+$ sudo semanage boolean -l | grep httpd_can_network_connect
+httpd_can_network_connect     (off, off) allow HTTPD scripts and modules to connect to the network
+$ sudo setsebool -P httpd_can_network_connect on
+```

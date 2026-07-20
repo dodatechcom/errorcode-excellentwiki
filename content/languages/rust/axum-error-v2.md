@@ -7,118 +7,81 @@ severities: ["error"]
 weight: 5
 ---
 
-# axum Routing/Handler Error
+# Axum Error
 
-Fix axum routing and handler errors. Handle missing route parameters, state extraction, and middleware failures.
-
-## What This Error Means
-
-When using axum as a web framework, handler errors typically occur when:
-
-- A route handler fails to extract a request part (path, query, headers)
-- Shared state is not properly injected or is the wrong type
-- A middleware or layer panics or returns an unexpected error
-- The router is misconfigured with duplicate or overlapping routes
-
-The error message may look like:
-
-```
-thread 'main' panicked at 'Failed to extract `State<AppState>`: ...
-```
+Axum errors occur when using the Axum web framework — handler signature mismatches, extractor conflicts, and state sharing issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Missing shared state in the router
-async fn handler(State(state): State<AppState>) -> String { ... }
-// Router was built without .with_state(state)
+use axum::{extract::Path, routing::get, Router};
 
-// Cause 2: Wrong extractor order or conflicting extractors
-async fn handler(Form(form): Form<MyForm>, Json(json): Json<MyJson>) -> String { ... }
-// Cannot consume both Form and Json from the same request body
+// Handler returns non-IntoResponse type
+async fn get_user(Path(id): Path<u32>) -> i32 { id }
 
-// Cause 3: Path parameter type mismatch
-async fn handler(Path(id): Path<u32>) -> String { ... }
-// Route pattern uses a non-numeric segment
+// State not Clone + Send + Sync
+struct AppState { data: std::cell::RefCell<String> } // RefCell !Sync
 ```
 
 ## How to Fix
 
-### Fix 1: Ensure state is provided to the router
+1. **Return types implementing IntoResponse**
 
 ```rust
-use axum::{routing::get, Router};
+use axum::{routing::get, Router, Json, http::StatusCode};
+
+async fn get_user() -> (StatusCode, Json<serde_json::Value>) {
+    (StatusCode::OK, Json(serde_json::json!({"id": 1})))
+}
+```
+
+2. **Share state with Arc**
+
+```rust
+use axum::{extract::State, routing::get, Router};
 use std::sync::Arc;
 
-#[derive(Clone)]
-struct AppState {
-    db: Arc<Database>,
-}
+struct AppState { db: String }
 
-let state = AppState { db: Arc::new(Database::connect()) };
-
-let app = Router::new()
-    .route("/users", get(list_users))
-    .with_state(state);
-```
-
-### Fix 2: Use the correct extractor combination
-
-```rust
-use axum::extract::{Form, Json};
-
-// Use Option for body extractors that conflict
-async fn handler(
-    form: Option<Form<MyForm>>,
-    json: Option<Json<MyJson>>,
-) -> String {
-    if let Some(json) = json {
-        format!("JSON: {:?}", json)
-    } else if let Some(form) = form {
-        format!("Form: {:?}", form)
-    } else {
-        "No body".to_string()
-    }
+async fn handler(State(state): State<Arc<AppState>>) -> String {
+    format!("DB: {}", state.db)
 }
 ```
 
-### Fix 3: Use IntoResponse for custom error handling
+3. **Implement IntoResponse for errors**
 
 ```rust
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 
-async fn handler() -> Result<String, (StatusCode, String)> {
-    Err((
-        StatusCode::NOT_FOUND,
-        "Resource not found".to_string(),
-    ))
+enum AppError { NotFound }
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response {
+        StatusCode::NOT_FOUND.into_response()
+    }
 }
 ```
 
 ## Examples
 
 ```rust
-use axum::{
-    extract::{Path, State},
-    routing::get,
-    Router,
-};
+use axum::{extract::{Path, State}, routing::get, Json, Router};
+use std::sync::Arc;
+
+struct AppState { db: String }
 
 async fn get_user(
-    State(state): State<AppState>,
-    Path(user_id): Path<u64>,
-) -> Result<String, StatusCode> {
-    state.db.get_user(user_id)
-        .map_err(|_| StatusCode::NOT_FOUND)
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<u64>,
+) -> Result<Json<serde_json::Value>, StatusCode> {
+    Ok(Json(serde_json::json!({"id": id, "db": state.db})))
 }
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new()
-        .route("/users/{id}", get(get_user))
-        .with_state(AppState::new());
-
+    let state = Arc::new(AppState { db: "sqlite://db.sqlite".into() });
+    let app = Router::new().route("/users/:id", get(get_user)).with_state(state);
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
@@ -126,6 +89,6 @@ async fn main() {
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
-- [JSON Parse]({{< relref "/languages/rust/json-parse" >}}) — JSON parsing error
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — HTTP layer
+- [Tokio Runtime Error]({{< relref "/languages/rust/rust-tokio-runtime-error" >}}) — async runtime
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — server not running

@@ -7,75 +7,89 @@ severities: ["error"]
 weight: 5
 ---
 
-# tower Service Error
+# Tower Error
 
-Fix tower service errors. Handle service composition, layer configuration, and backpressure..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Tower errors occur when using the `tower` crate — middleware, service, and layer failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Polling a closed service
+let mut svc = service.clone();
+drop(svc); // Drop the original
+svc.ready().await?; // May error
+
+// Layer misconfiguration
+let svc = ServiceBuilder::new()
+    .layer(TimeoutLayer::new(Duration::from_millis(0))) // 0ms timeout
+    .service(inner);
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use service_ready properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use tower::Service;
+
+let mut svc = tower::service_fn(|req: String| async move {
+    Ok::<_, std::io::Error>(format!("Response: {}", req))
+});
+
+// Always check readiness
+tower::ServiceExt::ready(&mut svc).await?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Configure timeout correctly**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
-```
-
-### Fix 3: Add timeout and retry logic
-
-```rust
+use tower::ServiceBuilder;
+use tower::timeout::TimeoutLayer;
 use std::time::Duration;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let svc = ServiceBuilder::new()
+    .layer(TimeoutLayer::new(Duration::from_secs(5)))
+    .service(inner);
+```
+
+3. **Use Layer trait properly**
+
+```rust
+use tower::{Service, ServiceBuilder, Layer};
+use tower::limit::ConcurrencyLimitLayer;
+
+let svc = ServiceBuilder::new()
+    .layer(ConcurrencyLimitLayer::new(10))
+    .service(inner);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use tower::{Service, ServiceBuilder};
+use tower::limit::RateLimitLayer;
+use std::time::Duration;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[tokio::main]
+async fn main() {
+    let mut svc = tower::service_fn(|req: String| async move {
+        Ok::<_, Box<dyn std::error::Error + Send + Sync>>(format!("OK: {}", req))
+    });
+
+    let mut limited = ServiceBuilder::new()
+        .layer(RateLimitLayer::new(5, Duration::from_secs(1)))
+        .service(svc);
+
+    for i in 0..10 {
+        let ready = tower::ServiceExt::ready(&mut limited).await.unwrap();
+        let resp = ready.call(format!("req{}", i)).await;
+        println!("Response {}: {:?}", i, resp);
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Axum Error]({{< relref "/languages/rust/rust-axum-error" >}}) — Axum uses Tower
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — runtime
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — HTTP

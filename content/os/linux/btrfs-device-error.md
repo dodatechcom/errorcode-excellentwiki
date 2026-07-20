@@ -7,29 +7,51 @@ error-types: ["filesystem-error"]
 weight: 10
 ---
 
-# Linux: btrfs-device-error — Btrfs device error
+# Linux: Btrfs Device Error Error
 
-Fix Linux btrfs-device-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Btrfs device error errors occur when the B-tree filesystem encounters issues with device error operations.
 
 ## Common Causes
 
-- Device offline
-- Hardware failure
-- Connection lost
-- Device not responding
+- Filesystem metadata or data corruption
+- Device failure in multi-device filesystem
+- Transaction commit failures due to power loss
+- Subvolume or snapshot operation conflicts
+- Insufficient free space for COW operations
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/btrfs-device-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Btrfs Status
 
-## Common Scenarios
+```bash
+sudo btrfs filesystem show
+sudo btrfs filesystem usage /mount/point
+sudo btrfs device stats /mount/point
+```
 
-- Device not responding
-- Degraded filesystem
-- I/O errors
+### 2. Check for Errors
 
-## Prevent It
+```bash
+sudo dmesg | grep -i btrfs | tail -20
+sudo btrfs scrub start -B /mount/point
+```
 
-- Monitor device stats
-- Use RAID for redundancy
-- Replace failing devices
+### 3. Repair Filesystem
+
+```bash
+sudo btrfs check /dev/sda1
+sudo btrfs check --repair /dev/sda1
+```
+
+## Examples
+
+```bash
+$ sudo btrfs filesystem show
+Label: none  uuid: xxxx
+Total devices 1 FS bytes used 100.00GiB
+devid    1 size 250.00GiB used 120.00GiB path /dev/sda1
+
+$ sudo dmesg | grep -i btrfs | tail -3
+[12345.678] Btrfs loaded, crc32c=crc32c-generic
+[12345.679] BTRFS info (device sda1): disk space caching is enabled
+```

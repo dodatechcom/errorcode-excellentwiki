@@ -7,75 +7,77 @@ severities: ["error"]
 weight: 5
 ---
 
-# keybase Identity Error
+# Keybase Error
 
-Fix keybase identity errors. Handle key operations, proof verification, and API issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Keybase errors occur when using the `keybase` crate for identity verification — API failures and cryptographic verification issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// API connection failure
+let proof = KeybaseProof::new("username").await?;
+
+// Invalid proof format
+let verified = proof.verify()?; // Proof data malformed
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle API errors gracefully**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use reqwest;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
+async fn verify_keybase(user: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let url = format!("https://keybase.io/_/api/1.0/user/lookup.json?username={}", user);
+    let resp = reqwest::get(&url).await?.json::<serde_json::Value>().await?;
+    println!("{:?}", resp);
     Ok(())
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Verify proofs correctly**
 
 ```rust
-use std::time::Duration;
+// Check the proof file exists at the expected URL
+// https://your-site.com/.well-known/keybase.txt
+```
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+3. **Handle network errors**
+
+```rust
+match verify_keybase("user").await {
+    Ok(_) => println!("Verified"),
+    Err(e) => eprintln!("Verification failed: {}", e),
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use std::collections::HashMap;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn parse_keybase_proof(proof_text: &str) -> HashMap<&str, &str> {
+    let mut map = HashMap::new();
+    for line in proof_text.lines() {
+        if let Some((k, v)) = line.split_once(':') {
+            map.insert(k.trim(), v.trim());
+        }
+    }
+    map
+}
+
+fn main() {
+    let proof = "protocol: https
+domain: example.com
+username: alice";
+    let parsed = parse_keybase_proof(proof);
+    println!("{:?}", parsed);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [OpenID Connect Error]({{< relref "/languages/rust/openidconnect-error" >}}) — OpenID
+- [OAuth2 Error]({{< relref "/languages/rust/oauth2-error-rs" >}}) — OAuth2
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto

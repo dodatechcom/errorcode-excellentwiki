@@ -1,104 +1,195 @@
 ---
-title: "[Solution] PHP Typed Property Initialization Error Fix"
-description: "Fix 'Typed property must not be accessed before initialization' errors in PHP 8.0+. Learn proper initialization and null safety."
-date: 2026-07-17T10:00:00+08:00
-draft: false
-language: "php"
-tags: ["php", "php80", "typed-properties", "initialization", "fatal-error"]
-severity: "error"
+title: "[Solution] PHP 8.0 Typed Property Error — Typed Property Accessed Before Initialization"
+description: "Fix PHP 8.0 Typed Property Error by initializing in constructor, using nullable types, and checking initialization. Copy-paste solutions with code examples."
+languages: ["php"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 319
 ---
 
-# Typed Property Must Not Be Accessed Before Initialization
+# PHP 8.0 Typed Property Error — Typed Property Accessed Before Initialization
 
-## Error Message
-
-```
-Uncaught Error: Typed property User::$email must not be accessed before initialization
-```
+A Typed Property Error occurs when a typed property is accessed before it has been initialized. PHP 7.4 introduced typed properties, and PHP 8.0 refined the behavior. Accessing a typed property that hasn't been assigned a value throws a `TypeError: Typed property X::$y must not be accessed before initialization`.
 
 ## Common Causes
 
-- Accessing a typed property before assigning a value to it in the constructor or declaration
-- Declaring a typed property without a default value and then reading it before assignment
-- Using a subclass that forgets to call the parent constructor which initializes properties
-- Returning an object from a factory method where some properties were never set
+```php
+<?php
+// Cause 1: Accessing property without initializing
+class User {
+    public string $name; // Type declared, no default value
+}
 
-## Solutions
+$user = new User();
+echo $user->name; // TypeError — not initialized
 
-### Solution 1: Initialize typed properties with default values
+// Cause 2: Missing constructor initialization
+class Product {
+    public float $price;
+    public string $sku;
 
-Provide a default value for every typed property so it is never uninitialized when accessed.
+    public function __construct(string $name) {
+        $this->name = $name; // Bug — $name is not a property
+        // $this->price and $this->sku never initialized
+    }
+}
+
+// Cause 3: Uninitialized property in conditional
+class Config {
+    public string $host;
+
+    public function getHost(): string {
+        if ($this->host !== 'localhost') { // TypeError
+            return $this->host;
+        }
+        return 'localhost';
+    }
+}
+
+// Cause 4: Property set only in some code paths
+class Order {
+    public string $trackingNumber;
+
+    public function __construct(bool $shipped) {
+        if ($shipped) {
+            $this->trackingNumber = 'TRACK123';
+        }
+        // If !$shipped, trackingNumber is uninitialized
+    }
+}
+
+// Cause 5: Accessing after clone (shallow copy of uninitialized)
+class Entity {
+    public int $id;
+}
+$entity = new Entity();
+$entity->id = 1;
+$clone = clone $entity; // OK if $entity->id was set
+?>
+```
+
+## How to Fix
+
+### Fix 1: Initialize all typed properties in the constructor
 
 ```php
 <?php
 class User {
-    public string $name = '';
-    public string $email = '';
-    public int $age = 0;
+    public function __construct(
+        public string $name,
+        public int $age,
+        public string $email,
+    ) {}
 }
 
-$user = new User();
-echo $user->email; // '' instead of fatal error
+$user = new User('Alice', 25, 'alice@example.com');
+echo $user->name; // OK — initialized via constructor promotion
 ?>
 ```
 
-### Solution 2: Initialize all properties in the constructor
-
-Assign values to all typed properties inside __construct() to guarantee they are set before use.
+### Fix 2: Use nullable types when null is valid
 
 ```php
 <?php
-class Order {
-    public float $total;
-    public string $status;
-
-    public function __construct(float $total, string $status) {
-        $this->total = $total;
-        $this->status = $status;
-    }
+class User {
+    public function __construct(
+        public string $name,
+        public ?string $nickname = null, // Nullable — null is valid initial state
+        public ?Address $address = null,
+    ) {}
 }
 
-$order = new Order(99.99, 'pending');
-echo $order->status; // 'pending'
+$user = new User('Alice');
+echo $user->nickname ?? 'No nickname'; // OK
 ?>
 ```
 
-### Solution 3: Use nullable types for optional properties
-
-When a property may legitimately be unset, use a nullable type (?Type) and check for null before use.
+### Fix 3: Provide default values
 
 ```php
 <?php
-class Product {
-    public string $name;
-    public ?string $discountCode = null;
+class Config {
+    public string $host = 'localhost';
+    public int $port = 3306;
+    public bool $ssl = true;
+    public int $timeout = 30;
+}
 
-    public function __construct(string $name) {
-        $this->name = $name;
-    }
+$config = new Config();
+echo $config->host; // OK — default value
+?>
+```
 
-    public function applyDiscount(): string {
-        if ($this->discountCode === null) {
-            return 'No discount applied';
+### Fix 4: Guard access with isSet or null checks
+
+```php
+<?php
+class UserProfile {
+    public string $bio;
+
+    public function getBioOrFallback(): string {
+        // Use reflection or a flag to check initialization
+        if (!isset($this->bio)) {
+            return 'No bio provided';
         }
-        return "Discount code: {$this->discountCode}";
+        return $this->bio;
     }
 }
 
-$product = new Product('Widget');
-echo $product->applyDiscount(); // 'No discount applied'
+// Or use property hooks (PHP 8.4+)
+class ModernProfile {
+    public string $bio {
+        get { return $this->_bio ?? 'No bio provided'; }
+        set { $this->_bio = $value; }
+    }
+    private ?string $_bio = null;
+}
 ?>
 ```
 
-## Prevention Tips
+## Examples
 
-- Always assign every typed property a value before reading it — PHP 8.0 does not allow reading uninitialized typed properties
-- Use ?Type (nullable) for properties that may intentionally be unset
-- Run PHPStan or Psalm in your CI to catch uninitialized property access at static analysis time
-- Consider using constructor promotion (PHP 8.0+) to enforce property initialization at instantiation
+```php
+<?php
+// Proper initialization patterns
+class Order {
+    public function __construct(
+        public string $id,
+        public float $total,
+        public string $status,
+        public ?string $trackingNumber = null,
+        public DateTimeImmutable $createdAt,
+    ) {
+        // Additional initialization if needed
+    }
+
+    public static function create(string $id, float $total): self {
+        return new self(
+            id: $id,
+            total: $total,
+            status: 'pending',
+            createdAt: new DateTimeImmutable(),
+        );
+    }
+}
+
+$order = Order::create('ORD-001', 99.99);
+echo $order->status;        // pending
+echo $order->trackingNumber; // null (safe — nullable type)
+echo $order->createdAt->format('Y-m-d'); // 2024-01-01
+
+// Using readonly + typed properties (PHP 8.1+)
+class Point {
+    public function __construct(
+        public readonly float $x,
+        public readonly float $y,
+    ) {}
+}
+?>
+```
 
 ## Related Errors
 
-- [PHP Union Type Error]({{< relref "/languages/php/php80-union-type-error" >}})
-- [PHP Readonly Property Error]({{< relref "/languages/php/php81-readonly-property" >}})
-- [PHP Deprecated Function Usage]({{< relref "/languages/php/php-deprecated" >}})
+- [PHP 8.1 Readonly Property Error](/languages/php/php81-readonly-properties/) — Readonly properties
+- [PHP 8.0 Union Type Error](/languages/php/php80-union-type-error/) — Union types in properties
+- [PHP 8.0 Null Safe Operator Error](/languages/php/php80-null-safe-operator/) — Null handling

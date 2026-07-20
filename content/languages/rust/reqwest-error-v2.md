@@ -7,95 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# reqwest TLS Certificate Error
+# Reqwest Error
 
-Fix reqwest TLS certificate errors. Handle certificate validation, custom certificates, and TLS backend issues.
-
-## What This Error Means
-
-reqwest TLS certificate errors occur when the HTTP client cannot validate the server's SSL/TLS certificate:
-
-```
-error sending request: error trying to connect: custom certificate find failed
-reqwest::Error { kind: Builder(Certificate(CertificateRequired)) }
-```
+Reqwest errors occur when using the `reqwest` crate for HTTP — connection, timeout, and TLS errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Self-signed certificate not trusted by system
-let resp = reqwest::get("https://self-signed.local/api").await?;
+// Connection refused
+let resp = reqwest::get("http://localhost:9999").await?;
 
-// Cause 2: Certificate expired or not yet valid
-// Cause 3: Missing intermediate certificates in chain
-// Cause 4: Hostname does not match certificate CN/SAN
+// Timeout
+let client = reqwest::Client::builder()
+    .timeout(Duration::from_secs(5))
+    .build()?;
 ```
 
 ## How to Fix
 
-### Fix 1: Add a custom CA certificate
+1. **Configure timeouts properly**
 
 ```rust
-use reqwest::Certificate;
+use reqwest::Client;
+use std::time::Duration;
 
-let ca = Certificate::from_pem(b"-----BEGIN CERTIFICATE-----
-MIIDxTCCAq2gAwIBAgIJAL...
------END CERTIFICATE-----")?;
-
-let client = reqwest::Client::builder()
-    .add_root_certificate(ca)
+let client = Client::builder()
+    .connect_timeout(Duration::from_secs(10))
+    .timeout(Duration::from_secs(30))
     .build()?;
 ```
 
-### Fix 2: Disable certificate verification (development only)
+2. **Handle TLS errors**
 
 ```rust
 use reqwest::Client;
 
 let client = Client::builder()
-    .danger_accept_invalid_certs(true)
+    .danger_accept_invalid_certs(true) // Only for testing!
     .build()?;
 ```
 
-### Fix 3: Use a custom TLS connector with native-tls
+3. **Use proper error handling**
 
 ```rust
-use native_tls::TlsConnector;
-
-let tls = TlsConnector::builder()
-    .add_root_certificate(native_tls::Certificate::from_pem(&ca_pem)?)
-    .build()?;
-
-let connector = hyper_tls::HttpsConnector::from((http_connector, tls));
+let resp = reqwest::get("https://httpbin.org/get").await?;
+if resp.status().is_success() {
+    let body = resp.text().await?;
+    println!("{}", body);
+} else {
+    eprintln!("Error: {}", resp.status());
+}
 ```
 
 ## Examples
 
 ```rust
-use reqwest::Certificate;
-use std::fs;
+use reqwest;
+use serde::Deserialize;
 
-async fn fetch_with_custom_ca() -> Result<(), reqwest::Error> {
-    let ca_cert = fs::read("ca-cert.pem").expect("Failed to read CA cert");
-    let cert = Certificate::from_pem(&ca_cert).expect("Invalid certificate");
+#[derive(Deserialize, Debug)]
+struct Response { url: String }
 
-    let client = reqwest::Client::builder()
-        .add_root_certificate(cert)
-        .timeout(std::time::Duration::from_secs(30))
-        .build()?;
-
-    let resp = client
-        .get("https://internal.example.com/api/data")
-        .send()
-        .await?;
-
+#[tokio::main]
+async fn main() -> Result<(), reqwest::Error> {
+    let resp = reqwest::get("https://httpbin.org/get").await?;
     println!("Status: {}", resp.status());
+    let body = resp.text().await?;
+    println!("Body: {}", body);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Webpki Error]({{< relref "/languages/rust/webpki-error" >}}) — webpki certificate error
-- [Native TLS Error]({{< relref "/languages/rust/native-tls-error" >}}) — native-tls error
-- [Reqwest Error]({{< relref "/languages/rust/reqwest-error" >}}) — reqwest error
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — underlying HTTP
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network
+- [Native TLS Error]({{< relref "/languages/rust/native-tls-error" >}}) — TLS

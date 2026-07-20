@@ -7,75 +7,84 @@ severities: ["error"]
 weight: 5
 ---
 
-# mysql Connection Error
+# MySQL Error (mysql-rs)
 
-Fix MySQL client connection errors. Handle driver issues, authentication, and query execution..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+MySQL errors occur when using the `mysql` crate — connection, query, and authentication failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let pool = Pool::new("mysql://wrong:3306/db")?;
+
+// Wrong credentials
+let pool = Pool::new("mysql://user:wrong@localhost:3306/db")?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure connection properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use mysql::*;
+
+let opts = OptsBuilder::new()
+    .ip_or_hostname(Some("localhost"))
+    .tcp_port(3306)
+    .user(Some("root"))
+    .pass(Some("password"))
+    .db_name(Some("mydb"));
+
+let pool = Pool::new(opts)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Use prepared statements**
 
 ```rust
-use anyhow::Result;
+use mysql::prelude::*;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let mut conn = pool.get_conn()?;
+let users: Vec<(u32, String)> = conn.query_map(
+    "SELECT id, name FROM users WHERE age > ?",
+    |(id, name)| (id, name),
+)?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle transactions**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let mut conn = pool.get_conn()?;
+conn.start_transaction(TransactionOptions::default())?;
+conn.exec_drop("INSERT INTO users (name) VALUES (?)", ("Alice",))?;
+conn.commit()?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use mysql::*;
+use mysql::prelude::*;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Debug)]
+struct User { id: u32, name: String }
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let pool = Pool::new("mysql://root:password@localhost/mydb")?;
+    let mut conn = pool.get_conn()?;
+
+    let users: Vec<User> = conn.query_map("SELECT id, name FROM users", |(id, name)| {
+        User { id, name }
+    })?;
+
+    for user in users {
+        println!("{:?}", user);
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Postgres Error]({{< relref "/languages/rust/postgres-error-rs" >}}) — PostgreSQL
+- [SQLx Error]({{< relref "/languages/rust/sqlx-error" >}}) — SQLx
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network

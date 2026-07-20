@@ -6,30 +6,64 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 6
 ---
+# Linux: MAC Address Error
 
-# Linux: mac-address-error — MAC address configuration error
-
-Fix Linux mac-address-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+MAC address errors occur when the network interface's MAC address is invalid, duplicated, or blocked.
 
 ## Common Causes
 
-- Address conflict
-- Spoofing detected
-- Random MAC not working
-- Static MAC wrong
+- MAC address filtering on switch or router blocking the interface
+- Duplicate MAC address on the network
+- MAC address spoofing or change that conflicts
+- Interface driver reporting an invalid or zero MAC
+- MAC address not assigned to virtual interface
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/mac-address-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Current MAC Address
 
-## Common Scenarios
+```bash
+ip link show eth0
+cat /sys/class/net/eth0/address
+```
 
-- MAC address conflict
-- Random MAC not working
-- Static MAC wrong
+### 2. Check for Duplicate MACs
 
-## Prevent It
+```bash
+# Scan network for duplicate MACs
+arp-scan --local
+```
 
-- Avoid MAC conflicts
-- Use valid MAC addresses
-- Test MAC changes
+### 3. Change MAC Address (Temporary)
+
+```bash
+sudo ip link set eth0 down
+sudo ip link set eth0 address 00:11:22:33:44:55
+sudo ip link set eth0 up
+```
+
+### 4. Make MAC Change Permanent
+
+```bash
+# Create systemd link file
+cat <<EOF | sudo tee /etc/systemd/network/10-eth0.link
+[Match]
+MACAddress=original:mac:address
+
+[Link]
+MACAddress=new:mac:address
+EOF
+```
+
+## Examples
+
+```bash
+$ cat /sys/class/net/eth0/address
+00:00:00:00:00:00
+
+$ sudo ip link set eth0 down
+$ sudo ip link set eth0 address 00:11:22:33:44:55
+$ sudo ip link set eth0 up
+$ cat /sys/class/net/eth0/address
+00:11:22:33:44:55
+```

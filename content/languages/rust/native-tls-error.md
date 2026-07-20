@@ -7,75 +7,83 @@ severities: ["error"]
 weight: 5
 ---
 
-# native-tls Handshake Error
+# Native TLS Error
 
-Fix native-tls handshake errors. Handle certificate validation, SNI, and protocol configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Native TLS errors occur when using the `native-tls` crate — certificate verification, handshake failures, and protocol issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Certificate not trusted
+let connector = TlsConnector::new()?;
+let stream = TcpStream::connect("example.com:443")?;
+let mut tls = connector.connect("example.com", stream)?; // Untrusted cert
+
+// Wrong hostname
+connector.connect("wrong-hostname", stream)?; // hostname mismatch
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure connector properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use native_tls::{TlsConnector, TlsConnectorBuilder};
+
+let connector = TlsConnector::builder()
+    .danger_accept_invalid_certs(false) // Keep true for production
+    .build()?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle certificate errors**
 
 ```rust
-use anyhow::Result;
+use native_tls::TlsConnector;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match TlsConnector::new()?.connect("example.com", stream) {
+    Ok(tls) => println!("Connected securely"),
+    Err(e) => eprintln!("TLS error: {}", e),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use identity for client certs**
 
 ```rust
-use std::time::Duration;
+use native_tls::{Identity, TlsConnector};
+use std::fs;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let cert = fs::read("client.p12")?;
+let identity = Identity::from_pkcs12(&cert, "password")?;
+let connector = TlsConnector::builder()
+    .identity(identity)
+    .build()?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use native_tls::TlsConnector;
+use std::net::TcpStream;
+use std::io::{Read, Write};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let connector = TlsConnector::new()?;
+    let stream = TcpStream::connect("example.com:443")?;
+    let mut tls = connector.connect("example.com", stream)?;
+
+    tls.write_all(b"GET / HTTP/1.1
+Host: example.com
+
+")?;
+    let mut buf = [0u8; 1024];
+    let n = tls.read(&mut buf)?;
+    println!("{}", String::from_utf8_lossy(&buf[..n]));
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [OpenSSL Error]({{< relref "/languages/rust/openssl-error-rs" >}}) — OpenSSL
+- [Rustls Error]({{< relref "/languages/rust/rustls-error" >}}) — Rustls
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network

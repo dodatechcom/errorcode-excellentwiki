@@ -9,56 +9,71 @@ weight: 5
 
 # Hertz HTTP Error
 
-Fix Hertz HTTP framework errors. Handle request processing, routing, and middleware issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The Hertz framework (by CloudWeGo) fails during route registration, request binding, or middleware execution when routes conflict, `context.Request` is used incorrectly, or custom middleware does not call `ctx.Next()`. Hertz is built on `netpoll`, not `net/http`.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Duplicate route registration
+h.GET("/users", listUsers)
+h.GET("/users", listUsers) // panic
+
+// Cause 2: Binding to wrong type or missing tags
+type Req struct {
+    Name string `json:"name" query:"name"` // ambiguous
+}
+
+// Cause 3: Writing after handler returns
+go func() {
+    c.JSON(200, map[string]string{"msg": "late"}) // crash
+}()
+
+// Cause 4: Not calling ctx.Next() in middleware
+func myMiddleware(ctx context.Context, c *app.RequestContext) {
+    // forgot c.Next(ctx)
+}
+
+// Cause 5: Using net/http handler signature with Hertz
+func badHandler(w http.ResponseWriter, r *http.Request) {} // wrong
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Set up routes before h.Run()
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
 
-### Fix 2: Add proper error handling
+    "github.com/cloudwego/hertz/pkg/app"
+    "github.com/cloudwego/hertz/pkg/app/server"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func main() {
+    h := server.Default()
+
+    h.GET("/users", listUsers)
+    h.POST("/users", createUser)
+
+    h.Spin()
+}
+
+func listUsers(ctx context.Context, c *app.RequestContext) {
+    c.JSON(200, []string{"alice", "bob"})
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use proper middleware pattern
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func AuthMiddleware() app.HandlerFunc {
+    return func(ctx context.Context, c *app.RequestContext) {
+        token := c.GetHeader("Authorization")
+        if token == "" {
+            c.AbortWithStatusJSON(401, map[string]string{"error": "unauthorized"})
+            return
+        }
+        c.Next(ctx)
     }
 }
 ```
@@ -70,25 +85,25 @@ package main
 
 import (
     "context"
-    "fmt"
-    "log"
-    "time"
+
+    "github.com/cloudwego/hertz/pkg/app"
+    "github.com/cloudwego/hertz/pkg/app/server"
+    "github.com/cloudwego/hertz/pkg/common/consts"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    h := server.Default()
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+    h.GET("/", func(ctx context.Context, c *app.RequestContext) {
+        c.String(consts.StatusOK, "Hello Hertz!")
+    })
+
+    h.Spin()
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [broken-pipe]({{< relref "/languages/go/broken-pipe" >}}) — netpoll connection closed
+- [context-deadline-exceeded]({{< relref "/languages/go/context-deadline" >}}) — handler times out
+- [http-status-404]({{< relref "/languages/go/http-status-404" >}}) — unmatched route

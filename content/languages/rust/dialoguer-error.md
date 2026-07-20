@@ -7,75 +7,112 @@ severities: ["error"]
 weight: 5
 ---
 
-# dialoguer Prompt Error
+# Dialoguer Error
 
-Fix dialoguer prompt errors. Handle terminal input, validation, and user interaction..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Dialoguer errors occur when using the `dialoguer` crate for interactive CLI prompts — terminal I/O issues and input validation failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use dialoguer::{Input, Select};
+
+// Not in raw mode for password input
+let password = Input::<String>::new()
+    .with_prompt("Password")
+    .interact_text()?; // Plain text, not masked
+
+// Empty selection list
+let selection = Select::new()
+    .items(&[]) // ERROR: no items
+    .interact()?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use `Password` for sensitive input**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use dialoguer::Password;
+
+let password = Password::new()
+    .with_prompt("Password")
+    .with_confirmation("Confirm password", "Passwords don't match")
+    .interact()?;
+
+println!("Password length: {}", password.len());
 ```
 
-### Fix 2: Add proper error handling
+2. **Validate selection lists**
 
 ```rust
-use anyhow::Result;
+use dialoguer::Select;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let options = vec!["Option 1", "Option 2", "Option 3"];
+if options.is_empty() {
+    eprintln!("No options available");
+    return Ok(());
 }
+
+let selection = Select::new()
+    .with_prompt("Choose")
+    .items(&options)
+    .default(0)
+    .interact()?;
+
+println!("Selected: {}", options[selection]);
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use `Confirm` for yes/no prompts**
 
 ```rust
-use std::time::Duration;
+use dialoguer::Confirm;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let confirmed = Confirm::new()
+    .with_prompt("Do you want to continue?")
+    .default(true)
+    .interact()?;
+
+if confirmed {
+    println!("Continuing...");
+} else {
+    println!("Cancelled");
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use dialoguer::{Input, Select, Password, Confirm};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> std::io::Result<()> {
+    let name: String = Input::new()
+        .with_prompt("Your name")
+        .default("World".into())
+        .interact_text()?;
+
+    let language = Select::new()
+        .with_prompt("Language")
+        .items(&["Rust", "Python", "Go"])
+        .default(0)
+        .interact()?;
+
+    let password = Password::new()
+        .with_prompt("Password")
+        .interact()?;
+
+    let proceed = Confirm::new()
+        .with_prompt(format!("Hello {}, continue?", name))
+        .interact()?;
+
+    if proceed {
+        println!("Selected: {}, Password len: {}", language, password.len());
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Crossterm Error]({{< relref "/languages/rust/crossterm-error" >}}) — terminal handling
+- [Termion Error]({{< relref "/languages/rust/termion-error" >}}) — terminal I/O
+- [Indicatif Error]({{< relref "/languages/rust/indicatif-error" >}}) — progress bars

@@ -9,58 +9,94 @@ weight: 5
 
 # mongo-go-driver Server Selection Timeout
 
-Fix MongoDB Go driver server selection timeout. Handle replica sets, sharded clusters, and connection pooling..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The MongoDB Go driver fails to select a server from the cluster within the configured timeout. This occurs when the connection string is wrong, MongoDB is down, DNS resolution fails for replica set hosts, or the driver cannot reach any cluster member.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Wrong connection string or host unreachable
+client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://wrong-host:27017"))
+// server selection error: context deadline exceeded
+
+// Cause 2: DNS resolution failure for replica set hosts
+client, err := mongo.Connect(ctx, options.Client().ApplyURI(
+    "mongodb://rs0/node1.example.com:27017,node2.example.com:27017",
+))
+// server selection error: lookup node1.example.com: no such host
+
+// Cause 3: Authentication failure blocks server selection
+client, err := mongo.Connect(ctx, options.Client().ApplyURI(
+    "mongodb://user:wrongpass@localhost:27017/mydb",
+))
+// auth error: authentication failed
+
+// Cause 4: TLS certificate issues
+opts := options.Client().ApplyURI("mongodb://localhost:27017").
+    SetTLSConfig(&tls.Config{InsecureSkipVerify: false})
+// tls: certificate signed by unknown authority
+
+// Cause 5: Server selection timeout too short
+opts := options.Client().
+    ApplyURI("mongodb://localhost:27017").
+    SetServerSelectionTimeout(1 * time.Millisecond)
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Validate connection and test with ping
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "fmt"
+    "time"
 
-### Fix 2: Add proper error handling
+    "go.mongodb.org/mongo-driver/v2/mongo"
+    "go.mongodb.org/mongo-driver/v2/mongo/options"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
-```
+func connectMongo() (*mongo.Client, error) {
+    opts := options.Client().
+        ApplyURI("mongodb://localhost:27017").
+        SetServerSelectionTimeout(10 * time.Second).
+        SetConnectTimeout(10 * time.Second)
 
-### Fix 3: Add retry and timeout logic
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    client, err := mongo.Connect(opts)
+    if err != nil {
+        return nil, fmt.Errorf("mongo connect: %w", err)
     }
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    if err := client.Ping(ctx, nil); err != nil {
+        return nil, fmt.Errorf("mongo ping: %w", err)
+    }
+    return client, nil
 }
+```
+
+### Fix 2: Configure replica set connection properly
+
+```go
+uri := "mongodb://user:pass@mongo1:27017,mongo2:27017,mongo3:27017/mydb?replicaSet=rs0&authSource=admin"
+
+opts := options.Client().ApplyURI(uri).
+    SetServerSelectionTimeout(15 * time.Second).
+    SetDirect(false)
+
+client, err := mongo.Connect(opts)
+```
+
+### Fix 3: Enable retryable reads and writes
+
+```go
+opts := options.Client().
+    ApplyURI("mongodb://localhost:27017").
+    SetRetryWrites(true).
+    SetRetryReads(true)
+
+client, err := mongo.Connect(opts)
 ```
 
 ## Examples
@@ -73,22 +109,39 @@ import (
     "fmt"
     "log"
     "time"
+
+    "go.mongodb.org/mongo-driver/v2/bson"
+    "go.mongodb.org/mongo-driver/v2/mongo"
+    "go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 
-    result, err := doWork(ctx)
+    client, err := mongo.Connect(options.Client().
+        ApplyURI("mongodb://localhost:27017").
+        SetServerSelectionTimeout(10*time.Second))
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    defer client.Disconnect(ctx)
+
+    if err := client.Ping(ctx, nil); err != nil {
+        log.Fatalf("Cannot reach MongoDB: %v", err)
+    }
+
+    coll := client.Database("mydb").Collection("users")
+    result, err := coll.InsertOne(ctx, bson.M{"name": "Alice", "age": 30})
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println("Inserted:", result.InsertedID)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [context-deadline-exceeded]({{< relref "/languages/go/context-deadline" >}}) — server selection timeout
+- [net-dns-lookup]({{< relref "/languages/go/net-dns-lookup" >}}) — DNS resolution fails for MongoDB hosts
+- [connection-refused]({{< relref "/languages/go/net-dial" >}}) — TCP connection to MongoDB port fails

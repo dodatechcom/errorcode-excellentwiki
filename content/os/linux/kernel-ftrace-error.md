@@ -7,29 +7,60 @@ error-types: ["kernel-error"]
 weight: 8
 ---
 
-# Linux: kernel-ftrace-error — Function tracing subsystem error
+# Linux: Kernel Ftrace Error Error
 
-Fix Linux kernel-ftrace-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Kernel ftrace error errors occur when the kernel encounters issues with ftrace error operations or subsystem components.
 
 ## Common Causes
 
-- Buffer overflow
-- Tracer unavailable
-- Filter syntax error
-- Ring buffer corruption
+- Hardware incompatibility or failure affecting ftrace error
+- Kernel module or driver bugs in the ftrace error subsystem
+- Insufficient system resources or configuration limits
+- Firmware or microcode issues
+- Kernel parameter misconfiguration
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/kernel-ftrace-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Kernel Logs
 
-## Common Scenarios
+```bash
+sudo dmesg | grep -i "ftrace-error" | tail -30
+sudo journalctl -k --no-pager -n 50 | grep -i "ftrace-error"
+```
 
-- Not capturing functions
-- Buffer fills quickly
-- Performance issues
+### 2. Check Kernel Parameters
 
-## Prevent It
+```bash
+cat /proc/cmdline
+sysctl -a 2>/dev/null | grep -i "ftrace-error"
+```
 
-- Disable when done
-- Use trace filters
-- Increase buffer size
+### 3. Update or Reconfigure
+
+```bash
+# Update kernel
+sudo apt update && sudo apt install linux-image-$(uname -r)
+# Or adjust kernel parameters
+sudo sysctl -w <parameter>=<value>
+```
+
+### 4. Check Hardware Status
+
+```bash
+sudo lspci -vvv | grep -i "ftrace-error" | head -20
+sudo lsusb -v 2>/dev/null | grep -i "ftrace-error" | head -10
+```
+
+## Examples
+
+```bash
+$ dmesg | grep -i "ftrace-error" | tail -5
+[12345.678] kernel: ftrace-error error detected on device
+[12345.679] kernel: ftrace-error subsystem: failed to initialize
+
+$ cat /proc/cmdline
+BOOT_IMAGE=/vmlinuz-... root=... ro quiet
+
+# Adjust kernel parameter and reboot
+$ echo "<parameter>=<value>" | sudo tee -a /etc/sysctl.d/99-ftrace-error.conf
+```

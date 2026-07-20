@@ -1,71 +1,90 @@
 ---
-title: "[Solution] Docker Volume Error — permission denied on volume mount"
-description: "Fix Docker volume mount permission denied errors. Resolve container volume access issues."
-tools: ["docker"]
-error-types: ["tool-error"]
-severities: ["error"]
-weight: 5
+title: "[Solution] Docker Volume Error — Volume not found"
+description: "Fix Docker 'Volume not found' error. Create, inspect, and recover missing Docker volumes."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+tool: "docker"
+tags: ["docker", "containers", "volumes", "storage", "data-persistence"]
+severity: "error"
+weight: 6
 ---
 
-A Docker volume error occurs when a container cannot mount or access a volume due to permission issues. The container process lacks the necessary file system permissions.
+# ERROR: Volume not found
+
+## Error Message
+
+```
+Error: No such volume: myapp_data
+
+Error response from daemon: get myapp_data: no such volume
+```
+
+This error occurs when Docker cannot locate a named volume that a container or Compose file references. The volume may have been deleted, never created, or referenced with a typo.
 
 ## Common Causes
 
-- The container runs as a non-root user that lacks write access to the mounted path
-- The host directory has restrictive permissions (chmod/chown)
-- SELinux or AppArmor policies block access to the host path
-- The volume was created with different ownership
-- File system type does not support required permissions
+- The volume was removed with `docker volume rm` or `docker volume prune`
+- The volume name in the Compose file does not match any existing volume
+- The container references an anonymous volume from a previous run that was cleaned up
+- Running `docker compose down -v` deleted project volumes
 
-## How to Fix
+## Solutions
 
-### Check Host Directory Permissions
+### Solution 1: Create the Volume Manually
 
-```bash
-ls -la /host/path
-stat /host/path
-```
-
-### Fix Permissions on Host
+Create the missing volume with the exact name your container or Compose file expects. Docker will then use it on the next run.
 
 ```bash
-sudo chown -R 1000:1000 /host/path
-sudo chmod -R 755 /host/path
+docker volume create myapp_data
+docker compose up -d
 ```
 
-### Run Container as Root
+### Solution 2: Let Docker Create It Automatically
+
+Remove any explicit volume name references from your Compose file and let Docker generate the volume using the project name prefix.
+
+```yaml
+services:
+  db:
+    image: postgres:16
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+```
 
 ```bash
-docker run -v /host/path:/container/path --user root my-image
+docker compose up -d
 ```
 
-### Create Named Volume Instead
+### Solution 3: Recover Data from a Backup
+
+If the volume contained important data and was accidentally deleted, you can restore from a backup tarball into a new volume.
 
 ```bash
-docker volume create my-volume
-docker run -v my-data:/container/path my-image
+docker volume create myapp_data_restored
+docker run --rm -v myapp_data_restored:/data -v $(pwd):/backup alpine   tar xzf /backup/myapp_data_backup.tar.gz -C /data
+docker compose up -d
 ```
 
-### Fix SELinux Context
+### Solution 4: Inspect All Existing Volumes
+
+List all volumes to verify what actually exists and identify naming mismatches.
 
 ```bash
-docker run -v /host/path:/container/path:z my-image
+docker volume ls
+docker volume inspect myapp_data
 ```
 
-## Examples
+## Prevention Tips
 
-```bash
-# Example 1: Permission denied on bind mount
-docker run -v /data/app:/app my-image
-# Error: permission denied
-# Fix: sudo chown -R 1000:1000 /data/app
-
-# Example 2: Use named volume
-docker volume create app-data
-docker run -v app-data:/app/data my-image
-```
+- Never run `docker compose down -v` in production without checking what volumes are removed
+- Back up important volumes regularly using `docker run` with a tarball approach
+- Document volume names and their purposes in your project README
+- Use explicit volume definitions in `docker-compose.yml` to avoid orphaned anonymous volumes
 
 ## Related Errors
 
-- [Docker Socket Permission]({{< relref "/tools/docker/docker-socket-permission" >}}) — permission denied on docker.sock
-- [Docker Compose Error]({{< relref "/tools/docker/docker-compose-error" >}}) — docker-compose up failed
+- [Docker Mount Failed]({{< relref "/tools/docker/mount-failed" >}}) — bind mount failures
+- [Docker Permission Denied]({{< relref "/tools/docker/permission-denied-overlay" >}}) — permission issues with volumes

@@ -8,66 +8,82 @@ weight: 5
 comments: true
 ---
 
-# Inline Assembly Error
+# ASM (Inline Assembly) Error
 
-Fix inline assembly errors. Resolve asm! macro usage, register allocation, and constraint issues.
+Inline assembly errors in Rust occur when using `asm!` with invalid constraints, incorrect register usage, or platform-specific instructions that violate safety rules.
 
-## Why It Happens
-
-- Inline assembly contains invalid syntax for the target
-- Register constraint is not compatible with the operand type
-- Assembly block modifies registers not listed as clobbers
-- Assembly is used in const or const fn context
-
-## Common Error Messages
-
-- `error: inlineassembly failed`
-- `thread panicked at 'inline assembly operation failed'`
-- `Error: unable to complete inline assembly operation`
-- `Fatal: inline assembly configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure inline assembly is properly configured
-use inline_assembly::prelude::*;
+// Using inline asm without unsafe block
+let result: u64;
+std::arch::asm!("mov {}, 42", out(reg) result); // Must be inside unsafe
+
+// Platform-specific instruction on wrong architecture
+#[cfg(not(target_arch = "x86_64"))]
+std::arch::asm!("rdtsc", out("eax") _); // rdtsc only on x86
+
+// Invalid operand constraint
+std::arch::asm!("add {0}, 1", inlateout(reg) 0 => _, );
+```
+
+## How to Fix
+
+1. **Always wrap `asm!` in `unsafe` and verify operand types**
+
+```rust
+let input: u64 = 42;
+let output: u64;
+unsafe {
+    std::arch::asm!("mov {out}, {inp}", inp = in(reg) input, out = out(reg) output);
+}
+assert_eq!(output, 42);
+```
+
+2. **Use `cfg` for platform-specific assembly**
+
+```rust
+fn read_cycle_counter() -> u64 {
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        let low: u32; let high: u32;
+        std::arch::asm!("rdtsc", out("eax") low, out("edx") high);
+        return ((high as u64) << 32) | (low as u64);
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    { std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u64 }
+}
+```
+
+3. **Specify exact clobber lists for modified registers**
+
+```rust
+unsafe {
+    let eax_out: u32;
+    std::arch::asm!("cpuid", inout("eax") 0 => eax_out, out("ebx") _, out("ecx") _, out("edx") _);
+}
+```
+
+## Examples
+
+```rust
+fn fast_add(a: u64, b: u64) -> u64 {
+    let result: u64;
+    unsafe {
+        std::arch::asm!("add {a}, {b}", a = inout(reg) a => result, b = in(reg) b);
+    }
+    result
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct inline assembly configuration");
+    let x = fast_add(10, 20);
+    assert_eq!(x, 30);
+    println!("10 + 20 = {}", x);
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with inline assembly
-2. Integrating inline assembly into an existing codebase
-3. Upgrading inline assembly to a newer version
-
-## Prevent It
-
-- Read the inline assembly documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Embedded Error]({{< relref "/languages/rust/rust-embedded-error" >}}) — embedded target issues
+- [RISC-V Error]({{< relref "/languages/rust/rust-riscv-error" >}}) — RISC-V target issues
+- [ASM Error]({{< relref "/languages/rust/rust-asm-error" >}}) — inline assembly issues

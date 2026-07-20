@@ -1,103 +1,117 @@
 ---
-title: "[Solution] Swift Concurrency Error Fix"
-description: "Fix Swift async/await concurrency errors. Learn why async operations fail and how to handle Swift concurrency properly."
-languages: ["swift"]
-severities: ["error"]
-error-types: ["runtime-error"]
-weight: 5
+title: "[Solution] Swift.Concurrency error: Actor-isolated function cannot be called"
+description: "Fix Swift Concurrency actor isolation errors. Learn why actor-isolated functions cannot be called from synchronous contexts and how to properly use async/await with actors."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+language: "swift"
+tags: ["swift", "concurrency", "async-await", "actor-isolation"]
+severity: "error"
 ---
 
-## What This Error Means
+# Swift.Concurrency error: Actor-isolated function cannot be called
 
-A Swift concurrency error occurs when async/await operations fail. This can happen due to unhandled thrown errors, actor isolation issues, or task cancellation.
+## Error Message
+
+```
+Actor-isolated instance method 'updateData()' can not be referenced from a nonisolated context
+```
 
 ## Common Causes
 
-- Unhandled `throws` in async functions
-- Task not awaited
-- Actor isolation violations
-- Task cancellation not handled
+- Calling an actor-isolated synchronous function from a non-isolated context
+- Accessing actor-isolated properties without using await
+- Mixing old GCD dispatch patterns with actor-based concurrency
+- Forgetting to make the calling context async when invoking actor methods
 
-## How to Fix
+## Solutions
 
-```swift
-// WRONG: Not handling thrown errors
-func fetchData() async -> Data {
-    let data = try await URLSession.shared.data(from: url)  // Missing try
-}
+### Solution 1: Use await when calling actor-isolated methods
 
-// CORRECT: Handle thrown errors
-func fetchData() async throws -> Data {
-    let (data, _) = try await URLSession.shared.data(from: url)
-    return data
-}
-```
+When you need to call a method on an actor from outside, mark the call site as async and use await.
 
 ```swift
-// WRONG: Not awaiting task
-func loadData() {
-    Task {
-        let data = fetchData()  // Not awaited
-    }
-}
+actor NetworkManager {
+    private var cache: [String: Data] = [:]
 
-// CORRECT: Await the task
-func loadData() async {
-    let data = try await fetchData()
-}
-```
-
-```swift
-// WRONG: Not handling cancellation
-func longRunningTask() async {
-    for i in 0..<1000 {
-        // Long operation
-        // Not checking for cancellation
-    }
-}
-
-// CORRECT: Check for cancellation
-func longRunningTask() async {
-    for i in 0..<1000 {
-        try Task.checkCancellation()
-        // Long operation
-    }
-}
-```
-
-## Examples
-
-```swift
-// Example 1: Basic async/await
-func fetchData() async throws -> Data {
-    let (data, _) = try await URLSession.shared.data(from: URL(string: "https://api.example.com")!)
-    return data
-}
-
-// Example 2: Task group
-func fetchAll() async throws -> [Data] {
-    try await withThrowingTaskGroup(of: Data.self) { group in
-        for url in urls {
-            group.addTask {
-                try await self.fetchData(from: url)
-            }
+    func fetchData(from url: URL) async throws -> Data {
+        if let cached = cache[url.absoluteString] {
+            return cached
         }
-        return try await group.reduce(into: [Data]()) { $0.append($1) }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        cache[url.absoluteString] = data
+        return data
     }
 }
 
-// Example 3: Actor isolation
-actor MyActor {
-    var count = 0
+// Non-isolated caller
+class AppController {
+    private let manager = NetworkManager()
+
+    func loadData() async {
+        do {
+            let data = try await manager.fetchData(from: myURL)
+            print("Received \(data.count) bytes")
+        } catch {
+            print("Fetch failed: \(error)")
+        }
+    }
+}
+```
+
+### Solution 2: Mark the calling context as @Sendable or nonisolated
+
+If you need to call actor-isolated code from a context that cannot be async, use nonisolated or run it inside a Task.
+
+```swift
+actor Counter {
+    var value = 0
 
     func increment() {
-        count += 1
+        value += 1
+    }
+}
+
+struct CounterView: View {
+    @State private var displayCount = 0
+    let counter = Counter()
+
+    var body: some View {
+        Button("Increment") {
+            Task {
+                await counter.increment()
+                displayCount = await counter.value
+            }
+        }
     }
 }
 ```
+
+### Solution 3: Use withCheckedContinuation for bridging callback-based APIs
+
+When integrating callback-based APIs with actor-isolated code, use continuations to bridge the gap safely.
+
+```swift
+actor LocationService {
+    func requestLocation() async -> CLLocation? {
+        await withCheckedContinuation { continuation in
+            let manager = CLLocationManager()
+            manager.requestLocation()
+            // Bridge callback to continuation
+            // continuation.resume(returning: location)
+        }
+    }
+}
+```
+
+## Prevention Tips
+
+- Always use await when accessing actor-isolated properties or methods
+- Use Task { } blocks to bridge synchronous code with actor-isolated async calls
+- Avoid mixing DispatchQueue.global() with actor-isolated functions
+- Use the @MainActor annotation when actor work must update the UI
 
 ## Related Errors
 
-- [Actor isolation error](actor-isolation-error) — actor issue
-- [Sendable protocol error](sendable-error) — Sendable conformance
-- [Memory access error](memory-access-error) — EXC_BAD_ACCESS
+- [Swift actor isolation error]({{< relref "/languages/swift/swift-actor-error" >}})
+- [Swift async sequence error]({{< relref "/languages/swift/swift-async-error" >}})
+- [Combine error]({{< relref "/languages/swift/combine-error" >}})

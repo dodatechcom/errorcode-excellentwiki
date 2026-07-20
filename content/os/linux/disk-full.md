@@ -6,30 +6,73 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 10
 ---
+# Linux: Disk Full (No Space Left on Device)
 
-# Linux: disk-full — disk full error
-
-Fix Linux disk-full errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A full disk returns ENOSPC when trying to write new data. This can crash applications, prevent logins, and cause system instability.
 
 ## Common Causes
 
-- No space left
-- Log files growing
-- Temp files not cleaned
-- Large files created
+- Log files growing unchecked in /var/log/ without rotation
+- Database transaction logs or binlogs accumulating without purge
+- Docker images, containers, and volumes consuming disk space
+- Package manager cache not cleaned (apt, yum, dnf, pacman)
+- Core dump files accumulating from crashed processes
+- User downloads and files filling /home
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-full.md' mode='w' encoding='UTF-8'>
+### 1. Find the Full Filesystem
 
-## Common Scenarios
+```bash
+df -h
+```
 
-- No space left on device
-- Cannot write files
-- System slow
+### 2. Find Largest Directories
 
-## Prevent It
+```bash
+sudo du -sh /* 2>/dev/null | sort -rh | head -10
+sudo du -sh /var/* 2>/dev/null | sort -rh | head -10
+```
 
-- Monitor disk space
-- Clean logs regularly
-- Set up logrotate properly
+### 3. Clean Package Cache
+
+```bash
+sudo apt clean && sudo apt autoremove --purge  # Debian/Ubuntu
+sudo dnf clean all  # RHEL/Fedora
+sudo pacman -Sc     # Arch
+```
+
+### 4. Clean Journal Logs
+
+```bash
+sudo journalctl --vacuum-size=200M
+sudo journalctl --vacuum-time=7d
+```
+
+### 5. Find Large Files
+
+```bash
+sudo find / -xdev -type f -size +100M -exec ls -lh {} \; 2>/dev/null | sort -k5 -rh | head -20
+```
+
+### 6. Clean Docker
+
+```bash
+docker system prune -a --volumes
+```
+
+## Examples
+
+```bash
+$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        50G   50G     0 100% /
+
+$ sudo du -sh /var/log/* | sort -rh | head -3
+3.2G    /var/log/journal
+890M    /var/log/syslog
+450M    /var/log/kern.log
+
+$ sudo journalctl --vacuum-size=200M
+Vacuuming done, freed 3.0G of archived journals
+```

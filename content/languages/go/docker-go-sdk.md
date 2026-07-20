@@ -9,56 +9,107 @@ weight: 5
 
 # Docker SDK Connection Error
 
-Fix Go Docker SDK connection errors. Handle Docker daemon connectivity, TLS configuration, and socket issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The Docker Go SDK (`github.com/docker/docker/client`) fails to connect to the Docker daemon when the socket path is wrong, the daemon is not running, TLS is misconfigured, or the API version is incompatible. The SDK communicates over a Unix socket or TCP, and both paths require proper configuration.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Docker daemon not running or wrong socket path
+cli, err := client.NewClientWithOpts(client.FromEnv)
+// Cannot connect to the Docker daemon at unix:///var/run/docker.sock
+
+// Cause 2: API version mismatch
+cli, err := client.NewClientWithOpts(
+    client.WithVersion("1.40"),
+    client.WithHost("unix:///var/run/docker.sock"),
+)
+// Error response from daemon: client version too old
+
+// Cause 3: TLS certificate path wrong
+cli, err := client.NewClientWithOpts(
+    client.WithHost("https://docker.example.com:2376"),
+    client.WithTLSClientConfig(ca, cert, key),
+)
+// tls: failed to verify certificate
+
+// Cause 4: DOCKER_HOST env var not set
+// SDK defaults to unix:///var/run/docker.sock
+// Remote Docker daemon needs explicit host
+
+// Cause 5: Permission denied on socket
+// User not in docker group
+// Got permission denied while trying to connect to Docker daemon socket
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Create client with environment-based configuration
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "fmt"
+    "log"
 
-### Fix 2: Add proper error handling
+    "github.com/docker/docker/client"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func dockerClient() (*client.Client, error) {
+    cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+    if err != nil {
+        return nil, fmt.Errorf("create docker client: %w", err)
+    }
+
+    // Test connection
+    ping, err := cli.Ping(context.Background())
+    if err != nil {
+        return nil, fmt.Errorf("docker ping: %w", err)
+    }
+    fmt.Printf("Docker version: %s\n", ping.APIVersion)
+    return cli, nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Connect to remote Docker daemon with TLS
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+import (
+    "crypto/tls"
+    "crypto/x509"
+    "io/ioutil"
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    "github.com/docker/docker/client"
+)
+
+func remoteDockerClient() (*client.Client, error) {
+    cert, _ := tls.LoadX509KeyPair("client-cert.pem", "client-key.pem")
+    caCert, _ := ioutil.ReadFile("ca.pem")
+    caPool := x509.NewCertPool()
+    caPool.AppendCertsFromPEM(caCert)
+
+    tlsConfig := &tls.Config{
+        Certificates: []tls.Certificate{cert},
+        RootCAs:      caPool,
+    }
+
+    return client.NewClientWithOpts(
+        client.WithHost("https://docker.example.com:2376"),
+        client.WithTLSClientConfig(caPool),
+        client.WithAPIVersionNegotiation(),
+    )
+}
+```
+
+### Fix 3: List containers to verify connectivity
+
+```go
+func listContainers(cli *client.Client) {
+    containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, c := range containers {
+        fmt.Printf("Container: %s (%s)\n", c.ID[:12], c.Image)
     }
 }
 ```
@@ -72,23 +123,38 @@ import (
     "context"
     "fmt"
     "log"
-    "time"
+
+    "github.com/docker/docker/api/types/container"
+    "github.com/docker/docker/client"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    defer cli.Close()
+
+    ctx := context.Background()
+
+    resp, err := cli.ContainerCreate(ctx, &container.Config{
+        Image: "alpine",
+        Cmd:   []string{"echo", "hello from docker"},
+    }, nil, nil, nil, "")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    if err := cli.ContainerStart(ctx, resp.ID, container.StartOptions{}); err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println("Container started:", resp.ID[:12])
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [net-dial]({{< relref "/languages/go/net-dial" >}}) — TCP connection to Docker daemon port fails
+- [tls-handshake]({{< relref "/languages/go/tls-handshake-error" >}}) — TLS handshake with Docker daemon
+- [permission-denied]({{< relref "/languages/go/http-status-403" >}}) — user not in docker group

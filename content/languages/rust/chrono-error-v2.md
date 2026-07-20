@@ -7,97 +7,84 @@ severities: ["error"]
 weight: 5
 ---
 
-# chrono Timezone Parse Error
+# Chrono Error
 
-Fix chrono timezone parsing errors. Handle invalid timezone strings, naive datetime conversions, and offset issues.
-
-## What This Error Means
-
-chrono timezone errors occur when parsing or converting datetime values:
-
-```
-chrono::format::ParseError: premature end of input
-chrono::DateTime::parse_from_rfc3339: invalid timezone offset
-```
+Chrono errors occur when using the `chrono` crate for date/time operations — parsing failures, timezone issues, and invalid date components.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Parsing string without timezone info as timezone-aware
-let dt = DateTime::parse_from_rfc3339("2024-01-15T10:30:00")?;
+use chrono::{DateTime, Utc, NaiveDate, TimeZone};
 
-// Cause 2: Invalid timezone name
-let tz: Tz = "Invalid/Timezone".parse()?;
+// Invalid date
+let date = NaiveDate::from_ymd_opt(2023, 13, 32); // None: invalid month/day
 
-// Cause 3: Converting NaiveDateTime to DateTime with ambiguous timezone
-// Cause 4: Daylight saving time gap (spring forward)
+// Timezone conversion failure
+let dt = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+
+// Format string mismatch
+use chrono::format::strftime::StrftimeItems;
+let formatted = dt.format("%Q").to_string(); // %Q is not valid
 ```
 
 ## How to Fix
 
-### Fix 1: Use correct parsing format
+1. **Use `from_ymd_opt` and handle Option**
 
 ```rust
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::NaiveDate;
 
-// For timezone-aware strings
-let dt = DateTime::parse_from_rfc3339("2024-01-15T10:30:00+05:00")?;
-
-// For UTC strings
-let dt = Utc.from_utc_datetime(&NaiveDateTime::parse_from_str(
-    "2024-01-15 10:30:00", "%Y-%m-%d %H:%M:%S"
-).unwrap());
-```
-
-### Fix 2: Use validated timezone parsing
-
-```rust
-use chrono_tz::Tz;
-
-fn parse_tz(tz_str: &str) -> Result<Tz, String> {
-    tz_str.parse::<Tz>()
-        .map_err(|_| format!("Invalid timezone: {}", tz_str))
+match NaiveDate::from_ymd_opt(2023, 12, 25) {
+    Some(date) => println!("Christmas: {}", date),
+    None => eprintln!("Invalid date"),
 }
 ```
 
-### Fix 3: Handle naive datetime conversions safely
+2. **Parse dates with proper format strings**
 
 ```rust
-use chrono::{NaiveDateTime, Utc, TimeZone};
+use chrono::NaiveDateTime;
 
-fn to_utc(naive: NaiveDateTime) -> chrono::DateTime<Utc> {
-    Utc.from_utc_datetime(&naive)
+let dt = NaiveDateTime::parse_from_str("2023-12-25 14:30:00", "%Y-%m-%d %H:%M:%S");
+match dt {
+    Ok(dt) => println!("Parsed: {}", dt),
+    Err(e) => eprintln!("Parse error: {}", e),
 }
+```
+
+3. **Handle timezone conversions safely**
+
+```rust
+use chrono::{Utc, TimeZone, FixedOffset};
+
+let utc_now = Utc::now();
+let offset = FixedOffset::east_opt(3600 * 9).unwrap(); // UTC+9
+let local = utc_now.with_timezone(&offset);
+println!("UTC: {}", utc_now);
+println!("JST: {}", local);
 ```
 
 ## Examples
 
 ```rust
-use chrono::{DateTime, NaiveDateTime, Utc, TimeZone};
-use chrono_tz::Tz;
+use chrono::{DateTime, Utc, NaiveDate, Duration, Local};
 
-fn format_time_in_tz(
-    input: &str,
-    tz_name: &str,
-) -> Result<String, Box<dyn std::error::Error>> {
-    let tz: Tz = tz_name.parse()?;
+fn main() {
+    let now = Utc::now();
+    println!("Now: {}", now);
 
-    let naive = NaiveDateTime::parse_from_str(input, "%Y-%m-%d %H:%M:%S")?;
-    let utc = Utc.from_utc_datetime(&naive);
-    let local = utc.with_timezone(&tz);
+    let birthday = NaiveDate::from_ymd_opt(2000, 6, 15).unwrap();
+    let today = Utc::now().date_naive();
+    let age = today - birthday;
+    println!("Days old: {}", age.num_days());
 
-    Ok(local.format("%Y-%m-%d %H:%M:%S %Z").to_string())
-}
-
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let result = format_time_in_tz("2024-01-15 10:30:00", "America/New_York")?;
-    println!("New York time: {}", result);
-    Ok(())
+    let future = now + Duration::days(365);
+    println!("One year from now: {}", future);
 }
 ```
 
 ## Related Errors
 
-- [Time Error]({{< relref "/languages/rust/time-error-rs" >}}) — time crate error
-- [Parse Int]({{< relref "/languages/rust/parse-int" >}}) — parse int error
-- [Parse Float]({{< relref "/languages/rust/parse-float" >}}) — parse float error
+- [Chrono TZ Error]({{< relref "/languages/rust/chrono-tz-error" >}}) — timezone issues
+- [Time Error]({{< relref "/languages/rust/time-error-rs" >}}) — time crate
+- [TOML Error]({{< relref "/languages/rust/toml-error" >}}) — datetime in TOML

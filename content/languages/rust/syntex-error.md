@@ -9,73 +9,143 @@ weight: 5
 
 # syntex Syntax Error
 
-Fix syntex syntax errors. Handle code parsing, macro expansion, and file processing..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `syntex` crate is a deprecated Rust syntax extension library that was used for code generation before the stabilisation of procedural macros. It provides a `rustc`-based parser for processing Rust source files and applying custom syntax expansions. Errors typically arise from outdated AST representations, incompatible Rust compiler versions, or incorrect file path handling. Modern projects should use `syn` and `quote` instead.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// 1. Using syntex with a modern Rust compiler — AST changes between versions
+// syntex::parse_program() may fail on new syntax like async/await
+
+// 2. Incorrect file path for source parsing
+use syntex::parse_program;
+let program = parse_program("src/main.rs");
+// Fails if the file doesn't exist or path is wrong
+
+// 3. Outdated Cargo.toml dependency — syntex is unmaintained
+// [dependencies]
+// syntex = "0.42"  // Last version, won't compile with modern Rust
+
+// 4. Custom code generator referencing old AST node types
+// syntex::ast::Item, syntex::ast::Block etc. may not match current compiler
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Migrate from syntex to syn + quote (recommended)**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+// Cargo.toml:
+// [dependencies]
+// syn = { version = "2", features = ["full"] }
+// quote = "1"
+// proc-macro2 = "1"
 
-### Fix 2: Add proper error handling
+use proc_macro2::TokenStream;
+use quote::quote;
+use syn::{parse_macro_input, DeriveInput};
 
-```rust
-use anyhow::Result;
+// Instead of syntex custom_code_expander, use a proc macro:
+#[proc_macro_derive(MyTrait)]
+pub fn derive_my_trait(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let name = &input.ident;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+    let expanded = quote! {
+        impl MyTrait for #name {
+            fn name() -> &'static str {
+                stringify!(#name)
+            }
+        }
+    };
+    TokenStream::from(expanded)
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use syntex for legacy projects by pinning a compatible nightly**
 
 ```rust
-use std::time::Duration;
+// For projects that must stay on syntex:
+// 1. Pin to a nightly that syntex was tested with
+// 2. Use rustup to install the specific toolchain
+// rustup install nightly-2016-04-01
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+use syntex::{Registry, Expansion};
+use syntex::util::walk_str;
+
+let mut registry = Registry::new();
+registry.add_normalization(vec![
+    ("custom_expand".to_string(), expand_custom),
+]);
+
+fn expand_custom(registry: &mut Registry) {
+    registry.add_decorator("custom_expand", |ctx, item| {
+        // Process the annotated item
+        println!("Expanding: {}", item.name);
+        Ok(())
+    });
+}
+```
+
+3. **Replace syntex file expansion with build.rs**
+
+```rust
+// Instead of syntex's file expansion in code, use a build script:
+// build.rs
+fn main() {
+    println!("cargo:rerun-if-changed=src/");
+    // Use syn + quote in build.rs for code generation
+}
+```
+
+4. **Use syn::parse_file for standalone parsing**
+
+```rust
+use syn::parse_file;
+use std::fs;
+
+fn parse_rust_file(path: &str) -> Result<syn::File, syn::parse::Error> {
+    let content = fs::read_to_string(path)?;
+    parse_file(&content)
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let file = parse_rust_file("src/lib.rs")?;
+    println!("Parsed {} items", file.items.len());
+    Ok(())
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+// Modern equivalent of what syntex used to do:
+use syn::{parse_file, Item, FnArg, Pat, PatType, Type};
+use quote::quote;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn extract_function_names(source: &str) -> Vec<String> {
+    let file = parse_file(source).expect("Failed to parse");
+    file.items.iter().filter_map(|item| {
+        match item {
+            Item::Fn(f) => Some(f.sig.ident.to_string()),
+            _ => None,
+        }
+    }).collect()
+}
+
+fn main() {
+    let code = r#"
+        fn hello() {}
+        fn world() {}
+        struct NotAFn;
+    "#;
+    let names = extract_function_names(code);
+    println!("Functions: {:?}", names); // ["hello", "world"]
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tera Error]({{< relref "/languages/rust/tera-error" >}}) — template code generation
+- [Tree Sitter Error]({{< relref "/languages/rust/tree-sitter-error" >}}) — AST parsing
+- [Regex Error]({{< relref "/languages/rust/regex-error" >}}) — pattern matching

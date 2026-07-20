@@ -7,75 +7,84 @@ severities: ["error"]
 weight: 5
 ---
 
-# chrono Time Parse Error
+# Chrono Error
 
-Fix chrono time parsing errors. Handle timezone issues, format strings, and NaiveDateTime usage..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Chrono errors occur when using the `chrono` crate for date/time operations — parsing failures, timezone issues, and invalid date components.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use chrono::{DateTime, Utc, NaiveDate, TimeZone};
+
+// Invalid date
+let date = NaiveDate::from_ymd_opt(2023, 13, 32); // None: invalid month/day
+
+// Timezone conversion failure
+let dt = Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap();
+
+// Format string mismatch
+use chrono::format::strftime::StrftimeItems;
+let formatted = dt.format("%Q").to_string(); // %Q is not valid
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use `from_ymd_opt` and handle Option**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use chrono::NaiveDate;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match NaiveDate::from_ymd_opt(2023, 12, 25) {
+    Some(date) => println!("Christmas: {}", date),
+    None => eprintln!("Invalid date"),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Parse dates with proper format strings**
 
 ```rust
-use std::time::Duration;
+use chrono::NaiveDateTime;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let dt = NaiveDateTime::parse_from_str("2023-12-25 14:30:00", "%Y-%m-%d %H:%M:%S");
+match dt {
+    Ok(dt) => println!("Parsed: {}", dt),
+    Err(e) => eprintln!("Parse error: {}", e),
+}
+```
+
+3. **Handle timezone conversions safely**
+
+```rust
+use chrono::{Utc, TimeZone, FixedOffset};
+
+let utc_now = Utc::now();
+let offset = FixedOffset::east_opt(3600 * 9).unwrap(); // UTC+9
+let local = utc_now.with_timezone(&offset);
+println!("UTC: {}", utc_now);
+println!("JST: {}", local);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use chrono::{DateTime, Utc, NaiveDate, Duration, Local};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let now = Utc::now();
+    println!("Now: {}", now);
+
+    let birthday = NaiveDate::from_ymd_opt(2000, 6, 15).unwrap();
+    let today = Utc::now().date_naive();
+    let age = today - birthday;
+    println!("Days old: {}", age.num_days());
+
+    let future = now + Duration::days(365);
+    println!("One year from now: {}", future);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Chrono TZ Error]({{< relref "/languages/rust/chrono-tz-error" >}}) — timezone issues
+- [Time Error]({{< relref "/languages/rust/time-error-rs" >}}) — time crate
+- [TOML Error]({{< relref "/languages/rust/toml-error" >}}) — datetime in TOML

@@ -9,57 +9,100 @@ weight: 5
 
 # Kitex Transport Error
 
-Fix Kitex transport errors. Handle Thrift protocol, connection management, and timeout configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The CloudWeGo Kitex RPC framework fails during transport when the service registry is unreachable, the codec cannot serialize the message, the connection pool is exhausted, or the timeout configuration is too aggressive. Kitex uses a custom transport layer optimized for high performance.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Registry unreachable
+opts := []client.Option{
+    client.WithHostPorts("wrong-host:8888"),
+}
+client, err := kitex.NewClient("my-service", opts...)
+// dial tcp: lookup wrong-host: no such host
+
+// Cause 2: Serialization mismatch
+// Server uses Thrift, client uses Protobuf
+// codec: unsupported codec
+
+// Cause 3: Connection pool exhaustion
+opts := []client.Option{
+    client.WithConnectTimeout(100 * time.Millisecond), // too short
+}
+// all connections busy, new requests timeout
+
+// Cause 4: Max message size exceeded
+// sending large payload without configuring size limit
+// transport: message too large
+
+// Cause 5: Service name mismatch in discovery
+// Client looks for "service-a", server registers as "service_a"
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Configure client with proper options
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "time"
 
-### Fix 2: Add proper error handling
+    "github.com/cloudwego/kitex/client"
+    "github.com/cloudwego/kitex/pkg/rpcinfo"
+    "github.com/cloudwego/kitex/transport"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func createClient() (MyServiceClient, error) {
+    opts := []client.Option{
+        client.WithHostPorts("localhost:8888"),
+        client.WithConnectTimeout(5 * time.Second),
+        client.WithRPCTimeout(10 * time.Second),
+        client.WithTransportProtocol(transport.TTHeader),
+    }
+
+    return NewMyServiceClient("my-service", opts...)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Configure server with proper limits
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+import (
+    "github.com/cloudwego/kitex/server"
+    "github.com/cloudwego/kitex/pkg/limit"
+)
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func createServer() error {
+    opts := []server.Option{
+        server.WithServiceAddr(&net.TCPAddr{Port: 8888}),
+        server.WithLimit(&limit.Option{
+            MaxConnections: 1000,
+            MaxQPS:         10000,
+        }),
     }
+
+    svr := NewMyService(handler, opts...)
+    return svr.Run()
+}
+```
+
+### Fix 3: Use retry with backoff for transient failures
+
+```go
+import "github.com/cloudwego/kitex/client"
+
+func callWithRetry(ctx context.Context, req *MyRequest) (*MyResponse, error) {
+    var lastErr error
+    for i := 0; i < 3; i++ {
+        resp, err := client.MyMethod(ctx, req)
+        if err == nil {
+            return resp, nil
+        }
+        lastErr = err
+        time.Sleep(time.Duration(i+1) * 100 * time.Millisecond)
+    }
+    return nil, fmt.Errorf("failed after 3 retries: %w", lastErr)
 }
 ```
 
@@ -70,25 +113,27 @@ package main
 
 import (
     "context"
-    "fmt"
     "log"
-    "time"
+    "net"
+
+    "github.com/cloudwego/kitex/server"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    addr, _ := net.ResolveTCPAddr("tcp", "localhost:8888")
+    svr := NewMyService(
+        new(MyServiceImpl),
+        server.WithServiceAddr(addr),
+    )
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+    if err := svr.Run(); err != nil {
+        log.Fatalf("server stopped with error: %v", err)
     }
-    fmt.Println(result)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [grpc-unavailable]({{< relref "/languages/go/grpc-unavailable" >}}) — gRPC transport similar issues
+- [grpc-timeout]({{< relref "/languages/go/grpc-timeout" >}}) — RPC deadline exceeded
+- [context-deadline-exceeded]({{< relref "/languages/go/context-deadline" >}}) — timeout before Kitex responds

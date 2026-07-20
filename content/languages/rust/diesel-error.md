@@ -7,75 +7,85 @@ severities: ["error"]
 weight: 5
 ---
 
-# Diesel Database Error
+# Diesel Error
 
-Fix Diesel ORM database errors. Handle connection issues, query errors, and schema migrations..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Diesel errors occur when using the `diesel` ORM — connection failures, query type mismatches, and migration issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let mut conn = PgConnection::establish("postgres://wrong:5432/db")?;
+
+// Query returning wrong type
+let name: i32 = users.select(name).first(&mut conn)?; // name is String
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Establish connection properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
+
+let database_url = std::env::var("DATABASE_URL")
+    .expect("DATABASE_URL must be set");
+let mut conn = PgConnection::establish(&database_url)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Define schema correctly**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+diesel::table! {
+    users (id) {
+        id -> Int4,
+        name -> Varchar,
+        email -> Varchar,
+    }
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle migrations**
 
 ```rust
-use std::time::Duration;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations};
+const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+fn run_migrations(conn: &mut PgConnection) {
+    MIGRATIONS.run_pending_migrations(conn).expect("Migrations failed");
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+table! {
+    users (id) {
+        id -> Int4,
+        name -> Varchar,
+    }
+}
+
+#[derive(Queryable, Selectable)]
+#[diesel(table_name = users)]
+struct User { id: i32, name: String }
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut conn = PgConnection::establish("postgres://localhost/test")?;
+    let all_users = users::table.load::<User>(&mut conn)?;
+    for u in &all_users {
+        println!("{}: {}", u.id, u.name);
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [SQLx Error]({{< relref "/languages/rust/sqlx-error" >}}) — SQLx
+- [Sea ORM Error]({{< relref "/languages/rust/sea-orm-error" >}}) — SeaORM
+- [Postgres Error]({{< relref "/languages/rust/postgres-error-rs" >}}) — PostgreSQL

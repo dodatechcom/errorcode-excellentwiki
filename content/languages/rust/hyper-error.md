@@ -7,75 +7,80 @@ severities: ["error"]
 weight: 5
 ---
 
-# hyper HTTP Error
+# Hyper Error
 
-Fix hyper HTTP library errors. Handle connection issues, body streaming, and protocol errors..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Hyper errors occur when using the `hyper` crate for HTTP — connection errors, request/response parsing failures, and body handling issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let client = Client::new();
+let resp = client.get("http://localhost:9999".parse()?).await?;
+
+// Body already consumed
+let body = resp.into_body();
+let data = body.try_into_bytes()?;
+// body.try_into_bytes()?; // ERROR: already consumed
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle connection errors with retries**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use hyper::{Client, Uri};
+use http_body_util::BodyExt;
+
+let client = Client::new();
+let uri: Uri = "http://httpbin.org/get".parse()?;
+let resp = client.get(uri).await?;
+let body = resp.into_body().collect().await?.to_bytes();
 ```
 
-### Fix 2: Add proper error handling
+2. **Use proper body handling**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let body = resp.into_body();
+let data = body.collect().await?.to_bytes();
+println!("{}", String::from_utf8_lossy(&data));
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use hyper-util for easier setup**
 
 ```rust
-use std::time::Duration;
+use hyper_util::rt::TokioIo;
+use tokio::net::TcpStream;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let stream = TcpStream::connect("127.0.0.1:3000").await?;
+let io = TokioIo::new(stream);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use hyper::{Client, Server};
+use hyper::service::{make_service_fn, service_fn};
+use http_body_util::Full;
+use bytes::Bytes;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let addr = ([127, 0, 0, 1], 3000).into();
+    let service = make_service_fn(|_| async {
+        Ok::<_, hyper::Error>(service_fn(|_req| async {
+            Ok::<_, hyper::Error>(
+                http::Response::new(Full::new(Bytes::from("Hello, Hyper!")))
+            )
+        }))
+    });
+    Server::bind(&addr).serve(service).await?;
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Axum Error]({{< relref "/languages/rust/rust-axum-error" >}}) — Axum framework
+- [Warp Error]({{< relref "/languages/rust/rust-warp-error" >}}) — Warp framework
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network errors

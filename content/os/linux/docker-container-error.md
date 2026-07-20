@@ -7,29 +7,60 @@ error-types: ["process-error"]
 weight: 6
 ---
 
-# Linux: docker-container-error — Docker container error
+# Linux: Docker Container Error
 
-Fix Linux docker-container-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Docker container errors occur when containers fail to start, run, or communicate.
 
 ## Common Causes
 
-- Container not starting
-- Resource limit exceeded
-- Volume mount failed
-- Network issue
+- Container image not found or pull failed
+- Port binding conflict
+- Resource limits exceeded (memory, CPU)
+- Mount or volume path invalid
+- Container entrypoint or command error
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/docker-container-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Container Status
 
-## Common Scenarios
+```bash
+sudo docker ps -a
+sudo docker logs <container>
+```
 
-- Container failed to start
-- Docker error
-- Resource limit
+### 2. Inspect Container
 
-## Prevent It
+```bash
+sudo docker inspect <container>
+sudo docker stats <container> --no-stream
+```
 
-- Check container logs
-- Verify resource limits
-- Restart container
+### 3. Check Docker Daemon
+
+```bash
+sudo systemctl status docker
+sudo journalctl -u docker -n 30
+```
+
+### 4. Recreate Container
+
+```bash
+sudo docker rm <container>
+sudo docker run -d --name <container> <image>
+```
+
+## Examples
+
+```bash
+$ sudo docker logs myapp
+Error: Cannot bind to port 8080: address already in use
+
+$ sudo docker inspect myapp | grep -A 5 PortBindings
+"PortBindings": {
+    "8080/tcp": [{"HostPort": "8080"}]
+}
+
+$ sudo docker rm myapp
+$ sudo docker run -d -p 8081:8080 --name myapp myapp:latest
+# Now running on port 8081
+```

@@ -7,75 +7,69 @@ severities: ["error"]
 weight: 5
 ---
 
-# http-body-util Body Error
+# HTTP Body Util Error
 
-Fix http-body-util body errors. Handle body framing, size limits, and streaming..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+HTTP body util errors occur when using the `http-body-util` crate for HTTP body manipulation — empty bodies, size limits, and framing issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Empty body when content expected
+let body = Empty::new().map_err(|never| match never {});
+
+// Missing body size hint
+let body = Full::new(Bytes::from("data"));
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Collect body data properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use http_body_util::{BodyExt, Full, Empty};
+use bytes::Bytes;
+
+let body = Full::new(Bytes::from("Hello, Body!"));
+let collected = body.collect().await?;
+let data = collected.to_bytes();
 ```
 
-### Fix 2: Add proper error handling
+2. **Limit body size**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let limited = body.limit(1024 * 1024); // 1MB max
+match limited.collect().await {
+    Ok(data) => println!("Got {} bytes", data.to_bytes().len()),
+    Err(e) => eprintln!("Body too large: {}", e),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle empty bodies**
 
 ```rust
-use std::time::Duration;
+use http_body_util::{BodyExt, Full, Empty};
+use bytes::Bytes;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let empty: Empty<Bytes> = Empty::new();
+let data = empty.collect().await?.to_bytes();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use http_body_util::{BodyExt, Full, Empty};
+use bytes::Bytes;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[tokio::main]
+async fn main() {
+    let body = Full::new(Bytes::from("Hello, World!"));
+    let data = body.collect().await.unwrap().to_bytes();
+    println!("Body: {}", String::from_utf8_lossy(&data));
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — HTTP layer
+- [H2 Error]({{< relref "/languages/rust/h2-error" >}}) — HTTP/2
+- [Tower Error]({{< relref "/languages/rust/tower-error" >}}) — middleware

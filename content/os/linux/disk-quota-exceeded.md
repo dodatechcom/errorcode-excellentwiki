@@ -6,30 +6,54 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 6
 ---
+# Linux: Disk Quota Exceeded
 
-# Linux: disk-quota-exceeded — disk quota exceeded error
-
-Fix Linux disk-quota-exceeded errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A quota exceeded error (EDQUOT, errno 122) occurs when a user or group surpasses their allocated disk space.
 
 ## Common Causes
 
-- User quota full
-- Group quota full
-- Project quota exceeded
-- Inode quota
+- User filled their home directory beyond the soft or hard limit
+- Application (mail server, database) writing files under the user's quota
+- Temporary files accumulating without cleanup
+- Quota limits set too low for the normal workload
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-quota-exceeded.md' mode='w' encoding='UTF-8'>
+### 1. Check Quota Usage
 
-## Common Scenarios
+```bash
+quota -v
+sudo quota -v <username>
+```
 
-- Quota exceeded
-- Cannot write files
-- User blocked
+### 2. Find Large Files
 
-## Prevent It
+```bash
+find /home/<username> -xdev -type f -size +10M -exec ls -lh {} \;
+du -sh /home/<username>/* | sort -rh | head -10
+```
 
-- Monitor quota usage
-- Set appropriate limits
-- Increase if needed
+### 3. Clean Up
+
+```bash
+rm -rf ~/.local/share/Trash/*
+rm -rf ~/.cache/*
+```
+
+### 4. Increase Quota
+
+```bash
+sudo setquota -u <username> 0 2000000 2200000 0 /dev/sdX
+# Or interactively
+sudo edquota -u <username>
+```
+
+## Examples
+
+```bash
+$ quota -v
+Disk quotas for user jdoe (uid 1001):
+ Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
+  /dev/sda1  9999999 5000000 5500000    none    1234       0       0
+write failed: Disk quota exceeded
+```

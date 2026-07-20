@@ -1,44 +1,72 @@
 ---
-title: "PHP Warning: array_flip() expects exactly 1 argument"
-description: "Fix PHP Warning: array_flip() expects exactly 1 argument. Learn to use array_flip() with a single array parameter."
+title: "PHP Warning: array_flip() invalid values"
+description: "Fix PHP Warning: array_flip() invalid values. Learn to ensure array values are strings or ints, check for non-string values, and validate input."
 languages: ["php"]
 error-types: ["runtime-error"]
 severities: ["error"]
 weight: 5
 ---
 
-# PHP Warning: array_flip() expects exactly 1 argument
+# PHP Warning: array_flip() invalid values
 
-This warning occurs when `array_flip()` is called with more than one argument. The function accepts only one array parameter and exchanges all keys with their associated values.
+This warning occurs when `array_flip()` receives an array where values cannot be used as keys. Only string and integer values are valid; arrays, objects, and null will fail.
 
 ## Common Causes
 
-- Passing extra arguments to `array_flip()`
-- Confusing `array_flip()` with multi-argument array functions
-- Copy-pasting function calls without removing extra parameters
+- Array contains values that are arrays or objects
+- Mixing numeric and non-scalar values
+- NULL or boolean values in the array
 
 ## How to Fix
 
-### Pass Exactly One Array
+### Ensure Array Values are Strings/Ints
 
 ```php
 <?php
-// Wrong — extra argument
-$flipped = array_flip($arr, $extra);
+// Wrong — contains array value
+$flipped = array_flip($input);
 
-// Correct
-$flipped = array_flip($arr);
+// Correct — filter out non-scalar types
+$filtered = array_filter($input, function ($v) {
+    return is_string($v) || is_int($v);
+});
+$flipped = array_flip($filtered);
 ?>
 ```
 
-### Use array_combine() as an Alternative
+### Check for Non-string Values
 
 ```php
 <?php
-// Flip keys and values manually
-$values = array_values($arr);
-$keys = array_keys($arr);
-$flipped = array_combine($values, $keys);
+// Wrong — array with mixed types
+$flipped = array_flip([1, 'two', null]);
+
+// Correct — validate before flipping
+$filtered = [];
+foreach ($input as $key => $val) {
+    if (is_string($val) || is_int($val)) {
+        $filtered[$key] = $val;
+    }
+}
+$flipped = array_flip($filtered);
+?>
+```
+
+### Validate Input
+
+```php
+<?php
+function safeArrayFlip(array $arr): array
+{
+    foreach ($arr as $v) {
+        if (!is_string($v) && !is_int($v)) {
+            throw new UnexpectedValueException(
+                'Value of type ' . gettype($v) . ' cannot be used as key'
+            );
+        }
+    }
+    return array_flip($arr);
+}
 ?>
 ```
 
@@ -47,17 +75,18 @@ $flipped = array_combine($values, $keys);
 ```php
 <?php
 // This triggers the warning
-$fruits = ['a' => 'apple', 'b' => 'banana'];
-$flipped = array_flip($fruits, 'extra');
-// Warning: array_flip() expects exactly 1 parameter, 2 given
+$fruits = ['a' => 'apple', 'b' => ['x']];
+$flipped = array_flip($fruits); // array value cannot be used as key
+// Warning: array_flip(): Can only flip string and integer values!
 
 // Correct
+$fruits = ['a' => 'apple', 'b' => 'banana'];
 $flipped = array_flip($fruits); // ['apple' => 'a', 'banana' => 'b']
 ?>
 ```
 
 ## Related Errors
 
-- [PHP Warning: array_reverse()]({{< relref "/languages/php/warning-in-array-reverse" >}})
+- [PHP Warning: array_combine()]({{< relref "/languages/php/warning-in-array-all" >}})
 - [PHP Warning: array_keys()]({{< relref "/languages/php/warning-in-array-keys" >}})
 - [PHP Warning: array_values()]({{< relref "/languages/php/warning-in-array-values" >}})

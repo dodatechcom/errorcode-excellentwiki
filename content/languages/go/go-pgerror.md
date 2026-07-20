@@ -9,57 +9,101 @@ weight: 5
 
 # pgx PostgreSQL Error Codes
 
-Fix pgx PostgreSQL error codes. Handle database errors, constraint violations, and connection issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `pgx` PostgreSQL driver returns typed PostgreSQL error codes (like `unique_violation`, `foreign_key_violation`, `connection_refused`) that must be handled programmatically. Unlike generic SQL errors, pgx provides `pgconn.PgError` with the SQLSTATE code for precise error handling.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Unique constraint violation
+_, err := db.Exec(ctx, "INSERT INTO users (email) VALUES ($1)", "dup@example.com")
+var pgErr *pgconn.PgError
+if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+    // unique_violation
+}
+
+// Cause 2: Foreign key violation
+_, err = db.Exec(ctx, "INSERT INTO posts (user_id) VALUES ($1)", 999)
+// 23503: foreign_key_violation — user_id 999 does not exist
+
+// Cause 3: Connection refused
+pool, err := pgxpool.New(ctx, "postgres://wrong-host:5432/db")
+// connection refused
+
+// Cause 4: Syntax error in SQL
+_, err = db.Exec(ctx, "SELECT * FORM users")
+// 42601: syntax_error
+
+// Cause 5: Division by zero
+_, err = db.Exec(ctx, "UPDATE stats SET ratio = total / 0")
+// 22012: division_by_zero
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Handle specific PostgreSQL error codes
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "errors"
+    "fmt"
 
-### Fix 2: Add proper error handling
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgconn"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func createUser(ctx context.Context, db *pgx.Conn, email string) error {
+    _, err := db.Exec(ctx, "INSERT INTO users (email) VALUES ($1)", email)
+    if err != nil {
+        var pgErr *pgconn.PgError
+        if errors.As(err, &pgErr) {
+            switch pgErr.Code {
+            case "23505": // unique_violation
+                return fmt.Errorf("email %s already exists", email)
+            case "23503": // foreign_key_violation
+                return fmt.Errorf("referenced record does not exist")
+            case "23502": // not_null_violation
+                return fmt.Errorf("required field is missing")
+            default:
+                return fmt.Errorf("postgres error %s: %s", pgErr.Code, pgErr.Message)
+            }
+        }
+        return err
+    }
+    return nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use connection pool with retry logic
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+import (
+    "context"
+    "time"
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    "github.com/jackc/pgx/v5/pgxpool"
+)
+
+func connectDB(ctx context.Context) (*pgxpool.Pool, error) {
+    config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
+    if err != nil {
+        return nil, err
     }
+
+    config.MaxConns = 20
+    config.MinConns = 5
+    config.MaxConnLifetime = 30 * time.Minute
+    config.MaxConnIdleTime = 5 * time.Minute
+
+    pool, err := pgxpool.NewWithConfig(ctx, config)
+    if err != nil {
+        return nil, fmt.Errorf("create pool: %w", err)
+    }
+
+    if err := pool.Ping(ctx); err != nil {
+        return nil, fmt.Errorf("ping database: %w", err)
+    }
+    return pool, nil
 }
 ```
 
@@ -70,25 +114,37 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "log"
-    "time"
+    "os"
+
+    "github.com/jackc/pgx/v5"
+    "github.com/jackc/pgx/v5/pgconn"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    defer conn.Close(context.Background())
+
+    var result int
+    err = conn.QueryRow(context.Background(), "SELECT 1 + 1").Scan(&result)
+    if err != nil {
+        var pgErr *pgconn.PgError
+        if errors.As(err, &pgErr) {
+            log.Fatalf("PostgreSQL error [%s]: %s", pgErr.Code, pgErr.Message)
+        }
+        log.Fatal(err)
+    }
+    fmt.Println("1 + 1 =", result)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [sql-no-rows]({{< relref "/languages/go/sql-no-rows-2" >}}) — no rows returned by query
+- [go-postgres-error]({{< relref "/languages/go/go-postgres-error" >}}) — pq driver connection issues
+- [go-mysql-error]({{< relref "/languages/go/go-mysql-error" >}}) — MySQL equivalent error codes

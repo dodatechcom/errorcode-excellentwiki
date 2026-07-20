@@ -1,151 +1,168 @@
 ---
-title: "[Solution] Python PyMongo Error — How to Fix"
-description: "Fix Python PyMongo errors. Resolve connection, authentication, and query failures in MongoDB operations."
+title: "[Solution] Python PyMongo Error — MongoDB Driver Failures"
+description: "Fix Python PyMongo errors like PyMongoError, ConnectionFailure, OperationFailure, timeout, and bulk write errors. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 429
 ---
 
-# Python PyMongo Error
+# Python PyMongo Error — MongoDB Driver Failures
 
-A `pymongo.errors.ConnectionFailure` or `pymongo.errors.OperationFailure` occurs when PyMongo fails to connect to MongoDB, encounters authentication errors, or when queries reference non-existent indexes.
+PyMongo errors occur when the driver cannot connect to MongoDB, operations fail due to invalid queries, indexes are missing, or bulk writes encounter errors. These are common in data-driven applications.
 
-## Why It Happens
+## Common Causes
 
-PyMongo is the official Python driver for MongoDB. Errors arise when the MongoDB server is unreachable, when authentication credentials are wrong, when the database requires replica set read preference, or when document schemas do not match expected formats.
+```python
+# ConnectionFailure: cannot connect to MongoDB
+from pymongo import MongoClient
+client = MongoClient("mongodb://invalid-host:27017", serverSelectionTimeoutMS=1000)
+client.admin.command("ping")
 
-## Common Error Messages
+# OperationFailure: invalid query or index
+from pymongo import MongoClient
+client = MongoClient()
+db = client["mydb"]
+db.collection.find({"$invalidOperator": 1})  # bad query operator
 
-- `ConnectionFailure: [Errno 111] Connection refused`
-- `OperationFailure: authentication failed`
-- `ServerSelectionTimeoutError: No servers found yet`
-- `PyMongoError: ns not found`
+# OperationFailure: duplicate key on insert
+db.collection.insert_one({"_id": "duplicate", "name": "test"})
+db.collection.insert_one({"_id": "duplicate", "name": "test2"})  # duplicate key
 
-## How to Fix It
+# BulkWriteError: partial failure in bulk operation
+from pymongo import InsertOne
+ops = [InsertOne({"_id": i}) for i in range(10)]
+db.collection.bulk_write(ops, ordered=False)  # some may fail
 
-### Fix 1: Configure connection properly
+# InvalidOperation: cursor already exhausted
+cursor = db.collection.find()
+for doc in cursor:
+    pass
+next(cursor)  # cursor exhausted
+```
 
+## How to Fix
+
+### Fix 1: Verify Connection with Timeout
+Always set a server selection timeout and verify connectivity.
 ```python
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
-# Wrong — no timeout or retry configuration
-# client = MongoClient("mongodb://localhost:27017")
-
-# Correct — configure connection parameters
 client = MongoClient(
     "mongodb://localhost:27017",
     serverSelectionTimeoutMS=5000,
     connectTimeoutMS=5000,
-    socketTimeoutMS=5000,
-    maxPoolSize=100,
-    retryWrites=True,
 )
 
-# Test connection
 try:
     client.admin.command("ping")
     print("Connected to MongoDB")
-except ConnectionFailure as e:
-    print(f"Connection failed: {e}")
+except ConnectionFailure:
+    print("Cannot connect to MongoDB server")
 ```
 
-### Fix 2: Handle authentication
-
+### Fix 2: Handle Duplicate Key Errors
+Catch DuplicateKeyError when inserting documents.
 ```python
-from pymongo import MongoClient
-from pymongo.errors import OperationFailure
+from pymongo import MongoClient, ASCENDING
+from pymongo.errors import DuplicateKeyError
 
-# Wrong — no authentication
-# client = MongoClient("mongodb://localhost:27017")
-
-# Correct — use authentication
-client = MongoClient(
-    "mongodb://admin:password@localhost:27017/?authSource=admin"
-)
+client = MongoClient()
+db = client["mydb"]
 
 try:
-    client.admin.command("ping")
-    db = client["mydatabase"]
-    print(f"Connected to database: {db.name}")
-except OperationFailure as e:
-    print(f"Authentication failed: {e}")
+    db.users.insert_one({"email": "user@example.com", "name": "User"})
+except DuplicateKeyError:
+    print("User with this email already exists")
 ```
 
-### Fix 3: Use proper query patterns
-
+### Fix 3: Use Bulk Write with Error Handling
+Handle partial failures in bulk operations.
 ```python
-from pymongo import MongoClient
-
-client = MongoClient("mongodb://localhost:27017")
-db = client["testdb"]
-collection = db["users"]
-
-# Wrong — unindexed query
-# collection.find({"email": "test@example.com"})
-
-# Correct — create index first
-collection.create_index("email", unique=True)
-
-# Insert document
-collection.insert_one({"name": "Alice", "email": "alice@example.com"})
-
-# Query with index
-user = collection.find_one({"email": "alice@example.com"})
-print(f"User: {user['name']}")
-
-# Use projection to limit fields
-user = collection.find_one(
-    {"email": "alice@example.com"},
-    {"name": 1, "_id": 0}
-)
-print(f"Name only: {user}")
-```
-
-### Fix 4: Handle bulk operations
-
-```python
-from pymongo import MongoClient, InsertOne, UpdateOne
+from pymongo import MongoClient, InsertOne
 from pymongo.errors import BulkWriteError
 
-client = MongoClient("mongodb://localhost:27017")
-db = client["testdb"]
-collection = db["users"]
+client = MongoClient()
+db = client["mydb"]
 
-# Wrong — individual inserts are slow
-# for user in users:
-#     collection.insert_one(user)
-
-# Correct — use bulk operations
-operations = [
-    InsertOne({"name": "Alice", "email": "alice@example.com"}),
-    InsertOne({"name": "Bob", "email": "bob@example.com"}),
-    UpdateOne({"name": "Alice"}, {"$set": {"age": 25}}),
-]
-
+ops = [InsertOne({"_id": i, "name": f"item_{i}"}) for i in range(100)]
 try:
-    result = collection.bulk_write(operations, ordered=False)
+    result = db.collection.bulk_write(ops, ordered=False)
     print(f"Inserted: {result.inserted_count}")
 except BulkWriteError as bwe:
-    print(f"Bulk write errors: {bwe.details}")
+    print(f"Partial failure: {bwe.details}")
 ```
 
-## Common Scenarios
+### Fix 4: Set Read/Write Concern for Reliability
+Configure appropriate read and write concerns.
+```python
+from pymongo import MongoClient, ReadConcern, WriteConcern
 
-- **Connection refused** — MongoDB server not running on the expected port.
-- **Authentication failure** — Wrong username/password or auth database.
-- **Replica set required** — Operations that require majority read concern need a replica set.
+client = MongoClient()
+db = client["mydb"]
+collection = db.get_collection(
+    "mycollection",
+    read_concern=ReadConcern("majority"),
+    write_concern=WriteConcern(w="majority", wtimeout=5000),
+)
+collection.insert_one({"key": "value"})
+```
 
-## Prevent It
+### Fix 5: Use Context Managers for Cursors
+Ensure cursers are properly closed after use.
+```python
+from pymongo import MongoClient
 
-- Always use `serverSelectionTimeoutMS` to avoid long hangs when the server is down.
-- Create indexes before running queries that will be executed frequently.
-- Use `bulk_write()` for multiple operations to reduce round trips.
+client = MongoClient()
+db = client["mydb"]
+
+with db.collection.find() as cursor:
+    for doc in cursor:
+        print(doc)
+```
+
+## Examples
+
+```python
+# Complete MongoDB operations with error handling
+from pymongo import MongoClient
+from pymongo.errors import (
+    ConnectionFailure,
+    OperationFailure,
+    DuplicateKeyError,
+    BulkWriteError,
+)
+
+class MongoDBClient:
+    def __init__(self, uri="mongodb://localhost:27017"):
+        self.client = MongoClient(uri, serverSelectionTimeoutMS=5000)
+
+    def connect(self):
+        try:
+            self.client.admin.command("ping")
+            return True
+        except ConnectionFailure:
+            return False
+
+    def insert_document(self, db_name, collection_name, document):
+        try:
+            result = self.client[db_name][collection_name].insert_one(document)
+            return result.inserted_id
+        except DuplicateKeyError:
+            raise ValueError("Document with this _id already exists")
+        except OperationFailure as e:
+            raise RuntimeError(f"Insert failed: {e}")
+
+    def find_documents(self, db_name, collection_name, query=None):
+        try:
+            return list(self.client[db_name][collection_name].find(query or {}))
+        except OperationFailure as e:
+            raise RuntimeError(f"Find failed: {e}")
+```
 
 ## Related Errors
 
-- [ConnectionFailure](/languages/python/connectionerror/) — cannot connect to server
-- [OperationFailure](/languages/python/operation-error/) — database command failed
-- [ServerSelectionTimeoutError](/languages/python/server-timeout/) — no server found
+- [Python redis-py Error](/languages/python/python-redis-py-error/)
+- [Python Elasticsearch Error](/languages/python/python-elasticsearch-error/)
+- [Python kafka-python Error](/languages/python/python-kafka-python-error/)

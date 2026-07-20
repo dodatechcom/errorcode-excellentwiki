@@ -6,30 +6,73 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 8
 ---
+# Linux: WireGuard Error
 
-# Linux: wireguard-error — WireGuard VPN error
-
-Fix Linux wireguard-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+WireGuard errors occur when the secure VPN tunnel fails to establish or maintain connectivity.
 
 ## Common Causes
 
-- Interface not created
-- Peer not reachable
-- Key error
-- Route missing
+- WireGuard kernel module not loaded or not installed
+- Interface configuration has incorrect keys or endpoints
+- Firewall blocking UDP port on both sides
+- Keepalive not configured for NAT traversal
+- Peer endpoint IP changed (dynamic DNS not updated)
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/wireguard-error.md' mode='w' encoding='UTF-8'>
+### 1. Check WireGuard Status
 
-## Common Scenarios
+```bash
+sudo wg show
+sudo wg show wg0
+```
 
-- WireGuard not working
-- Peer unreachable
-- Key error
+### 2. Check Interface State
 
-## Prevent It
+```bash
+ip link show wg0
+ip addr show wg0
+```
 
-- Verify keys
-- Check firewall (UDP 51820)
-- Verify routes
+### 3. Check Kernel Module
+
+```bash
+lsmod | grep wireguard
+sudo modprobe wireguard
+sudo apt install wireguard
+```
+
+### 4. Restart WireGuard
+
+```bash
+sudo systemctl restart wg-quick@wg0
+```
+
+### 5. Check Firewall
+
+```bash
+# Ensure UDP port is open
+sudo ufw allow 51820/udp
+# Or firewalld
+sudo firewall-cmd --add-port=51820/udp --permanent
+```
+
+## Examples
+
+```bash
+$ sudo wg show wg0
+interface: wg0
+  public key: abc123...
+  private key: (hidden)
+  listening port: 51820
+
+peer: def456...
+  endpoint: 203.0.113.1:51820
+  allowed ips: 10.0.0.0/24
+  latest handshake: 1 minute ago
+  transfer: 123.45 MiB received, 67.89 MiB sent
+
+$ sudo wg show wg0 | grep handshake
+  latest handshake: 5 minutes ago
+# If no handshake, peers cannot communicate
+```

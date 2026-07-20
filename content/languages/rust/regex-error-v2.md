@@ -7,69 +7,47 @@ severities: ["error"]
 weight: 5
 ---
 
-# regex Pattern Compilation Error Fix
+# Regex Error
 
-Fix regex pattern compilation errors. Handle invalid patterns, capture group issues, and performance pitfalls.
-
-## What This Error Means
-
-regex compilation errors occur when the pattern string is not valid:
-
-```
-regex::Error: regex parse error: unclosed group
-regex::Error: repetition operator must follow a valid repetition expression
-```
+Regex errors occur when using the `regex` crate — malformed patterns and performance issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Unclosed parentheses
-let re = Regex::new(r"(\d+\.\d+)"; // Missing closing paren
+// Invalid regex syntax
+let re = Regex::new(r"[invalid")?; // Unclosed bracket
 
-// Cause 2: Invalid repetition syntax
-let re = Regex::new(r"\d+*"); // * after +
-
-// Cause 3: Unescaped special characters
-let re = Regex::new(r"price: $5.00"); // $ is special
-
-// Cause 4: Empty pattern
-// Cause 5: Unicode issues in pattern
+// Catastrophic backtracking
+let re = Regex::new(r"(a+)+b")?;
+re.captures("aaaaaaaaaaaaaaaaaaac"); // Hangs
 ```
 
 ## How to Fix
 
-### Fix 1: Escape special characters with \Q...\E
+1. **Validate regex patterns**
 
 ```rust
 use regex::Regex;
 
-// Use \Q...\E to escape all special characters
-let re = Regex::new(r"\Qprice: $5.00\E").unwrap();
+match Regex::new(r"\d{3}-\d{4}") {
+    Ok(re) => println!("Pattern compiled"),
+    Err(e) => eprintln!("Invalid pattern: {}", e),
+}
 ```
 
-### Fix 2: Compile patterns once with lazy_static
+2. **Use atomic groups to prevent backtracking**
 
 ```rust
-use regex::Regex;
-use std::sync::LazyLock;
+use regex::bytes::Regex;
 
-static EMAIL_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
-        .expect("Invalid email regex")
-});
+let re = Regex::new(r"(?>a+)b")?;
 ```
 
-### Fix 3: Use named capture groups for clarity
+3. **Use simpler patterns**
 
 ```rust
-use regex::Regex;
-
-let re = Regex::new(
-    r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})"
-).unwrap();
-
-let caps = re.captures("2024-01-15").unwrap();
-println!("Year: {}", &caps["year"]);
+// Instead of (a+)+b
+let re = Regex::new(r"a+b")?;
 ```
 
 ## Examples
@@ -77,29 +55,22 @@ println!("Year: {}", &caps["year"]);
 ```rust
 use regex::Regex;
 
-fn extract_numbers(input: &str) -> Vec<i64> {
-    let re = Regex::new(r"-?\d+").unwrap();
-    re.find_iter(input)
-        .filter_map(|m| m.as_str().parse().ok())
-        .collect()
-}
-
-fn validate_email(email: &str) -> bool {
-    let re = Regex::new(r"(?i)^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$").unwrap();
-    re.is_match(email)
-}
-
 fn main() {
-    let text = "The price is $42 and quantity is 100";
-    let numbers = extract_numbers(text);
-    println!("Numbers: {:?}", numbers); // [42, 100]
+    let re = Regex::new(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})").unwrap();
+    let text = "The date is 2024-01-15, tomorrow is 2024-01-16.";
 
-    println!("Valid email: {}", validate_email("user@example.com")); // true
+    for cap in re.captures_iter(text) {
+        println!("Date: {}-{}-{}",
+            &cap["year"], &cap["month"], &cap["day"]);
+    }
+
+    let has_email = Regex::new(r"\w+@\w+\.\w+").unwrap();
+    println!("Has email: {}", has_email.is_match(text));
 }
 ```
 
 ## Related Errors
 
-- [Regex Error]({{< relref "/languages/rust/regex-error" >}}) — regex error
-- [Parse Int]({{< relref "/languages/rust/parse-int" >}}) — parse int error
-- [Invalid URL]({{< relref "/languages/rust/invalid-url" >}}) — invalid URL
+- [Regex Error v2]({{< relref "/languages/rust/regex-error-v2" >}}) — regex v2
+- [String Error]({{< relref "/languages/rust/rust-string-error-rs" >}}) — string ops
+- [Iterator Error]({{< relref "/languages/rust/rust-iter-error" >}}) — iteration

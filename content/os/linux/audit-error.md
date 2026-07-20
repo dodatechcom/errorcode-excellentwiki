@@ -7,29 +7,60 @@ error-types: ["process-error"]
 weight: 8
 ---
 
-# Linux: audit-error — audit system error
+# Linux: Audit Error
 
-Fix Linux audit-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Audit errors occur when the Linux Audit framework fails to log events or the audit daemon encounters issues.
 
 ## Common Causes
 
-- Audit log full
-- Rule not applied
-- Daemon not running
-- Watch failed
+- Audit daemon (auditd) not running
+- Disk full on audit log partition
+- Audit rules syntax error
+- Kernel audit buffer overflow
+- SELinux/AppArmor blocking audit events
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/audit-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Audit Status
 
-## Common Scenarios
+```bash
+sudo systemctl status auditd
+sudo auditctl -s
+```
 
-- Audit not working
-- Rules not applied
-- Log full
+### 2. Check Audit Logs
 
-## Prevent It
+```bash
+sudo ausearch -ts today | tail -30
+sudo tail /var/log/audit/audit.log
+```
 
-- Monitor audit logs
-- Set rotation
-- Configure rules properly
+### 3. Check Disk Space
+
+```bash
+df -h /var/log/audit/
+sudo auditctl -b 8192
+```
+
+### 4. Reload Rules
+
+```bash
+sudo auditctl -R /etc/audit/rules.d/audit.rules
+sudo systemctl restart auditd
+```
+
+## Examples
+
+```bash
+$ sudo auditctl -s
+enabled 1
+failure 1
+pid 12345
+rate_limit 0
+backlog_limit 64
+lost 5
+backlog 0
+
+$ sudo ausearch -m AVC -ts today
+<no matches>
+```

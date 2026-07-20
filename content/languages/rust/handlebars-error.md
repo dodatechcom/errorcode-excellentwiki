@@ -7,75 +7,63 @@ severities: ["error"]
 weight: 5
 ---
 
-# handlebars Template Error
+# Handlebars Error
 
-Fix handlebars template errors. Handle template parsing, helper registration, and rendering issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Handlebars errors occur when using the `handlebars` crate for template rendering — missing variables and template syntax errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Missing template variable
+let mut hbs = Handlebars::new();
+hbs.register_template_string("t1", "Hello {{name}}")?;
+hbs.render("t1", &json!({}))?; // name is missing
+
+// Invalid template syntax
+hbs.register_template_string("t2", "Hello {{name")?; // Unclosed
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Set strict mode or provide defaults**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use handlebars::Handlebars;
+use serde_json::json;
+
+let mut hbs = Handlebars::new();
+hbs.register_template_string("greeting", "Hello {{name}}")?;
+
+// Use default values in template
+hbs.register_template_string("t", "Hello {{default name "World"}}")?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle render errors**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match hbs.render("greeting", &json!({"name": "Rust"})) {
+    Ok(output) => println!("{}", output),
+    Err(e) => eprintln!("Template error: {}", e),
 }
-```
-
-### Fix 3: Add timeout and retry logic
-
-```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use handlebars::Handlebars;
+use serde_json::json;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let mut hbs = Handlebars::new();
+    hbs.register_template_string("hello", "Hello, {{name}}! You have {{count}} messages.").unwrap();
+
+    let data = json!({"name": "Alice", "count": 5});
+    println!("{}", hbs.render("hello", &data).unwrap());
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tera Error]({{< relref "/languages/rust/tera-error" >}}) — tera templates
+- [Askama Error]({{< relref "/languages/rust/askama-error" >}}) — askama templates
+- [Maud Error]({{< relref "/languages/rust/maud-error" >}}) — maud templates

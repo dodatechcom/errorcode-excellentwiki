@@ -9,57 +9,98 @@ weight: 5
 
 # ent Mutation Error
 
-Fix ent ORM mutation errors. Handle entity creation, graph traversal, and schema mutations..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `ent` ORM framework for Go fails during entity mutation operations when schema definitions are incomplete, required fields are missing, unique constraints are violated, or edge traversals point to non-existent records. ent uses code generation, so many errors are caught at compile time, but runtime mutation errors still occur.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Required field not set
+client.User.Create().
+    SetName("Alice").
+    // forgot SetEmail — required field
+    Save(ctx)
+// ent: field "email" is required
+
+// Cause 2: Unique constraint violation
+client.User.Create().
+    SetEmail("alice@example.com").
+    Save(ctx) // first insert OK
+client.User.Create().
+    SetEmail("alice@example.com").
+    Save(ctx) // unique_violation: duplicate email
+
+// Cause 3: Edge not loaded — N+1 or nil pointer
+user, _ := client.User.Get(ctx, 1)
+fmt.Println(user.Edges.Pets) // empty — not loaded with QueryPets()
+
+// Cause 4: Transaction rollback on constraint violation
+tx, _ := client.Tx(ctx)
+tx.User.Create().SetEmail("a@b.com").Save(ctx)
+tx.User.Create().SetEmail("a@b.com").Save(ctx) // duplicate, tx rolled back
+
+// Cause 5: Mutation on soft-deleted entity
+client.User.Update().Where(user.ID(1)).SetAge(30).Exec(ctx)
+// entity already soft-deleted, no rows affected
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Use mutation builder with all required fields
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "fmt"
+    "log"
 
-### Fix 2: Add proper error handling
+    "your-project/ent"
+    "your-project/ent/user"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func createUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
+    u, err := client.User.Create().
+        SetName("Alice").
+        SetEmail("alice@example.com").
+        SetAge(30).
+        Save(ctx)
+    if err != nil {
+        return nil, fmt.Errorf("create user: %w", err)
+    }
+    return u, nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Handle unique constraint violations gracefully
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func createOrUpdateUser(ctx context.Context, client *ent.Client, name, email string) (*ent.User, error) {
+    u, err := client.User.Create().
+        SetName(name).
+        SetEmail(email).
+        Save(ctx)
+    if ent.IsConstraintError(err) {
+        // Update existing user instead
+        return client.User.Update().
+            Where(user.EmailEQ(email)).
+            SetName(name).
+            Save(ctx)
     }
+    return u, err
+}
+```
+
+### Fix 3: Use eager loading for edges
+
+```go
+users, err := client.User.
+    Query().
+    WithPets(func(q *ent.PetQuery) {
+        q.WithOwner() // nested eager loading
+    }).
+    All(ctx)
+
+for _, u := range users {
+    fmt.Printf("User: %s, Pets: %d\n", u.Name, len(u.Edges.Pets))
 }
 ```
 
@@ -72,23 +113,49 @@ import (
     "context"
     "fmt"
     "log"
-    "time"
+
+    "your-project/ent"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    client, err := ent.Open("sqlite3", "file:ent.db?mode=memory")
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    defer client.Close()
+
+    ctx := context.Background()
+
+    // Create schema
+    if err := client.Schema.Create(ctx); err != nil {
+        log.Fatal(err)
+    }
+
+    // Create a user
+    u, err := client.User.Create().
+        SetName("Alice").
+        SetEmail("alice@example.com").
+        Save(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Created user: %d - %s\n", u.ID, u.Name)
+
+    // Query with condition
+    users, err := client.User.Query().
+        Where(user.NameContains("Ali")).
+        All(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    for _, u := range users {
+        fmt.Printf("Found: %s\n", u.Name)
+    }
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [sql-no-rows]({{< relref "/languages/go/sql-no-rows-2" >}}) — entity not found during query
+- [go-pgerror]({{< relref "/languages/go/go-pgerror" >}}) — underlying PostgreSQL constraint violations
+- [invalid-memory-address]({{< relref "/languages/go/invalid-memory-address" >}}) — nil pointer on unloaded edge

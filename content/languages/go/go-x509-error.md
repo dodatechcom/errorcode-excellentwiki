@@ -9,57 +9,99 @@ weight: 5
 
 # crypto/x509 Certificate Error
 
-Fix Go x509 certificate errors. Handle certificate validation, chain verification, and format issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `crypto/x509` package fails during certificate verification when the certificate is expired, signed by an unknown CA, the hostname does not match the certificate CN/SAN, or the certificate chain is incomplete. X.509 errors are common in TLS clients connecting to services with self-signed or corporate CA certificates.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Unknown CA — self-signed cert not trusted
+resp, err := http.Get("https://self-signed.example.com")
+// x509: certificate signed by unknown authority
+
+// Cause 2: Hostname mismatch
+// Certificate CN=api.example.com, connecting to 192.168.1.1
+// x509: cannot validate certificate for 192.168.1.1
+
+// Cause 3: Expired certificate
+// Certificate valid: 2020-01-01 to 2021-01-01
+// x509: certificate has expired
+
+// Cause 4: Intermediate certificate missing
+// Server only sends leaf cert, not the full chain
+// x509: certificate signed by unknown authority
+
+// Cause 5: System certificate pool missing root CA
+// Custom Docker image with minimal CA bundle
+// x509: certificate signed by unknown authority
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Add custom CA certificate to TLS config
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "crypto/tls"
+    "crypto/x509"
+    "io/ioutil"
+    "net/http"
+)
 
-### Fix 2: Add proper error handling
+func customHTTPClient(caCertPath string) (*http.Client, error) {
+    caCert, err := ioutil.ReadFile(caCertPath)
+    if err != nil {
+        return nil, err
+    }
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+    caCertPool := x509.NewCertPool()
+    if !caCertPool.AppendCertsFromPEM(caCert) {
+        return nil, fmt.Errorf("failed to parse CA certificate")
+    }
+
+    client := &http.Client{
+        Transport: &http.Transport{
+            TLSClientConfig: &tls.Config{
+                RootCAs: caCertPool,
+            },
+        },
+    }
+    return client, nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Skip verification for development only
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+// WARNING: Do not use in production
+client := &http.Client{
+    Transport: &http.Transport{
+        TLSClientConfig: &tls.Config{
+            InsecureSkipVerify: true, // skip hostname and CA verification
+        },
+    },
+}
+```
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+### Fix 3: Verify certificate chain properly
+
+```go
+func verifyCert(certPEM, caPEM []byte) error {
+    caCertPool := x509.NewCertPool()
+    caCertPool.AppendCertsFromPEM(caPEM)
+
+    block, _ := pem.Decode(certPEM)
+    cert, err := x509.ParseCertificate(block.Bytes)
+    if err != nil {
+        return err
     }
+
+    opts := x509.VerifyOptions{
+        Roots:     caCertPool,
+        KeyUsages: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth},
+    }
+
+    _, err = cert.Verify(opts)
+    return err
 }
 ```
 
@@ -69,26 +111,44 @@ if err != nil {
 package main
 
 import (
-    "context"
+    "crypto/tls"
+    "crypto/x509"
     "fmt"
+    "io/ioutil"
     "log"
-    "time"
+    "net/http"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    caCert, err := ioutil.ReadFile("ca.pem")
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+
+    caCertPool := x509.NewCertPool()
+    caCertPool.AppendCertsFromPEM(caCert)
+
+    client := &http.Client{
+        Transport: &http.Transport{
+            TLSClientConfig: &tls.Config{
+                RootCAs: caCertPool,
+            },
+        },
+    }
+
+    resp, err := client.Get("https://api.example.com/secure")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer resp.Body.Close()
+
+    body, _ := ioutil.ReadAll(resp.Body)
+    fmt.Println(string(body))
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [tls-handshake]({{< relref "/languages/go/tls-handshake-error" >}}) — TLS handshake fails at transport level
+- [go-pkcs-error]({{< relref "/languages/go/go-pkcs-error" >}}) — PKCS#12 certificate loading fails
+- [go-crypto-error]({{< relref "/languages/go/go-crypto-error" >}}) — general crypto operation failures

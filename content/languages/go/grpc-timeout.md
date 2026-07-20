@@ -9,58 +9,101 @@ weight: 5
 
 # gRPC DeadlineExceeded
 
-Fix Go gRPC deadline exceeded errors. Handle timeouts, context deadlines, and slow responses..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+A gRPC client receives `codes.DeadlineExceeded` when the RPC call takes longer than the configured deadline. This is gRPC's version of a timeout — every RPC should have a deadline to prevent resource exhaustion and slow cascading failures.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: No deadline set on context
+ctx := context.Background()
+resp, err := client.GetData(ctx, req)
+// no timeout — may run forever
+
+// Cause 2: Deadline too short for the operation
+ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+defer cancel()
+resp, err := client.GetData(ctx, req)
+// operation takes 200ms, deadline of 100ms exceeded
+
+// Cause 3: Server processing too slow
+// Server does heavy computation, deadline is tight
+// DeadlineExceeded at client, server still processing
+
+// Cause 4: Clock skew between client and server
+// Client deadline set for 5s, but clock skew causes premature expiry
+
+// Cause 5: Deadline set but not propagated to downstream calls
+func getData(ctx context.Context) {
+    newCtx := context.Background() // lost original deadline
+    client.Call(newCtx, req) // no timeout
+}
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Always set deadline on context
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "time"
 
-### Fix 2: Add proper error handling
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func callWithTimeout(addr string, req *pb.Request) (*pb.Response, error) {
+    conn, err := grpc.Dial(addr,
+        grpc.WithTransportCredentials(insecure.NewCredentials()),
+    )
+    if err != nil {
+        return nil, err
+    }
+    defer conn.Close()
+
+    client := pb.NewDataServiceClient(conn)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+
+    return client.GetData(ctx, req)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use deadline propagation for chained calls
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+func handleRequest(ctx context.Context, req *pb.Request) (*pb.Response, error) {
+    // Original deadline propagates to downstream calls
+    ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+    defer cancel()
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    user, err := userClient.GetUser(ctx, &pb.GetUserRequest{Id: req.UserId})
+    if err != nil {
+        return nil, err // deadline exceeded propagates
+    }
+
+    return client.GetData(ctx, &pb.GetDataRequest{User: user})
+}
+```
+
+### Fix 3: Use per-RPC timeout with interceptors
+
+```go
+func timeoutInterceptor() grpc.UnaryClientInterceptor {
+    return func(ctx context.Context, method string, req, reply interface{},
+        cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+
+        ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+        defer cancel()
+
+        return invoker(ctx, method, req, reply, cc, opts...)
     }
 }
+
+conn, _ := grpc.Dial(addr,
+    grpc.WithUnaryInterceptor(timeoutInterceptor()),
+)
 ```
 
 ## Examples
@@ -70,25 +113,36 @@ package main
 
 import (
     "context"
-    "fmt"
     "log"
     "time"
+
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/status"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    conn, _ := grpc.Dial("localhost:50051", grpc.WithInsecure())
+    defer conn.Close()
+
+    client := pb.NewMyServiceClient(conn)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
     defer cancel()
 
-    result, err := doWork(ctx)
+    resp, err := client.DoWork(ctx, &pb.WorkRequest{Data: "test"})
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        if st, ok := status.FromError(err); ok && st.Code() == codes.DeadlineExceeded {
+            log.Fatal("RPC timed out")
+        }
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    log.Printf("Response: %v", resp)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [context-deadline-exceeded]({{< relref "/languages/go/context-deadline" >}}) — Go context deadline exceeded
+- [grpc-unavailable]({{< relref "/languages/go/grpc-unavailable" >}}) — server unreachable
+- [http-timeout]({{< relref "/languages/go/http-timeout" >}}) — HTTP client timeout

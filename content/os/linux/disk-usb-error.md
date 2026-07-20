@@ -6,30 +6,53 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 6
 ---
+# Linux: USB Storage Error
 
-# Linux: disk-usb-error — USB disk error
-
-Fix Linux disk-usb-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+USB storage errors occur when USB-connected drives fail to initialize, mount, or maintain connection.
 
 ## Common Causes
 
-- Device not recognized
-- Mount failed
-- Transfer error
-- Power issue
+- Insufficient power delivery over USB port (especially bus-powered drives)
+- Faulty USB cable or damaged port
+- USB controller driver issues (xhci, ehci)
+- Drive using aggressive power management and not waking up
+- Filesystem not cleanly unmounted causing corruption
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-usb-error.md' mode='w' encoding='UTF-8'>
+### 1. Check USB Device Detection
 
-## Common Scenarios
+```bash
+lsusb
+sudo lsusb -t
+sudo usb-devices
+```
 
-- USB disk not found
-- Mount failed
-- Transfer error
+### 2. Check Kernel Messages
 
-## Prevent It
+```bash
+dmesg | grep -iE "usb|sd" | grep -iE "error|fail|reset" | tail -30
+```
 
-- Check USB connection
-- Verify device is recognized
-- Safely remove
+### 3. Disable USB Auto-Suspend
+
+```bash
+echo "N" | sudo tee /sys/module/usbcore/parameters/autosuspend
+```
+
+### 4. Reset USB Device
+
+```bash
+# Unbind and rebind 
+echo "1-2" | sudo tee /sys/bus/usb/drivers/usb/unbind
+echo "1-2" | sudo tee /sys/bus/usb/drivers/usb/bind
+```
+
+## Examples
+
+```bash
+$ dmesg | grep usb | tail -3
+[ 5678.901] usb 3-2: new high-speed USB device number 5 using xhci_hcd
+[ 5679.012] usb 3-2: device descriptor read/64, error -110
+[ 5679.234] usb 3-2: device not accepting address 5, error -110
+```

@@ -9,57 +9,90 @@ weight: 5
 
 # Terraform Provider Error
 
-Fix Terraform provider errors in Go. Handle provider initialization, resource CRUD operations, and state management..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The Terraform Go SDK (`github.com/hashicorp/terraform-plugin-sdk`) fails when provider resource schemas are wrong, CRUD functions return unexpected errors, state is not properly refreshed, or the provider binary is not correctly built. Terraform providers are Go binaries that implement a specific protocol.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Schema definition missing required attribute
+schema := map[string]*schema.Schema{
+    "name": {
+        Type:     schema.TypeString,
+        Required: true,
+    },
+    // "email" required by API but not in schema
+}
+
+// Cause 2: CRUD function returns error that Terraform cannot retry
+func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
+    user, err := api.CreateUser(params)
+    if err != nil {
+        return fmt.Errorf("creating user: %w", err)
+    }
+    d.SetId(user.ID) // must set ID even on partial success
+}
+
+// Cause 3: State not refreshed properly
+func resourceUserRead(d *schema.ResourceData, meta interface{}) error {
+    user, err := api.GetUser(d.Id())
+    if err != nil {
+        return err // should check for 404 and d.SetId("") for destroy
+    }
+}
+
+// Cause 4: Missing ImportState implementation
+// terraform import fails without ImportState
+
+// Cause 5: Provider binary not in correct path
+// Plugin binary must be in ~/.terraform.d/plugins/ or TF_PLUGIN_DIR
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Define complete resource schema
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-### Fix 2: Add proper error handling
-
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func resourceUser() *schema.Resource {
+    return &schema.Resource{
+        CreateContext: resourceUserCreate,
+        ReadContext:   resourceUserRead,
+        UpdateContext: resourceUserUpdate,
+        DeleteContext: resourceUserDelete,
+        Importer: &schema.ResourceImporter{
+            StateContext: schema.ImportStatePassthroughContext,
+        },
+        Schema: map[string]*schema.Schema{
+            "name": {
+                Type:     schema.TypeString,
+                Required: true,
+            },
+            "email": {
+                Type:     schema.TypeString,
+                Required: true,
+            },
+        },
+    }
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Handle 404 in Read for proper destroy flow
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func resourceUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+    client := meta.(*api.Client)
+    user, err := client.GetUser(d.Id())
+    if err != nil {
+        if strings.Contains(err.Error(), "404") {
+            d.SetId("")
+            return nil // resource destroyed externally
+        }
+        return diag.FromErr(err)
     }
+    d.Set("name", user.Name)
+    d.Set("email", user.Email)
+    return nil
 }
 ```
 
@@ -69,26 +102,25 @@ if err != nil {
 package main
 
 import (
-    "context"
-    "fmt"
-    "log"
-    "time"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+    "github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+    plugin.Serve(&plugin.ServeOpts{
+        ProviderFunc: func() *schema.Provider {
+            return &schema.Provider{
+                ResourcesMap: map[string]*schema.Resource{
+                    "example_user": resourceUser(),
+                },
+            }
+        },
+    })
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-migrate-error]({{< relref "/languages/go/go-migrate-error" >}}) — database migration similar to infrastructure migration
+- [json-unmarshal]({{< relref "/languages/go/json-unmarshal" >}}) — Terraform state JSON parsing errors
+- [go-vault-error]({{< relref "/languages/go/go-vault-error" >}}) — Vault provider authentication

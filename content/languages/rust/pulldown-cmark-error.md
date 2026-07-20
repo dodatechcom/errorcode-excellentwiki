@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# pulldown-cmark Markdown Parse Error
+# Pulldown Cmark Error
 
-Fix pulldown-cmark markdown parsing errors. Handle malformed markdown, extension issues, and rendering..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Pulldown cmark errors occur when using the `pulldown-cmark` crate for Markdown parsing — malformed input and rendering issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Unmatched HTML tags in Markdown
+let parser = Parser::new("<div>unclosed");
+
+// Invalid reference links
+let input = "[text][missing-ref]";
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Sanitize input before parsing**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use pulldown_cmark::{Parser, html};
+
+let input = "# Hello
+
+This is **bold** and *italic*.";
+let parser = Parser::new(input);
+let mut html_output = String::new();
+html::push_html(&mut html_output, parser);
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle options correctly**
 
 ```rust
-use anyhow::Result;
+use pulldown_cmark::{Parser, Options, html};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let mut opts = Options::empty();
+opts.insert(Options::ENABLE_TABLES);
+opts.insert(Options::ENABLE_STRIKETHROUGH);
+let parser = Parser::new_ext(input, opts);
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Escape special characters**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let safe_input = input.replace('<', "&lt;").replace('>', "&gt;");
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use pulldown_cmark::{Parser, Options, html};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let input = r#"# Title
+
+| Column 1 | Column 2 |
+|----------|----------|
+| cell 1   | cell 2   |
+
+- Item 1
+- Item 2
+"#;
+
+    let mut opts = Options::empty();
+    opts.insert(Options::ENABLE_TABLES);
+    let parser = Parser::new_ext(input, opts);
+    let mut html_output = String::new();
+    html::push_html(&mut html_output, parser);
+    println!("{}", html_output);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Comrak Error]({{< relref "/languages/rust/comrak-error" >}}) — CommonMark parser
+- [Tera Error]({{< relref "/languages/rust/tera-error" >}}) — templating
+- [Handlebars Error]({{< relref "/languages/rust/handlebars-error" >}}) — templating

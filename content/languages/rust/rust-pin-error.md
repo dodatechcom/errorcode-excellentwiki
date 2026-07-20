@@ -10,64 +10,119 @@ comments: true
 
 # Pin Error
 
-Fix Pin reference errors. Resolve pinned projection, Unpin trait bounds, and self-referential struct issues.
+Pin errors occur when working with `std::pin::Pin` — unpinned values, self-referential struct issues, or calling methods that require Unpin on pinned data.
 
-## Why It Happens
-
-- Pinned value implements Drop and Unpin
-- Pin projection is implemented incorrectly
-- Self-referential struct is moved after pinning
-- Pin<&mut T> is unpinned through unsafe code
-
-## Common Error Messages
-
-- `error: pin failed`
-- `thread panicked at 'Pin type operation failed'`
-- `Error: unable to complete Pin type operation`
-- `Fatal: Pin type configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure Pin type is properly configured
-use Pin_type::prelude::*;
+use std::pin::Pin;
+use std::future::Future;
 
-fn main() {
-    // Initialize properly
-    println!("Correct Pin type configuration");
+// Trying to move a pinned value
+fn bad_move(pinned: Pin<&mut i32>) {
+    let moved = *pinned; // ERROR: cannot move out of pinned reference
+}
+
+// Self-referential struct — cannot be safely constructed
+struct MyFuture {
+    data: String,
+    // ptr: *const String, // Would point into data — self-referential
+}
+
+// Missing Unpin — some futures need explicit unpinning
+async fn needs_unpin(future: impl Future<Output = i32> + Unpin) {}
+```
+
+## How to Fix
+
+1. **Use `Box::pin` to create heap-pinned values**
+
+```rust
+use std::pin::Pin;
+use std::future::Future;
+
+fn make_pinned() -> Pin<Box<dyn Future<Output = i32>>> {
+    Box::pin(async { 42 })
+}
+
+#[tokio::main]
+async fn main() {
+    let result = make_pinned().await;
+    println!("Result: {}", result);
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Implement `Unpin` when your type is safe to move**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use std::pin::Pin;
+use std::task::{Context, Poll};
+
+struct MyFuture { value: i32 }
+
+impl std::future::Future for MyFuture {
+    type Output = i32;
+    fn poll(self: Pin<&mut Self>, _cx: &mut Context) -> Poll<i32> {
+        Poll::Ready(self.value) // self is safe to access because MyFuture is Unpin
+    }
+}
+
+// MyFuture automatically implements Unpin because all fields are Unpin
+```
+
+3. **Use `pin!` macro or `pin_project` for safe pin projections**
+
+```rust
+use std::pin::pin;
+use std::future::Future;
+
+async fn example() {
+    let future = pin!(async { 42 });
+    let result = future.await;
+    println!("{}", result);
 }
 ```
 
-### Fix 3: Add proper error context
+## Examples
 
 ```rust
-use std::error::Error;
+use std::pin::Pin;
+use std::task::{Context, Poll};
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+struct CountDown {
+    count: u32,
+}
+
+impl CountDown {
+    fn new(count: u32) -> Pin<Box<Self>> {
+        Box::pin(CountDown { count })
+    }
+}
+
+impl std::future::Future for CountDown {
+    type Output = String;
+
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<String> {
+        if self.count == 0 {
+            Poll::Ready("Done!".to_string())
+        } else {
+            println!("Count: {}", self.count);
+            self.count -= 1;
+            cx.waker().wake_by_ref();
+            Poll::Pending
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() {
+    let result = CountDown::new(3).await;
+    println!("{}", result);
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. Setting up a new project with Pin type
-2. Integrating Pin type into an existing codebase
-3. Upgrading Pin type to a newer version
-
-## Prevent It
-
-- Read the Pin type documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Future Error]({{< relref "/languages/rust/rust-future-error" >}}) — future issues
+- [Poll Error]({{< relref "/languages/rust/rust-poll-error" >}}) — polling issues
+- [Waker Error]({{< relref "/languages/rust/rust-waker-error" >}}) — waker issues

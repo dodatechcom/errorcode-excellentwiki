@@ -7,29 +7,60 @@ error-types: ["kernel-error"]
 weight: 10
 ---
 
-# Linux: kernel-hung-task-timeout — Task hung for more than 120 seconds
+# Linux: Kernel Hung Task Timeout Error
 
-Fix Linux kernel-hung-task-timeout errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Kernel hung task timeout errors occur when the kernel encounters issues with hung task timeout operations or subsystem components.
 
 ## Common Causes
 
-- Process in D state
-- Slow/failing disk I/O
-- NFS not responding
-- Kernel deadlock
+- Hardware incompatibility or failure affecting hung task timeout
+- Kernel module or driver bugs in the hung task timeout subsystem
+- Insufficient system resources or configuration limits
+- Firmware or microcode issues
+- Kernel parameter misconfiguration
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/kernel-hung-task-timeout.md' mode='w' encoding='UTF-8'>
+### 1. Check Kernel Logs
 
-## Common Scenarios
+```bash
+sudo dmesg | grep -i "hung-task-timeout" | tail -30
+sudo journalctl -k --no-pager -n 50 | grep -i "hung-task-timeout"
+```
 
-- Processes stuck in D state
-- Task blocked warnings
-- Slow disk causing hangs
+### 2. Check Kernel Parameters
 
-## Prevent It
+```bash
+cat /proc/cmdline
+sysctl -a 2>/dev/null | grep -i "hung-task-timeout"
+```
 
-- Investigate I/O/network
-- Check disk health
-- Ensure NFS responsive
+### 3. Update or Reconfigure
+
+```bash
+# Update kernel
+sudo apt update && sudo apt install linux-image-$(uname -r)
+# Or adjust kernel parameters
+sudo sysctl -w <parameter>=<value>
+```
+
+### 4. Check Hardware Status
+
+```bash
+sudo lspci -vvv | grep -i "hung-task-timeout" | head -20
+sudo lsusb -v 2>/dev/null | grep -i "hung-task-timeout" | head -10
+```
+
+## Examples
+
+```bash
+$ dmesg | grep -i "hung-task-timeout" | tail -5
+[12345.678] kernel: hung-task-timeout error detected on device
+[12345.679] kernel: hung-task-timeout subsystem: failed to initialize
+
+$ cat /proc/cmdline
+BOOT_IMAGE=/vmlinuz-... root=... ro quiet
+
+# Adjust kernel parameter and reboot
+$ echo "<parameter>=<value>" | sudo tee -a /etc/sysctl.d/99-hung-task-timeout.conf
+```

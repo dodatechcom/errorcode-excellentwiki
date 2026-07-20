@@ -7,101 +7,80 @@ severities: ["error"]
 weight: 5
 ---
 
-# hyper HTTP/1.1 Connection Error
+# Hyper Error
 
-Fix hyper HTTP/1.1 connection errors. Handle connection pool issues, keep-alive failures, and HTTP version errors.
-
-## What This Error Means
-
-hyper HTTP/1.1 connection errors occur when the HTTP client or server encounters connection-level issues:
-
-```
-hyper::Error(IncompleteMessage)
-hyper::Error(Closed)
-hyper::Error(Parse(TooLarge))
-```
+Hyper errors occur when using the `hyper` crate for HTTP — connection errors, request/response parsing failures, and body handling issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Server closed connection before response was received
-// Cause 2: Response body too large for parser buffer
-// Cause 3: Keep-alive timeout on server side
-// Cause 4: HTTP version mismatch (client sends HTTP/2, server expects 1.1)
-// Cause 5: Malformed HTTP headers from server
+// Connection refused
+let client = Client::new();
+let resp = client.get("http://localhost:9999".parse()?).await?;
+
+// Body already consumed
+let body = resp.into_body();
+let data = body.try_into_bytes()?;
+// body.try_into_bytes()?; // ERROR: already consumed
 ```
 
 ## How to Fix
 
-### Fix 1: Configure connection pooling properly
+1. **Handle connection errors with retries**
 
 ```rust
-use hyper_util::client::legacy::Client;
-use hyper_util::rt::TokioExecutor;
-
-let client: Client<hyper_util::client::legacy::connect::HttpConnector, _> =
-    Client::builder(TokioExecutor::new())
-        .pool_idle_timeout(std::time::Duration::from_secs(30))
-        .pool_max_idle_per_host(10)
-        .http1_keep_alive(true)
-        .http1_only()
-        .build_http();
-```
-
-### Fix 2: Set appropriate buffer limits
-
-```rust
-use hyper::server::conn::http1;
-
-let builder = http1::Builder::new()
-    .max_headers(100)
-    .header_read_timeout(std::time::Duration::from_secs(10));
-
-// Serve with the builder
-builder
-    .serve_connection(io, service)
-    .await?;
-```
-
-### Fix 3: Handle incomplete messages gracefully
-
-```rust
-use hyper::body::Body;
+use hyper::{Client, Uri};
 use http_body_util::BodyExt;
 
-async fn read_response<B: Body>(response: http::Response<B>) -> Result<Vec<u8>, hyper::Error> {
-    let body = response.into_body();
-    let bytes = body.collect().await?.to_bytes();
-    Ok(bytes.to_vec())
-}
+let client = Client::new();
+let uri: Uri = "http://httpbin.org/get".parse()?;
+let resp = client.get(uri).await?;
+let body = resp.into_body().collect().await?.to_bytes();
+```
+
+2. **Use proper body handling**
+
+```rust
+let body = resp.into_body();
+let data = body.collect().await?.to_bytes();
+println!("{}", String::from_utf8_lossy(&data));
+```
+
+3. **Use hyper-util for easier setup**
+
+```rust
+use hyper_util::rt::TokioIo;
+use tokio::net::TcpStream;
+
+let stream = TcpStream::connect("127.0.0.1:3000").await?;
+let io = TokioIo::new(stream);
 ```
 
 ## Examples
 
 ```rust
-use hyper::{Request, Response, Body, StatusCode};
-use hyper_util::rt::TokioExecutor;
+use hyper::{Client, Server};
+use hyper::service::{make_service_fn, service_fn};
+use http_body_util::Full;
+use bytes::Bytes;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let client = hyper_util::client::legacy::Client::builder(TokioExecutor::new())
-        .http1_only()
-        .pool_idle_timeout(std::time::Duration::from_secs(30))
-        .build_http();
-
-    let req = Request::builder()
-        .uri("http://httpbin.org/get")
-        .header("User-Agent", "my-app/1.0")
-        .body(Body::empty())?;
-
-    let resp = client.request(req).await?;
-    println!("Status: {}", resp.status());
+    let addr = ([127, 0, 0, 1], 3000).into();
+    let service = make_service_fn(|_| async {
+        Ok::<_, hyper::Error>(service_fn(|_req| async {
+            Ok::<_, hyper::Error>(
+                http::Response::new(Full::new(Bytes::from("Hello, Hyper!")))
+            )
+        }))
+    });
+    Server::bind(&addr).serve(service).await?;
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [H2 Error]({{< relref "/languages/rust/h2-error" >}}) — HTTP/2 error
-- [Hyper Util Error]({{< relref "/languages/rust/hyper-util-error" >}}) — hyper-util error
-- [Tonic Error]({{< relref "/languages/rust/tonic-error-v2" >}}) — tonic gRPC error
+- [Axum Error]({{< relref "/languages/rust/rust-axum-error" >}}) — Axum framework
+- [Warp Error]({{< relref "/languages/rust/rust-warp-error" >}}) — Warp framework
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network errors

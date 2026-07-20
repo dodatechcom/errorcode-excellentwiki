@@ -6,30 +6,56 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 6
 ---
+# Linux: SSHFS Error
 
-# Linux: disk-sshfs-error — SSHFS mount error
-
-Fix Linux disk-sshfs-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+SSHFS errors occur when mounting a remote filesystem over SSH using FUSE, often due to authentication or connection issues.
 
 ## Common Causes
 
-- SSH connection failed
-- Mount failed
-- Permission denied
-- Key not authorized
+- SSH connection to the remote host failing (wrong host, port, or credentials)
+- FUSE kernel module not loaded or sshfs not installed
+- Remote directory permissions preventing access
+- SSH key authentication failing (wrong key or passphrase)
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-sshfs-error.md' mode='w' encoding='UTF-8'>
+### 1. Verify SSH Connection
 
-## Common Scenarios
+```bash
+ssh user@remote_host
+```
 
-- SSHFS mount failed
-- SSH connection failed
-- Permission denied
+### 2. Install SSHFS
 
-## Prevent It
+```bash
+sudo apt install sshfs      # Debian/Ubuntu
+sudo dnf install fuse-sshfs # RHEL/Fedora
+```
 
-- Test SSH first
-- Use proper keys
-- Check permissions
+### 3. Mount the Directory
+
+```bash
+sshfs user@remote_host:/remote/path /local/mount
+
+# With custom port and key
+sshfs -p 2222 -o IdentityFile=~/.ssh/id_rsa user@remote_host:/remote/path /local/mount
+```
+
+### 4. Check FUSE Module
+
+```bash
+lsmod | grep fuse
+sudo modprobe fuse
+```
+
+## Examples
+
+```bash
+$ sshfs jdoe@backup-server:/home/jdoe /mnt/backup
+user@backup-server's password: 
+
+$ ls /mnt/backup
+documents  photos  backups
+
+$ fusermount -u /mnt/backup
+```

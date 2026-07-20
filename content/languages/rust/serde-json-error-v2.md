@@ -7,120 +7,82 @@ severities: ["error"]
 weight: 5
 ---
 
-# serde_json Unexpected End of Input Error
+# Serde JSON Error
 
-Fix serde_json unexpected end of input errors. Handle truncated JSON, incomplete streams, and encoding issues.
-
-## What This Error Means
-
-This error occurs when serde_json tries to parse JSON that is incomplete or truncated:
-
-```
-Error("EOF while parsing an object at line 1 column 42")
-Error("EOF while parsing an array at line 1 column 1")
-Error("unexpected end of input")
-```
+Serde JSON errors occur when using `serde_json` — invalid JSON syntax, trailing commas, and type mismatches.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Truncated HTTP response body
-let text = response.text().await?; // Incomplete JSON
-let data: MyStruct = serde_json::from_str(&text)?;
+// Trailing comma
+let v: Value = serde_json::from_str(r#"{"a": 1,}"#)?; // ERROR
 
-// Cause 2: Reading partial file contents
-let bytes = std::fs::read("data.json")?; // File was corrupted or truncated
-let data: MyStruct = serde_json::from_slice(&bytes)?;
-
-// Cause 3: Streaming JSON not fully received
-// Cause 4: Encoding issues cutting off multi-byte characters
+// Unexpected token
+let v: Value = serde_json::from_str(r#"{"a": 1 "#)?; // ERROR
 ```
 
 ## How to Fix
 
-### Fix 1: Validate JSON before deserializing
+1. **Ensure valid JSON**
 
 ```rust
 use serde_json::Value;
 
-fn parse_json_safely(input: &str) -> Result<Value, serde_json::Error> {
-    let trimmed = input.trim();
-    if trimmed.is_empty() {
-        return Err(serde_json::from_str::<Value>("{}").unwrap_err());
-    }
-    serde_json::from_str(trimmed)
-}
+let json = r#"{"key": "value", "number": 42}"#;
+let v: Value = serde_json::from_str(json)?;
 ```
 
-### Fix 2: Use a buffered reader for streaming
+2. **Handle type errors**
 
 ```rust
-use serde_json::from_reader;
-use std::io::BufReader;
+use serde::Deserialize;
 
-fn read_json_file(path: &str) -> Result<MyStruct, Box<dyn std::error::Error>> {
-    let file = std::fs::File::open(path)?;
-    let reader = BufReader::new(file);
-    let data: MyStruct = from_reader(reader)?;
-    Ok(data)
+#[derive(Deserialize)]
+struct Config {
+    name: String,
+    port: u16,
 }
+
+let json = r#"{"name": "app", "port": 3000}"#;
+let config: Config = serde_json::from_str(json)?;
 ```
 
-### Fix 3: Add validation after HTTP responses
+3. **Use Value for dynamic JSON**
 
 ```rust
-async fn fetch_json<T: serde::de::DeserializeOwned>(
-    url: &str,
-) -> Result<T, reqwest::Error> {
-    let response = reqwest::get(url).await?;
-    let text = response.text().await?;
+use serde_json::{json, Value};
 
-    if text.is_empty() {
-        return Err(reqwest::Error::new(
-            reqwest::StatusCode::OK,
-            "Empty response body",
-        ));
-    }
+let data = json!({
+    "name": "Alice",
+    "scores": [95, 87, 92]
+});
 
-    serde_json::from_str(&text)
-        .map_err(|e| reqwest::Error::new(
-            reqwest::StatusCode::OK,
-            format!("JSON parse error: {}", e),
-        ))
-}
+let name = data["name"].as_str().unwrap();
 ```
 
 ## Examples
 
 ```rust
-use serde::Deserialize;
-use serde_json;
+use serde_json::{json, Value};
 
-#[derive(Deserialize, Debug)]
-struct DataPoint {
-    timestamp: u64,
-    value: f64,
-}
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let data = json!({
+        "users": [
+            {"name": "Alice", "age": 30},
+            {"name": "Bob", "age": 25}
+        ]
+    });
 
-fn parse_batch(json: &str) -> Result<Vec<DataPoint>, serde_json::Error> {
-    let trimmed = json.trim();
-    if trimmed.is_empty() {
-        return Ok(Vec::new());
+    let users = data["users"].as_array().unwrap();
+    for user in users {
+        println!("{}: {}", user["name"], user["age"]);
     }
-    serde_json::from_str(trimmed)
-}
-
-fn main() {
-    let input = r#"[{"timestamp": 1640995200, "value": 42.0}]"#;
-    match parse_batch(input) {
-        Ok(data) => println!("Parsed {} data points", data.len()),
-        Err(e) => eprintln!("Parse error: {}", e),
-    }
+    Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Serde Error]({{< relref "/languages/rust/serde-error-v2" >}}) — serde deserialization error
-- [JSON Parse]({{< relref "/languages/rust/json-parse" >}}) — JSON parse error
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — timeout error
+- [TOML Error]({{< relref "/languages/rust/toml-error" >}}) — TOML
+- [YAML Error]({{< relref "/languages/rust/yaml-error" >}}) — YAML
+- [Serde Error]({{< relref "/languages/rust/serde-error" >}}) — core serde

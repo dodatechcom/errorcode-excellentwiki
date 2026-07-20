@@ -10,64 +10,118 @@ comments: true
 
 # String Error
 
-Fix String and &str errors. Resolve UTF-8, string conversion, and lifetime issues.
+String errors occur when working with `String` and `&str` — UTF-8 conversion failures, indexing mistakes, and lifetime issues.
 
-## Why It Happens
-
-- String is not valid UTF-8
-- String slice borrows invalid byte boundaries
-- String conversion from bytes fails
-- Lifetime of string slice is too short
-
-## Common Error Messages
-
-- `error: string failed`
-- `thread panicked at 'string types operation failed'`
-- `Error: unable to complete string types operation`
-- `Fatal: string types configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure string types is properly configured
-use string_types::prelude::*;
+// Indexing into a String
+let s = String::from("hello");
+let c = s[0]; // ERROR: cannot index String with usize
 
+// UTF-8 conversion failure
+let bytes = vec![0xFF, 0xFE];
+let s = String::from_utf8(bytes).unwrap(); // ERROR: invalid UTF-8
+
+// Moving out of String while borrowed
+let s = String::from("hello");
+let r = &s[..2];
+s.push_str(" world"); // ERROR: cannot mutate while borrowed
+
+// Slicing at non-character boundaries
+let s = "hello world";
+let hello = &s[0..4]; // ERROR: 'l' is 2 bytes, not at byte 4
+```
+
+## How to Fix
+
+1. **Use `chars()` for character iteration**
+
+```rust
+let s = String::from("hello");
+
+// Character iteration
+for c in s.chars() {
+    println!("{}", c);
+}
+
+// Character at index
+let third = s.chars().nth(2);
+println!("Third char: {:?}", third);
+
+// Character count
+println!("Chars: {}", s.chars().count());
+```
+
+2. **Handle UTF-8 conversion properly**
+
+```rust
+let bytes = vec![72, 101, 108, 108, 111]; // "Hello"
+
+// Fallible conversion
+match String::from_utf8(bytes) {
+    Ok(s) => println!("String: {}", s),
+    Err(e) => println!("Error: {} (bytes: {:?})", e, e.as_bytes()),
+}
+
+// Lossy conversion
+let bad_bytes = vec![0xFF, 0xFE, 72, 101];
+let s = String::from_utf8_lossy(&bad_bytes);
+println!("Lossy: {}", s); // "��He"
+```
+
+3. **Use proper string slicing**
+
+```rust
+let s = "hello world";
+
+// Byte slicing (be careful with UTF-8)
+let hello = &s[0..5]; // Safe: "hello" is all ASCII
+println!("{}", hello);
+
+// Safer: use char indices
+fn safe_slice(s: &str, start: usize, end: usize) -> &str {
+    let start = s.char_indices().nth(start).map(|(i, _)| i).unwrap_or(s.len());
+    let end = s.char_indices().nth(end).map(|(i, _)| i).unwrap_or(s.len());
+    &s[start..end]
+}
+
+println!("{}", safe_slice("héllo", 0, 3)); // "hél"
+```
+
+## Examples
+
+```rust
 fn main() {
-    // Initialize properly
-    println!("Correct string types configuration");
+    let s = String::from("Hello, 世界!");
+
+    // Iterate over chars
+    for c in s.chars() {
+        print!("[{}] ", c);
+    }
+    println!();
+
+    // Count words
+    let words: Vec<&str> = s.split_whitespace().collect();
+    println!("Words: {:?}", words);
+
+    // Replace
+    let replaced = s.replace("世界", "Rust");
+    println!("Replaced: {}", replaced);
+
+    // Start/end checks
+    println!("Starts with 'Hello': {}", s.starts_with("Hello"));
+    println!("Ends with '!': {}", s.ends_with('!'));
+
+    // Truncate
+    let mut owned = String::from("Hello, World!");
+    owned.truncate(5);
+    println!("Truncated: {}", owned);
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with string types
-2. Integrating string types into an existing codebase
-3. Upgrading string types to a newer version
-
-## Prevent It
-
-- Read the string types documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Collections Error]({{< relref "/languages/rust/rust-collections-error" >}}) — collection issues
+- [Iter Error]({{< relref "/languages/rust/rust-iter-error" >}}) — iterator issues
+- [Vec Error]({{< relref "/languages/rust/rust-vec-error" >}}) — vector issues

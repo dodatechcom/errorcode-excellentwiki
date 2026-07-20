@@ -6,30 +6,68 @@ severities: ["warning"]
 error-types: ["process-error"]
 weight: 6
 ---
+# Linux: Exec Format Error
 
-# Linux: exec-format-error — exec format error
-
-Fix Linux exec-format-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+"Exec format error" occurs when the kernel cannot execute a binary because of an invalid or unsupported format.
 
 ## Common Causes
 
-- Wrong architecture
-- Missing interpreter
-- Binary not executable
-- ELF error
+- Binary compiled for a different architecture (ARM vs x86, 32-bit vs 64-bit)
+- File is a script without proper shebang line (#!)
+- Binary is corrupted or truncated
+- No execute permission on the file
+- Missing interpreter (e.g., ELF binary needs ld-linux)
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/exec-format-error.md' mode='w' encoding='UTF-8'>
+### 1. Check File Type
 
-## Common Scenarios
+```bash
+file /path/to/binary
+```
 
-- Exec format error
-- Wrong architecture
-- Missing interpreter
+### 2. Check Architecture
 
-## Prevent It
+```bash
+# If 32-bit binary on 64-bit system, enable multiarch
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install libc6:i386
+```
 
-- Verify binary architecture
-- Check interpreter path
-- Set executable permission
+### 3. Check Permissions
+
+```bash
+chmod +x /path/to/binary
+```
+
+### 4. Check Shebang (for scripts)
+
+```bash
+head -1 /path/to/script
+# Should be like: #!/bin/bash or #!/usr/bin/python3
+```
+
+### 5. Check Interpreter
+
+```bash
+# For ELF binaries
+readelf -l /path/to/binary | grep interpreter
+# If missing, install appropriate libraries
+```
+
+## Examples
+
+```bash
+$ file ./hello
+./hello: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2
+
+$ ./hello
+-bash: ./hello: cannot execute binary file: Exec format error
+
+$ ./hello_arm
+-bash: ./hello_arm: cannot execute binary file: Exec format error
+
+$ file ./hello_arm
+./hello_arm: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV)
+```

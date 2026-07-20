@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# rayon Parallel Iteration Error
+# Rayon Error
 
-Fix rayon parallel iteration errors. Handle thread panics, join failures, and deadlock prevention..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Rayon errors occur when using the `rayon` crate for parallelism — panics in worker threads and deadlocks.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Panic in parallel iterator — poisons entire computation
+let result: Vec<_> = vec![1, 0, 3].par_iter()
+    .map(|x| 10 / x) // Panics on x=0
+    .collect();
+
+// Deadlock with rayon + Mutex
+let data = Arc::new(Mutex::new(Vec::new()));
+data.par_iter().for_each(|x| { // Cannot lock mutably while iterating
+    data.lock().unwrap().push(x);
+});
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle panics with catch_unwind**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use rayon::prelude::*;
+use std::panic::catch_unwind;
+
+let results: Vec<_> = (0..10).into_par_iter()
+    .filter_map(|i| catch_unwind(|| i * 2).ok())
+    .collect();
 ```
 
-### Fix 2: Add proper error handling
+2. **Avoid shared mutable state**
 
 ```rust
-use anyhow::Result;
+use rayon::prelude::*;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let results: Vec<i32> = (0..100).into_par_iter()
+    .map(|i| i * i)
+    .collect();
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use par_bridge for sequential iterators**
 
 ```rust
-use std::time::Duration;
+use rayon::prelude::*;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let items: Vec<i32> = (0..10).par_bridge()
+    .map(|i| i * 2)
+    .collect();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use rayon::prelude::*;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let words = vec!["hello", "world", "rust", "rayon"];
+
+    let upper: Vec<String> = words.par_iter()
+        .map(|w| w.to_uppercase())
+        .collect();
+
+    println!("{:?}", upper);
+
+    let sum: i32 = (1..=1000).into_par_iter().sum();
+    println!("Sum: {}", sum);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — async parallelism
+- [Crossbeam Error]({{< relref "/languages/rust/crossbeam-error" >}}) — concurrency
+- [Scoped Threadpool Error]({{< relref "/languages/rust/scoped-threadpool-error" >}}) — scoped threads

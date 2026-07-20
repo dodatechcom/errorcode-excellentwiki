@@ -9,57 +9,93 @@ weight: 5
 
 # Vault Permission Denied
 
-Fix HashiCorp Vault permission denied errors. Handle secret access, token renewal, and policy configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The HashiCorp Vault Go client (`github.com/hashicorp/vault/api`) returns permission denied when the client token lacks required policy capabilities, the token has expired, the secret engine path is wrong, or the namespace is not specified in Vault Enterprise. Vault enforces least-privilege by default.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Token lacks required policy capabilities
+client, _ := api.NewClient(&api.Config{Address: "https://vault:8200"})
+client.SetToken("s.old-token")
+secret, err := client.Logical().Read("secret/data/myapp")
+// permission denied
+
+// Cause 2: Token expired — no renewal
+// vault: permission denied (token is expired or invalid)
+
+// Cause 3: Wrong secret engine mount path
+client.Logical().Read("secret/myapp")      // KV v1
+client.Logical().Read("secret/data/myapp") // KV v2 — different mount
+
+// Cause 4: Namespace not set in Vault Enterprise
+// Missing: client.SetNamespace("admin")
+
+// Cause 5: AppRole login failed — wrong credentials
+auth := client.Logical().Write("auth/approle/login", map[string]interface{}{
+    "role_id":     "wrong-role-id",
+    "secret_id":   "wrong-secret-id",
+})
+// permission denied: invalid credentials
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Use AppRole authentication with token renewal
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "fmt"
+    "log"
+    "os"
+    "time"
 
-### Fix 2: Add proper error handling
+    "github.com/hashicorp/vault/api"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func vaultClient() (*api.Client, error) {
+    config := &api.Config{Address: os.Getenv("VAULT_ADDR")}
+    client, err := api.NewClient(config)
+    if err != nil {
+        return nil, err
+    }
+
+    secret, err := client.Logical().Write("auth/approle/login", map[string]interface{}{
+        "role_id":   os.Getenv("VAULT_ROLE_ID"),
+        "secret_id": os.Getenv("VAULT_SECRET_ID"),
+    })
+    if err != nil {
+        return nil, fmt.Errorf("approle login: %w", err)
+    }
+
+    client.SetToken(secret.Auth.ClientToken)
+
+    go func() {
+        for {
+            time.Sleep(secret.Auth.LeaseDuration * 2 / 3 * time.Second)
+            _, err := client.Auth().Token().RenewSelf(0)
+            if err != nil {
+                log.Printf("token renewal failed: %v", err)
+            }
+        }
+    }()
+
+    return client, nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use correct KV v2 paths
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func readSecretV2(client *api.Client, mount, path string) (map[string]interface{}, error) {
+    secret, err := client.Logical().Read(fmt.Sprintf("%s/data/%s", mount, path))
+    if err != nil {
+        return nil, err
     }
+    data, ok := secret.Data["data"].(map[string]interface{})
+    if !ok {
+        return nil, fmt.Errorf("unexpected secret format")
+    }
+    return data, nil
 }
 ```
 
@@ -69,26 +105,36 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
     "log"
-    "time"
+    "os"
+
+    "github.com/hashicorp/vault/api"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    config := &api.Config{Address: os.Getenv("VAULT_ADDR")}
+    client, err := api.NewClient(config)
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    client.SetToken(os.Getenv("VAULT_TOKEN"))
+
+    secret, err := client.Logical().Read("secret/data/myapp/config")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if secret == nil {
+        log.Fatal("secret not found")
+    }
+
+    data := secret.Data["data"].(map[string]interface{})
+    fmt.Println("db_password:", data["db_password"])
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-oauth-error]({{< relref "/languages/go/go-oauth-error" >}}) — OAuth token expiry similar to Vault token expiry
+- [go-jwt-error]({{< relref "/languages/go/go-jwt-error" >}}) — JWT token validation failures
+- [grpc-unauthenticated]({{< relref "/languages/go/grpc-unauthenticated" >}}) — gRPC auth interceptor rejects request

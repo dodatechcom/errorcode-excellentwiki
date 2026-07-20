@@ -10,64 +10,94 @@ comments: true
 
 # Std Env Error
 
-Fix standard library environment errors. Resolve variable access, current directory, and home issues.
+Std env errors occur when using `std::env` functions — environment variable access failures, UTF-8 conversion errors, and platform-specific path issues.
 
-## Why It Happens
-
-- Environment variable is not set
-- Current directory has been deleted or is inaccessible
-- Home directory cannot be determined
-- Variable value contains invalid Unicode
-
-## Common Error Messages
-
-- `error: stdenv failed`
-- `thread panicked at 'std::env operation failed'`
-- `Error: unable to complete std::env operation`
-- `Fatal: std::env configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure std::env is properly configured
-use std::env::prelude::*;
+// Variable not set
+let db_url = std::env::var("DATABASE_URL").unwrap(); // PANICS if not set
+
+// Non-UTF8 value
+std::env::set_var("KEY", b"\xff\xfe"); // ERROR on some platforms
+
+// Removing a variable that doesn't exist
+std::env::remove_var("NONEXISTENT"); // May fail silently
+
+// Current dir error
+let dir = std::env::current_dir().unwrap(); // May fail if directory was deleted
+```
+
+## How to Fix
+
+1. **Use `var` with fallback values**
+
+```rust
+use std::env;
+
+let db_url = env::var("DATABASE_URL")
+    .unwrap_or_else(|_| "postgres://localhost/mydb".into());
+
+let port: u16 = env::var("PORT")
+    .unwrap_or_else(|_| "8080".into())
+    .parse()
+    .unwrap_or(8080);
+
+let debug = env::var("DEBUG").is_ok();
+```
+
+2. **Use `var_os` for OS-native string handling**
+
+```rust
+use std::env;
+
+// var_os returns Option<OsString> — no UTF-8 requirement
+let path = env::var_os("PATH");
+if let Some(path) = path {
+    println!("PATH: {}", path.to_string_lossy());
+}
+```
+
+3. **Handle current directory errors gracefully**
+
+```rust
+use std::env;
+use std::path::PathBuf;
+
+fn get_project_root() -> PathBuf {
+    env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
+}
+
+let root = get_project_root();
+println!("Project root: {}", root.display());
+```
+
+## Examples
+
+```rust
+use std::env;
 
 fn main() {
-    // Initialize properly
-    println!("Correct std::env configuration");
+    // Collect all env vars with a prefix
+    let vars: Vec<(String, String)> = env::vars()
+        .filter(|(k, _)| k.starts_with("CARGO_"))
+        .collect();
+
+    for (key, value) in vars {
+        println!("{}={}", key, value);
+    }
+
+    // Set and get
+    env::set_var("MY_APP_VERSION", "1.0.0");
+    match env::var("MY_APP_VERSION") {
+        Ok(v) => println!("Version: {}", v),
+        Err(e) => eprintln!("Error: {}", e),
+    }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with std::env
-2. Integrating std::env into an existing codebase
-3. Upgrading std::env to a newer version
-
-## Prevent It
-
-- Read the std::env documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Std Path Error]({{< relref "/languages/rust/rust-std-path-error" >}}) — path operations
+- [Std Fs Error]({{< relref "/languages/rust/rust-std-fs-error" >}}) — filesystem operations
+- [Std Process Error]({{< relref "/languages/rust/rust-std-process-error" >}}) — process operations

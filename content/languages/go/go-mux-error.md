@@ -9,58 +9,82 @@ weight: 5
 
 # Mux Route Mismatch
 
-Fix Gorilla Mux route mismatch errors. Handle route patterns, variables, and middleware..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `gorilla/mux` router fails to match routes when patterns are misconfigured, method restrictions conflict, path variables are named inconsistently, or subrouter mounting strips path prefixes unexpectedly. Mux uses regex-based routing, so similar patterns can cause ambiguous matches.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Route pattern ambiguity
+r := mux.NewRouter()
+r.HandleFunc("/users/{id:[0-9]+}", getUser)
+r.HandleFunc("/users/{name}", getUserByName)
+// Mux resolves by order, but ambiguous patterns cause confusion
+
+// Cause 2: Method mismatch
+r.HandleFunc("/users", createUser).Methods("POST")
+// GET /users — no handler, returns 405
+
+// Cause 3: Subrouter path not stripped
+sub := r.PathPrefix("/api").Subrouter()
+sub.HandleFunc("/users", listUsers) // matches /api/users
+// But /api/users/extra does not match
+
+// Cause 4: Trailing slash handling
+r.HandleFunc("/users/", listUsers) // exact match with slash
+// GET /users — no match, returns 404
+
+// Cause 5: Route registered after first request
+go func() {
+    time.Sleep(100 * time.Millisecond)
+    r.HandleFunc("/late", lateHandler) // concurrent route registration unsafe
+}()
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Use unambiguous route patterns
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "fmt"
+    "net/http"
 
-### Fix 2: Add proper error handling
+    "github.com/gorilla/mux"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func main() {
+    r := mux.NewRouter()
+
+    r.HandleFunc("/users", listUsers).Methods("GET")
+    r.HandleFunc("/users/{id:[0-9]+}", getUser).Methods("GET")
+    r.HandleFunc("/users", createUser).Methods("POST")
+    r.HandleFunc("/users/{id:[0-9]+}", updateUser).Methods("PUT")
+    r.HandleFunc("/users/{id:[0-9]+}", deleteUser).Methods("DELETE")
+
+    http.ListenAndServe(":8080", r)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use proper subrouter setup
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+func apiRouter() *mux.Router {
+    r := mux.NewRouter()
+    api := r.PathPrefix("/api/v1").Subrouter()
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
+    api.HandleFunc("/users", listUsers).Methods("GET")
+    api.HandleFunc("/users/{id}", getUser).Methods("GET")
+
+    return r
 }
+```
+
+### Fix 3: Use router.StrictSlash for trailing slash consistency
+
+```go
+r := mux.NewRouter()
+r.StrictSlash(true) // /users redirects to /users/ or vice versa
+r.HandleFunc("/users/", listUsers)
 ```
 
 ## Examples
@@ -69,26 +93,39 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
-    "log"
-    "time"
+    "net/http"
+
+    "github.com/gorilla/mux"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    r := mux.NewRouter()
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+    r.HandleFunc("/users", listUsersHandler).Methods("GET")
+    r.HandleFunc("/users/{id:[0-9]+}", getUserHandler).Methods("GET")
+    r.HandleFunc("/users/{id:[0-9]+}/posts", getUserPostsHandler).Methods("GET")
+
+    http.ListenAndServe(":8080", r)
+}
+
+func listUsersHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "User list")
+}
+
+func getUserHandler(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    fmt.Fprintf(w, "User %s\n", vars["id"])
+}
+
+func getUserPostsHandler(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    fmt.Fprintf(w, "Posts for user %s\n", vars["id"])
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [http-status-404]({{< relref "/languages/go/http-status-404" >}}) — no route matches the request
+- [go-chi-error]({{< relref "/languages/go/go-chi-error" >}}) — Chi router path conflicts
+- [go-fiber-error]({{< relref "/languages/go/go-fiber-error" >}}) — Fiber route registration issues

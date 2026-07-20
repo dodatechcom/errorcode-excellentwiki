@@ -7,75 +7,98 @@ severities: ["error"]
 weight: 5
 ---
 
-# comfy-table Table Error
+# Comfy Table Error
 
-Fix comfy-table errors. Handle table construction, styling, and content formatting..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Comfy table errors occur when using the `comfy-table` crate for ASCII table rendering — incorrect column widths and alignment issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use comfy_table::{Table, ContentArrangement};
+
+// Empty table
+let mut table = Table::new();
+table.set_content_arrangement(ContentArrangement::Dynamic);
+// No headers or rows — renders empty
+
+// Mismatched column counts
+let mut table = Table::new();
+table.set_header(vec!["A", "B", "C"]);
+table.add_row(vec!["1", "2"]); // Fewer columns than header
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Set headers before adding rows**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use comfy_table::{Table, ContentArrangement};
+
+let mut table = Table::new();
+table.set_content_arrangement(ContentArrangement::Dynamic);
+table.set_header(vec!["Name", "Age", "City"]);
+
+table.add_row(vec!["Alice", "30", "NYC"]);
+table.add_row(vec!["Bob", "25", "LA"]);
+table.add_row(vec!["Charlie", "35", "Chicago"]);
+
+println!("{}", table);
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle column count mismatches**
 
 ```rust
-use anyhow::Result;
+use comfy_table::{Table, presets::UTF8_FULL};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let mut table = Table::new();
+table.load_preset(UTF8_FULL);
+table.set_header(vec!["Name", "Value"]);
+
+// Extra values are truncated, missing values are padded
+table.add_row(vec!["Key1", "Val1", "Extra"]);
+table.add_row(vec!["Key2"]);
+
+println!("{}", table);
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use modifiers for styling**
 
 ```rust
-use std::time::Duration;
+use comfy_table::{Table, modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL};
+use comfy_table::presets::UTF8_FULL;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let mut table = Table::new();
+table.load_preset(UTF8_FULL);
+table.set_header(vec!["Language", "Type", "Year"]);
+
+table.add_row(vec!["Rust", "Systems", "2010"]);
+table.add_row(vec!["Python", "Scripting", "1991"]);
+table.add_row(vec!["Go", "Systems", "2009"]);
+
+println!("{}", table);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use comfy_table::{Table, presets::UTF8_FULL, ContentArrangement};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let mut table = Table::new();
+    table.load_preset(UTF8_FULL);
+    table.set_content_arrangement(ContentArrangement::Dynamic);
+    table.set_header(vec!["Error Code", "Description", "Severity"]);
+
+    table.add_row(vec!["E0001", "Syntax error", "Error"]);
+    table.add_row(vec!["W0001", "Unused variable", "Warning"]);
+    table.add_row(vec!["I0001", "Info message", "Info"]);
+
+    println!("{}", table);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tabled Error]({{< relref "/languages/rust/tabled-error" >}}) — table formatting
+- [CSV Reader Error]({{< relref "/languages/rust/csv-reader-error" >}}) — CSV parsing
+- [Indicatif Error]({{< relref "/languages/rust/indicatif-error" >}}) — progress display

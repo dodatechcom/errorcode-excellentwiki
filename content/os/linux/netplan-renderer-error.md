@@ -6,30 +6,67 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 8
 ---
+# Linux: Netplan Renderer Error
 
-# Linux: netplan-renderer-error — netplan renderer error
-
-Fix Linux netplan-renderer-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Netplan renderer errors occur when the chosen backend (NetworkManager or systemd-networkd) fails to execute the network configuration.
 
 ## Common Causes
 
-- NetworkManager not installed
-- systemd-networkd not available
-- Renderer not found
-- Plugin missing
+- Rendering backend not installed (systemd-networkd or NetworkManager)
+- Renderer mismatch between netplan and the actual service running
+- Backend service not enabled or started
+- Backend service incompatible with netplan configuration
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/netplan-renderer-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Current Renderer
 
-## Common Scenarios
+```bash
+cat /etc/netplan/*.yaml | grep renderer
+```
 
-- Renderer not found
-- NetworkManager missing
-- systemd-networkd missing
+### 2. Ensure Backend is Installed
 
-## Prevent It
+```bash
+# Check if systemd-networkd is available
+sudo systemctl status systemd-networkd
 
-- Install required renderer
-- Set correct renderer
-- Verify configuration
+# Check if NetworkManager is available
+sudo systemctl status NetworkManager
+```
+
+### 3. Change Renderer
+
+```bash
+# Edit netplan yaml to change renderer
+sudo nano /etc/netplan/01-netcfg.yaml
+# Add: renderer: NetworkManager
+# Or: renderer: networkd
+
+sudo netplan apply
+```
+
+### 4. Enable and Start Backend
+
+```bash
+sudo systemctl enable systemd-networkd
+sudo systemctl start systemd-networkd
+```
+
+## Examples
+
+```bash
+$ cat /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: true
+
+$ sudo systemctl status systemd-networkd
+● systemd-networkd.service - Network Service
+     Loaded: loaded
+     Active: inactive (dead)
+$ sudo systemctl enable --now systemd-networkd
+```

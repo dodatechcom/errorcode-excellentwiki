@@ -7,75 +7,75 @@ severities: ["error"]
 weight: 5
 ---
 
-# tracing Subscriber Error
+# Tracing Error
 
-Fix tracing subscriber errors. Handle layer configuration, span context, and event dispatch..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Tracing errors occur when using the `tracing` crate — subscriber configuration and span issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// No subscriber set
+tracing::info!("This goes nowhere"); // No output
+
+// Invalid span
+let span = tracing::info_span!("request", id = "not_a_number");
+// id should be a tracing::field
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Initialize a subscriber**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use tracing_subscriber;
+
+tracing_subscriber::fmt::init();
+tracing::info!("Now this works!");
 ```
 
-### Fix 2: Add proper error handling
+2. **Use structured fields**
 
 ```rust
-use anyhow::Result;
+use tracing::{info_span, Instrument};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let span = info_span!("request", method = %method, path = %path);
+let _guard = span.enter();
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Configure log levels**
 
 ```rust
-use std::time::Duration;
+use tracing_subscriber::EnvFilter;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+tracing_subscriber::fmt()
+    .with_env_filter(EnvFilter::from_default_env())
+    .init();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use tracing::{info, warn, error, debug, trace, instrument};
+use tracing_subscriber;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[instrument]
+fn process_item(id: u32) {
+    debug!("Processing item {}", id);
+    if id == 0 {
+        warn!("Item is zero");
+    }
+    info!("Done processing {}", id);
+}
+
+fn main() {
+    tracing_subscriber::fmt::init();
+    process_item(1);
+    process_item(0);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tracing Error (Rust)]({{< relref "/languages/rust/rust-tracing-error" >}}) — Rust tracing
+- [Log Error]({{< relref "/languages/rust/rust-log-error-rs" >}}) — log crate
+- [Env Logger Error]({{< relref "/languages/rust/env-logger-error" >}}) — env_logger

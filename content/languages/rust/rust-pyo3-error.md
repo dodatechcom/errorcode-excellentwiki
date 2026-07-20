@@ -10,64 +10,138 @@ comments: true
 
 # PyO3 Error
 
-Fix PyO3 errors for Python bindings. Resolve GIL handling, type conversion, and module registration issues.
+PyO3 errors occur when creating Python bindings with the PyO3 crate — type conversion failures, GIL handling issues, and module initialization problems.
 
-## Why It Happens
-
-- Function is missing the #[pyfunction] attribute
-- GIL is not acquired before accessing Python objects
-- Type conversion between Rust and Python fails
-- Module is not registered with #[pymodule]
-
-## Common Error Messages
-
-- `error: pyo3 failed`
-- `thread panicked at 'pyo3 operation failed'`
-- `Error: unable to complete pyo3 operation`
-- `Fatal: pyo3 configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure pyo3 is properly configured
 use pyo3::prelude::*;
 
-fn main() {
-    // Initialize properly
-    println!("Correct pyo3 configuration");
+// Returning non-Python-compatible types
+#[pyfunction]
+fn bad_return() -> Vec<String> { // Vec<String> needs conversion
+    vec!["hello".into()]
 }
-```
 
-### Fix 2: Handle errors explicitly
+// Not acquiring GIL before accessing Python objects
+fn bad_access() {
+    let obj: PyObject = todo!();
+    // Must be inside #[pyfunction] or acquire GIL manually
+}
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
+// Module initialization failure
+#[pymodule]
+fn my_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(bad_function, m)?)?;
     Ok(())
 }
 ```
 
-### Fix 3: Add proper error context
+## How to Fix
+
+1. **Use PyO3-compatible return types**
 
 ```rust
-use std::error::Error;
+use pyo3::prelude::*;
+use pyo3::types::PyList;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
+#[pyfunction]
+fn get_numbers(py: Python) -> PyResult<Py<PyList>> {
+    let list = PyList::empty(py);
+    for i in 0..5 {
+        list.append(i)?;
+    }
+    Ok(list.into())
+}
+
+#[pyfunction]
+fn greet(name: &str) -> String {
+    format!("Hello, {}!", name)
+}
+```
+
+2. **Handle Python exceptions properly**
+
+```rust
+use pyo3::exceptions::{PyValueError, PyTypeError};
+use pyo3::prelude::*;
+
+#[pyfunction]
+fn divide(a: f64, b: f64) -> PyResult<f64> {
+    if b == 0.0 {
+        return Err(PyValueError::new_err("Cannot divide by zero"));
+    }
+    Ok(a / b)
+}
+
+#[pyfunction]
+fn process(input: &str) -> PyResult<String> {
+    if input.is_empty() {
+        return Err(PyTypeError::new_err("Input cannot be empty"));
+    }
+    Ok(input.to_uppercase())
+}
+```
+
+3. **Use proper GIL management**
+
+```rust
+use pyo3::prelude::*;
+
+#[pyfunction]
+fn process_in_python(py: Python) -> PyResult<()> {
+    let builtins = py.import("builtins")?;
+    let result = builtins.call_method1("len", (py.eval("[1,2,3]", None, None)?,))?;
+    println!("Length: {}", result.extract::<usize>()?);
     Ok(())
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with pyo3
-2. Integrating pyo3 into an existing codebase
-3. Upgrading pyo3 to a newer version
+```rust
+use pyo3::prelude::*;
+use pyo3::types::PyDict;
 
-## Prevent It
+#[pyclass]
+struct Counter {
+    #[pyo3(get)]
+    count: i32,
+}
 
-- Read the pyo3 documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+#[pymethods]
+impl Counter {
+    #[new]
+    fn new() -> Self { Counter { count: 0 } }
+
+    fn increment(&mut self) {
+        self.count += 1;
+    }
+
+    fn get_value(&self) -> i32 {
+        self.count
+    }
+}
+
+#[pymodule]
+fn my_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<Counter>()?;
+    Ok(())
+}
+```
+
+```python
+# In Python
+from my_module import Counter
+c = Counter()
+c.increment()
+c.increment()
+print(c.get_value())  # 2
+print(c.count)  # 2
+```
+
+## Related Errors
+
+- [NAPI Error]({{< relref "/languages/rust/rust-napi-error" >}}) — Node.js bindings
+- [FFI Gen Error]({{< relref "/languages/rust/rust-ffigen-error" >}}) — FFI generation
+- [CBindgen Error]({{< relref "/languages/rust/rust-cbindgen-error" >}}) — C bindings

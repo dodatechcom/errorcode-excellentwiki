@@ -7,75 +7,96 @@ severities: ["error"]
 weight: 5
 ---
 
-# anyhow Error Context Error
+# Anyhow Error
 
-Fix anyhow error context issues. Handle error chaining, context propagation, and reporting..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Anyhow errors occur when using the `anyhow` crate for application-level error handling — context chains, downcast failures, and conversion issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use anyhow::{Context, Result};
+
+// Missing context
+fn read(path: &str) -> Result<String> {
+    std::fs::read_to_string(path)? // No context about which file
+}
+
+// Using anyhow in library crates (hides types from callers)
+pub fn parse(input: &str) -> anyhow::Result<i32> { input.parse().unwrap(); Ok(0) }
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Add context to errors**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use anyhow::{Context, Result};
+
+fn load_config(path: &str) -> Result<String> {
+    std::fs::read_to_string(path)
+        .with_context(|| format!("Failed to read config from '{}'", path))
+}
 ```
 
-### Fix 2: Add proper error handling
+2. **Use thiserror for libraries, anyhow for applications**
 
 ```rust
-use anyhow::Result;
+// Library: thiserror
+use thiserror::Error;
+#[derive(Error, Debug)]
+pub enum ConfigError {
+    #[error("IO: {0}")]
+    Io(#[from] std::io::Error),
+    #[error("Parse: {0}")]
+    Parse(String),
+}
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
+// App: anyhow
+use anyhow::Result;
+fn main() -> Result<()> {
+    let cfg = std::fs::read_to_string("config.toml").context("Reading config")?;
     Ok(())
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Downcast when matching specific errors**
 
 ```rust
-use std::time::Duration;
+use anyhow::Result;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+fn fetch() -> Result<String> { todo!() }
+
+fn handle() {
+    match fetch() {
+        Ok(val) => println!("{}", val),
+        Err(e) => {
+            if let Some(io_err) = e.downcast_ref::<std::io::Error>() {
+                eprintln!("IO: {}", io_err);
+            }
+        }
+    }
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use anyhow::{Context, Result, ensure};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn divide(a: f64, b: f64) -> Result<f64> {
+    ensure!(b != 0.0, "Cannot divide {} by zero", a);
+    Ok(a / b)
+}
+
+fn main() -> Result<()> {
+    let result = divide(10.0, 0.0).context("Computing ratio")?;
+    println!("{}", result);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Thiserror Error]({{< relref "/languages/rust/thiserror-error" >}}) — thiserror crate
+- [Error Handling]({{< relref "/languages/rust/rust-error-handling-rs" >}}) — general error handling
+- [Color Eyre Error]({{< relref "/languages/rust/color-eyre-error" >}}) — color-eyre

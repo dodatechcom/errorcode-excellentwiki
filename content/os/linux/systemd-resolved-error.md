@@ -7,53 +7,57 @@ error-types: ["network-error"]
 weight: 12
 ---
 
-# Linux: systemd-resolved-error — DNS resolution failed via systemd-resolved
+# Linux: systemd Resolved Error Error
 
-Fix Linux systemd-resolved-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd resolved error errors occur when the systemd resolved error component fails to operate correctly.
 
 ## Common Causes
 
-- Service not running
-- Wrong DNS servers
-- Stub resolver not linked
-- Upstream DNS unreachable
+- Misconfiguration in unit files or systemd configuration
+- Permission or ownership issues on required paths
+- Dependency failures from other systemd units
+- Resource limits or system constraints reached
+- SELinux or AppArmor policy blocking operations
 
 ## How to Fix
 
-### 1. Check Status
+### 1. Check systemd Unit Status
+
 ```bash
-resolvectl status
-systemctl status systemd-resolved
+sudo systemctl status systemd-resolved-error
+sudo journalctl -u systemd-resolved-error --no-pager -n 50
 ```
 
-### 2. Configure DNS
+### 2. Verify Configuration Files
+
 ```bash
-sudo mkdir -p /etc/systemd/resolved.conf.d
-sudo tee /etc/systemd/resolved.conf.d/dns.conf << EOF
-[Resolve]
-DNS=8.8.8.8 8.8.4.4
-FallbackDNS=1.1.1.1
-EOF
+ls /etc/systemd/*.conf /usr/lib/systemd/*.conf 2>/dev/null
+systemctl cat systemd-resolved-error
 ```
 
-### 3. Link Stub Resolver
+### 3. Check System Logs
+
 ```bash
-sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+sudo journalctl -xe --no-pager -n 30
+sudo dmesg | tail -20
 ```
 
-### 4. Flush Cache
+### 4. Restart and Re-evaluate
+
 ```bash
-sudo resolvectl flush-caches
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-resolved-error
 ```
 
-## Common Scenarios
+## Examples
 
-- DNS SERVFAIL or timeout
-- resolv.conf not pointing to 127.0.0.53
-- DNS works with IP only
+```bash
+$ sudo systemctl status systemd-resolved-error
+* systemd-resolved-error.service - systemd Resolved Error
+   Loaded: loaded (/usr/lib/systemd/system/systemd-resolved-error.service; static)
+   Active: failed (Result: exit-code)
 
-## Prevent It
-
-- Keep resolv.conf symlinked
-- Configure multiple DNS servers
-- Monitor with resolvectl
+$ sudo journalctl -u systemd-resolved-error -n 10
+Jul 20 14:30:45 server systemd[resolved-error][12345]: Failed to process configuration
+Jul 20 14:30:45 server systemd[1]: systemd-resolved-error.service: Main process exited, code=exited, status=1/FAILURE
+```

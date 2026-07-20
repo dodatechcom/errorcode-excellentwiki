@@ -6,30 +6,53 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: LVM Volume Group Error
 
-# Linux: disk-lvm-vg-error — LVM volume group error
-
-Fix Linux disk-lvm-vg-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+LVM volume group (VG) errors occur when metadata spanning multiple physical volumes becomes inconsistent or a PV is missing.
 
 ## Common Causes
 
-- VG not found
-- VG corrupted
-- Missing PVs
-- Space exhausted
+- One or more physical volumes in the VG are missing or failed
+- VG metadata corruption after unclean shutdown
+- LVM filter in /etc/lvm/lvm.conf excluding a needed device
+- Duplicate PV UUIDs after cloning disks or restoring from backup
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-lvm-vg-error.md' mode='w' encoding='UTF-8'>
+### 1. Check VG Status
 
-## Common Scenarios
+```bash
+sudo vgs -v
+sudo vgdisplay -v
+```
 
-- VG not found
-- VG not activated
-- Missing PVs
+### 2. Scan and Activate
 
-## Prevent It
+```bash
+sudo vgscan
+sudo vgchange -ay <vg_name>
+```
 
-- Backup VG metadata
-- Monitor VG status
-- Import if needed
+### 3. Fix Duplicate PV UUIDs
+
+```bash
+sudo pvchange -u /dev/sdX
+```
+
+### 4. Restore from Backup
+
+```bash
+sudo vgcfgrestore -f /etc/lvm/archive/<vg_name>_<timestamp>.vg <vg_name>
+```
+
+## Examples
+
+```bash
+$ sudo vgs
+  WARNING: Couldn't find device with uuid XXXXXX-YYYY-ZZZZ.
+  VG    #PV #LV #SN Attr   VSize   VFree
+  vg01    2   3   0 wz-pn- 600.00g 20.00g
+
+$ sudo vgchange -ay vg01
+  1 logical volume(s) in volume group "vg01" now active
+```

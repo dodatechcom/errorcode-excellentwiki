@@ -6,30 +6,52 @@ severities: ["critical"]
 error-types: ["disk"]
 weight: 12
 ---
+# Linux: RAID Controller Error
 
-# Linux: disk-raid-controller-error — disk RAID controller error
-
-Fix Linux disk-raid-controller-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+RAID controller errors indicate problems with hardware RAID adapters or their kernel drivers (megaraid, mpt3sas, hpsa, smartpqi, etc.).
 
 ## Common Causes
 
-- Controller failure
-- Battery dead
-- Cache lost
-- Driver issue
+- Hardware RAID adapter failure or firmware bug
+- Battery backup unit (BBU) failed on the controller
+- Cache module errors or memory corruption on the controller
+- Driver incompatibility with current kernel version
+- Incorrect controller mode (JBOD vs RAID)
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-raid-controller-error.md' mode='w' encoding='UTF-8'>
+### 1. Identify the Controller
 
-## Common Scenarios
+```bash
+lspci | grep -i raid
+sudo lshw -class storage
+sudo storcli64 /c0 show all  # Broadcom/LSI
+```
 
-- RAID controller error
-- Cache lost
-- Battery dead
+### 2. Check Controller Health
 
-## Prevent It
+```bash
+sudo storcli64 /c0 show health
+sudo MegaCli64 -AdpAllInfo -aAll
+sudo storcli64 /c0 /bbu show
+```
 
-- Monitor controller health
-- Replace batteries
-- Keep backups
+### 3. Check Kernel Messages
+
+```bash
+dmesg | grep -iE "megaraid|mpt3sas|hpsa|smartpqi|aacraid" | tail -30
+```
+
+## Examples
+
+```bash
+$ sudo storcli64 /c0 show health
+Controller = 0
+Status = Critical
+VDs = 1, DEGRADED = 1, OFFLINE = 0
+BBU = FAILED
+
+$ dmesg | grep megaraid
+[ 1234.567] megaraid_sas: [0:00:00:0]: waiting for FW to boot
+[ 1235.123] megaraid_sas: FW now in Ready state
+```

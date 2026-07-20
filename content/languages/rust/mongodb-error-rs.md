@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# mongodb Connection Error
+# MongoDB Error (mongodb-rs)
 
-Fix MongoDB driver connection errors. Handle server selection, replica sets, and authentication..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+MongoDB errors occur when using the `mongodb` crate — connection, authentication, and query failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let client = Client::with_uri_str("mongodb://wrong:27017").await?;
+
+// Authentication failure
+let client = Client::with_uri_str("mongodb://user:wrong@localhost:27017").await?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Connect with correct URI**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use mongodb::{Client, options::ClientOptions};
+
+let client_options = ClientOptions::parse("mongodb://localhost:27017").await?;
+let client = Client::with_options(client_options)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle collection operations**
 
 ```rust
-use anyhow::Result;
+use mongodb::Collection;
+use serde::{Deserialize, Serialize};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+#[derive(Debug, Serialize, Deserialize)]
+struct User { name: String, age: u32 }
+
+let collection: Collection<User> = client.database("mydb").collection("users");
+```
+
+3. **Use proper error handling**
+
+```rust
+use mongodb::error::Error;
+
+match collection.insert_one(doc, None).await {
+    Ok(result) => println!("Inserted: {:?}", result.inserted_id),
+    Err(e) => eprintln!("Insert failed: {}", e),
 }
-```
-
-### Fix 3: Add timeout and retry logic
-
-```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use mongodb::{Client, Collection};
+use serde::{Deserialize, Serialize};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Debug, Serialize, Deserialize)]
+struct User { name: String, age: u32 }
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::with_uri_str("mongodb://localhost:27017").await?;
+    let collection: Collection<User> = client.database("test").collection("users");
+
+    let user = User { name: "Alice".into(), age: 30 };
+    collection.insert_one(user, None).await?;
+
+    let users = collection.find(None, None).await?;
+    println!("Found users");
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Postgres Error]({{< relref "/languages/rust/postgres-error-rs" >}}) — PostgreSQL
+- [SQLx Error]({{< relref "/languages/rust/sqlx-error" >}}) — SQLx
+- [Redis Error]({{< relref "/languages/rust/redis-error-rs" >}}) — Redis

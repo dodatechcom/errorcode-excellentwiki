@@ -10,64 +10,115 @@ comments: true
 
 # Std IO Error
 
-Fix standard library I/O errors. Resolve file, network, and stream read/write failures.
+Std IO errors occur when using `std::io` functions — broken pipes, interrupted operations, unexpected EOF, and platform-specific I/O issues.
 
-## Why It Happens
-
-- File handle is not valid or has been closed
-- Read buffer is too small for the input
-- IO operation is interrupted and should be retried
-- Permission is denied for the requested operation
-
-## Common Error Messages
-
-- `error: stdio failed`
-- `thread panicked at 'std::io operation failed'`
-- `Error: unable to complete std::io operation`
-- `Fatal: std::io configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure std::io is properly configured
-use std::io::prelude::*;
+use std::io::{self, Read, Write, BufRead};
+
+// Broken pipe — writing to a closed pipe
+let mut stdout = io::stdout();
+write!(stdout, "data").unwrap(); // May fail if pipe is broken
+
+// Unexpected EOF
+let mut buf = [0u8; 1024];
+let mut file = std::fs::File::open("small.txt").unwrap();
+let n = file.read(&mut buf).unwrap(); // May return less than 1024
+
+// Interrupted operation
+io::stdin().read_line(&mut String::new()).unwrap(); // May be interrupted
+```
+
+## How to Fix
+
+1. **Handle I/O errors with retry logic**
+
+```rust
+use std::io;
+
+fn read_with_retry(path: &str) -> io::Result<String> {
+    let mut attempts = 0;
+    loop {
+        match std::fs::read_to_string(path) {
+            Ok(content) => return Ok(content),
+            Err(e) if e.kind() == io::ErrorKind::Interrupted && attempts < 3 => {
+                attempts += 1;
+                std::thread::sleep(std::time::Duration::from_millis(100));
+            }
+            Err(e) => return Err(e),
+        }
+    }
+}
+```
+
+2. **Use buffered I/O for better performance**
+
+```rust
+use std::io::{BufReader, BufWriter, Read, Write};
+use std::fs::File;
+
+fn process_file(path: &str) -> std::io::Result<()> {
+    let file = File::open(path)?;
+    let mut reader = BufReader::new(file);
+
+    let mut content = String::new();
+    reader.read_to_string(&mut content)?;
+
+    let output = File::create("output.txt")?;
+    let mut writer = BufWriter::new(output);
+    writer.write_all(content.as_bytes())?;
+
+    Ok(())
+}
+```
+
+3. **Handle broken pipe gracefully**
+
+```rust
+use std::io::{self, Write};
 
 fn main() {
-    // Initialize properly
-    println!("Correct std::io configuration");
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
+
+    for i in 0..1000 {
+        if writeln!(handle, "Line {}", i).is_err() {
+            break; // Pipe broken, stop writing
+        }
+    }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Examples
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
+use std::io::{self, BufRead, BufReader, Write};
+
+fn main() -> io::Result<()> {
+    // Read lines from stdin
+    let stdin = io::stdin();
+    for line in stdin.lock().lines() {
+        let line = line?;
+        println!("You said: {}", line);
+        if line == "quit" { break; }
+    }
+
+    // Write with explicit flushing
+    let mut stdout = io::stdout();
+    write!(stdout, "Processing...")?;
+    stdout.flush()?;
+
+    // Simulate work
+    std::thread::sleep(std::time::Duration::from_secs(1));
+    writeln!(stdout, " done!")?;
+
     Ok(())
 }
 ```
 
-### Fix 3: Add proper error context
+## Related Errors
 
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with std::io
-2. Integrating std::io into an existing codebase
-3. Upgrading std::io to a newer version
-
-## Prevent It
-
-- Read the std::io documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Std FS Error]({{< relref "/languages/rust/rust-std-fs-error" >}}) — filesystem operations
+- [IO Error]({{< relref "/languages/rust/io-error" >}}) — general I/O errors
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network I/O

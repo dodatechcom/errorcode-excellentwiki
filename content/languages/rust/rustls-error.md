@@ -7,75 +7,78 @@ severities: ["error"]
 weight: 5
 ---
 
-# rustls TLS Error
+# Rustls Error
 
-Fix rustls TLS errors. Handle certificate verification, protocol negotiation, and cipher suites..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Rustls errors occur when using the `rustls` TLS library — certificate verification, handshake, and protocol errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// No valid certificates in root store
+let config = ClientConfig::builder()
+    .with_root_certificates(RootCertStore::empty())
+    .with_no_client_auth();
+
+// Invalid server name
+let server_name = ServerName::try_from("invalid..name")?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Load webpki roots**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use rustls::ClientConfig;
+use rustls_pemfile::certs;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let mut roots = rustls::RootCertStore::empty();
+for cert in certs(&mut BufReader::new(File::open("ca.pem")?))? {
+    roots.add(cert)?;
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Handle protocol errors**
 
 ```rust
-use std::time::Duration;
+use rustls::ClientConfig;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let config = ClientConfig::builder()
+    .with_root_certificates(roots)
+    .with_no_client_auth();
+
+let connector = TlsConnector::from(Arc::new(config));
+```
+
+3. **Use proper server name**
+
+```rust
+use rustls::pki_types::ServerName;
+
+let server_name = ServerName::try_from("example.com")?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use rustls::{ClientConfig, RootCertStore};
+use std::sync::Arc;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut roots = RootCertStore::empty();
+    roots.extend(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());
+
+    let config = ClientConfig::builder()
+        .with_root_certificates(roots)
+        .with_no_client_auth();
+
+    let connector = rustls::ClientConnector::from(Arc::new(config));
+    println!("TLS configured successfully");
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Rustls Webpki Error]({{< relref "/languages/rust/rustls-webpki-error" >}}) — WebPKI
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto
+- [OpenSSL Error]({{< relref "/languages/rust/openssl-error-rs" >}}) — OpenSSL

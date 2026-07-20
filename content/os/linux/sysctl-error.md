@@ -7,29 +7,58 @@ error-types: ["process-error"]
 weight: 6
 ---
 
-# Linux: sysctl-error — sysctl configuration error
+# Linux: Sysctl Error
 
-Fix Linux sysctl-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Sysctl errors occur when kernel parameters fail to apply or persist across reboots.
 
 ## Common Causes
 
-- Value not accepted
-- Permission denied
-- Kernel not support
-- Runtime only
+- Invalid parameter name or typo
+- Parameter value out of allowed range
+- Read-only parameter (security-related)
+- Kernel not built with required feature
+- File permissions on sysctl configuration
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/sysctl-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Parameter
 
-## Common Scenarios
+```bash
+sudo sysctl -a 2>/dev/null | grep <parameter>
+sudo sysctl <parameter>
+```
 
-- sysctl value not accepted
-- Permission denied
-- Not persisted
+### 2. Apply Parameter
 
-## Prevent It
+```bash
+sudo sysctl -w <parameter>=<value>
+```
 
-- Check supported values
-- Use sysctl.d for persistence
-- Apply system-wide
+### 3. Make Persistent
+
+```bash
+echo "<parameter>=<value>" | sudo tee -a /etc/sysctl.d/99-custom.conf
+sudo sysctl -p /etc/sysctl.d/99-custom.conf
+```
+
+### 4. Validate Configuration
+
+```bash
+sudo sysctl --system
+sudo sysctl <parameter>
+```
+
+## Examples
+
+```bash
+$ sudo sysctl -w net.ipv4.tcp_tw_reuse=1
+net.ipv4.tcp_tw_reuse = 1
+
+$ echo "net.ipv4.tcp_tw_reuse=1" | sudo tee -a /etc/sysctl.d/99-network.conf
+$ sudo sysctl -p /etc/sysctl.d/99-network.conf
+net.ipv4.tcp_tw_reuse = 1
+
+# Verify
+$ sudo sysctl net.ipv4.tcp_tw_reuse
+net.ipv4.tcp_tw_reuse = 1
+```

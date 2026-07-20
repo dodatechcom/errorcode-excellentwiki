@@ -7,75 +7,101 @@ severities: ["error"]
 weight: 5
 ---
 
-# Rocket Launch Error
+# Rocket Error
 
-Fix Rocket web framework launch errors. Handle configuration, fairings, and request handling..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Rocket errors occur when using the `rocket` web framework — request handling, fairing, and state management issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Missing managed state
+let state = rocket.manage(MyState).launch().await?;
+
+// Route parameter type mismatch
+#[get("/user/<id>")]
+fn get_user(id: u32) -> String { format!("{}", id) }
+// Requesting /user/abc fails
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Manage state properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use rocket::State;
 
-### Fix 2: Add proper error handling
+struct MyCount(usize);
 
-```rust
-use anyhow::Result;
+#[get("/count")]
+fn count(count: State<MyCount>) -> String {
+    format!("Count: {}", count.0)
+}
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .manage(MyCount(0))
+        .mount("/", routes![count])
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Handle request guards**
 
 ```rust
-use std::time::Duration;
+use rocket::request::{self, FromRequest, Outcome};
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+struct ApiKey(String);
+
+#[rocket::async_trait]
+impl<'r> FromRequest<'r> for ApiKey {
+    type Error = String;
+    async fn from_request(request: &'r request::Request) -> request::Outcome<Self, Self::Error> {
+        let key = request.headers().get_one("Authorization");
+        match key {
+            Some(k) => Outcome::Success(ApiKey(k.to_string())),
+            None => Outcome::Failure((request::Status::Unauthorized, "Missing API key".into())),
+        }
+    }
+}
+```
+
+3. **Handle form data correctly**
+
+```rust
+use rocket::form::Form;
+
+#[derive(FromForm)]
+struct Login { username: String, password: String }
+
+#[post("/login", data = "<login>")]
+fn login(login: Form<Login>) -> String {
+    format!("Welcome, {}!", login.username)
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+#[macro_use] extern crate rocket;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[get("/")]
+fn index() -> &'static str {
+    "Hello, Rocket!"
+}
+
+#[get("/hello/<name>")]
+fn hello(name: &str) -> String {
+    format!("Hello, {}!", name)
+}
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build().mount("/", routes![index, hello])
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Axum Error]({{< relref "/languages/rust/rust-axum-error" >}}) — Axum framework
+- [Warp Error]({{< relref "/languages/rust/rust-warp-error" >}}) — Warp framework
+- [Actix Web Error]({{< relref "/languages/rust/rust-actix-web-error-rs" >}}) — Actix

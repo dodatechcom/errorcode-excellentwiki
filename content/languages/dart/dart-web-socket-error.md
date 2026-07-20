@@ -1,121 +1,164 @@
 ---
-title: "[Solution] Dart Websocket Error"
-description: "Resolve Dart WebSocket connection errors caused by invalid URLs, TLS failures, or server rejection."
+title: "[Solution] Dart WebSocket Error — connect, message, close, ping/pong"
+description: "Fix Dart WebSocket errors from connection failures, message handling, close codes, and ping/pong timeouts."
 languages: ["dart"]
 error-types: ["runtime-error"]
 severities: ["error"]
-weight: 5
-comments: true
+weight: 145
 ---
 
-## Why It Happens
+WebSocket errors occur when connections fail, messages are sent on closed sockets, or ping/pong keepalive is misconfigured.
 
-WebSocket connection error
+## Common Causes
 
-## Common Error Messages
-
-1. **Dart error: WebSocket connection failed**
-2. **WebSocket handshake error: 403 Forbidden**
-3. **SocketException: Connection refused**
+1. WebSocket URL using `http://` instead of `ws://` or `wss://`.
+2. Sending messages after the socket is closed.
+3. Server rejecting the WebSocket handshake (403 Forbidden).
+4. Ping/pong timeouts causing disconnection.
+5. Not handling the `onDone` event for server-initiated close.
 
 ## How to Fix It
 
-### Solution 1: Add null safety checks
+**Solution 1: Connect to a WebSocket server**
 
 ```dart
-void main() {
-  String? nullableName = getName();
-  
-  // Use null-aware operators
-  String name = nullableName ?? 'Default';
-  
-  // Or use explicit null check
-  if (nullableName != null) {
-    print('Name: $nullableName');
-  }
-}
+import 'dart:io';
 
-String? getName() {
-  return null;
-}
-```
-
-### Solution 2: Use try-catch for error handling
-
-```dart
-Future<void> fetchData() async {
+void main() async {
   try {
-    final response = await http.get(
-      Uri.parse('https://api.example.com/data'),
+    WebSocket socket = await WebSocket.connect('ws://echo.websocket.org');
+    
+    socket.listen(
+      (message) => print('Received: $message'),
+      onDone: () => print('Connection closed: ${socket.closeCode}'),
+      onError: (error) => print('Error: $error'),
     );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print('Data: $data');
-    }
-  } catch (e) {
-    print('Error fetching data: $e');
+    
+    socket.add('Hello WebSocket!');
+  } on WebSocketException catch (e) {
+    print('WebSocket error: ${e.message}');
   }
 }
 ```
 
-### Solution 3: Implement proper type casting
+**Solution 2: Handle close codes**
 
 ```dart
-void process(dynamic value) {
-  // Use type check before casting
-  if (value is String) {
-    print('String value: $value');
-  } else if (value is int) {
-    print('Integer value: $value');
-  }
+import 'dart:io';
+
+void main() async {
+  WebSocket socket = await WebSocket.connect('ws://echo.websocket.org');
   
-  // Or use safe cast with null
-  String? safeStr = value as String?;
-  if (safeStr != null) {
-    print('Safe string: $safeStr');
-  }
+  socket.listen(
+    (message) => print('Message: $message'),
+    onDone: () {
+      int? closeCode = socket.closeCode;
+      String? closeReason = socket.closeReason;
+      print('Closed: code=$closeCode reason=$closeReason');
+    },
+  );
+  
+  // Close gracefully
+  await socket.close(1000, 'Normal closure');
 }
 ```
 
-## Common Scenarios
-
-### Scenario 1: Type safety violation in WebSocket connection error
-
-Type safety violation in WebSocket connection error often occurs when developers forget to handle edge cases in their code. For example:
+**Solution 3: Send different message types**
 
 ```dart
-! Example scenario demonstrating the issue
-! This commonly happens in production code
-! Always validate inputs before processing
+import 'dart:io';
+import 'dart:typed_data';
+
+void main() async {
+  WebSocket socket = await WebSocket.connect('ws://echo.websocket.org');
+  
+  // Text message
+  socket.add('Hello!');
+  
+  // Binary message
+  socket.add(Uint8List.fromList([1, 2, 3, 4]));
+  
+  // JSON message
+  socket.add('{"type": "greeting", "text": "Hi"}');
+  
+  socket.listen((message) {
+    if (message is String) {
+      print('Text: $message');
+    } else if (message is Uint8List) {
+      print('Binary: ${message.length} bytes');
+    }
+  });
+  
+  await Future.delayed(Duration(seconds: 2));
+  await socket.close();
+}
 ```
 
-### Scenario 2: Null reference during WebSocket connection error
-
-Another frequent cause is incorrect type usage or missing declarations. Consider this pattern:
+**Solution 4: Implement ping/pong keepalive**
 
 ```dart
-! Common pattern that leads to this error
-! Always check types and dimensions
-! Use compiler/runtime flags for early detection
+import 'dart:async';
+import 'dart:io';
+
+void main() async {
+  WebSocket socket = await WebSocket.connect('ws://echo.websocket.org');
+  Timer? pingTimer;
+  
+  socket.listen(
+    (message) => print('Received: $message'),
+    onDone: () {
+      pingTimer?.cancel();
+      print('Disconnected');
+    },
+  );
+  
+  // Send periodic pings
+  pingTimer = Timer.periodic(Duration(seconds: 30), (_) {
+    if (socket.readyState == WebSocket.open) {
+      socket.add('ping');
+    }
+  });
+  
+  await Future.delayed(Duration(minutes: 1));
+  await socket.close();
+  pingTimer.cancel();
+}
 ```
 
-### Scenario 3: Async error in WebSocket connection error
-
-Performance-related issues can also trigger this error under load:
+**Solution 5: Connect with headers**
 
 ```dart
-! Performance scenario example
-! Monitor resource usage in production
-! Add graceful degradation for resource limits
+import 'dart:io';
+
+void main() async {
+  Map<String, String> headers = {
+    'Authorization': 'Bearer token123',
+    'X-Custom': 'value',
+  };
+  
+  WebSocket socket = await WebSocket.connect(
+    'wss://echo.websocket.org',
+    headers: headers,
+  );
+  
+  socket.listen(
+    (message) => print('Received: $message'),
+    onDone: () => print('Done'),
+  );
+  
+  socket.add('Hello with headers!');
+  
+  await Future.delayed(Duration(seconds: 2));
+  await socket.close();
+}
 ```
 
-## Prevent It
+## Examples
 
-- **Enable strict null safety and analysis options in analysis_options.yaml**
-- **Use the analyzer tool (dart analyze) before building to catch issues early**
-- **Write unit tests with test package to verify error handling paths**
+WebSocket connections use the `ws://` scheme for non-secure or `wss://` for TLS. The `readyState` property indicates the connection state: `connectinging` (0), `open` (1), `closing` (2), or `closed` (3).
 
 ## Related Errors
 
-- [Dart best practices](/languages/dart)
-- [Dart error handling guide](/languages/dart/_index)
+- [Dart HTTP Request Error](/languages/dart/dart-http-request-error/)
+- [Dart IO Socket Error](/languages/dart/dart-io-socket-error/)
+- [Dart HTTP Server Error](/languages/dart/dart-http-server-error/)

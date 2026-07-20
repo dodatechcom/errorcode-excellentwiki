@@ -1,74 +1,83 @@
 ---
-title: "[Solution] Docker Compose Error — docker-compose up failed"
-description: "Fix Docker Compose up failures. Resolve docker-compose errors when starting services."
-tools: ["docker"]
-error-types: ["tool-error"]
-severities: ["error"]
-weight: 5
+title: "[Solution] Docker Compose Error — No containers found for project"
+description: "Fix Docker Compose 'No containers found for project' error. Resolve compose service startup issues."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+tool: "docker"
+tags: ["docker", "containers", "docker-compose", "containers", "orchestration"]
+severity: "error"
+weight: 6
 ---
 
-A Docker Compose error occurs when `docker-compose up` fails to start services. This can be caused by syntax errors in the compose file, dependency issues, or resource conflicts.
+# ERROR: No containers found for project
+
+## Error Message
+
+```
+ERROR: No containers found for project myapp
+
+The Compose file './docker-compose.yml' is valid, but no containers were created.
+
+Run 'docker compose up' to start the services.
+```
+
+This error occurs when Docker Compose cannot find or start any containers for your project. It typically means the services defined in your Compose file never reached a running state.
 
 ## Common Causes
 
-- Syntax errors in `docker-compose.yml` or `compose.yaml`
-- Port already in use by another container or process
-- Missing environment variables referenced in the compose file
-- Dependency services (like databases) not ready or failing to start
-- Invalid image names or versions that cannot be pulled
+- The Compose file has syntax errors that prevent service creation
+- Required images cannot be pulled due to network or registry issues
+- Port conflicts prevent services from binding to their host ports
+- Volume mount paths do not exist on the host machine
+- The project name conflicts with an existing stopped project
 
-## How to Fix
+## Solutions
 
-### Validate Compose File
+### Solution 1: Validate Your Compose File
 
-```bash
-docker-compose config
-```
-
-### Check for Port Conflicts
+Run a syntax check on your Compose file before starting services. This catches YAML formatting issues and invalid configuration keys that silently prevent container creation.
 
 ```bash
-docker ps
-netstat -tlnp | grep <port>
+docker compose config
 ```
 
-### View Service Logs
+### Solution 2: Remove Stale Containers and Recreate
+
+Older containers from a previous run can block new ones from starting. Remove stopped containers and volumes, then bring the stack back up.
 
 ```bash
-docker-compose logs <service-name>
+docker compose down --remove-orphans
+docker compose up -d
 ```
 
-### Rebuild and Restart
+### Solution 3: Check for Port Conflicts
+
+Another process may already be using the ports your Compose file maps. Identify the conflicting process and stop it, or change the host port mapping.
 
 ```bash
-docker-compose down
-docker-compose up --build
+docker compose ps
+sudo lsof -i :8080
+# Change port in docker-compose.yml: "8081:80"
+docker compose up -d
 ```
 
-### Run in Detached Mode
+### Solution 4: Build Images Before Starting
+
+If your Compose file references a local build context, building explicitly gives you detailed error output for failed builds.
 
 ```bash
-docker-compose up -d
+docker compose build
+docker compose up -d
 ```
 
-## Examples
+## Prevention Tips
 
-```bash
-# Example 1: Validate compose file
-docker-compose config
-# ERROR: Invalid interpolation format for "environment" option
-
-# Example 2: Check port conflicts
-docker-compose up
-# Error: Bind for 0.0.0.0:5432 failed: port is already allocated
-# Fix: stop the conflicting container or change the port mapping
-
-# Example 3: Rebuild services
-docker-compose down
-docker-compose up --build -d
-```
+- Always run `docker compose config` to validate before `docker compose up`
+- Use `docker compose down --remove-orphans` when tearing down stacks
+- Pin image versions in your Compose file to avoid unexpected pull failures
+- Keep port mappings documented to avoid conflicts across projects
 
 ## Related Errors
 
-- [Docker Network Error]({{< relref "/tools/docker/docker-network-error" >}}) — network bridge creation failed
-- [Docker Volume Error]({{< relref "/tools/docker/docker-volume-error" >}}) — volume mount permission denied
+- [Docker Port Conflict]({{< relref "/tools/docker/port-conflict" >}}) — port is already allocated
+- [Docker Build Error]({{< relref "/tools/docker/layer-cache" >}}) — build cache issues

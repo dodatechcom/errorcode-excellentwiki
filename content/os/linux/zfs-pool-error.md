@@ -7,29 +7,59 @@ error-types: ["filesystem-error"]
 weight: 12
 ---
 
-# Linux: zfs-pool-error — ZFS pool error
+# Linux: ZFS Pool Error Error
 
-Fix Linux zfs-pool-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+ZFS pool error errors occur when the ZFS filesystem encounters pool, dataset, or data integrity issues.
 
 ## Common Causes
 
-- Pool degraded
-- Device offline
-- IO error
-- Pool name conflict
+- Pool device failure or removal
+- Checksum mismatch from data corruption
+- Pool or dataset space exhaustion
+- Snapshot or clone conflicts
+- ZFS feature flag incompatibility
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/zfs-pool-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Pool Status
 
-## Common Scenarios
+```bash
+sudo zpool status -v
+sudo zpool list
+sudo zfs list -r -t filesystem,volume
+```
 
-- Pool cannot be imported
-- Device offline
-- Pool degraded
+### 2. Check for Errors
 
-## Prevent It
+```bash
+sudo zpool status -x
+sudo zpool events -v | tail -20
+```
 
-- Keep pool healthy
-- Monitor device health
-- Use redundancy
+### 3. Repair Pool
+
+```bash
+sudo zpool scrub tank
+sudo zpool clear tank
+sudo zpool replace tank <old-device> <new-device>
+```
+
+### 4. Check Dataset Properties
+
+```bash
+sudo zfs get all tank | grep -i "pool-error"
+```
+
+## Examples
+
+```bash
+$ sudo zpool status tank
+  pool: tank
+ state: ONLINE
+  scan: scrub repaired 0B in 00:00:00
+
+$ sudo zfs list
+NAME              USED  AVAIL  REFER  MOUNTPOINT
+tank              500G   1.5T   200G  /tank
+tank/data         300G   1.5T   300G  /tank/data
+```

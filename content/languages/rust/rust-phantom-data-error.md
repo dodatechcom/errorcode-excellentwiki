@@ -8,30 +8,96 @@ weight: 5
 comments: true
 ---
 
-# Phantom Data Error
+# PhantomData Error
 
-PhantomData errors occur when you use `PhantomData<T>` incorrectly, typically when the compiler needs phantom type parameters for variance or drop checking but the implementation is incomplete.
+PhantomData errors occur when using `PhantomData` incorrectly — type marker misuse, variance violations, or missing drop semantics.
 
-## Why It Happens
-
-- A generic type parameter is not used in any field but is not marked with `PhantomData`
-- `PhantomData` is used with a type that does not need to be inferred
-- The marker type conflicts with the actual usage of the generic parameter
-- Drop checking requires phantom ownership but it is missing
-
-## Common Error Messages
-
-- `parameter `T` is never used`
-- `struct has unused type parameter `T``
-- `PhantomData` type mismatch in generic context
-- `cannot move out of `PhantomData` value`
-
-## How to Fix It
-
-### Fix 1: Add PhantomData for unused type parameters
+## Common Causes
 
 ```rust
 use std::marker::PhantomData;
+
+// PhantomData without clear purpose
+struct Container<T> {
+    data: Vec<T>,
+    _marker: PhantomData<T>, // Unnecessary — Vec<T> already owns T
+}
+
+// Variance issues with PhantomData
+struct Covariant<'a, T> {
+    _marker: PhantomData<&'a T>, // Covariant in 'a and T
+}
+
+// Using wrong PhantomData for variance
+struct Invariant<'a, T> {
+    _marker: PhantomData<fn(&'a T) -> &'a T>, // Should use fn(*const T) for invariance
+}
+```
+
+## How to Fix
+
+1. **Use PhantomData only when needed for ownership or lifetime tracking**
+
+```rust
+use std::marker::PhantomData;
+
+// PhantomData needed when type isn't stored but needs to be "used"
+struct TypedId<T> {
+    id: u64,
+    _marker: PhantomData<T>,
+}
+
+struct User;
+struct Post;
+
+let user_id: TypedId<User> = TypedId { id: 1, _marker: PhantomData };
+let post_id: TypedId<Post> = TypedId { id: 1, _marker: PhantomData };
+// user_id and post_id cannot be mixed up
+```
+
+2. **Use PhantomData for variance control**
+
+```rust
+use std::marker::PhantomData;
+
+// Covariant in T
+struct Covariant<T> { _marker: PhantomData<T> }
+
+// Contravariant in T
+struct Contravariant<T> { _marker: PhantomData<fn(T)> }
+
+// Invariant in T
+struct Invariant<T> { _marker: PhantomData<fn(T) -> T> }
+
+// Covariant in 'a
+struct Borrowed<'a, T> { data: &'a T, _marker: PhantomData<&'a T> }
+```
+
+3. **Use PhantomData for drop check**
+
+```rust
+use std::marker::PhantomData;
+
+struct Inspector<T> {
+    data: Vec<T>,
+    _marker: PhantomData<T>, // Ensures T is checked for drop even if not stored directly
+}
+
+impl<T> Drop for Inspector<T> {
+    fn drop(&mut self) {
+        println!("Inspector dropping {} items", self.data.len());
+    }
+}
+```
+
+## Examples
+
+```rust
+use std::marker::PhantomData;
+
+// Type-safe ID system
+struct UserId;
+struct PostId;
 
 struct Id<T> {
     value: u64,
@@ -39,47 +105,24 @@ struct Id<T> {
 }
 
 impl<T> Id<T> {
-    fn new(value: u64) -> Self {
-        Id { value, _marker: PhantomData }
-    }
+    fn new(value: u64) -> Self { Id { value, _marker: PhantomData } }
 }
+
+fn get_user(id: Id<UserId>) -> String { format!("User {}", id.value) }
+fn get_post(id: Id<PostId>) -> String { format!("Post {}", id.value) }
 
 fn main() {
-    let user_id: Id<String> = Id::new(42);
-    let _ = user_id;
+    let user_id: Id<UserId> = Id::new(42);
+    let post_id: Id<PostId> = Id::new(100);
+
+    println!("{}", get_user(user_id));
+    println!("{}", get_post(post_id));
+    // get_user(post_id); // Compile error — type safety!
 }
 ```
 
-### Fix 2: Use PhantomData for variance control
+## Related Errors
 
-```rust
-use std::marker::PhantomData;
-
-struct Covariant<'a, T: 'a> {
-    data: &'a T,
-    _marker: PhantomData<T>,
-}
-```
-
-### Fix 3: Use PhantomData for drop checking
-
-```rust
-use std::marker::PhantomData;
-
-struct IntrusiveList<T> {
-    next: *mut IntrusiveList<T>,
-    _marker: PhantomData<T>,
-}
-```
-
-## Common Scenarios
-
-1. **Generic newtypes** — wrapper types with unused type parameters
-2. **FFI bindings** — opaque pointers that need type safety without storage
-3. **Variance control** — explicitly marking covariant or contravariant relationships
-
-## Prevent It
-
-- Always pair `PhantomData<T>` with a `T` that is either used or explicitly documented as unused
-- Use `PhantomData<*const T>` for invariance when needed
-- Document the reason for phantom type parameters with comments
+- [Generics Error]({{< relref "/languages/rust/rust-generics-error-rs" >}}) — generic types
+- [Variance Error]({{< relref "/languages/rust/rust-variance-error-rs" >}}) — variance
+- [Const Generics Error]({{< relref "/languages/rust/rust-const-generics-error" >}}) — const generics

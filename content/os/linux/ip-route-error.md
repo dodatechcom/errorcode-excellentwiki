@@ -6,30 +6,63 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 8
 ---
+# Linux: IP Route Error
 
-# Linux: ip-route-error — ip route error
-
-Fix Linux ip-route-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+IP route errors occur when the routing table is incorrect, missing, or has conflicting routes preventing network communication.
 
 ## Common Causes
 
-- Route not found
-- Gateway unreachable
-- Interface down
-- Default route missing
+- Default gateway missing or incorrect
+- Multiple default routes on different interfaces causing ambiguity
+- Wrong subnet mask causing incorrect route calculations
+- Static route pointing to unreachable next-hop
+- Routing table not updated after network changes
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/ip-route-error.md' mode='w' encoding='UTF-8'>
+### 1. View Routing Table
 
-## Common Scenarios
+```bash
+ip route show
+route -n
+```
 
-- Cannot reach network
-- Gateway unreachable
-- No default route
+### 2. Add Default Gateway
 
-## Prevent It
+```bash
+sudo ip route add default via 192.168.1.1
+```
 
-- Check routing table
-- Add default route
-- Verify interface
+### 3. Delete Incorrect Routes
+
+```bash
+sudo ip route del default via 192.168.1.254
+```
+
+### 4. Add Specific Routes
+
+```bash
+# Route to specific subnet
+sudo ip route add 10.0.0.0/24 via 192.168.1.1 dev eth0
+
+# Route with metric
+sudo ip route add default via 192.168.1.1 metric 100
+```
+
+### 5. Make Routes Persistent
+
+```bash
+# Edit /etc/network/interfaces or /etc/netplan/*.yaml
+```
+
+## Examples
+
+```bash
+$ ip route show
+# No default route!
+
+$ sudo ip route add default via 192.168.1.1
+$ ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=117 time=12.3 ms
+```

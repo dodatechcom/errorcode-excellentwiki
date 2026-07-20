@@ -1,157 +1,162 @@
 ---
-title: "[Solution] Python kafka-python Error — How to Fix"
-description: "Fix Python kafka-python errors. Resolve broker connection, offset, and consumer group issues."
+title: "[Solution] Python kafka-python Error — Kafka Client Failures"
+description: "Fix Python kafka-python errors like KafkaError, TopicNotFoundError, BrokerConnectionError, and consumer/producer errors. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 428
 ---
 
-# Python kafka-python Error
+# Python kafka-python Error — Kafka Client Failures
 
-A `kafka.errors.NoBrokersAvailable` or `kafka.errors.ConsumerTimeoutError` occurs when kafka-python fails to connect to brokers, encounters offset issues, or when consumer group coordination fails.
+kafka-python errors occur when brokers are unreachable, topics do not exist, consumer groups encounter rebalancing, or serialization fails. These are common in event-driven and streaming architectures.
 
-## Why It Happens
+## Common Causes
 
-kafka-python is a Kafka client library. Errors arise when no brokers are available, when the consumer group coordinator is unavailable, when offsets are out of range, or when message deserialization fails.
+```python
+# NoBrokersAvailable: cannot connect to any broker
+from kafka import KafkaProducer
+producer = KafkaProducer(bootstrap_servers="localhost:9092")
 
-## Common Error Messages
+# TopicAuthorizationFailedError: not authorized to access topic
+from kafka import KafkaProducer
+producer = KafkaProducer(bootstrap_servers="localhost:9092")
+producer.send("restricted-topic", b"message")
 
-- `NoBrokersAvailable: NoBrokersAvailable`
-- `ConsumerTimeoutError: Timeout`
-- `OffsetOutOfRangeError: Offset is out of range`
-- `CommitFailedError: CommitFailedError`
+# CommitFailedError: consumer group offset commit failed
+from kafka import KafkaConsumer
+consumer = KafkaConsumer("my-topic", group_id="my-group", bootstrap_servers="localhost:9092")
+consumer.commit()
 
-## How to Fix It
+# KafkaTimeoutError: operation timed out
+from kafka import KafkaProducer
+producer = KafkaProducer(bootstrap_servers="localhost:9092", request_timeout_ms=100)
+producer.send("my-topic", b"message").get(timeout=0.01)
 
-### Fix 1: Configure producer properly
+# SerializationError: cannot serialize message
+producer = KafkaProducer(value_serializer=lambda v: v.encode("utf-8"))
+producer.send("my-topic", 12345)  # int cannot be encoded
+```
 
+## How to Fix
+
+### Fix 1: Verify Broker Connectivity
+Ensure Kafka brokers are running and reachable.
+```bash
+# Check broker status
+kafka-broker-api-versions.sh --bootstrap-server localhost:9092
+```
 ```python
 from kafka import KafkaProducer
 from kafka.errors import NoBrokersAvailable
 
-# Wrong — no timeout or retry configuration
-# producer = KafkaProducer(bootstrap_servers=["localhost:9092"])
-
-# Correct — configure with retry and timeout
-producer = KafkaProducer(
-    bootstrap_servers=["localhost:9092"],
-    request_timeout_ms=30000,
-    retries=3,
-    acks="all",
-    value_serializer=lambda v: v.encode("utf-8"),
-)
-
-# Send message
-future = producer.send("my-topic", value="Hello Kafka")
-record_metadata = future.get(timeout=10)
-print(f"Sent to {record_metadata.topic} partition {record_metadata.partition}")
+try:
+    producer = KafkaProducer(bootstrap_servers="localhost:9092")
+except NoBrokersAvailable:
+    print("Cannot connect to Kafka broker. Check if Kafka is running.")
 ```
 
-### Fix 2: Handle consumer properly
+### Fix 2: Create Topics Before Producing
+Ensure topics exist before sending messages.
+```python
+from kafka.admin import KafkaAdminClient, NewTopic
+from kafka.errors import TopicAuthorizationFailedError
 
+admin = KafkaAdminClient(bootstrap_servers="localhost:9092")
+new_topic = NewTopic(name="my-topic", num_partitions=3, replication_factor=1)
+try:
+    admin.create_topics([new_topic])
+except Exception as e:
+    print(f"Topic creation: {e}")
+```
+
+### Fix 3: Handle Consumer Group Rebalancing
+Implement proper commit strategies and rebalance callbacks.
 ```python
 from kafka import KafkaConsumer
-from kafka.errors import ConsumerTimeoutError
 
-# Wrong — no timeout, may hang forever
-# consumer = KafkaConsumer("my-topic")
+def on_partitions_assigned(partitions):
+    print("Partitions assigned:", partitions)
 
-# Correct — configure consumer with timeout
+def on_partitions_revoked(partitions):
+    print("Partitions revoked:", partitions)
+
 consumer = KafkaConsumer(
     "my-topic",
-    bootstrap_servers=["localhost:9092"],
     group_id="my-group",
-    auto_offset_reset="earliest",
-    enable_auto_commit=True,
-    consumer_timeout_ms=5000,
-)
-
-try:
-    for message in consumer:
-        print(f"Topic: {message.topic}, Partition: {message.partition}")
-        print(f"Offset: {message.offset}, Key: {message.key}")
-        print(f"Value: {message.value.decode()}")
-except ConsumerTimeoutError:
-    print("No more messages")
-
-consumer.close()
-```
-
-### Fix 3: Manage offsets correctly
-
-```python
-from kafka import KafkaConsumer, TopicPartition
-
-consumer = KafkaConsumer(
-    bootstrap_servers=["localhost:9092"],
-    group_id="my-group",
+    bootstrap_servers="localhost:9092",
     enable_auto_commit=False,
-)
-
-# Manually assign partition and offset
-partition = TopicPartition("my-topic", 0)
-consumer.assign([partition])
-
-# Seek to specific offset
-consumer.seek(partition, 0)
-
-# Read messages
-for _ in range(5):
-    message = consumer.poll(timeout_ms=1000)
-    if message:
-        print(f"Offset: {message.offset}, Value: {message.value.decode()}")
-        consumer.commit()
-
-consumer.close()
-```
-
-### Fix 4: Handle serialization errors
-
-```python
-from kafka import KafkaProducer, KafkaConsumer
-import json
-
-# Wrong — no serializer specified
-# producer = KafkaProducer(bootstrap_servers=["localhost:9092"])
-# producer.send("topic", value={"key": "value"})  # TypeError
-
-# Correct — use proper serializers
-producer = KafkaProducer(
-    bootstrap_servers=["localhost:9092"],
-    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-    key_serializer=lambda k: k.encode("utf-8") if k else None,
-)
-
-producer.send("my-topic", key="user-1", value={"name": "Alice", "age": 25})
-
-consumer = KafkaConsumer(
-    "my-topic",
-    bootstrap_servers=["localhost:9092"],
-    value_deserializer=lambda m: json.loads(m.decode("utf-8")),
-    key_deserializer=lambda k: k.decode("utf-8") if k else None,
+    on_partitions_assigned=on_partitions_assigned,
+    on_partitions_revoked=on_partitions_revoked,
 )
 
 for message in consumer:
-    print(f"Key: {message.key}, Value: {message.value}")
-    break
+    process(message)
+    consumer.commit()
 ```
 
-## Common Scenarios
+### Fix 4: Configure Proper Timeouts
+Set appropriate timeout values for your use case.
+```python
+from kafka import KafkaProducer
 
-- **No brokers available** — Kafka broker not running or not accessible on the configured port.
-- **Offset out of range** — Consumer tries to read an offset that has been deleted by the broker.
-- **Consumer timeout** — No messages available within the configured timeout period.
+producer = KafkaProducer(
+    bootstrap_servers="localhost:9092",
+    request_timeout_ms=30000,
+    max_block_ms=60000,
+    acks="all",
+)
 
-## Prevent It
+future = producer.send("my-topic", b"message")
+record_metadata = future.get(timeout=10)
+```
 
-- Always set `acks="all"` on producers for reliable message delivery.
-- Use `enable_auto_commit=False` with explicit commits for exactly-once semantics.
-- Handle `ConsumerTimeoutError` in consumer loops to allow graceful shutdown.
+### Fix 5: Handle Serialization Errors
+Use proper serializers and handle encoding issues.
+```python
+from kafka import KafkaProducer
+import json
+
+def json_serializer(data):
+    return json.dumps(data).encode("utf-8")
+
+producer = KafkaProducer(
+    bootstrap_servers="localhost:9092",
+    value_serializer=json_serializer,
+)
+
+producer.send("my-topic", {"key": "value", "number": 42})
+```
+
+## Examples
+
+```python
+# Complete producer with error handling
+from kafka import KafkaProducer
+from kafka.errors import KafkaError, KafkaTimeoutError
+import json
+
+def create_producer():
+    return KafkaProducer(
+        bootstrap_servers="localhost:9092",
+        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+        acks="all",
+        retries=3,
+    )
+
+def send_message(producer, topic, message):
+    future = producer.send(topic, message)
+    try:
+        record_metadata = future.get(timeout=10)
+        print(f"Sent to {record_metadata.topic} partition {record_metadata.partition}")
+    except KafkaTimeoutError:
+        print("Producer timed out waiting for broker response")
+    except KafkaError as e:
+        print(f"Failed to send message: {e}")
+```
 
 ## Related Errors
 
-- [NoBrokersAvailable](/languages/python/no-brokers/) — cannot connect to Kafka
-- [ConsumerTimeoutError](/languages/python/timeouterror/) — consumer poll timeout
-- [OffsetOutOfRangeError](/languages/python/offset-error/) — invalid offset
+- [Python PyMongo Error](/languages/python/python-pymongo-error/)
+- [Python redis-py Error](/languages/python/python-redis-py-error/)
+- [Python Elasticsearch Error](/languages/python/python-elasticsearch-error/)

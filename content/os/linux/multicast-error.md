@@ -6,30 +6,61 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 6
 ---
+# Linux: Multicast Error
 
-# Linux: multicast-error — multicast configuration error
-
-Fix Linux multicast-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Multicast errors occur when the network interface fails to join multicast groups or receive multicast traffic.
 
 ## Common Causes
 
-- Multicast not received
-- IGMP not working
-- Route missing
-- Interface issue
+- Multicast not enabled on the network interface
+- IGMP/MLD snooping on switch filtering multicast traffic
+- Firewall blocking multicast traffic (224.0.0.0/4)
+- Application not joining the correct multicast group
+- Routing table missing multicast route
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/multicast-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Multicast Configuration
 
-## Common Scenarios
+```bash
+ip link show | grep MULTICAST
+cat /proc/net/dev_mcast
+```
 
-- Multicast not received
-- IGMP not working
-- Route missing
+### 2. Enable Multicast on Interface
 
-## Prevent It
+```bash
+sudo ip link set eth0 multicast on
+```
 
-- Add multicast route
-- Enable IGMP
-- Check interface
+### 3. Join Multicast Group
+
+```bash
+sudo ip maddr add 224.0.0.1 dev eth0
+```
+
+### 4. Check IGMP Membership
+
+```bash
+cat /proc/net/igmp
+cat /proc/net/igmp6
+```
+
+### 5. Add Multicast Route
+
+```bash
+sudo ip route add 224.0.0.0/4 dev eth0
+```
+
+## Examples
+
+```bash
+$ ip link show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+
+$ cat /proc/net/dev_mcast
+2 eth0  1  0  01005e000001
+2 eth0  1  0  01005e0000fb
+
+$ sudo ip maddr add 239.192.1.100 dev eth0
+```

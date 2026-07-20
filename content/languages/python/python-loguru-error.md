@@ -1,157 +1,176 @@
 ---
-title: "[Solution] Python Loguru Logging Error — How to Fix"
-description: "Fix Python Loguru logging errors. Resolve sink configuration issues, rotation failures, and exception formatting problems."
+title: "[Solution] Python Loguru Error — Logging Framework Failures"
+description: "Fix Python Loguru errors like logger configuration, sink errors, format errors, and rotation errors. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 433
 ---
 
-# Python Loguru Logging Error
+# Python Loguru Error — Logging Framework Failures
 
-A `loguru._recattrs.LoguruException` or `TypeError` occurs when Loguru fails to configure a sink, encounters invalid rotation parameters, or cannot serialize exception context due to missing dependencies.
+Loguru errors occur when logger sinks are misconfigured, format strings are invalid, rotation settings are incorrect, or file paths are inaccessible. These are common in production logging setups.
 
-## Why It Happens
-
-Loguru replaces Python's standard logging with a simpler API. Errors arise when sinks are not callable, rotation functions return invalid values, exception formatting requires unavailable packages, or file paths are not writable.
-
-## Common Error Messages
-
-- `TypeError: sink must be callable or file-like object`
-- `ValueError: rotation time must be a positive integer`
-- `FileNotFoundError: [Errno 2] No such file or directory: 'logs/app.log'`
-- `UnicodeEncodeError: 'utf-8' codec can't encode character`
-
-## How to Fix It
-
-### Fix 1: Configure sinks correctly
+## Common Causes
 
 ```python
+# ValueError: invalid sink
 from loguru import logger
+logger.add(12345)  # sink must be str, Path, file object, or callable
 
-# Wrong — passing non-callable as sink
-# logger.add(123)  # TypeError
+# FileNotFoundError: log directory doesn't exist
+from loguru import logger
+logger.add("/nonexistent/path/app.log")
 
-# Correct — use valid sink types
+# FormatError: invalid format string
+from loguru import logger
+logger.add("app.log", format="{invalid_field} {message}")
+
+# ValueError: rotation configuration invalid
+from loguru import logger
+logger.add("app.log", rotation="invalid_value")
+
+# TypeError: sink is not callable
+from loguru import logger
+logger.add(lambda msg: print(msg), format=12345)  # format must be str
+```
+
+## How to Fix
+
+### Fix 1: Use Valid Sink Types
+Provide a valid sink: file path, callable, or file-like object.
+```python
+from loguru import logger
 import sys
 
 # File sink
-logger.add("logs/app.log", rotation="10 MB", retention="30 days")
+logger.add("app.log")
 
-# Stream sink
-logger.add(sys.stderr, level="INFO")
+# Stderr sink (default)
+logger.add(sys.stderr)
 
 # Callable sink
-def custom_sink(message):
-    print(f"CUSTOM: {message}")
+logger.add(lambda msg: print(msg, end=""))
 
-logger.add(custom_sink, format="{time} {level} {message}")
-logger.info("Application started")
+# Async sink
+async def async_sink(message):
+    await send_to_service(message)
+
+logger.add(async_sink)
 ```
 
-### Fix 2: Fix rotation configuration
-
+### Fix 2: Ensure Log Directory Exists
+Create the directory before adding a file sink.
 ```python
 from loguru import logger
-import os
+from pathlib import Path
 
-os.makedirs("logs", exist_ok=True)
+log_dir = Path("logs")
+log_dir.mkdir(exist_ok=True)
 
-# Wrong — invalid rotation value
-# logger.add("logs/app.log", rotation="invalid")
-
-# Correct — use proper rotation types
-# Time-based rotation
-logger.add("logs/daily.log", rotation="00:00")  # midnight
-logger.add("logs/hourly.log", rotation="1 hour")
-
-# Size-based rotation
-logger.add("logs/size.log", rotation="10 MB")
-
-# Custom rotation function
-def my_rotation(message):
-    return message.record["time"].day == 1  # rotate on first of month
-
-logger.add("logs/custom.log", rotation=my_rotation)
-
-# Retention policy
-logger.add("logs/retained.log", rotation="10 MB", retention="7 days")
+logger.add(log_dir / "app.log", rotation="10 MB")
 ```
 
-### Fix 3: Handle exception formatting
-
+### Fix 3: Use Valid Format Strings
+Use Loguru's built-in format fields.
 ```python
 from loguru import logger
 
-# Wrong — missing dependencies for enhanced formatting
-# logger.add("app.log", backtrace=True, diagnose=True)
-# may fail if exceptions groups not available
-
-# Correct — configure exception handling safely
-import sys
-
+# Valid format fields: time, level, message, name, function, line, etc.
 logger.add(
-    sys.stderr,
-    backtrace=True,
-    diagnose=True,
+    "app.log",
     format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} | {message}",
 )
-
-try:
-    result = 1 / 0
-except Exception:
-    logger.exception("Division by zero occurred")
 ```
 
-### Fix 4: Manage log levels and filters
+### Fix 4: Configure Rotation Correctly
+Use valid rotation configuration values.
+```python
+from loguru import logger
 
+# Rotate by size
+logger.add("app.log", rotation="10 MB")
+
+# Rotate by time
+logger.add("app.log", rotation="00:00")  # midnight
+logger.add("app.log", rotation="1 week")
+
+# Rotate by function
+logger.add("app.log", rotation=lambda msg: msg["time"].day == 1)  # monthly
+```
+
+### Fix 5: Remove and Reconfigure Logger
+Properly reset the logger before reconfiguration.
 ```python
 from loguru import logger
 import sys
 
-# Wrong — all messages go to same sink
-# logger.add("app.log")
-# logger.info("debug message")  # logged even at INFO level
+# Remove all handlers
+logger.remove()
 
-# Correct — filter by level and context
-logger.add(
-    "logs/error.log",
-    level="ERROR",
-    rotation="10 MB",
-    filter=lambda record: record["extra"].get("module") == "auth",
-)
-
+# Add new configuration
 logger.add(
     sys.stderr,
-    level="DEBUG",
-    format="<green>{time}</green> <level>{level}</level> <cyan>{name}</cyan> {message}",
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level}</level> | {message}",
+    level="INFO",
+    colorize=True,
 )
 
-# Bind context to loggers
-auth_log = logger.bind(module="auth")
-auth_log.info("Login attempt", user_id=123)
-auth_log.error("Authentication failed")
-
-# Unbind to remove context
-clean_log = auth_log.unbind("module")
-clean_log.info("General message")
+logger.add(
+    "app.log",
+    rotation="50 MB",
+    retention="30 days",
+    compression="zip",
+    level="DEBUG",
+)
 ```
 
-## Common Scenarios
+## Examples
 
-- **Sink not callable** — Passing a string or integer directly as a sink instead of using it as a file path or callable.
-- **Log directory missing** — Writing to a log file in a directory that does not exist causes FileNotFoundError.
-- **Rotation conflict** — Using both time-based and size-based rotation in the same sink configuration.
+```python
+# Production logging configuration
+from loguru import logger
+import sys
+from pathlib import Path
 
-## Prevent It
+def setup_logging():
+    logger.remove()  # Remove default handler
 
-- Always create log directories with `os.makedirs()` before configuring file sinks.
-- Use `logger.level()` to define custom levels before filtering on them.
-- Test logging configuration with `logger.info()` at application startup to catch sink issues early.
+    log_dir = Path("logs")
+    log_dir.mkdir(exist_ok=True)
+
+    # Console output
+    logger.add(
+        sys.stderr,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+        level="INFO",
+        colorize=True,
+    )
+
+    # File output with rotation
+    logger.add(
+        log_dir / "app_{time:YYYY-MM-DD}.log",
+        rotation="00:00",
+        retention="30 days",
+        compression="zip",
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} | {message}",
+        level="DEBUG",
+    )
+
+    # Error-only file
+    logger.add(
+        log_dir / "errors.log",
+        rotation="10 MB",
+        retention="90 days",
+        level="ERROR",
+    )
+
+setup_logging()
+logger.info("Logging configured")
+```
 
 ## Related Errors
 
-- [FileNotFoundError](/languages/python/filenotfounderror/) — log directory does not exist
-- [TypeError](/languages/python/typeerror/) — invalid sink type
-- [ValueError](/languages/python/valueerror/) — invalid rotation parameter
+- [Python pytest Error](/languages/python/python-pytest-error-extended/)
+- [Python Pydantic Error](/languages/python/python-pydantic-error/)
+- [Python FastAPI Error](/languages/python/python-fastapi-error/)

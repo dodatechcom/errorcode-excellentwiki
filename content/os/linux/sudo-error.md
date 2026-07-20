@@ -6,30 +6,67 @@ severities: ["warning"]
 error-types: ["security"]
 weight: 6
 ---
+# Linux: sudo Error
 
-# Linux: sudo-error — sudo configuration error
-
-Fix Linux sudo-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Sudo errors occur when a user cannot execute commands with elevated privileges due to configuration or permission issues.
 
 ## Common Causes
 
-- Not in sudoers
-- NOPASSWD not working
-- Group missing
-- Defaults issue
+- User not in sudoers file or not in the sudo group
+- Incorrect sudoers file syntax preventing sudo from working
+- Password authentication failure when sudo requires it
+- sudo timestamp expired requiring re-authentication
+- /etc/sudoers.d file has incorrect permissions
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/sudo-error.md' mode='w' encoding='UTF-8'>
+### 1. Check User Sudo Access
 
-## Common Scenarios
+```bash
+sudo -l -U <username>
+groups <username>
+```
 
-- Cannot use sudo
-- Not in sudoers
-- Permission denied
+### 2. Add User to Sudo Group
 
-## Prevent It
+```bash
+# Add user to sudo group
+sudo usermod -aG sudo <username>
+# Or for RHEL-based
+sudo usermod -aG wheel <username>
+```
 
-- Add user to sudo group
-- Use visudo
-- Check sudoers file
+### 3. Fix Sudoers Syntax
+
+```bash
+# Validate syntax
+sudo visudo -c
+# Edit safely
+sudo visudo
+```
+
+### 4. Check Sudoers File Permissions
+
+```bash
+sudo chmod 440 /etc/sudoers
+sudo chmod 440 /etc/sudoers.d/*
+```
+
+### 5. Reset Sudo Timestamp
+
+```bash
+sudo -k
+sudo -v  # Re-authenticate
+```
+
+## Examples
+
+```bash
+$ sudo ls
+[sudo] password for jdoe:
+jdoe is not in the sudoers file.  This incident will be reported.
+
+$ sudo usermod -aG sudo jdoe
+$ sudo ls
+# Now works after logout/login
+```

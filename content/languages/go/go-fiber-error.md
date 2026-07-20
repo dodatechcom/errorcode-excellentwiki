@@ -9,57 +9,75 @@ weight: 5
 
 # Fiber Handler Error
 
-Fix Fiber framework handler errors. Handle request processing, middleware, and routing issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Fiber, the Go web framework built on `fasthttp`, throws handler errors when route registration conflicts occur, middleware does not call `c.Next()` or `c.Abort()`, response body is written after status code is sent, or `fasthttp.RequestCtx` is used after the handler returns. Unlike `net/http`, Fiber does not use the standard library context.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Route conflict
+app.Get("/users", listUsers)
+app.Get("/users", listUsers) // panic: route already registered
+
+// Cause 2: Writing response after SendStatus
+c.Status(200).Send("hello")
+c.Send("world") // already committed
+
+// Cause 3: Goroutine access to fiber.Ctx after handler returns
+go func() {
+    c.JSON(200, fiber.Map{"msg": "late"}) // panic: use after return
+}()
+
+// Cause 4: Not calling c.Next() in middleware
+func authMiddleware(c *fiber.Ctx) error {
+    token := c.Get("Authorization")
+    if token == "" {
+        return c.SendStatus(401)
+    }
+    // forgot c.Next() — handler never executes
+}
+
+// Cause 5: Using standard net/http middleware with Fiber
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Use route groups
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import "github.com/gofiber/fiber/v2"
 
-### Fix 2: Add proper error handling
-
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func setupRoutes(app *fiber.App) {
+    api := app.Group("/api")
+    v1 := api.Group("/v1")
+    v1.Get("/users", listUsers)
+    v1.Post("/users", createUser)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use middleware with c.Next()
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func AuthMiddleware(c *fiber.Ctx) error {
+    token := c.Get("Authorization")
+    if token == "" {
+        return c.Status(401).JSON(fiber.Map{"error": "unauthorized"})
     }
+    return c.Next()
+}
+```
+
+### Fix 3: Use fiber.Ctx context for timeouts
+
+```go
+func longHandler(c *fiber.Ctx) error {
+    ctx, cancel := context.WithTimeout(c.Context(), 5*time.Second)
+    defer cancel()
+
+    result, err := doWork(ctx)
+    if err != nil {
+        return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+    }
+    return c.JSON(fiber.Map{"result": result})
 }
 ```
 
@@ -69,26 +87,27 @@ if err != nil {
 package main
 
 import (
-    "context"
-    "fmt"
-    "log"
-    "time"
+    "github.com/gofiber/fiber/v2"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    app := fiber.New()
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+    app.Get("/", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, Fiber!")
+    })
+
+    app.Get("/users/:id", func(c *fiber.Ctx) error {
+        id := c.Params("id")
+        return c.JSON(fiber.Map{"user_id": id})
+    })
+
+    app.Listen(":3000")
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [goroutine-stack-overflow]({{< relref "/languages/go/goroutine-stack-overflow" >}}) — recursive middleware overflow
+- [broken-pipe]({{< relref "/languages/go/broken-pipe" >}}) — client disconnects before response
+- [context-deadline-exceeded]({{< relref "/languages/go/context-deadline" >}}) — handler times out

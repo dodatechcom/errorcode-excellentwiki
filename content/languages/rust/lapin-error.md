@@ -7,75 +7,71 @@ severities: ["error"]
 weight: 5
 ---
 
-# lapin AMQP Error
+# Lapin Error
 
-Fix lapin AMQP errors. Handle connection, channel, and message acknowledgment issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Lapin errors occur when using the `lapin` crate for AMQP/RabbitMQ — connection and channel errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection failure
+let conn = lapin::Connection::connect("amqp://wrong:5672").await?;
+
+// Channel closed
+channel.close(0, "").await?;
+channel.basic_publish(...).await?; // Error: channel closed
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Verify connection and handle reconnection**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use lapin::{Connection, ConnectionProperties};
+use tokio_amqp::LapinTokioExt;
+
+let conn = Connection::connect(
+    "amqp://guest:guest@localhost:5672/%2f",
+    ConnectionProperties::default().with_tokio(),
+).await?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Acknowledge messages properly**
 
 ```rust
-use anyhow::Result;
+use lapin::options::*;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+channel.basic_qos(1, BasicQosOptions::default()).await?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle channel errors**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let channel = conn.create_channel().await?;
+channel.queue_declare("queue", QueueDeclareOptions::default(), FieldTable::default()).await?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use lapin::{options::*, types::FieldTable, Connection, ConnectionProperties};
+use tokio_amqp::LapinTokioExt;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[tokio::main]
+async fn main() -> lapin::Result<()> {
+    let conn = Connection::connect(
+        "amqp://guest:guest@localhost:5672/%2f",
+        ConnectionProperties::default().with_tokio(),
+    ).await?;
+    let channel = conn.create_channel().await?;
+    channel.queue_declare("hello", QueueDeclareOptions::default(), FieldTable::default()).await?;
+    println!("Connected to RabbitMQ");
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [AMQP Error]({{< relref "/languages/rust/rust-amqp-error" >}}) — AMQP protocol
+- [Kafka Error]({{< relref "/languages/rust/rust-kafka-error-rs" >}}) — Kafka
+- [NATS Error]({{< relref "/languages/rust/rust-nats-error" >}}) — NATS

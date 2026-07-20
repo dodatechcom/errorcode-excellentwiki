@@ -6,30 +6,66 @@ severities: ["critical"]
 error-types: ["kernel-error"]
 weight: 14
 ---
+# Linux: Watchdog Bite
 
-# Linux: kernel-watchdog-bite — NMI watchdog bite detected
-
-Fix Linux kernel-watchdog-bite errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A watchdog bite occurs when the hardware watchdog timer expires because the system stopped responding, causing a system reset.
 
 ## Common Causes
 
-- System hung (hard lockup)
-- CPU in infinite loop
-- Interrupt storm
-- HW watchdog timeout
+- Kernel hang or deadlock preventing watchdog refresh
+- Systemd watchdog not configured to pet the hardware watchdog
+- Hardware watchdog daemon (watchdog) not running
+- System overload causing scheduling delays > watchdog timeout
+- NFS or disk hangs preventing system progress
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/kernel-watchdog-bite.md' mode='w' encoding='UTF-8'>
+### 1. Check Watchdog Status
 
-## Common Scenarios
+```bash
+# Check if watchdog is active
+cat /proc/sys/kernel/watchdog
+cat /proc/sys/kernel/nmi_watchdog
 
-- System hard locks and resets
-- Soft lockup in dmesg
-- NMI timeout reboots
+# Check hardware watchdog
+sudo wdctl
+```
 
-## Prevent It
+### 2. Configure Softdog
 
-- Monitor CPU usage
-- Check interrupt storms
-- Enable kdump
+```bash
+sudo modprobe softdog
+echo "softdog" | sudo tee /etc/modules
+```
+
+### 3. Configure systemd Watchdog
+
+```bash
+# Edit /etc/systemd/system.conf
+# RuntimeWatchdogSec=30
+# RebootWatchdogSec=30
+```
+
+### 4. Increase Watchdog Timeout
+
+```bash
+# For hardware watchdog
+sudo wdctl --timeout 60
+```
+
+## Examples
+
+```bash
+$ sudo wdctl
+Device:        /dev/watchdog0
+Identity:      iTCO_wdt
+Timeout:       30 seconds
+Timeleft:      15 seconds
+Pre-timeout:   0
+FLAG           DESCRIPTION               STATUS
+KeepAlive      keepalive daemon           active
+MagicClose     magic close support        not supported
+
+$ journalctl -k | grep -i watchdog
+Jul 20 14:30:45 server kernel: watchdog: watchdog0: watchdog did not stop!
+```

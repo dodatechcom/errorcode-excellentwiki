@@ -6,30 +6,59 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 6
 ---
+# Linux: resolvconf Error
 
-# Linux: resolvconf-error — resolvconf DNS error
-
-Fix Linux resolvconf-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+resolvconf errors occur when the DNS resolver configuration management system fails to update /etc/resolv.conf.
 
 ## Common Causes
 
-- DNS not resolving
-- /etc/resolv.conf missing
-- DNS server unreachable
-- Configuration overwritten
+- resolvconf service not installed or running
+- /etc/resolv.conf is a static file, not managed by resolvconf
+- resolvconf package conflict with systemd-resolved
+- Network interface not passing DNS information to resolvconf
+- Symlink missing / broken for /etc/resolv.conf
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/resolvconf-error.md' mode='w' encoding='UTF-8'>
+### 1. Check /etc/resolv.conf
 
-## Common Scenarios
+```bash
+ls -la /etc/resolv.conf
+cat /etc/resolv.conf
+```
 
-- DNS not resolving
-- resolv.conf missing
-- DNS overwritten
+### 2. Restart resolvconf
 
-## Prevent It
+```bash
+sudo systemctl restart resolvconf
+sudo resolvconf -u
+```
 
-- Protect resolv.conf
-- Use stable DNS servers
-- Check systemd-resolved
+### 3. Set DNS Servers Manually
+
+```bash
+# For resolvconf-based systems
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolvconf/resolv.conf.d/head
+sudo resolvconf -u
+```
+
+### 4. Switch to systemd-resolved
+
+```bash
+sudo systemctl enable --now systemd-resolved
+sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+```
+
+## Examples
+
+```bash
+$ ls -la /etc/resolv.conf
+-rw-r--r-- 1 root root 30 Jul 20 14:30 /etc/resolv.conf
+
+$ cat /etc/resolv.conf
+nameserver 127.0.0.53
+
+$ sudo systemctl status systemd-resolved
+● systemd-resolved.service - Network Name Resolution
+     Active: active (running)
+```

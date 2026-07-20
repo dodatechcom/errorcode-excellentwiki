@@ -9,86 +9,108 @@ weight: 5
 
 # Air Reload Error
 
-Fix Air live reload errors. Handle file watching, configuration issues, and process management..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `air` live-reload tool for Go fails to reload when the configuration file is wrong, the watched directory has too many files, the build command produces errors, or the temp directory is not writable. Air monitors file changes and rebuilds the Go binary automatically during development.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: air.toml configuration wrong
+// build.bin = "./tmp/main" but tmp directory does not exist
+// build.cmd = "go build -o ./tmp/main" fails silently
+
+// Cause 2: File watcher hits system limit
+// inotify watches exhausted on Linux
+// too many open files
+
+// Cause 3: Build errors not surfacing
+// air rebuilds but binary is stale
+// build error log not captured
+
+// Cause 4: Go module vendor issues
+// air tries to build but vendor directory is stale
+// go mod vendor not run after adding dependencies
+
+// Cause 5: Permission denied on temp directory
+// air cannot write to ./tmp/
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Configure air.toml properly
 
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+```toml
+# .air.toml
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  bin = "./tmp/main"
+  cmd = "go build -o ./tmp/main ./cmd/server"
+  delay = 1000
+  exclude_dir = ["tmp", "vendor", "node_modules"]
+  exclude_regex = ["_test.go"]
+  include_ext = ["go", "toml", "yaml"]
+  kill_delay = "0s"
+  send_interrupt = false
+  stop_on_error = true
+
+[color]
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  time = false
 ```
 
-### Fix 2: Add proper error handling
+### Fix 2: Increase inotify watches on Linux
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
+```bash
+# Check current limit
+cat /proc/sys/fs/inotify/max_user_watches
+# Increase limit
+echo 524288 | sudo tee /proc/sys/fs/inotify/max_user_watches
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 3: Use air with proper error handling
 
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+```bash
+# Install air
+go install github.com/air-verse/air@latest
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+# Run with verbose output
+air -v
+
+# Run with specific config file
+air -c .air.toml
 ```
 
 ## Examples
 
-```go
-package main
+```bash
+# Install air
+go install github.com/air-verse/air@latest
 
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
+# Create .air.toml
+cat > .air.toml << 'EOF'
+root = "."
+tmp_dir = "tmp"
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+[build]
+  cmd = "go build -o ./tmp/main ./cmd/server"
+  bin = "./tmp/main"
+  delay = 1000
+  exclude_dir = ["tmp", "vendor"]
+  include_ext = ["go"]
+EOF
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
+# Run air
+air
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-build-error]({{< relref "/languages/go/go-build-error" >}}) — Go build failures that air may surface
+- [file-exists]({{< relref "/languages/go/file-exists" >}}) — file operation errors during reload
+- [go-work-error]({{< relref "/languages/go/go-work-error" >}}) — Go workspace issues affecting builds

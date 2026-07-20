@@ -9,57 +9,118 @@ weight: 5
 
 # HTTP 401 Unauthorized
 
-Fix Go HTTP 401 unauthorized errors. Handle authentication failures, missing credentials, and token validation..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+A Go HTTP server returns 401 when the client fails to provide valid credentials or the authentication token is missing, expired, or malformed. In Go's `net/http` server, this is typically returned by authentication middleware that checks `Authorization` headers, cookies, or API keys.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Missing Authorization header
+func authMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        token := r.Header.Get("Authorization")
+        if token == "" {
+            http.Error(w, "unauthorized", http.StatusUnauthorized)
+            return
+        }
+        next.ServeHTTP(w, r)
+    })
+}
+
+// Cause 2: Expired JWT token
+token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+    return signingKey, nil
+})
+// token is expired — validation fails silently
+
+// Cause 3: Wrong authentication scheme
+// Client sends: Authorization: Basic xxx
+// Server expects: Authorization: Bearer xxx
+
+// Cause 4: Cookie-based auth with missing or expired cookie
+cookie, err := r.Cookie("session")
+if err != nil { // http.ErrNoCookie
+    http.Error(w, "unauthorized", http.StatusUnauthorized)
+}
+
+// Cause 5: API key not in expected header or query param
+apiKey := r.URL.Query().Get("api_key")
+// Client sends it in X-API-Key header instead
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Implement proper auth middleware with token extraction
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "net/http"
+    "strings"
+)
 
-### Fix 2: Add proper error handling
+type contextKey string
+const userIDKey contextKey = "userID"
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func AuthMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        authHeader := r.Header.Get("Authorization")
+        if authHeader == "" {
+            http.Error(w, `{"error":"missing Authorization header"}`, http.StatusUnauthorized)
+            return
+        }
+
+        parts := strings.SplitN(authHeader, " ", 2)
+        if len(parts) != 2 || parts[0] != "Bearer" {
+            http.Error(w, `{"error":"invalid Authorization format"}`, http.StatusUnauthorized)
+            return
+        }
+
+        userID, err := validateToken(parts[1])
+        if err != nil {
+            http.Error(w, `{"error":"invalid token"}`, http.StatusUnauthorized)
+            return
+        }
+
+        ctx := context.WithValue(r.Context(), userIDKey, userID)
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use secure cookie-based sessions
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+import "net/http"
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func setSessionCookie(w http.ResponseWriter, sessionID string) {
+    http.SetCookie(w, &http.Cookie{
+        Name:     "session",
+        Value:    sessionID,
+        Path:     "/",
+        HttpOnly: true,
+        Secure:   true,
+        SameSite: http.SameSiteStrictMode,
+        MaxAge:   3600,
+    })
+}
+
+func getSessionUser(r *http.Request) (string, error) {
+    cookie, err := r.Cookie("session")
+    if err != nil {
+        return "", err
     }
+    return validateSessionID(cookie.Value)
+}
+```
+
+### Fix 3: Return proper 401 response with WWW-Authenticate header
+
+```go
+func unauthorizedHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("WWW-Authenticate", `Bearer realm="api", error="invalid_token"`)
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusUnauthorized)
+    w.Write([]byte(`{"error":"authentication required"}`))
 }
 ```
 
@@ -69,26 +130,45 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
-    "log"
-    "time"
+    "net/http"
+    "strings"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    mux := http.NewServeMux()
+    mux.Handle("/protected", AuthMiddleware(http.HandlerFunc(protectedHandler)))
+    mux.HandleFunc("/login", loginHandler)
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+    http.ListenAndServe(":8080", mux)
+}
+
+func AuthMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        token := r.Header.Get("Authorization")
+        if !strings.HasPrefix(token, "Bearer ") {
+            http.Error(w, "unauthorized", http.StatusUnauthorized)
+            return
+        }
+        if token[7:] != "valid-token" {
+            http.Error(w, "invalid token", http.StatusUnauthorized)
+            return
+        }
+        next.ServeHTTP(w, r)
+    })
+}
+
+func protectedHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "Welcome to protected area!")
+}
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, `{"token":"valid-token"}`)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-jwt-error]({{< relref "/languages/go/go-jwt-error" >}}) — JWT token validation failures
+- [go-oauth-error]({{< relref "/languages/go/go-oauth-error" >}}) — OAuth2 token exchange errors
+- [go-vault-error]({{< relref "/languages/go/go-vault-error" >}}) — Vault authentication failures

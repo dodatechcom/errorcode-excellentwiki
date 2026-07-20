@@ -1,142 +1,152 @@
 ---
-title: "[Solution] Python NetworkX Graph Algorithm Error — How to Fix"
-description: "Fix Python NetworkX graph algorithm errors. Resolve node not found, shortest path failures, and graph construction issues."
+title: "[Solution] Python NetworkX Error — NodeNotFound, Graph Construction & Algorithm Failures"
+description: "Fix Python NetworkX errors by resolving node issues, graph construction problems, and algorithm failures. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 407
 ---
 
-# Python NetworkX Graph Algorithm Error
+# Python NetworkX Error — NodeNotFound, Graph Construction & Algorithm Failures
 
-A `networkx.exception.NetworkXError` or `NodeNotFound` occurs when NetworkX algorithms reference nodes that do not exist, when graph operations fail due to incompatible graph types, or when algorithms receive invalid parameters.
+NetworkX errors occur when referencing nodes that don't exist, constructing graphs with incompatible data, or running algorithms on graphs with incorrect properties (e.g., directed vs undirected, weighted vs unweighted).
 
-## Why It Happens
-
-NetworkX provides graph algorithms for analysis. Errors arise when algorithms reference non-existent nodes, when directed/undirected graph type mismatches occur, when edge weights are missing for weighted algorithms, or when the graph is disconnected for algorithms requiring connectivity.
-
-## Common Error Messages
-
-- `NodeNotFound: Node nonexistent_node does not exist in the graph`
-- `NetworkXError: Graph has no nodes`
-- `NetworkXError: Node None is not in the graph`
-- `NetworkXUnfeasible: No path between node_a and node_b`
-
-## How to Fix It
-
-### Fix 1: Validate nodes before operations
+## Common Causes
 
 ```python
 import networkx as nx
 
-# Wrong — node may not exist
-# shortest = nx.shortest_path(G, "A", "nonexistent")
-
-# Correct — check node existence first
+# 1. Adding edge with non-existent node reference
 G = nx.Graph()
-G.add_edges_from([("A", "B"), ("B", "C"), ("C", "D")])
-
-def safe_shortest_path(G, source, target):
-    if source not in G:
-        raise ValueError(f"Source node '{source}' not in graph")
-    if target not in G:
-        raise ValueError(f"Target node '{target}' not in graph")
-    return nx.shortest_path(G, source, target)
-
-try:
-    path = safe_shortest_path(G, "A", "D")
-    print(f"Path: {path}")
-except ValueError as e:
-    print(f"Error: {e}")
+G.add_edge("A", "B")
+G["C"]["D"]  # KeyError: node 'C' not in graph
 ```
 
-### Fix 2: Handle weighted edges correctly
+```python
+# 2. Running directed algorithm on undirected graph
+G = nx.Graph()
+G.add_edges_from([("A", "B"), ("B", "C")])
+nx.ancestors(G, "C")  # NetworkXError — only for DiGraph
+```
+
+```python
+# 3. Weighted algorithm on unweighted graph
+G = nx.Graph()
+G.add_edges_from([("A", "B"), ("B", "C")])
+nx.shortest_path_length(G, "A", "C", weight="weight")  # KeyError
+```
+
+```python
+# 4. NodeAlreadyExists in strict graph
+G = nx.DiGraph()
+G.add_node("A", label="first")
+G.add_node("A", label="second")  # overwrites silently, no error
+```
+
+```python
+# 5. Empty graph in algorithm expecting edges
+G = nx.Graph()
+nx.shortest_path(G, "A", "B")  # NetworkXNoPath
+```
+
+## How to Fix
+
+### Fix 1: Check node existence before accessing neighbors
 
 ```python
 import networkx as nx
 
-# Wrong — unweighted graph used with weighted algorithm
-# G = nx.Graph()
-# G.add_edges_from([("A", "B"), ("B", "C")])
-# path = nx.shortest_path(G, "A", "C", weight="weight")  # no weight attribute
-
-# Correct — add weight attributes
 G = nx.Graph()
-G.add_edge("A", "B", weight=4)
-G.add_edge("B", "C", weight=2)
-G.add_edge("A", "C", weight=10)
+G.add_edges_from([("A", "B"), ("B", "C")])
 
+# Safe access
+if "C" in G and "D" in G:
+    print(G["C"]["D"])
+else:
+    print("One or both nodes not found")
+
+# Use G.has_node() for single node checks
+if G.has_node("A"):
+    print(f"Neighbors of A: {list(G.neighbors('A'))}")
+```
+
+### Fix 2: Use correct graph type for algorithms
+
+```python
+import networkx as nx
+
+# For ancestor/descendant operations, use DiGraph
+DG = nx.DiGraph()
+DG.add_edges_from([("A", "B"), ("B", "C")])
+ancestors = nx.ancestors(DG, "C")
+print(f"Ancestors of C: {ancestors}")
+```
+
+### Fix 3: Set default weight attribute
+
+```python
+import networkx as nx
+
+G = nx.Graph()
+G.add_edges_from([("A", "B"), ("B", "C")])
+
+# Add default weight to all edges
+for u, v in G.edges():
+    G[u][v]["weight"] = 1
+
+# Now weighted shortest path works
 path = nx.shortest_path(G, "A", "C", weight="weight")
 length = nx.shortest_path_length(G, "A", "C", weight="weight")
-print(f"Shortest path: {path}, length: {length}")
+print(f"Path: {path}, Length: {length}")
 ```
 
-### Fix 3: Use correct graph type
+### Fix 4: Handle empty or disconnected graphs
 
 ```python
 import networkx as nx
 
-# Wrong — using undirected graph for directed algorithm
-# G = nx.Graph()
-# G.add_edge("A", "B")
-# in_degree = G.in_degree("B")  # AttributeError
-
-# Correct — use DiGraph for directed operations
-G = nx.DiGraph()
-G.add_edge("A", "B")  # A -> B
-G.add_edge("B", "C")  # B -> C
-
-in_deg = G.in_degree("B")
-out_deg = G.out_degree("B")
-print(f"B in-degree: {in_deg}, out-degree: {out_deg}")
-
-# Check if path exists in directed graph
-if nx.has_path(G, "A", "C"):
-    path = nx.shortest_path(G, "A", "C")
-    print(f"Directed path: {path}")
-```
-
-### Fix 4: Handle disconnected graphs
-
-```python
-import networkx as nx
-
-# Wrong — algorithm assumes connectivity
-# G = nx.Graph()
-# G.add_edges_from([("A", "B"), ("C", "D")])  # two components
-# center = nx.center(G)  # may give unexpected results
-
-# Correct — check connectivity first
 G = nx.Graph()
-G.add_edges_from([("A", "B"), ("C", "D")])
+G.add_edges_from([("A", "B")])
 
-components = list(nx.connected_components(G))
-print(f"Connected components: {len(components)}")
+try:
+    path = nx.shortest_path(G, "A", "C")
+except nx.NetworkXNoPath:
+    print("No path exists between these nodes")
+except nx.NodeNotFound as e:
+    print(f"Node not in graph: {e}")
 
+# Check connectivity first
 if nx.is_connected(G):
-    center = nx.center(G)
-    print(f"Graph center: {center}")
+    print("Graph is connected")
 else:
-    for i, component in enumerate(components):
-        subgraph = G.subgraph(component)
-        print(f"Component {i}: {list(subgraph.nodes())}")
+    components = list(nx.connected_components(G))
+    print(f"Graph has {len(components)} components")
 ```
 
-## Common Scenarios
+## Examples
 
-- **Node not found** — Algorithms fail when referencing nodes that were removed or never added.
-- **Wrong graph type** — Using `nx.Graph()` instead of `nx.DiGraph()` for directed operations.
-- **Missing edge weights** — Weighted algorithms produce incorrect results when weight attributes are missing.
+```python
+import networkx as nx
 
-## Prevent It
+# Build and analyze a social network
+G = nx.Graph()
+edges = [
+    ("Alice", "Bob"), ("Alice", "Charlie"), ("Bob", "David"),
+    ("Charlie", "David"), ("Eve", "Alice"), ("Eve", "Bob")
+]
+G.add_edges_from(edges)
 
-- Always use `G.has_node()` or `node in G` before algorithm calls that reference specific nodes.
-- Use `nx.DiGraph()` for directed networks and `nx.Graph()` for undirected networks.
-- Check `nx.is_connected(G)` before running algorithms that require connected graphs.
+# Compute centrality
+centrality = nx.degree_centrality(G)
+print("Degree centrality:", centrality)
+
+# Find shortest path
+path = nx.shortest_path(G, "Eve", "David")
+print(f"Shortest path Eve->David: {path}")
+```
 
 ## Related Errors
 
-- [NodeNotFound](/languages/python/node-not-found/) — node does not exist in graph
-- [NetworkXError](/languages/python/networkx-error/) — graph operation failed
-- [NetworkXUnfeasible](/languages/python/unfeasible/) — no valid path exists
+- [KeyError](/languages/python/keyerror/) — node not found in graph
+- [ValueError](/languages/python/valueerror/) — invalid graph parameter
+- [TypeError](/languages/python/typeerror/) — wrong graph type for operation

@@ -9,56 +9,95 @@ weight: 5
 
 # SAML Assertion Error
 
-Fix Go SAML assertion errors. Handle XML signature validation, certificate issues, and redirect binding..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The SAML library fails when the assertion signature is invalid, the identity provider (IdP) certificate is not trusted, the ACS URL is wrong, or the clock skew between SP and IdP causes validation failure. SAML assertions are XML documents with XML digital signatures.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: IdP certificate not loaded
+sp, _ := samlsp.New(samlsp.Options{
+    IDPMetadataURL: nil,
+    // IDPMetadata not set — cannot verify assertion signature
+})
+
+// Cause 2: Assertion clock skew
+// IdP sent assertion with NotBefore: 2024-01-01T00:00:00Z
+// SP clock is 5 minutes behind — assertion appears not yet valid
+
+// Cause 3: ACS URL mismatch
+// SP configured: https://sp.example.com/saml/acs
+// IdP configured: https://sp.example.com/acs
+// SAML Response destination does not match
+
+// Cause 4: Audience restriction fails
+// Assertion Audience: https://sp.example.com
+// SP Entity ID: https://myapp.example.com
+
+// Cause 5: InResponseTo mismatch
+// IdP sends assertion with InResponseTo="request-id"
+// SP has no matching pending request
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Configure SAML SP properly
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "crypto/tls"
+    "net/http"
 
-### Fix 2: Add proper error handling
+    "github.com/crewjam/saml/samlsp"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func setupSAML() (*samlsp.Middleware, error) {
+    keyPair, _ := tls.LoadX509KeyPair("sp.crt", "sp.key")
+
+    opts := samlsp.Options{
+        EntityID:    "https://myapp.example.com",
+        URL:         "https://myapp.example.com/saml",
+        Key:         keyPair.PrivateKey,
+        Certificate: keyPair.Certificate,
+        IDPMetadataURL: &url.URL{
+            Scheme: "https",
+            Host:   "idp.example.com",
+            Path:   "/metadata",
+        },
+        AllowIDPInitiated: true,
+    }
+
+    return samlsp.New(opts)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Handle clock skew
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+opts := samlsp.Options{
+    // Allow 5 minutes clock skew
+    Clock:         samlsp.Clock{Time: time.Now()},
+    // Set NotBeforeSkew on SP
+}
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+sp, _ := samlsp.New(opts)
+// Add to middleware
+http.Handle("/saml/", sp)
+```
+
+### Fix 3: Validate assertion attributes
+
+```go
+func handleAssertion(w http.ResponseWriter, r *http.Request) {
+    assertion := samlsp.AssertionFromContext(r.Context())
+    if assertion == nil {
+        http.Error(w, "no assertion", http.StatusUnauthorized)
+        return
+    }
+
+    for _, attrStatement := range assertion.AttributeStatement {
+        for _, attr := range attrStatement.Attributes {
+            fmt.Printf("Attribute: %s = %s\n", attr.Name, attr.Values[0].Value)
+        }
     }
 }
 ```
@@ -69,26 +108,40 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
     "log"
-    "time"
+    "net/http"
+    "os"
+
+    "github.com/crewjam/saml/samlsp"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    keyPair, _ := tls.LoadX509KeyPair("sp.crt", "sp.key")
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+    opts := samlsp.Options{
+        EntityID:    os.Getenv("SAML_ENTITY_ID"),
+        URL:         os.Getenv("SAML_ACS_URL"),
+        Key:         keyPair.PrivateKey,
+        Certificate: keyPair.Certificate,
     }
-    fmt.Println(result)
+
+    sp, err := samlsp.New(opts)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    http.Handle("/saml/", sp)
+    http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintln(w, "Hello, SAML user!")
+    })
+
+    log.Fatal(http.ListenAndServeTLS(":443", "sp.crt", "sp.key", nil))
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-x509-error]({{< relref "/languages/go/go-x509-error" >}}) — X.509 certificate verification in SAML
+- [xml-unmarshal]({{< relref "/languages/go/go-xml-error" >}}) — SAML assertion XML parsing
+- [go-oauth-error]({{< relref "/languages/go/go-oauth-error" >}}) — OAuth/SAML SSO alternatives

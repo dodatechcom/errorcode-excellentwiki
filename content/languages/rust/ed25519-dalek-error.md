@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# ed25519-dalek Signature Error
+# Ed25519-Dalek Error
 
-Fix ed25519-dalek signature errors. Handle key generation, signing, and verification..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Ed25519-Dalek errors occur when using the `ed25519-dalek` crate for Ed25519 digital signatures — key format issues, signature verification failures, and nonce reuse.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Invalid key length
+let secret = SecretKey::from_bytes(&[0u8; 32]); // Must be exactly 32 bytes
+
+// Signature verification with wrong public key
+let verified = signature.verify(&wrong_pubkey, message); // Returns false
+
+// Using secret key as public key (wrong type)
+let keypair = Keypair::generate(&mut OsRng);
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Generate keys correctly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use ed25519_dalek::{Keypair, Signer};
+use ed25519_dalek::SigningKey;
+use rand_core::OsRng;
+
+let signing_key = SigningKey::generate(&mut OsRng);
+let verifying_key = signing_key.verifying_key();
 ```
 
-### Fix 2: Add proper error handling
+2. **Verify signatures properly**
 
 ```rust
-use anyhow::Result;
+use ed25519_dalek::{Verifier, VerifyingKey, Signature};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let message = b"Hello, world!";
+let signature = signing_key.sign(message);
+
+assert!(verifying_key.verify(message, &signature).is_ok());
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle key serialization correctly**
 
 ```rust
-use std::time::Duration;
+use ed25519_dalek::SigningKey;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let signing_key = SigningKey::generate(&mut OsRng);
+let bytes = signing_key.to_bytes();
+let recovered = SigningKey::from_bytes(&bytes);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use ed25519_dalek::{SigningKey, Signer, Verifier};
+use rand_core::OsRng;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let signing_key = SigningKey::generate(&mut OsRng);
+    let verifying_key = signing_key.verifying_key();
+
+    let message = b"Important message";
+    let signature = signing_key.sign(message);
+
+    match verifying_key.verify(message, &signature) {
+        Ok(()) => println!("Signature valid!"),
+        Err(e) => println!("Invalid: {}", e),
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [RSA Error]({{< relref "/languages/rust/rsa-error" >}}) — RSA operations
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto operations
+- [X25519 Dalek Error]({{< relref "/languages/rust/x25519-dalek-error" >}}) — key exchange

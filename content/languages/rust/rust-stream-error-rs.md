@@ -10,64 +10,123 @@ comments: true
 
 # Stream Error
 
-Fix Stream trait errors. Resolve async stream implementation, pinning, and polling issues.
+Stream errors occur when using `futures::Stream` — incorrect polling, missing items, and backpressure handling.
 
-## Why It Happens
-
-- Stream implementation returns Ready(None) prematurely
-- Pin projection is incorrect for async stream
-- Backpressure is not properly handled in poll_next
-- Stream is consumed multiple times without recreating
-
-## Common Error Messages
-
-- `error: stream failed`
-- `thread panicked at 'Stream trait operation failed'`
-- `Error: unable to complete Stream trait operation`
-- `Fatal: Stream trait configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure Stream trait is properly configured
-use Stream_trait::prelude::*;
+use futures::{Stream, StreamExt};
 
-fn main() {
-    // Initialize properly
-    println!("Correct Stream trait configuration");
+// Polling a stream after it returned None
+let mut stream = futures::stream::iter(vec![1, 2, 3]);
+while let Some(val) = stream.next().await {
+    println!("{}", val);
+}
+// stream.next() now returns None forever
+
+// Not handling stream errors
+let stream = futures::stream::empty::<Result<i32, String>>();
+// Ignoring errors
+
+// Buffer overflow when processing stream too slowly
+```
+
+## How to Fix
+
+1. **Use `StreamExt` combinators for safe processing**
+
+```rust
+use futures::{StreamExt, stream};
+
+#[tokio::main]
+async fn main() {
+    let s = stream::iter(vec![1, 2, 3, 4, 5]);
+
+    // Map, filter, collect
+    let result: Vec<i32> = s
+        .filter(|x| futures::future::ready(x % 2 == 0))
+        .map(|x| x * 10)
+        .collect()
+        .await;
+
+    println!("Result: {:?}", result); // [20, 40]
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Handle stream errors with `filter_map`**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use futures::{StreamExt, stream};
+
+#[tokio::main]
+async fn main() {
+    let s = stream::iter(vec![
+        Ok(1),
+        Err("error"),
+        Ok(3),
+        Ok(4),
+    ]);
+
+    let values: Vec<i32> = s
+        .filter_map(|r| async { r.ok() })
+        .collect()
+        .await;
+
+    println!("Values: {:?}", values); // [1, 3, 4]
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Use buffer_unordered for concurrent processing**
 
 ```rust
-use std::error::Error;
+use futures::{StreamExt, stream};
+use std::time::Duration;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+#[tokio::main]
+async fn main() {
+    let s = stream::iter(0..10);
+
+    let results: Vec<i32> = s
+        .map(|i| async move {
+            tokio::time::sleep(Duration::from_millis(100)).await;
+            i * 2
+        })
+        .buffer_unordered(3) // Process up to 3 concurrently
+        .collect()
+        .await;
+
+    println!("Results: {:?}", results);
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with Stream trait
-2. Integrating Stream trait into an existing codebase
-3. Upgrading Stream trait to a newer version
+```rust
+use futures::{StreamExt, stream, SinkExt};
+use tokio::sync::mpsc;
 
-## Prevent It
+#[tokio::main]
+async fn main() {
+    let (tx, rx) = mpsc::channel(10);
 
-- Read the Stream trait documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+    // Producer
+    tokio::spawn(async move {
+        for i in 0..5 {
+            tx.send(i * 10).await.unwrap();
+        }
+    });
+
+    // Consumer stream
+    let mut stream = tokio_stream::wrappers::ReceiverStream::new(rx);
+
+    while let Some(value) = stream.next().await {
+        println!("Received: {}", value);
+    }
+}
+```
+
+## Related Errors
+
+- [Sink Error]({{< relref "/languages/rust/rust-sink-error" >}}) — sink issues
+- [Future Error]({{< relref "/languages/rust/rust-future-error" >}}) — future issues
+- [Poll Error]({{< relref "/languages/rust/rust-poll-error" >}}) — polling issues

@@ -7,29 +7,62 @@ error-types: ["package-manager"]
 weight: 8
 ---
 
-# Linux: apt-gpg-error — apt GPG error
+# Linux: APT Gpg Error Error
 
-Fix Linux apt-gpg-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+APT gpg error errors occur when the package manager encounters issues during repository updates or package operations.
 
 ## Common Causes
 
-- Key not trusted
-- Signature verification failed
-- Key expired
-- Key missing
+- Repository URL unreachable or invalid
+- GPG key missing or expired
+- Package dependency resolution conflicts
+- dpkg database corruption
+- Network connectivity issues
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/apt-gpg-error.md' mode='w' encoding='UTF-8'>
+### 1. Check APT Status
 
-## Common Scenarios
+```bash
+sudo apt update 2>&1 | tail -20
+cat /etc/apt/sources.list
+ls /etc/apt/sources.list.d/
+```
 
-- Signature verification failed
-- Key not trusted
-- Cannot add repository
+### 2. Fix Package Manager
 
-## Prevent It
+```bash
+sudo apt --fix-broken install
+sudo dpkg --configure -a
+sudo apt clean
+```
 
-- Use trusted keys
-- Verify key fingerprints
-- Keep keys updated
+### 3. Check Network
+
+```bash
+ping -c 3 archive.ubuntu.com
+curl -I http://archive.ubuntu.com
+```
+
+### 4. Update Repositories
+
+```bash
+sudo apt update --allow-insecure-repositories
+sudo apt upgrade
+```
+
+## Examples
+
+```bash
+$ sudo apt update
+Err:1 http://archive.ubuntu.com jammy InRelease
+  Could not resolve 'archive.ubuntu.com'
+$ ping archive.ubuntu.com
+ping: archive.ubuntu.com: Name or service not known
+# DNS issue - check /etc/resolv.conf
+
+$ sudo apt --fix-broken install
+Reading package lists... Done
+Building dependency tree... Done
+Correcting dependencies... Done
+```

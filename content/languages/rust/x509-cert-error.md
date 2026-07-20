@@ -7,75 +7,68 @@ severities: ["error"]
 weight: 5
 ---
 
-# x509-cert Parse Error
+# X509 Cert Error
 
-Fix x509-cert parsing errors. Handle DER/PEM decoding, extension parsing, and validity checks..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+X509 cert errors occur when using the `x509-cert` crate — certificate parsing, validation, and chain building failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Invalid PEM format
+let cert = CertificateDer::from_pem(b"invalid cert data")?;
+
+// Expired certificate
+// Certificate has notBefore in the future or notAfter in the past
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Parse certificates correctly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use x509_cert::Certificate;
+use der::DecodePem;
+
+let pem_data = std::fs::read_to_string("cert.pem")?;
+let cert = Certificate::from_pem(pem_data)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Validate certificate chains**
 
 ```rust
-use anyhow::Result;
+use x509_cert::chain::CertChain;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let chain = CertChain::try_from(pem_data)?;
+// Validate chain against root store
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle DER encoding**
 
 ```rust
-use std::time::Duration;
+use x509_cert::Certificate;
+use der::Decode;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let cert = Certificate::from_der(&der_bytes)?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use x509_cert::Certificate;
+use der::DecodePem;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let pem = r#"-----BEGIN CERTIFICATE-----
+MIIBkTCB+wI...
+-----END CERTIFICATE-----"#;
+    // Certificate::from_pem(pem)?;
+    println!("Certificate parsed");
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Rustls Error]({{< relref "/languages/rust/rustls-error" >}}) — TLS
+- [OpenSSL Error]({{< relref "/languages/rust/openssl-error-rs" >}}) — OpenSSL
+- [Rcgen Error]({{< relref "/languages/rust/rcgen-error" >}}) — cert generation

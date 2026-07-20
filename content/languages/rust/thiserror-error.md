@@ -7,75 +7,98 @@ severities: ["error"]
 weight: 5
 ---
 
-# thiserror Derive Macro Error
+# ThisError Error
 
-Fix thiserror derive macro errors. Handle error type definitions, Display impl, and source chaining..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+ThisError errors occur when using the `thiserror` crate for custom error types — incorrect derive macros and missing source.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Missing source in #[from]
+#[derive(thiserror::Error, Debug)]
+enum MyError {
+    #[error("IO error")]
+    IoError(#[from] io::Error), // source is automatically io::Error
+}
+
+// Incorrect display formatting
+#[error("Error: {0:?}")] // Debug format — may look ugly
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Derive thiserror correctly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use thiserror::Error;
 
-### Fix 2: Add proper error handling
+#[derive(Error, Debug)]
+enum MyError {
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),
 
-```rust
-use anyhow::Result;
+    #[error("Parse error: {0}")]
+    Parse(String),
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+    #[error("Custom error with code {code}")]
+    Custom { code: u32, message: String },
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use #[source] for error chains**
 
 ```rust
-use std::time::Duration;
+#[derive(Error, Debug)]
+enum AppError {
+    #[error("database error")]
+    Database(#[source] sqlx::Error),
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+    #[error("config error")]
+    Config(#[source] config::ConfigError),
+}
+```
+
+3. **Implement Display correctly**
+
+```rust
+#[derive(Error, Debug)]
+enum Error {
+    #[error("failed to read `{path}`: {source}")]
+    ReadError { path: String, source: io::Error },
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use thiserror::Error;
+use std::fmt;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[derive(Error, Debug)]
+enum AppError {
+    #[error("invalid input: {0}")]
+    InvalidInput(String),
+
+    #[error("not found: {resource}")]
+    NotFound { resource: String },
+
+    #[error(transparent)]
+    Other(#[from] Box<dyn std::error::Error>),
+}
+
+fn do_work() -> Result<(), AppError> {
+    Err(AppError::NotFound { resource: "user".into() })
+}
+
+fn main() {
+    if let Err(e) = do_work() {
+        eprintln!("Error: {}", e);
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Anyhow Error]({{< relref "/languages/rust/anyhow-error" >}}) — anyhow
+- [Error Handling]({{< relref "/languages/rust/rust-error-handling-rs" >}}) — patterns
+- [Box Error]({{< relref "/languages/rust/rust-box-error" >}}) — Box<dyn Error>

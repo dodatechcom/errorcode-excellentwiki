@@ -7,75 +7,88 @@ severities: ["error"]
 weight: 5
 ---
 
-# maud Compile-time HTML Error
+# Maud Error
 
-Fix maud compile-time HTML errors. Handle macro invocation, type checking, and element construction..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Maud errors occur when using the `maud` crate for HTML templating — template compilation and syntax errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Unmatched tags in template
+maud::html! {
+    <div><span>"text"</div></span> // mismatched tags
+}
+
+// Invalid Rust expression in template
+maud::html! {
+    (invalid_syntax)
+}
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Ensure matching tags**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use maud::html;
+
+let rendered = html! {
+    div {
+        span { "Hello" }
+    }
+};
 ```
 
-### Fix 2: Add proper error handling
+2. **Use correct expression syntax**
 
 ```rust
-use anyhow::Result;
+use maud::html;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let name = "Alice";
+let rendered = html! {
+    h1 { (name) }
+    p { "Welcome, " (name) "!" }
+};
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle attributes properly**
 
 ```rust
-use std::time::Duration;
+use maud::html;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let url = "https://example.com";
+let rendered = html! {
+    a href=(url) { "Click here" }
+};
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use maud::html;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let items = vec!["Apple", "Banana", "Cherry"];
+
+    let page = html! {
+        html {
+            head { title { "Fruit List" } }
+            body {
+                h1 { "Fruits" }
+                ul {
+                    @for item in &items {
+                        li { (item) }
+                    }
+                }
+            }
+        }
+    };
+    println!("{}", page.into_string());
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tera Error]({{< relref "/languages/rust/tera-error" >}}) — Tera templates
+- [Handlebars Error]({{< relref "/languages/rust/handlebars-error" >}}) — Handlebars
+- [Askama Error]({{< relref "/languages/rust/askama-error" >}}) — Askama

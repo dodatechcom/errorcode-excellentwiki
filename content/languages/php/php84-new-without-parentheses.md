@@ -1,158 +1,185 @@
 ---
-title: "[Solution] PHP New Without Parentheses Error Fix"
-description: "Fix 'new without parentheses' errors in PHP 8.4. Learn correct object instantiation syntax and edge cases."
-date: 2026-07-17T10:00:00+08:00
-draft: false
-language: "php"
-tags: ["php", "php84", "instantiation", "syntax-error", "fatal-error"]
-severity: "error"
+title: "[Solution] PHP 8.4 New Without Parentheses Error — New Instantiation Syntax Error"
+description: "Fix PHP 8.4 New Without Parentheses Error by using correct new syntax, checking PHP version, and verifying class exists. Copy-paste solutions with code examples."
+languages: ["php"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 317
 ---
 
-# New Without Parentheses Error
+# PHP 8.4 New Without Parentheses Error — New Instantiation Syntax Error
 
-## Error Message
-
-```
-Fatal error: Uncaught Error: Cannot use 'new' without parentheses when calling __invoke on an object in /path/to/file.php:10
-```
+The New Without Parentheses Error occurs when the `new` keyword is used with incorrect syntax or in contexts where parentheses are required. PHP 8.4 may change certain instantiation behaviors. This error often appears when chaining method calls on new objects, using new in expressions, or when the class doesn't exist.
 
 ## Common Causes
 
-- Using the new expression result directly to call a method without parentheses in PHP 8.4
-- Chaining method calls on a new expression without proper parenthesization
-- Using 'new ClassName::method()' instead of '(new ClassName())->method()' for static-like calls
-- Mixing new expressions with null-safe operator in ambiguous syntax
-
-## Solutions
-
-### Solution 1: Use parentheses when chaining on new expressions
-
-PHP 8.4 requires explicit parentheses when performing method calls on new expression results.
-
 ```php
 <?php
-// WRONG: Method call on new without parentheses
-class Factory {
-    public function create(): Product {
-        // In PHP 8.4, this requires parentheses
-        return new Product()->withName('Widget');
-    }
+// Cause 1: Missing parentheses on class without constructor
+class Logger {
+    public function log(string $msg): void { echo $msg; }
 }
 
-// CORRECT: Parenthesize the new expression
-class Product {
-    private string $name = '';
+$logger = new Logger; // Deprecated in PHP 8.4 (parentheses recommended)
+$logger->log('hello');
 
-    public function withName(string $name): self {
-        $clone = clone $this;
-        $clone->name = $name;
-        return $clone;
-    }
+// Cause 2: Chaining without parentheses on new
+$result = new User->getName(); // Error — must wrap in parentheses
+$result = (new User())->getName(); // Correct
 
-    public function getName(): string {
-        return $this->name;
-    }
-}
+// Cause 3: New in complex expression without parentheses
+$obj = new MyClass + 1; // Parse error — ambiguous
+$obj = (new MyClass()) + 1; // Correct
 
-$product = (new Product())->withName('Widget');
-echo $product->getName(); // 'Widget'
+// Cause 4: Class doesn't exist
+$obj = new NonExistentClass(); // Error — class not found
+
+// Cause 5: Anonymous class without parentheses
+$handler = new class { public function handle() {} }; // May need () for some uses
+$handler->handle();
 ?>
 ```
 
-### Solution 2: Assign new expressions to variables before chaining
+## How to Fix
 
-Store the new object in a variable first, then call methods — avoids ambiguity and improves readability.
+### Fix 1: Always use parentheses when instantiating
 
 ```php
 <?php
-class Request {
-    private string $method = 'GET';
-    private string $url = '';
-
-    public function method(string $m): self {
-        $clone = clone $this;
-        $clone->method = $m;
-        return $clone;
-    }
-
-    public function url(string $u): self {
-        $clone = clone $this;
-        $clone->url = $u;
-        return $clone;
-    }
-
-    public function send(): string {
-        return "{$this->method} {$this->url}";
-    }
+// PHP 8.4 deprecates new without parentheses
+class User {
+    public function __construct(
+        public string $name,
+    ) {}
 }
 
-// Store in a variable, then chain
-$request = new Request();
-$result = $request->method('POST')->url('/api/users')->send();
-echo $result; // 'POST /api/users'
+// Recommended — always use parentheses
+$user = new User('Alice');
+
+// Also for classes without explicit constructors
+class Helper {}
+$helper = new Helper(); // Preferred over new Helper
 ?>
 ```
 
-### Solution 3: Use static factory methods instead of chaining new
-
-Static factory methods on the class itself avoid the parentheses issue entirely.
+### Fix 2: Wrap new in parentheses for method chaining
 
 ```php
 <?php
+class QueryBuilder {
+    private array $conditions = [];
+
+    public function where(string $condition): self {
+        $this->conditions[] = $condition;
+        return $this;
+    }
+
+    public function build(): string {
+        return implode(' AND ', $this->conditions);
+    }
+}
+
+// Wrong
+// $query = new QueryBuilder->where('active = 1')->build();
+
+// Correct — wrap new in parentheses
+$query = (new QueryBuilder())
+    ->where('active = 1')
+    ->where('deleted = 0')
+    ->build();
+?>
+```
+
+### Fix 3: Use parentheses in complex expressions
+
+```php
+<?php
+class Counter {
+    private int $count = 0;
+
+    public function increment(): self {
+        $this->count++;
+        return $this;
+    }
+
+    public function getCount(): int {
+        return $this->count;
+    }
+}
+
+// Wrong — ambiguous
+// $result = new Counter + 1;
+
+// Correct — explicit parentheses
+$result = (new Counter())->increment()->getCount(); // 1
+
+// Correct — new in array
+$items = [
+    (new User('Alice')),
+    (new User('Bob')),
+];
+?>
+```
+
+### Fix 4: Verify class exists before instantiation
+
+```php
+<?php
+function createInstance(string $className, mixed ...$args): object {
+    if (!class_exists($className)) {
+        throw new InvalidArgumentException("Class not found: $className");
+    }
+
+    return new $className(...$args);
+}
+
+$user = createInstance(User::class, 'Alice');
+?>
+```
+
+## Examples
+
+```php
+<?php
+// Proper instantiation patterns
 class HttpClient {
-    private string $baseUrl;
-    private string $method;
-    private array $headers;
+    public function __construct(
+        private string $baseUrl,
+    ) {}
 
-    private function __construct(string $baseUrl) {
-        $this->baseUrl = $baseUrl;
-        $this->method = 'GET';
-        $this->headers = [];
-    }
-
-    public static function to(string $url): self {
-        return new self($url);
-    }
-
-    public function post(): self {
-        $clone = clone $this;
-        $clone->method = 'POST';
-        return $clone;
-    }
-
-    public function withHeader(string $key, string $value): self {
-        $clone = clone $this;
-        $clone->headers[$key] = $value;
-        return $clone;
-    }
-
-    public function toArray(): array {
-        return [
-            'url'     => $this->baseUrl,
-            'method'  => $this->method,
-            'headers' => $this->headers,
-        ];
+    public function get(string $path): mixed {
+        return ['url' => $this->baseUrl . $path];
     }
 }
 
-$config = HttpClient::to('https://api.example.com')
-    ->post()
-    ->withHeader('Content-Type', 'application/json')
-    ->toArray();
+// Method chaining with parentheses
+$response = (new HttpClient('https://api.example.com'))
+    ->get('/users');
 
-print_r($config);
+// Anonymous class instantiation
+$handler = new class {
+    public function handle(string $input): string {
+        return strtoupper($input);
+    }
+};
+
+echo $handler->handle('hello'); // HELLO
+
+// Factory pattern with parentheses
+class LoggerFactory {
+    public static function create(string $type): Logger {
+        return match ($type) {
+            'file'  => new FileLogger(),
+            'db'    => new DatabaseLogger(),
+            default => new Logger(),
+        };
+    }
+}
 ?>
 ```
-
-## Prevention Tips
-
-- Always wrap new expressions in parentheses when chaining methods: (new Foo())->bar()
-- Static factory methods like ClassName::create() are often cleaner than new+chain patterns
-- Use IDE auto-formatting to catch ambiguous new expression syntax before running code
-- Review upgrade guides when moving to PHP 8.4 — new expression syntax rules have changed
 
 ## Related Errors
 
-- [PHP Typed Property Error]({{< relref "/languages/php/php80-typed-property-error" >}})
-- [PHP Parse Error]({{< relref "/languages/php/parse-error" >}})
-- [PHP Fatal Error]({{< relref "/languages/php/fatal-error" >}})
+- [PHP 8.0 Match Expression Error](/languages/php/php80-match-expression/) — Expression syntax errors
+- [PHP 8.0 Named Argument Error](/languages/php/php80-named-argument/) — Constructor argument errors
+- [PHP 8.4 Property Hook Error](/languages/php/php84-property-hooks/) — PHP 8.4 syntax features

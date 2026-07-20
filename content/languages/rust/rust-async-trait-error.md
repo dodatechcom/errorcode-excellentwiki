@@ -10,71 +10,112 @@ comments: true
 
 # Async Trait Error
 
-Async functions in traits require special handling in Rust because the compiler desugars async fn into a generic Future, making trait objects impossible without boxing.
+Async trait errors occur when using `async fn` in trait definitions or when using the `async-trait` crate incorrectly. Common issues include lifetime problems, Send/Sync bounds, and object safety violations.
 
-## Why It Happens
-
-- Async functions in traits are not directly supported with dyn dispatch
-- The `async_trait` macro is not applied to the trait definition
-- Return types involve lifetimes that conflict with async desugaring
-- `Pin<Box<dyn Future>>` lifetime bounds are incorrect
-
-## Common Error Messages
-
-- `async fn in traits is not object-safe`
-- `cannot be sent between threads safely`
-- `the trait Send cannot be made into an object`
-- `lifetime mismatch in async trait return type`
-
-## How to Fix It
-
-### Fix 1: Use the async-trait crate
+## Common Causes
 
 ```rust
-use async_trait::async_trait;
+// Object safety: async fn in trait is not object-safe (pre-1.75)
+trait DynAsync { async fn run(&self); } // Not object-safe
 
-#[async_trait]
-trait Database {
-    async fn get(&self, key: &str) -> Option<String>;
+// Missing Send bound — cannot spawn on tokio runtime
+trait MyService { async fn handle(&self, req: String) -> String; }
+
+#[tokio::main]
+async fn main() {
+    let service = MyServiceImpl;
+    tokio::spawn(service.handle("hello".into())); // ERROR: !Send
 }
 
-struct MemDb;
+// Lifetime issues with async trait returning borrowed data
+trait Parser {
+    async fn parse<'a>(&'a self, input: &'a str) -> &'a str; // Higher-ranked lifetime issues
+}
+```
 
-#[async_trait]
-impl Database for MemDb {
-    async fn get(&self, key: &str) -> Option<String> {
-        Some(format!("value for {}", key))
+## How to Fix
+
+1. **Use Rust 1.75+ native async fn in trait**
+
+```rust
+trait Service: Send + Sync {
+    async fn execute(&self, input: &str) -> String;
+}
+
+struct MyService;
+impl Service for MyService {
+    async fn execute(&self, input: &str) -> String {
+        format!("Processed: {}", input)
     }
 }
 ```
 
-### Fix 2: Use return-position impl Trait in traits (Rust 1.75+)
+2. **Add `Send` bound for multi-threaded runtimes**
 
 ```rust
-trait Database {
-    fn get(&self, key: &str) -> impl std::future::Future<Output = Option<String>> + Send;
+trait Service: Send + Sync {
+    async fn execute(&self, input: &str) -> String;
+}
+
+struct MyService;
+impl Service for MyService {
+    async fn execute(&self, input: &str) -> String { format!("OK: {}", input) }
+}
+
+#[tokio::main]
+async fn main() {
+    let svc = MyService;
+    tokio::spawn(async move {
+        println!("{}", svc.execute("data").await);
+    }).await.unwrap();
 }
 ```
 
-### Fix 3: Manually box the future
+3. **Use `Pin<Box<dyn Future>>` for trait objects**
 
 ```rust
 use std::future::Future;
 use std::pin::Pin;
 
-trait Database {
-    fn get(&self, key: &str) -> Pin<Box<dyn Future<Output = Option<String>> + Send + '_>>;
+trait DynService: Send + Sync {
+    fn execute(&self, input: String) -> Pin<Box<dyn Future<Output = String> + Send + '_>>;
+}
+
+struct MyService;
+impl DynService for MyService {
+    fn execute(&self, input: String) -> Pin<Box<dyn Future<Output = String> + Send + '_>> {
+        Box::pin(async move { format!("Processed: {}", input) })
+    }
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. A service trait used across async boundaries
-2. Dynamic dispatch with async trait methods
-3. Returning different async futures from trait implementations
+```rust
+trait Repository: Send + Sync {
+    async fn find(&self, id: u64) -> Option<String>;
+    async fn save(&self, id: u64, data: &str) -> Result<(), String>;
+}
 
-## Prevent It
+struct PostgresRepo;
+impl Repository for PostgresRepo {
+    async fn find(&self, id: u64) -> Option<String> { Some(format!("Record {}", id)) }
+    async fn save(&self, id: u64, data: &str) -> Result<(), String> {
+        println!("Saving {} -> {}", id, data);
+        Ok(())
+    }
+}
 
-- Enable the `async-trait` feature in your Cargo.toml for trait objects
-- Consider RPITIT (Rust 1.75+) for concrete type async traits
-- Always add Send + 'static bounds when using async traits with spawn
+#[tokio::main]
+async fn main() {
+    let repo = PostgresRepo;
+    if let Some(r) = repo.find(42).await { println!("Found: {}", r); }
+    repo.save(42, "hello").await.unwrap();
+}
+```
+
+## Related Errors
+
+- [Future Error]({{< relref "/languages/rust/rust-future-error" >}}) — future/poll issues
+- [Pin Error]({{< relref "/languages/rust/rust-pin-error" >}}) — pinning issues
+- [Tokio Runtime Error]({{< relref "/languages/rust/rust-tokio-runtime-error" >}}) — runtime config

@@ -7,75 +7,73 @@ severities: ["error"]
 weight: 5
 ---
 
-# flume Channel Error
+# Flume Error
 
-Fix flume channel errors. Handle sender/receiver lifecycle, bounded channels, and async receivers..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Flume errors occur when using the `flume` crate for async/sync channels — send/recv failures and bounded channel overflow.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Sending on disconnected channel
+let (tx, rx) = flume::unbounded();
+drop(rx);
+tx.send(42).unwrap(); // Err: Disconnected
+
+// Bounded channel full
+let (tx, rx) = flume::bounded(1);
+tx.send(1).unwrap();
+tx.try_send(2).unwrap(); // Err: Full
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle disconnection**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use flume;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let (tx, rx) = flume::unbounded();
+if tx.send("hello").is_err() {
+    eprintln!("Receiver dropped");
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use try_send for non-blocking**
 
 ```rust
-use std::time::Duration;
+use flume;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let (tx, rx) = flume::bounded(10);
+match tx.try_send("data") {
+    Ok(()) => println!("Sent"),
+    Err(flume::TrySendError::Full(_)) => eprintln!("Full"),
+    Err(flume::TrySendError::Disconnected(_)) => eprintln!("Disconnected"),
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use flume;
+use std::thread;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let (tx, rx) = flume::unbounded();
+
+    for i in 0..5 {
+        let tx = tx.clone();
+        thread::spawn(move || tx.send(format!("msg {}", i)).unwrap());
+    }
+    drop(tx);
+
+    while let Ok(msg) = rx.recv() {
+        println!("Got: {}", msg);
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [MPSC Error]({{< relref "/languages/rust/rust-mpsc-error" >}}) — std channels
+- [Channel Error]({{< relref "/languages/rust/rust-channel-error" >}}) — channel issues
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — async channels

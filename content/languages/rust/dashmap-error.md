@@ -7,75 +7,95 @@ severities: ["error"]
 weight: 5
 ---
 
-# dashmap Concurrent Map Error
+# DashMap Error
 
-Fix dashmap concurrent map errors. Handle shard contention, entry API, and concurrent access..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+DashMap errors occur when using the `dashmap` crate for concurrent hash maps — deadlocks from nested access, key type issues, and capacity problems.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use dashmap::DashMap;
+
+// Deadlock from nested access
+let map = DashMap::new();
+map.insert("a", 1);
+let val = map.get("a").unwrap();
+map.insert("b", 2); // May deadlock if write lock held
+
+// Using non-Hash + Eq types as keys
+// Keys must implement Hash + Eq + Clone
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Avoid nested locks by extracting values first**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use dashmap::DashMap;
+
+let map = DashMap::new();
+map.insert("a".to_string(), 1);
+map.insert("b".to_string(), 2);
+
+// Extract values before modifying
+let a_val = *map.get("a").unwrap();
+map.insert("c".to_string(), a_val + 1);
 ```
 
-### Fix 2: Add proper error handling
+2. **Use `entry` API for atomic operations**
 
 ```rust
-use anyhow::Result;
+use dashmap::DashMap;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let map = DashMap::new();
+map.entry("counter".to_string()).or_insert(0);
+
+if let Some(mut val) = map.get_mut("counter") {
+    *val += 1;
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use `remove` to avoid holding locks**
 
 ```rust
-use std::time::Duration;
+use dashmap::DashMap;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let map = DashMap::new();
+map.insert("key".to_string(), vec![1, 2, 3]);
+
+if let Some((key, mut value)) = map.remove("key") {
+    value.push(4);
+    map.insert(key, value);
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use dashmap::DashMap;
+use std::sync::Arc;
+use std::thread;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let map = Arc::new(DashMap::new());
+
+    let mut handles = vec![];
+    for i in 0..10 {
+        let map = Arc::clone(&map);
+        handles.push(thread::spawn(move || {
+            map.insert(format!("key-{}", i), i * 100);
+        }));
+    }
+    for h in handles { h.join().unwrap(); }
+
+    for entry in map.iter() {
+        println!("{}: {}", entry.key(), entry.value());
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Mutex Error]({{< relref "/languages/rust/rust-mutex-error" >}}) — exclusive locks
+- [RwLock Error]({{< relref "/languages/rust/rust-rwlock-error" >}}) — read-write locks
+- [Collections Error]({{< relref "/languages/rust/rust-collections-error" >}}) — collections

@@ -7,29 +7,60 @@ error-types: ["process-error"]
 weight: 8
 ---
 
-# Linux: apparmor-error — AppArmor error
+# Linux: AppArmor Error
 
-Fix Linux apparmor-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+AppArmor errors occur when the Mandatory Access Control (MAC) system denies operations outside allowed profiles.
 
 ## Common Causes
 
-- Profile not loaded
-- Access denied
-- Profile not enforced
-- Binary not confined
+- Application trying to access files outside its profile
+- Profile does not have required permissions
+- Profile in complain mode but needs enforce mode
+- New application version needs updated profile
+- Conflicting profiles for the same application
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/apparmor-error.md' mode='w' encoding='UTF-8'>
+### 1. Check AppArmor Status
 
-## Common Scenarios
+```bash
+sudo aa-status
+sudo apparmor_status
+```
 
-- Access denied by AppArmor
-- Profile not loaded
-- Confined application
+### 2. Check Denied Operations
 
-## Prevent It
+```bash
+sudo journalctl | grep -i "apparmor\|DENIED" | tail -20
+sudo ausearch -m AVC -ts recent 2>/dev/null | tail -20
+```
 
-- Check AppArmor profiles
-- Use complain mode for testing
-- Create custom profiles
+### 3. Set Profile to Complain Mode
+
+```bash
+sudo aa-complain /path/to/profile
+# Or enforce mode
+sudo aa-enforce /path/to/profile
+```
+
+### 4. Update Profile
+
+```bash
+sudo aa-logprof
+sudo aa-genprof /usr/bin/application
+sudo systemctl reload apparmor
+```
+
+## Examples
+
+```bash
+$ sudo aa-status
+apparmor module is loaded.
+22 profiles are loaded.
+10 profiles are in enforce mode.
+12 profiles are in complain mode.
+
+$ sudo journalctl | grep apparmor | tail -3
+Jul 20 14:30:45 server kernel: audit: type=1400 apparmor="DENIED" operation="open" profile="/usr/sbin/nginx" name="/etc/shadow"
+# Nginx profile needs update to access shadow file
+```

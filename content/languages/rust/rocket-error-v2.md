@@ -7,79 +7,76 @@ severities: ["error"]
 weight: 5
 ---
 
-# rocket Launch Configuration Error
+# Rocket Error
 
-Fix rocket launch configuration errors. Handle figment configuration, environment settings, and managed state issues.
-
-## What This Error Means
-
-rocket launch errors occur when the application cannot start due to configuration or initialization issues:
-
-```
-Error: Failed to launch application
-A launch argument was invalid: port must be a valid u16
-```
+Rocket errors occur when using the `rocket` web framework — request handling, fairing, and state management issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Invalid port in Rocket.toml or environment
-// [global]
-// port = 99999  // Invalid port
+// Missing managed state
+let state = rocket.manage(MyState).launch().await?;
 
-// Cause 2: Missing managed state
-rocket::build()
-    .manage(my_state)  // State not registered
-
-// Cause 3: Conflicting configuration sources
-// Cause 4: Secret key not provided for fairings that require it
-// Cause 5: TLS configuration errors
+// Route parameter type mismatch
+#[get("/user/<id>")]
+fn get_user(id: u32) -> String { format!("{}", id) }
+// Requesting /user/abc fails
 ```
 
 ## How to Fix
 
-### Fix 1: Validate Rocket.toml configuration
-
-```toml
-# Rocket.toml
-[global]
-address = "127.0.0.1"
-port = 8000
-log_level = "normal"
-
-[global.limits]
-json = "10 MiB"
-```
-
-### Fix 2: Use environment-specific configuration
+1. **Manage state properly**
 
 ```rust
-#[rocket::main]
-async fn main() -> Result<(), rocket::Error> {
-    let rocket = rocket::build()
-        .configure(rocket::Config::figment()
-            .merge(("port", 8080))
-            .merge(("log_level", "normal"))
-        )
-        .manage(AppState::new())
-        .launch()
-        .await?;
+use rocket::State;
 
-    Ok(())
+struct MyCount(usize);
+
+#[get("/count")]
+fn count(count: State<MyCount>) -> String {
+    format!("Count: {}", count.0)
+}
+
+#[launch]
+fn rocket() -> _ {
+    rocket::build()
+        .manage(MyCount(0))
+        .mount("/", routes![count])
 }
 ```
 
-### Fix 3: Provide secret key for production
+2. **Handle request guards**
 
 ```rust
-use rocket::config::{SecretKey, Config};
+use rocket::request::{self, FromRequest, Outcome};
 
-let config = Config::figment()
-    .merge(("secret_key", SecretKey::from_string(
-        &std::env::var("ROCKET_SECRET_KEY").expect("SECRET_KEY must be set")
-    )));
+struct ApiKey(String);
 
-let rocket = rocket::custom(config);
+#[rocket::async_trait]
+impl<'r> FromRequest<'r> for ApiKey {
+    type Error = String;
+    async fn from_request(request: &'r request::Request) -> request::Outcome<Self, Self::Error> {
+        let key = request.headers().get_one("Authorization");
+        match key {
+            Some(k) => Outcome::Success(ApiKey(k.to_string())),
+            None => Outcome::Failure((request::Status::Unauthorized, "Missing API key".into())),
+        }
+    }
+}
+```
+
+3. **Handle form data correctly**
+
+```rust
+use rocket::form::Form;
+
+#[derive(FromForm)]
+struct Login { username: String, password: String }
+
+#[post("/login", data = "<login>")]
+fn login(login: Form<Login>) -> String {
+    format!("Welcome, {}!", login.username)
+}
 ```
 
 ## Examples
@@ -87,30 +84,24 @@ let rocket = rocket::custom(config);
 ```rust
 #[macro_use] extern crate rocket;
 
-use rocket::State;
-use std::sync::Mutex;
-
-struct VisitCounter {
-    count: Mutex<i32>,
+#[get("/")]
+fn index() -> &'static str {
+    "Hello, Rocket!"
 }
 
-#[get("/")]
-fn index(counter: &State<VisitCounter>) -> String {
-    let mut count = counter.count.lock().unwrap();
-    *count += 1;
-    format!("Visits: {}", *count)
+#[get("/hello/<name>")]
+fn hello(name: &str) -> String {
+    format!("Hello, {}!", name)
 }
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build()
-        .manage(VisitCounter { count: Mutex::new(0) })
-        .mount("/", routes![index])
+    rocket::build().mount("/", routes![index, hello])
 }
 ```
 
 ## Related Errors
 
-- [Rocket Error]({{< relref "/languages/rust/rocket-error" >}}) — rocket error
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Address in Use]({{< relref "/languages/rust/address-in-use" >}}) — address in use
+- [Axum Error]({{< relref "/languages/rust/rust-axum-error" >}}) — Axum framework
+- [Warp Error]({{< relref "/languages/rust/rust-warp-error" >}}) — Warp framework
+- [Actix Web Error]({{< relref "/languages/rust/rust-actix-web-error-rs" >}}) — Actix

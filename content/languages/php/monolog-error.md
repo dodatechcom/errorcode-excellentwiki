@@ -1,88 +1,216 @@
 ---
-title: "[Solution] Monolog Handler Error Fix"
-description: "Fix Monolog handler errors. Handle logging failures, handler configuration, and processor issues."
+title: "[Solution] Monolog Logging Error Fix"
+description: "Fix Monolog logging errors. Check handler configuration, verify log directory permissions, handle formatter errors."
 languages: ["php"]
-error-types: ["runtime-error"]
 severities: ["error"]
-weight: 5
+error-types: ["runtime-error"]
+weight: 1118
 ---
 
-# Monolog Handler Error
+# Monolog Logging Error
 
-Fix Monolog handler errors. Handle logging failures, handler configuration, and processor issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Monolog logging errors occur when log handlers cannot write to their destination, formatters fail to process records, or handler configuration is incorrect. These errors can cause application crashes if logging failures aren't handled gracefully, especially in error handlers.
 
 ## Common Causes
 
 ```php
 <?php
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
-?>
+// Cause 1: Log directory doesn't exist or isn't writable
+$handler = new StreamHandler('/var/log/app/app.log');
+// /var/log/app/ directory doesn't exist
+
+// Cause 2: File permissions incorrect
+// Log file exists but web server can't write to it
+$handler = new StreamHandler('/var/log/app/app.log', Logger::DEBUG);
+
+// Cause 3: Handler configuration conflict
+$logger = new Logger('app');
+$logger->pushHandler(new StreamHandler('/tmp/app.log'));
+$logger->pushHandler(new RotatingFileHandler('/var/log/app/app.log'));
+// Both handlers try to write — one may fail
+
+// Cause 4: Formatter error
+$handler = new StreamHandler('/tmp/app.log');
+$handler->setFormatter(new JsonFormatter());
+// JsonFormatter fails with unencodable data (circular references)
+
+// Cause 5: Memory limit exceeded in buffer
+$handler = new BufferHandler(new StreamHandler('/tmp/app.log'));
+// Buffer grows too large before flushing
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Ensure log directory exists and is writable
 
 ```php
 <?php
-// Check configuration values and ensure required setup
-// Verify the package/library is properly configured
-?>
-```
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
-### Fix 2: Add proper error handling
+$logDir = '/var/log/myapp';
+$logFile = $logDir . '/app.log';
 
-```php
-<?php
-try {
-    // Use the package/library with proper error handling
-} catch (\Exception $e) {
-    error_log('Error: ' . $e->getMessage());
-    // Handle gracefully
+// Create directory if it doesn't exist
+if (!is_dir($logDir)) {
+    if (!mkdir($logDir, 0755, true)) {
+        throw new \RuntimeException("Cannot create log directory: $logDir");
+    }
 }
-?>
+
+// Check write permissions
+if (!is_writable($logDir)) {
+    throw new \RuntimeException("Log directory not writable: $logDir");
+}
+
+// Create logger with writable path
+$logger = new Logger('app');
+$logger->pushHandler(new StreamHandler($logFile, Logger::DEBUG));
+
+$logger->info('Application started');
 ```
 
-### Fix 3: Validate input and add checks
+### Fix 2: Use RotatingFileHandler for log rotation
 
 ```php
 <?php
-// Validate input before processing
-// Check existence before accessing resources
-// Use type declarations and strict comparisons
-?>
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+
+$logger = new Logger('app');
+
+// Rotates daily: app-2024-01-15.log, app-2024-01-16.log, etc.
+$handler = new RotatingFileHandler(
+    '/var/log/myapp/app.log',
+    Logger::DEBUG,
+    true // keep max 30 days by default
+);
+
+$logger->pushHandler($handler);
+$logger->info('Processing request', ['url' => $_SERVER['REQUEST_URI']]);
+```
+
+### Fix 3: Handle formatter errors gracefully
+
+```php
+<?php
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\JsonFormatter;
+
+$logger = new Logger('app');
+$handler = new StreamHandler('/var/log/myapp/app.log', Logger::DEBUG);
+
+// Use JsonFormatter with error handling
+$formatter = new JsonFormatter();
+$handler->setFormatter($formatter);
+
+$logger->pushHandler($handler);
+
+// Avoid logging objects with circular references
+try {
+    $data = getComplexObject();
+    $logger->info('Complex data', ['data' => $data]);
+} catch (\Throwable $e) {
+    // Fallback: log safe representation
+    $logger->warning('Failed to log complex data', [
+        'error' => $e->getMessage(),
+        'context' => get_object_vars($data),
+    ]);
+}
+```
+
+### Fix 4: Use ErrorLogHandler as fallback
+
+```php
+<?php
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\ErrorLogHandler;
+
+$logger = new Logger('app');
+
+// Primary handler
+$logger->pushHandler(
+    new StreamHandler('/var/log/myapp/app.log', Logger::DEBUG)
+);
+
+// Fallback handler — writes to PHP error log
+$logger->pushHandler(
+    new ErrorLogHandler(Logger::ERROR)
+);
+
+// If StreamHandler fails, ErrorLogHandler still captures errors
+```
+
+### Fix 5: Configure processors for safe logging
+
+```php
+<?php
+use Monolog\Logger;
+use Monolog\Processor\MemoryUsageProcessor;
+use Monolog\Processor\PsrLogMessageProcessor;
+
+$logger = new Logger('app');
+
+// Add processors that don't throw
+$logger->pushProcessor(new MemoryUsageProcessor());
+$logger->pushProcessor(new PsrLogMessageProcessor());
+
+// Custom safe processor
+$logger->pushProcessor(function (array $record): array {
+    try {
+        $record['extra']['request_id'] = $_SERVER['HTTP_X_REQUEST_ID'] ?? 'unknown';
+    } catch (\Throwable $e) {
+        $record['extra']['request_id'] = 'error';
+    }
+    return $record;
+});
 ```
 
 ## Examples
 
 ```php
 <?php
-// Common error handling pattern
-try {
-    $result = doSomething();
-    echo $result;
-} catch (\Exception $e) {
-    error_log('Error: ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+// Complete Monolog setup example
+
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Processor\WebProcessor;
+use Monolog\Processor\IntrospectionProcessor;
+
+function createLogger(string $logDir, string $level = 'debug'): Logger
+{
+    $logger = new Logger('app');
+
+    // Ensure log directory exists
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0755, true);
+    }
+
+    // Main rotating handler
+    $logger->pushHandler(
+        new RotatingFileHandler(
+            $logDir . '/app.log',
+            constant('Monolog\Logger::' . strtoupper($level))
+        )
+    );
+
+    // Add context processors
+    $logger->pushProcessor(new WebProcessor());
+    $logger->pushProcessor(new IntrospectionProcessor());
+
+    return $logger;
 }
-?>
+
+// Usage
+$logger = createLogger('/var/log/myapp');
+$logger->info('User logged in', ['user_id' => 123]);
 ```
 
 ## Related Errors
 
-- [PHP Fatal Error]({{< relref "/languages/php/fatal-error" >}}) — fatal error
-- [PHP Warning]({{< relref "/languages/php/e-warning" >}}) — warning
-- [PHP Notice]({{< relref "/languages/php/notice-undefined-variable" >}}) — notice
+- [File Permission Error]({{< relref "/languages/php/file-permission-error" >}}) — permission denied
+- [File Write Error]({{< relref "/languages/php/file-write-error" >}}) — file write failures
+- [Error Log Function]({{< relref "/languages/php/error-log-function" >}}) — PHP error logging

@@ -7,75 +7,98 @@ severities: ["error"]
 weight: 5
 ---
 
-# hmac MAC Error
+# HMAC Error
 
-Fix HMAC MAC errors. Handle key generation, verification, and algorithm selection..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+HMAC errors occur when using the `hmac` crate — wrong key length, signature verification failures, and algorithm mismatches.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Key too short for the algorithm
+let key = hmac::Key::new(hmac::HMAC_SHA256, b"short")?;
+
+// Wrong key during verification
+let tag = hmac::sign(&key1, message);
+hmac::verify(&key2, message, tag.as_ref())?; // ERROR: wrong key
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use adequate key length**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
+
+type HmacSha256 = Hmac<Sha256>;
+
+// Key should be at least as long as the hash output (32 bytes for SHA256)
+let key = b"an-sufficiently-long-key-for-hmac";
+let mut mac = HmacSha256::new_from_slice(key)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Verify signatures correctly**
 
 ```rust
-use anyhow::Result;
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+type HmacSha256 = Hmac<Sha256>;
+
+let key = b"secret-key";
+let mut mac = HmacSha256::new_from_slice(key)?;
+mac.update(b"message");
+let result = mac.finalize();
+let code_bytes = result.into_bytes();
+
+// Verify
+let mut mac2 = HmacSha256::new_from_slice(key)?;
+mac2.update(b"message");
+mac2.verify_slice(&code_bytes)?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle key generation securely**
 
 ```rust
-use std::time::Duration;
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
+use rand::Rng;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+type HmacSha256 = Hmac<Sha256>;
+
+let mut key = [0u8; 32];
+rand::thread_rng().fill(&mut key);
+let mac = HmacSha256::new_from_slice(&key)?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+type HmacSha256 = Hmac<Sha256>;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let key = b"my-secret-key";
+    let message = b"Hello, HMAC!";
+
+    let mut mac = HmacSha256::new_from_slice(key)?;
+    mac.update(message);
+    let result = mac.finalize();
+    let code = result.into_bytes();
+    println!("HMAC: {:x?}", code);
+
+    let mut mac2 = HmacSha256::new_from_slice(key)?;
+    mac2.update(message);
+    mac2.verify_slice(&code)?;
+    println!("Verification passed!");
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [SHA2 Error]({{< relref "/languages/rust/sha2-error" >}}) — SHA-2 hashes
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — ring crypto
+- [Jsonwebtoken Error]({{< relref "/languages/rust/jsonwebtoken-error-rs" >}}) — JWT

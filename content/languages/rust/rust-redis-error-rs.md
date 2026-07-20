@@ -8,66 +8,108 @@ weight: 5
 comments: true
 ---
 
-# Redis Client Error
+# Redis Error
 
-Fix Redis client errors in Rust. Handle connection, pipeline, and command execution issues with the redis crate.
+Redis errors occur when using the `redis` crate to interact with Redis — connection failures, command errors, serialization issues, and cluster configuration problems.
 
-## Why It Happens
-
-- Connection string is invalid or server is unreachable
-- Command is sent on a closed connection
-- Deserialization of Redis values fails
-- Pipeline commands are incorrectly chained
-
-## Common Error Messages
-
-- `error: redisclient failed`
-- `thread panicked at 'redis crate operation failed'`
-- `Error: unable to complete redis crate operation`
-- `Fatal: redis crate configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure redis crate is properly configured
-use redis_crate::prelude::*;
+use redis::Commands;
 
-fn main() {
-    // Initialize properly
-    println!("Correct redis crate configuration");
+// Connection failure
+let client = redis::Client::open("redis://wrong_host:6379")?;
+let mut conn = client.get_connection()?; // Connection refused
+
+// Type mismatch
+let mut conn: redis::Connection = /* ... */;
+let val: String = conn.get("key")?; // ERROR if value is not a String
+
+// Pipeline errors
+let mut pipe = redis::pipe();
+pipe.set("a", 1).set("b", 2);
+pipe.get("nonexistent"); // Returns None
+```
+
+## How to Fix
+
+1. **Use connection pooling for production**
+
+```rust
+use redis::{Client, ConnectionLike};
+use std::time::Duration;
+
+fn create_pool() -> redis::RedisResult<redis::aio::ConnectionManager> {
+    let client = Client::open("redis://localhost:6379")?;
+    // ConnectionManager handles reconnection automatically
+    let conn = tokio::runtime::Runtime::new().unwrap().block_on(
+        redis::aio::ConnectionManager::new(client)
+    )?;
+    Ok(conn)
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Handle Redis errors with proper matching**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
+use redis::RedisError;
+
+fn get_value(conn: &mut redis::Connection, key: &str) -> Result<String, RedisError> {
+    let val: Option<String> = conn.get(key)?;
+    match val {
+        Some(v) => Ok(v),
+        None => Err(RedisError::from((redis::ErrorKind::TypeError, "Key not found"))),
+    }
+}
+```
+
+3. **Use pipelines for batch operations**
+
+```rust
+use redis::Commands;
+
+fn batch_set(conn: &mut redis::Connection) -> redis::RedisResult<()> {
+    let mut pipe = redis::pipe();
+    for i in 0..100 {
+        pipe.set(format!("key:{}", i), i * 10);
+    }
+    pipe.query(conn)?;
     Ok(())
 }
 ```
 
-### Fix 3: Add proper error context
+## Examples
 
 ```rust
-use std::error::Error;
+use redis::{Client, Commands, RedisResult};
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
+fn main() -> RedisResult<()> {
+    let client = Client::open("redis://localhost:6379")?;
+    let mut conn = client.get_connection()?;
+
+    // Basic operations
+    conn.set("greeting", "Hello, Redis!")?;
+    let greeting: String = conn.get("greeting")?;
+    println!("{}", greeting);
+
+    // Hash operations
+    conn.hset("user:1", "name", "Alice")?;
+    conn.hset("user:1", "email", "alice@example.com")?;
+    let name: String = conn.hget("user:1", "name")?;
+    println!("User: {}", name);
+
+    // List operations
+    conn.lpush("queue", "task1")?;
+    conn.lpush("queue", "task2")?;
+    let task: String = conn.rpop("queue", None)?;
+    println!("Processing: {}", task);
+
     Ok(())
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. Setting up a new project with redis crate
-2. Integrating redis crate into an existing codebase
-3. Upgrading redis crate to a newer version
-
-## Prevent It
-
-- Read the redis crate documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — server unreachable
+- [Serde Error]({{< relref "/languages/rust/rust-serde-error-rs" >}}) — serialization
+- [SQLx Error]({{< relref "/languages/rust/rust-sqlx-error-rs" >}}) — database connections

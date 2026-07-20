@@ -6,30 +6,54 @@ severities: ["critical"]
 error-types: ["package-manager"]
 weight: 10
 ---
+# Linux: dpkg Error
 
-# Linux: dpkg-error — dpkg error
-
-Fix Linux dpkg-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+dpkg errors occur when the Debian package manager fails to install, remove, or configure packages.
 
 ## Common Causes
 
-- Package installation interrupted
-- Configuration file corrupt
-- Dependencies broken
-- Package files missing
+- Corrupted package download or incomplete installation
+- Pre/post installation script failure
+- Package dependency issues or conflicts
+- Filesystem full preventing package writes
+- Package overwriting files from another package
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/dpkg-error.md' mode='w' encoding='UTF-8'>
+### 1. Fix Broken Packages
 
-## Common Scenarios
+```bash
+sudo dpkg --configure -a
+sudo apt --fix-broken install
+```
 
-- dpkg error on install
-- Broken package state
-- Configuration interrupted
+### 2. Force Package Removal
 
-## Prevent It
+```bash
+sudo dpkg --remove --force-remove-reinstreq <package>
+sudo dpkg --purge --force-remove-reinstreq <package>
+```
 
-- Always complete package operations
-- Keep backups
-- Don't interrupt dpkg
+### 3. Reinstall Corrupted Package
+
+```bash
+sudo dpkg -i /var/cache/apt/archives/<package>.deb
+sudo apt install --reinstall <package>
+```
+
+### 4. Check dpkg Database
+
+```bash
+sudo dpkg --audit
+```
+
+## Examples
+
+```bash
+$ sudo apt install mypackage
+dpkg: error processing package mypackage (--configure):
+ installed mypackage package post-installation script subprocess returned error exit status 1
+
+$ sudo dpkg --configure -a
+$ sudo apt --fix-broken install
+```

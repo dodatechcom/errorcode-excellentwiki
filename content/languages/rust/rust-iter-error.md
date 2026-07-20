@@ -10,64 +10,98 @@ comments: true
 
 # Iterator Error
 
-Fix iterator errors. Resolve iterator trait implementation, adapter usage, and consumption issues.
+Iterator errors occur when using Rust iterators incorrectly — consuming iterators, using them after exhaustion, or violating iterator protocol.
 
-## Why It Happens
-
-- Iterator adapter is consumed multiple times
-- Iterator implementation skips elements or returns wrong length
-- Collection::from_iter fails due to allocation limits
-- Iterator chain produces unexpected type
-
-## Common Error Messages
-
-- `error: iterator failed`
-- `thread panicked at 'iterator trait operation failed'`
-- `Error: unable to complete iterator trait operation`
-- `Fatal: iterator trait configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure iterator trait is properly configured
-use iterator_trait::prelude::*;
+// Consuming iterator then trying to reuse
+let v = vec![1, 2, 3];
+let iter = v.iter();
+for val in iter { print!("{} ", val); }
+// iter is consumed — cannot iterate again
 
+// Borrowing issues with iterator chains
+let mut v = vec![1, 2, 3];
+let doubled: Vec<i32> = v.iter().map(|x| x * 2).collect();
+v.push(4); // v was borrowed, may have issues
+
+// Using .next() incorrectly on peekable
+use std::iter::Peekable;
+let mut iter = [1, 2, 3].iter().peekable();
+iter.peek(); // Returns Some
+// Not consuming the peeked value
+```
+
+## How to Fix
+
+1. **Clone iterators if you need to reuse them**
+
+```rust
+let v = vec![1, 2, 3];
+
+// Method 1: Create new iterator each time
+for val in v.iter() { print!("{} ", val); }
+println!();
+for val in v.iter() { print!("{} ", val); }
+println!();
+
+// Method 2: Use clone on the iterator
+let iter = v.iter().cloned();
+let collected: Vec<_> = iter.clone().collect();
+let sum: i32 = iter.sum();
+```
+
+2. **Use `peekable` correctly**
+
+```rust
+let mut iter = vec![1, 2, 3].into_iter().peekable();
+
+while iter.peek().is_some() {
+    let val = iter.next().unwrap();
+    println!("Processing: {}", val);
+}
+```
+
+3. **Collect before mutating the source**
+
+```rust
+let mut v = vec![1, 2, 3];
+let doubled: Vec<i32> = v.iter().map(|x| x * 2).collect(); // Collect first
+v.push(4); // Safe — no active borrows
+println!("{:?}", doubled);
+```
+
+## Examples
+
+```rust
 fn main() {
-    // Initialize properly
-    println!("Correct iterator trait configuration");
+    let numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // Filter even numbers
+    let evens: Vec<&i32> = numbers.iter().filter(|&&x| x % 2 == 0).collect();
+    println!("Evens: {:?}", evens);
+
+    // Map and collect
+    let squared: Vec<i32> = numbers.iter().map(|&x| x * x).collect();
+    println!("Squared: {:?}", squared);
+
+    // Fold to compute sum
+    let sum: i32 = numbers.iter().fold(0, |acc, &x| acc + x);
+    println!("Sum: {}", sum);
+
+    // Chained operations
+    let result: String = numbers.iter()
+        .filter(|&&x| x % 2 == 0)
+        .map(|x| x.to_string())
+        .collect::<Vec<_>>()
+        .join(", ");
+    println!("Even numbers: {}", result);
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with iterator trait
-2. Integrating iterator trait into an existing codebase
-3. Upgrading iterator trait to a newer version
-
-## Prevent It
-
-- Read the iterator trait documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Collections Error]({{< relref "/languages/rust/rust-collections-error" >}}) — collection issues
+- [Vec Error]({{< relref "/languages/rust/rust-vec-error" >}}) — vector issues
+- [Stream Error]({{< relref "/languages/rust/rust-stream-error-rs" >}}) — async iterators

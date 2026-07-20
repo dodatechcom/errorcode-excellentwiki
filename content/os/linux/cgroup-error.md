@@ -7,29 +7,64 @@ error-types: ["process-error"]
 weight: 8
 ---
 
-# Linux: cgroup-error — cgroup error
+# Linux: Cgroup Error
 
-Fix Linux cgroup-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Cgroup (control group) errors occur when the kernel cannot manage or enforce resource limits for process groups.
 
 ## Common Causes
 
-- cgroup not mounted
-- Resource limit exceeded
-- Controller missing
-- Hierarchy error
+- Cgroup filesystem not mounted
+- Cgroup v1/v2 hierarchy incompatibility
+- Resource limit exceeded (memory, CPU, I/O)
+- Controller not available in cgroup hierarchy
+- Docker/container runtime cgroup conflicts
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/cgroup-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Cgroup Status
 
-## Common Scenarios
+```bash
+mount | grep cgroup
+cat /proc/filesystems | grep cgroup
+ls -la /sys/fs/cgroup/
+```
 
-- cgroup not working
-- Resource limits not enforced
-- Controller missing
+### 2. Check Cgroup Version
 
-## Prevent It
+```bash
+stat -fc %T /sys/fs/cgroup/
+```
 
-- Verify cgroup mount
-- Check controllers
-- Monitor resource limits
+### 3. Check Process Cgroup
+
+```bash
+cat /proc/self/cgroup
+systemd-cgls
+```
+
+### 4. Fix Cgroup Configuration
+
+```bash
+# Add to kernel command line
+# systemd.unified_cgroup_hierarchy=1
+sudo update-grub
+```
+
+## Examples
+
+```bash
+$ mount | grep cgroup
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,mode=755)
+cgroup2 on /sys/fs/cgroup/unified type cgroup2 (rw,...)
+
+$ cat /proc/self/cgroup
+0::/system.slice/sshd.service
+
+$ sudo systemd-cgls
+Control group /:
+-.slice
+├─system.slice
+│ ├─sshd.service
+│ └─systemd-journald.service
+└─user.slice
+```

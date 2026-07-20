@@ -7,105 +7,64 @@ severities: ["error"]
 weight: 5
 ---
 
-# thiserror Custom Error Derive
+# ThisError Error
 
-Fix thiserror custom derive errors. Handle error enum definitions, source chaining, and Display implementations.
-
-## What This Error Means
-
-thiserror errors occur when defining custom error types with the derive macro:
-
-```
-error[E0277]: the trait bound `MyError: std::error::Error` is not satisfied
-error[E0599]: no method named `context` found for struct `MyError`
-```
+ThisError errors occur when using the `thiserror` crate for custom error types — incorrect derive macros and missing source.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Missing #[from] attribute for automatic conversion
-#[derive(thiserror::Error)]
+// Missing source in #[from]
+#[derive(thiserror::Error, Debug)]
 enum MyError {
-    Io(#[from] std::io::Error),  // Missing #[from] prevents ? operator
+    #[error("IO error")]
+    IoError(#[from] io::Error), // source is automatically io::Error
 }
 
-// Cause 2: Conflicting Display and #[error] attributes
-// Cause 3: Source field not properly annotated
-// Cause 4: Using thiserror in binary when library crate defines errors
+// Incorrect display formatting
+#[error("Error: {0:?}")] // Debug format — may look ugly
 ```
 
 ## How to Fix
 
-### Fix 1: Properly annotate error variants
+1. **Derive thiserror correctly**
 
 ```rust
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum AppError {
-    #[error("I/O error: {0}")]
+enum MyError {
+    #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
     #[error("Parse error: {0}")]
-    Parse(#[from] std::num::ParseIntError),
+    Parse(String),
 
-    #[error("Configuration error: {message}")]
-    Config {
-        message: String,
-        #[source]
-        source: Option<Box<dyn std::error::Error + Send + Sync>>,
-    },
-
-    #[error("Database error")]
-    Database(#[from] sqlx::Error),
+    #[error("Custom error with code {code}")]
+    Custom { code: u32, message: String },
 }
 ```
 
-### Fix 2: Use #[source] for error chaining
+2. **Use #[source] for error chains**
 
 ```rust
-use thiserror::Error;
-
 #[derive(Error, Debug)]
-pub enum BuildError {
-    #[error("Failed to compile: {0}")]
-    Compile(#[source] std::io::Error),
+enum AppError {
+    #[error("database error")]
+    Database(#[source] sqlx::Error),
 
-    #[error("Missing dependency: {name}")]
-    MissingDep {
-        name: String,
-    },
-
-    #[error("Version conflict: {package} requires {required}, found {found}")]
-    VersionConflict {
-        package: String,
-        required: String,
-        found: String,
-    },
+    #[error("config error")]
+    Config(#[source] config::ConfigError),
 }
 ```
 
-### Fix 3: Convert between error types with From
+3. **Implement Display correctly**
 
 ```rust
-use thiserror::Error;
-
 #[derive(Error, Debug)]
-pub enum ServiceError {
-    #[error("Not found: {0}")]
-    NotFound(String),
-
-    #[error("Unauthorized")]
-    Unauthorized,
-
-    #[error(transparent)]
-    Internal(#[from] anyhow::Error),
-}
-
-impl From<std::io::Error> for ServiceError {
-    fn from(e: std::io::Error) -> Self {
-        ServiceError::Internal(e.into())
-    }
+enum Error {
+    #[error("failed to read `{path}`: {source}")]
+    ReadError { path: String, source: io::Error },
 }
 ```
 
@@ -113,44 +72,33 @@ impl From<std::io::Error> for ServiceError {
 
 ```rust
 use thiserror::Error;
+use std::fmt;
 
 #[derive(Error, Debug)]
-pub enum CliError {
-    #[error("Failed to read file '{path}': {source}")]
-    FileRead {
-        path: String,
-        #[source]
-        source: std::io::Error,
-    },
+enum AppError {
+    #[error("invalid input: {0}")]
+    InvalidInput(String),
 
-    #[error("Invalid configuration: {0}")]
-    Config(String),
+    #[error("not found: {resource}")]
+    NotFound { resource: String },
 
-    #[error("Operation timed out after {seconds}s")]
-    Timeout { seconds: u64 },
+    #[error(transparent)]
+    Other(#[from] Box<dyn std::error::Error>),
 }
 
-fn read_config(path: &str) -> Result<String, CliError> {
-    std::fs::read_to_string(path)
-        .map_err(|e| CliError::FileRead {
-            path: path.to_string(),
-            source: e,
-        })
+fn do_work() -> Result<(), AppError> {
+    Err(AppError::NotFound { resource: "user".into() })
 }
 
 fn main() {
-    match read_config("config.toml") {
-        Ok(content) => println!("Config: {}", content),
-        Err(CliError::FileRead { path, source }) => {
-            eprintln!("Could not read '{}': {}", path, source);
-        }
-        Err(e) => eprintln!("Error: {}", e),
+    if let Err(e) = do_work() {
+        eprintln!("Error: {}", e);
     }
 }
 ```
 
 ## Related Errors
 
-- [Anyhow Error]({{< relref "/languages/rust/anyhow-error-v2" >}}) — anyhow context error
-- [Trait Error]({{< relref "/languages/rust/trait-error" >}}) — trait object error
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Anyhow Error]({{< relref "/languages/rust/anyhow-error" >}}) — anyhow
+- [Error Handling]({{< relref "/languages/rust/rust-error-handling-rs" >}}) — patterns
+- [Box Error]({{< relref "/languages/rust/rust-box-error" >}}) — Box<dyn Error>

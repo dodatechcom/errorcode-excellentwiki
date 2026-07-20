@@ -7,29 +7,57 @@ error-types: ["filesystem-error"]
 weight: 12
 ---
 
-# Linux: xfs-repair-error — XFS repair failed
+# Linux: XFS Repair Error Error
 
-Fix Linux xfs-repair-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+XFS repair error errors occur when the XFS high-performance journaling filesystem encounters issues.
 
 ## Common Causes
 
-- Severe corruption
-- Log cannot be replayed
-- AG corruption
-- Root inode damage
+- Filesystem metadata corruption from hardware failure
+- Dirty journal requiring log replay
+- Allocation group header damage
+- Superblock inconsistency
+- Storage subsystem write ordering issues
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/xfs-repair-error.md' mode='w' encoding='UTF-8'>
+### 1. Check XFS Status
 
-## Common Scenarios
+```bash
+sudo xfs_info /mount/point 2>/dev/null
+sudo dmesg | grep -i "xfs" | tail -20
+```
 
-- xfs_repair fails
-- Severe corruption
-- Cannot mount
+### 2. Check Filesystem
 
-## Prevent It
+```bash
+sudo umount /mount/point
+sudo xfs_repair -n /dev/sda1 2>&1 | head -30
+```
 
-- Keep backups
-- Run xfs_repair regularly
-- Avoid forced log clear if possible
+### 3. Repair
+
+```bash
+sudo xfs_repair /dev/sda1
+```
+
+### 4. Force Log Replay
+
+```bash
+sudo mount -o force /dev/sda1 /mount/point
+```
+
+## Examples
+
+```bash
+$ sudo dmesg | grep -i xfs | tail -5
+[12345.678] XFS (sda1): Metadata corruption detected at xfs_repair-error
+
+$ sudo xfs_repair /dev/sda1
+Phase 1 - find and verify superblock...
+Phase 2 - using internal log
+Phase 3 - checking AG structures...
+Phase 4 - checking inodes...
+Phase 5 - rebuilding AG headers...
+Phase 6 - checking link counts...
+```

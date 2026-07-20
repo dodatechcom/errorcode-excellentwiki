@@ -7,75 +7,65 @@ severities: ["error"]
 weight: 5
 ---
 
-# rustls-webpki Verification Error
+# Rustls Webpki Error
 
-Fix rustls-webpki verification errors. Handle certificate validation, CRL checking, and trust stores..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Rustls webpki errors occur when using `rustls-webpki` for certificate verification — untrusted roots and name mismatch.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Certificate not signed by trusted root
+// Server name does not match certificate CN/SAN
+// Certificate expired
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Verify certificate chain**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use rustls_webpki::{VerifyServerCert, CertDer};
+
+let end_entity = CertDer::from_pem(cert_pem)?;
+let intermediate = CertDer::from_pem(intermediate_pem)?;
+
+end_entity.verify_is_valid_tls_server_cert(
+    &[&intermediate],
+    &roots,
+    &server_name,
+    now,
+)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Check name matching**
 
 ```rust
-use anyhow::Result;
+use rustls_webpki::SubjectNameRef;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let name = SubjectNameRef::try_from("example.com")?;
+// Verify SAN or CN matches
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle certificate expiry**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+// Check not_before and not_after
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use rustls_webpki::{verify_tls_cert, CertDer};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let cert = CertDer::from_pem(include_bytes!("cert.pem"))?;
+    println!("Certificate loaded successfully");
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Rustls Error]({{< relref "/languages/rust/rustls-error" >}}) — Rustls TLS
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto
+- [X509 Cert Error]({{< relref "/languages/rust/x509-cert-error" >}}) — X.509

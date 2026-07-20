@@ -6,30 +6,47 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 4
 ---
+# Linux: RAM Disk / tmpfs Error
 
-# Linux: disk-ramdisk-error — ramdisk initialization error
-
-Fix Linux disk-ramdisk-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+RAM disk errors occur with tmpfs or ramfs filesystems (used for /tmp, /dev/shm, container overlays).
 
 ## Common Causes
 
-- Module not loaded
-- Size too large
-- Initramfs issue
-- Kernel error
+- tmpfs size limit reached (defaults to 50% of physical RAM)
+- /tmp or /dev/shm too small for application requirements
+- Containers or processes exhausting shared memory
+- Kernel parameter tmpfs-size set too low
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-ramdisk-error.md' mode='w' encoding='UTF-8'>
+### 1. Check tmpfs Usage
 
-## Common Scenarios
+```bash
+df -h | grep tmpfs
+```
 
-- ramdisk not found
-- Module not loaded
-- initramfs issue
+### 2. Resize tmpfs
 
-## Prevent It
+```bash
+# Remount with larger size
+sudo mount -o remount,size=4G /tmp
+sudo mount -o remount,size=8G /dev/shm
+```
 
-- Load brd module
-- Regenerate initramfs
-- Check kernel config
+### 3. Make Persistent in fstab
+
+```bash
+# Add to /etc/fstab:
+# tmpfs /tmp tmpfs defaults,size=4G 0 0
+```
+
+## Examples
+
+```bash
+$ df -h | grep tmpfs
+tmpfs           3.9G  3.9G     0 100% /dev/shm
+
+$ sudo mount -o remount,size=8G /dev/shm
+$ df -h /dev/shm
+tmpfs           8.0G  3.9G  4.1G  49% /dev/shm
+```

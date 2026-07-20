@@ -6,30 +6,59 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 6
 ---
+# Linux: Connection Refused
 
-# Linux: connection-refused — connection refused error
-
-Fix Linux connection-refused errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+"Connection refused" (ECONNREFUSED) means no process is listening on the target port, or the port is blocked by a firewall.
 
 ## Common Causes
 
-- Service not listening
-- Firewall blocking
-- Port not open
-- Wrong address
+- The target service is not running (not started or crashed)
+- Service is listening on a different port or IP address
+- Firewall (iptables, nftables) is blocking the connection
+- hosts.deny or TCP wrappers blocking the client
+- The port is filtered or blocked by intermediate firewall
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/connection-refused.md' mode='w' encoding='UTF-8'>
+### 1. Check if Service is Listening
 
-## Common Scenarios
+```bash
+sudo ss -tlnp | grep :<port>
+sudo netstat -tulpn | grep :<port>
+```
 
-- Connection refused
-- Service not listening
-- Firewall blocking
+### 2. Check Service Status
 
-## Prevent It
+```bash
+sudo systemctl status <service>
+sudo systemctl start <service>
+```
 
-- Check listening ports
-- Open firewall ports
-- Start service
+### 3. Check Firewall Rules
+
+```bash
+sudo iptables -L -n | grep <port>
+sudo nft list ruleset | grep <port>
+sudo firewall-cmd --list-all
+```
+
+### 4. Test Local Connectivity
+
+```bash
+telnet localhost <port>
+nc -zv localhost <port>
+```
+
+## Examples
+
+```bash
+$ curl http://localhost:8080
+curl: (7) Failed to connect to localhost port 8080: Connection refused
+
+$ sudo ss -tlnp | grep 8080
+# No output - nothing listening on port 8080
+
+$ sudo systemctl start myapp
+$ curl http://localhost:8080
+# Now succeeds
+```

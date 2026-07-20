@@ -6,30 +6,57 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 10
 ---
+# Linux: RAID Rebuild Error
 
-# Linux: disk-raid-rebuild-error — disk RAID rebuild error
-
-Fix Linux disk-raid-rebuild-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+RAID rebuild errors occur when a degraded array cannot successfully reconstruct data onto a replacement disk.
 
 ## Common Causes
 
-- Rebuild failed
-- New disk issues
-- Controller problem
-- Multiple failures
+- Replacement disk smaller than the original member
+- Read errors on the remaining good disk preventing reconstruction
+- Disk timeout or disconnect during the rebuild process
+- Incompatible disk geometry or sector size
+- Power loss during rebuild process
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-raid-rebuild-error.md' mode='w' encoding='UTF-8'>
+### 1. Stop and Assess
 
-## Common Scenarios
+```bash
+cat /proc/mdstat
+sudo mdadm --detail /dev/md0
+dmesg | tail -30
+```
 
-- Rebuild failed
-- Multiple disk failures
-- Controller issue
+### 2. Check All Disks for Errors
 
-## Prevent It
+```bash
+sudo smartctl -A /dev/sdX | grep -E "Reallocated|Pending|Uncorrectable"
+```
 
-- Check disk health
-- Verify controller
-- Replace failed disks
+### 3. Force Rebuild
+
+```bash
+# If one disk has issues, try force assemble
+sudo mdadm --assemble --force /dev/md0 /dev/sdX1 /dev/sdY1
+```
+
+### 4. Ensure Replacement Disk is Large Enough
+
+```bash
+sudo fdisk -l /dev/sdY1
+sudo blockdev --getsize64 /dev/sdY1
+```
+
+## Examples
+
+```bash
+$ cat /proc/mdstat
+md0 : active raid1 sdc1[2] sdb1[1] sda1[0]
+      976762584 blocks super 1.2 [2/3] [U_U]
+      resync=DELAYED
+
+$ dmesg | tail -3
+[ 5432.123] md/raid1:md0: Disk failure on sdb1, disabling device.
+[ 5432.123] md: md0: recovery interrupted
+```

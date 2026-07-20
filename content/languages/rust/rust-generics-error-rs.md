@@ -10,64 +10,110 @@ comments: true
 
 # Generics Error
 
-Fix Rust generics errors. Resolve type parameter constraints, monomorphization issues, and trait bounds.
+Generics errors occur when using generic type parameters incorrectly — missing trait bounds, conflicting implementations, or inferred type ambiguities.
 
-## Why It Happens
-
-- Type parameter has no trait bounds required by usage
-- Generic function is called with incompatible types
-- Where clause references non-existent traits
-- Monomorphization causes code bloat or slowdown
-
-## Common Error Messages
-
-- `error: generics failed`
-- `thread panicked at 'generic types operation failed'`
-- `Error: unable to complete generic types operation`
-- `Fatal: generic types configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure generic types is properly configured
-use generic_types::prelude::*;
+// Missing trait bound
+fn largest<T>(list: &[T]) -> &T {
+    let mut largest = &list[0];
+    for item in list {
+        if item > largest { // ERROR: T doesn't implement PartialOrd
+            largest = item;
+        }
+    }
+    largest
+}
+
+// Conflicting implementations
+struct Wrapper<T>(T);
+impl<T> Wrapper<T> { fn new(t: T) -> Self { Wrapper(t) } }
+impl Wrapper<i32> { fn special() -> Self { Wrapper(42) } } // May conflict
+
+// Ambiguous type inference
+fn create<T: Default>() -> T { T::default() }
+let x = create(); // ERROR: cannot infer type
+```
+
+## How to Fix
+
+1. **Add appropriate trait bounds**
+
+```rust
+fn largest<T: PartialOrd>(list: &[T]) -> &T {
+    let mut largest = &list[0];
+    for item in list {
+        if item > largest { largest = item; }
+    }
+    largest
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct generic types configuration");
+    let numbers = vec![34, 50, 25, 100, 65];
+    println!("Largest: {}", largest(&numbers));
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Specify type annotations when inference fails**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
+fn create<T: Default>() -> T { T::default() }
+
+// Method 1: turbofish syntax
+let x: i32 = create();
+
+// Method 2: annotation
+let y = create::<f64>();
 ```
 
-### Fix 3: Add proper error context
+3. **Use where clauses for complex bounds**
 
 ```rust
-use std::error::Error;
+use std::fmt::{Debug, Display};
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+fn print_item<T>(item: &T)
+where
+    T: Debug + Display + Clone,
+{
+    println!("Debug: {:?}", item);
+    println!("Display: {}", item);
+    let _cloned = item.clone();
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with generic types
-2. Integrating generic types into an existing codebase
-3. Upgrading generic types to a newer version
+```rust
+use std::fmt::Debug;
 
-## Prevent It
+#[derive(Debug, Clone)]
+struct Point<T> { x: T, y: T }
 
-- Read the generic types documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+impl<T: Debug + PartialOrd> Point<T> {
+    fn distance_from_origin(&self) -> String where T: std::fmt::Display {
+        format!("Point({}, {})", self.x, self.y)
+    }
+}
+
+fn merge<T: Clone>(a: &[T], b: &[T]) -> Vec<T> {
+    let mut result = a.to_vec();
+    result.extend_from_slice(b);
+    result
+}
+
+fn main() {
+    let p1 = Point { x: 1.0, y: 2.0 };
+    let p2 = Point { x: 3.0, y: 4.0 };
+    println!("{}", p1.distance_from_origin());
+
+    let merged = merge(&[1, 2], &[3, 4]);
+    println!("Merged: {:?}", merged);
+}
+```
+
+## Related Errors
+
+- [Const Generics Error]({{< relref "/languages/rust/rust-const-generics-error" >}}) — const generic issues
+- [Trait Object Error]({{< relref "/languages/rust/rust-trait-object-error" >}}) — trait objects
+- [Variance Error]({{< relref "/languages/rust/rust-variance-error-rs" >}}) — variance issues

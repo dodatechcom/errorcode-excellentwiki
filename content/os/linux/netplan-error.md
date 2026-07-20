@@ -6,30 +6,51 @@ severities: ["critical"]
 error-types: ["network"]
 weight: 10
 ---
+# Linux: Netplan Error
 
-# Linux: netplan-error — netplan configuration error
-
-Fix Linux netplan-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Netplan errors occur when the network configuration abstraction layer fails to apply or generate network configurations.
 
 ## Common Causes
 
-- YAML syntax error
-- Invalid configuration
-- Renderer not found
-- Interface not defined
+- YAML syntax errors in netplan configuration files
+- Invalid network configuration (duplicate IPs, wrong interface names)
+- Netplan renderer mismatch (NetworkManager vs systemd-networkd)
+- Permissions on config files preventing reading
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/netplan-error.md' mode='w' encoding='UTF-8'>
+### 1. Validate Netplan Config
 
-## Common Scenarios
+```bash
+sudo netplan generate
+sudo netplan --debug apply
+```
 
-- netplan apply fails
-- Configuration error
-- Syntax invalid
+### 2. Check YAML Syntax
 
-## Prevent It
+```bash
+python3 -c "import yaml; yaml.safe_load(open('/etc/netplan/01-netcfg.yaml'))"
+```
 
-- Validate YAML before apply
-- Use netplan try for testing
-- Keep backups of working config
+### 3. List Netplan Configs
+
+```bash
+ls -la /etc/netplan/
+```
+
+### 4. Apply Configuration
+
+```bash
+sudo netplan apply
+```
+
+## Examples
+
+```bash
+$ sudo netplan apply
+Error: Cannot call openvswitch: ovsdb-server.service is not running, please starting it with: systemctl start openvswitch-switch
+
+$ sudo netplan --debug apply
+** (process:12345): DEBUG: 14:30:45.123: eth0: starting dhcp client
+** (process:12345): DEBUG: 14:30:45.456: eth0: DHCP lease obtained (192.168.1.100)
+```

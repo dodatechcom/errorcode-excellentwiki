@@ -7,75 +7,85 @@ severities: ["error"]
 weight: 5
 ---
 
-# serde Deserialization Error
+# Serde Error
 
-Fix serde deserialization errors. Handle type mismatches, missing fields, and custom deserializers..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Serde errors occur when using the `serde` framework — serialization/deserialization failures and type mismatches.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Missing field during deserialization
+let user: User = serde_json::from_str(r#"{"name":"Alice"}"#)?;
+// ERROR: missing 'age' field
+
+// Type mismatch
+let val: i32 = serde_json::from_str(r#""not a number""#)?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Add default values**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use serde::Deserialize;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+#[derive(Deserialize)]
+struct User {
+    name: String,
+    #[serde(default)]
+    age: u32,
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use optional fields**
 
 ```rust
-use std::time::Duration;
+#[derive(Deserialize)]
+struct Config {
+    name: String,
+    #[serde(default)]
+    verbose: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    debug: Option<String>,
+}
+```
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+3. **Handle rename and aliases**
+
+```rust
+#[derive(Serialize, Deserialize)]
+struct Config {
+    #[serde(rename = "firstName")]
+    first_name: String,
+    #[serde(alias = "n")]
+    name: String,
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use serde::{Serialize, Deserialize};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Debug, Serialize, Deserialize)]
+struct User {
+    name: String,
+    #[serde(default)]
+    age: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    email: Option<String>,
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let json = r#"{"name":"Alice"}"#;
+    let user: User = serde_json::from_str(json)?;
+    println!("{:?}", user);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Serde JSON Error]({{< relref "/languages/rust/serde-json-error" >}}) — JSON
+- [Serde Error v2]({{< relref "/languages/rust/serde-error-v2" >}}) — v2
+- [TOML Error]({{< relref "/languages/rust/toml-error" >}}) — TOML

@@ -8,66 +8,88 @@ weight: 5
 comments: true
 ---
 
-# Blanket Impl Error
+# Blanket Implementation Error
 
-Fix blanket implementation errors. Resolve conflicting implementations and trait coherence issues.
+Blanket implementation errors occur when Rust's coherence rules prevent implementing a trait because another blanket implementation already covers it, or when orphan rules block the implementation.
 
-## Why It Happens
-
-- Blanket impl overlaps with a specific impl
-- Type parameter constraints are too broad
-- Negative impl conflicts with blanket implementation
-- Trait specialization is not stable
-
-## Common Error Messages
-
-- `error: blanketimpl failed`
-- `thread panicked at 'blanket implementations operation failed'`
-- `Error: unable to complete blanket implementations operation`
-- `Fatal: blanket implementations configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure blanket implementations is properly configured
-use blanket_implementations::prelude::*;
+use std::fmt::Display;
+
+// Orphan rule: cannot implement foreign trait for foreign type
+impl Display for Vec<i32> { // ERROR: orphan rule
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result { write!(f, "vec") }
+}
+
+// Conflicting blanket impl
+trait MyTrait { fn do_something(&self); }
+impl<T> MyTrait for T { fn do_something(&self) {} }
+struct MyType;
+impl MyTrait for MyType { // ERROR: conflicts with blanket impl
+    fn do_something(&self) { println!("specific"); }
+}
+```
+
+## How to Fix
+
+1. **Use newtype pattern to work around orphan rules**
+
+```rust
+use std::fmt;
+
+struct MyVec(Vec<i32>);
+
+impl fmt::Display for MyVec {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let strs: Vec<String> = self.0.iter().map(|x| x.to_string()).collect();
+        write!(f, "[{}]", strs.join(", "))
+    }
+}
+```
+
+2. **Use wrapper types to avoid blanket impl conflicts**
+
+```rust
+trait MyTrait { fn process(&self) -> String; }
+struct Wrapper<T>(T);
+impl<T: std::fmt::Debug> MyTrait for Wrapper<T> {
+    fn process(&self) -> String { format!("{:?}", self.0) }
+}
+```
+
+3. **Use associated types to differentiate implementations**
+
+```rust
+trait Serialize { type Output; fn serialize(&self) -> Self::Output; }
+impl Serialize for String { type Output = String; fn serialize(&self) -> String { self.clone() } }
+impl Serialize for i32 { type Output = String; fn serialize(&self) -> String { format!("\"{}\"", self) } }
+```
+
+## Examples
+
+```rust
+use std::fmt;
+
+struct Celsius(f64);
+impl fmt::Display for Celsius {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { write!(f, "{:.1}°C", self.0) }
+}
+struct Fahrenheit(f64);
+impl From<Celsius> for Fahrenheit {
+    fn from(c: Celsius) -> Self { Fahrenheit(c.0 * 9.0 / 5.0 + 32.0) }
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct blanket implementations configuration");
+    let temp = Celsius(100.0);
+    println!("Temperature: {}", temp);
+    let f: Fahrenheit = temp.into();
+    println!("In Fahrenheit: {}", f.0);
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with blanket implementations
-2. Integrating blanket implementations into an existing codebase
-3. Upgrading blanket implementations to a newer version
-
-## Prevent It
-
-- Read the blanket implementations documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Orphan Rule Error]({{< relref "/languages/rust/rust-orphan-rule-error" >}}) — orphan rule violations
+- [Derive Error]({{< relref "/languages/rust/rust-derive-error" >}}) — derive macro issues
+- [Trait Object Error]({{< relref "/languages/rust/rust-trait-object-error" >}}) — trait object issues

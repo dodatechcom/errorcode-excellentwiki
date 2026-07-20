@@ -9,56 +9,78 @@ weight: 5
 
 # OpenAPI Validation Error
 
-Fix Go OpenAPI validation errors. Handle request/response validation, schema mismatches, and format errors..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The OpenAPI/Swagger validation in Go fails when request bodies do not match the schema, required fields are missing, enum values are invalid, or the response does not conform to the documented contract. OpenAPI validators enforce API contracts at runtime.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Required field missing in request body
+// OpenAPI schema requires "name" field
+// JSON: {"email": "a@b.com"}
+// validation error: name is required
+
+// Cause 2: Type mismatch
+// Schema: age: integer
+// JSON: {"age": "twenty"}
+// validation error: age must be integer
+
+// Cause 3: Enum value not in allowed list
+// Schema: status: ["active", "inactive"]
+// JSON: {"status": "pending"}
+// validation error: status must be one of: active, inactive
+
+// Cause 4: String format violation
+// Schema: email: format: email
+// JSON: {"email": "not-an-email"}
+// validation error: email must match format
+
+// Cause 5: Response schema mismatch
+// Server returns extra fields not in schema
+// validation error: unexpected field "internal_id"
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Validate requests against OpenAPI schema
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "fmt"
+    "github.com/getkin/kin-openapi/openapi3filter"
+)
 
-### Fix 2: Add proper error handling
+func validateRequest(r *http.Request) error {
+    router, _ := openapi3filter.NewRouter().WithSwaggerFromFile("openapi.yaml")
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+    input := &openapi3filter.RequestValidationInput{
+        Request:    r,
+        PathParams: extractPathParams(r),
+        Router:     router,
+    }
+
+    if err := openapi3filter.ValidateRequest(context.Background(), input); err != nil {
+        return fmt.Errorf("validation error: %w", err)
+    }
+    return nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use middleware for automatic validation
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func OpenAPIMiddleware(router *openapi3filter.Router) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            input := &openapi3filter.RequestValidationInput{
+                Request: r,
+                Router:  router,
+            }
+            if err := openapi3filter.ValidateRequest(r.Context(), input); err != nil {
+                http.Error(w, err.Error(), http.StatusBadRequest)
+                return
+            }
+            next.ServeHTTP(w, r)
+        })
     }
 }
 ```
@@ -72,23 +94,35 @@ import (
     "context"
     "fmt"
     "log"
-    "time"
+    "net/http"
+
+    "github.com/getkin/kin-openapi/openapi3"
+    "github.com/getkin/kin-openapi/openapi3filter"
+    "github.com/gorilla/mux"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    loader := openapi3.NewLoader()
+    doc, err := loader.LoadFromFile("openapi.yaml")
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+
+    router := mux.NewRouter()
+    router.HandleFunc("/users", createUser).Methods("POST")
+
+    log.Println("Server listening on :8080")
+    log.Fatal(http.ListenAndServe(":8080", router))
+}
+
+func createUser(w http.ResponseWriter, r *http.Request) {
+    // Process validated request
+    fmt.Fprintln(w, "user created")
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [json-unmarshal]({{< relref "/languages/go/json-unmarshal" >}}) — JSON parsing before validation
+- [http-status-400]({{< relref "/languages/go/http-status-404" >}}) — validation returns 400 Bad Request
+- [go-protobuf-error]({{< relref "/languages/go/go-protobuf-error" >}}) — protobuf schema validation

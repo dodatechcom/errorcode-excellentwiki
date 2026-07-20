@@ -9,58 +9,101 @@ weight: 5
 
 # go-micro Service Error
 
-Fix go-micro service errors. Handle service discovery, RPC calls, and middleware configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The go-micro framework fails during service registration, discovery, or message handling when the service name conflicts, the broker is not configured, the registry cannot reach the discovery server, or the transport layer times out. go-micro abstracts away networking, so configuration issues surface as opaque errors.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Service name conflict — duplicate registration
+service := micro.NewService(
+    micro.Name("my-service"),
+    micro.Name("my-service"), // duplicate
+)
+
+// Cause 2: Broker not configured for pub/sub
+service := micro.NewService(micro.Name("my-service"))
+// No broker set — Publish fails
+
+// Cause 3: Registry unreachable
+service := micro.NewService(
+    micro.Name("my-service"),
+    micro.Registry(registry.NewRegistry(registry.Addrs("wrong-host:8500"))),
+)
+// service discovery fails
+
+// Cause 4: Handler function signature wrong
+type Greeter struct{}
+
+func (g *Greeter) Hello(ctx context.Context, req *pb.Request, rsp *pb.Response) error {
+    // must return error, not panic
+}
+
+// Cause 5: Transport timeout too short
+service := micro.NewService(
+    micro.Transport(transport.NewTransport(transport.Timeout(1*time.Millisecond))),
+)
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Configure service with all required components
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
+    "fmt"
 
-### Fix 2: Add proper error handling
+    "github.com/asim/go-micro/v4"
+    "github.com/asim/go-micro/v4/registry"
+    "github.com/asim/go-micro/v4/server"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
-```
+func main() {
+    service := micro.NewService(
+        micro.Name("my-service"),
+        micro.Version("latest"),
+        micro.Registry(registry.NewRegistry(registry.Addrs("etcd:2379"))),
+    )
 
-### Fix 3: Add retry and timeout logic
+    service.Init()
 
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    if err := service.Run(); err != nil {
+        log.Fatal(err)
     }
 }
+```
+
+### Fix 2: Implement handler with correct signature
+
+```go
+type Greeter struct{}
+
+func (g *Greeter) Hello(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloResponse) error {
+    rsp.Greeting = "Hello " + req.Name
+    return nil
+}
+
+func main() {
+    service := micro.NewService(micro.Name("greeter"))
+    service.Init()
+
+    pb.RegisterGreeterHandler(service.Server(), new(Greeter))
+
+    if err := service.Run(); err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+### Fix 3: Configure broker for pub/sub
+
+```go
+import "github.com/asim/go-micro/v4/broker/rabbitmq"
+
+service := micro.NewService(
+    micro.Name("my-service"),
+    micro.Broker(rabbitmq.NewBroker(rabbitmq.Addrs("amqp://guest:guest@rabbitmq:5672"))),
+)
 ```
 
 ## Examples
@@ -71,24 +114,33 @@ package main
 import (
     "context"
     "fmt"
-    "log"
-    "time"
+
+    "github.com/asim/go-micro/v4"
 )
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+type Greeter struct{}
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+func (g *Greeter) Hello(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloResponse) error {
+    rsp.Greeting = "Hello " + req.Name
+    return nil
+}
+
+func main() {
+    service := micro.NewService(
+        micro.Name("greeter"),
+    )
+    service.Init()
+
+    pb.RegisterGreeterHandler(service.Server(), new(Greeter))
+
+    if err := service.Run(); err != nil {
+        fmt.Println(err)
     }
-    fmt.Println(result)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-go-kit-error]({{< relref "/languages/go/go-go-kit-error" >}}) — go-kit endpoint and transport issues
+- [grpc-unavailable]({{< relref "/languages/go/grpc-unavailable" >}}) — gRPC transport unavailable
+- [go-consul-error]({{< relref "/languages/go/go-consul-error" >}}) — Consul service discovery failure

@@ -6,30 +6,66 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 10
 ---
+# Linux: LVM Error
 
-# Linux: disk-lvm-error — LVM logical volume error
-
-Fix Linux disk-lvm-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+LVM (Logical Volume Manager) errors occur when the volume management layers cannot access or manipulate physical volumes, volume groups, or logical volumes.
 
 ## Common Causes
 
-- Volume group corrupted
-- Physical volume failed
-- Metadata corrupted
-- Space exhausted
+- Physical volume missing or offline (disk removed or failed)
+- Volume group metadata inconsistent or corrupted
+- Logical volume not activated after system boot
+- Snapshot volume full and invalidated
+- LVM filter in lvm.conf excluding needed devices
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-lvm-error.md' mode='w' encoding='UTF-8'>
+### 1. Check LVM Status
 
-## Common Scenarios
+```bash
+sudo pvs
+sudo vgs
+sudo lvs
+```
 
-- LVM error
-- Volume group not found
-- Metadata corrupted
+### 2. Scan for Devices
 
-## Prevent It
+```bash
+sudo pvscan --cache
+sudo vgscan --cache
+```
 
-- Backup LVM metadata
-- Monitor PV health
-- Replace failed PVs
+### 3. Activate Volume Groups
+
+```bash
+sudo vgchange -ay
+```
+
+### 4. Check LVM Logs
+
+```bash
+journalctl -k | grep -i lvm
+dmesg | grep -i lvm
+```
+
+### 5. Repair Metadata
+
+```bash
+# Check VG metadata
+sudo vgck <vg_name>
+
+# Handle missing PVs
+sudo vgreduce --removemissing <vg_name>
+```
+
+## Examples
+
+```bash
+$ sudo pvs
+  PV         VG     Fmt  Attr PSize   PFree
+  /dev/sda1  vg01   lvm2 a--  100.00g 20.00g
+  unknown    vg01   lvm2 a-m  500.00g 0
+
+$ sudo vgreduce --removemissing vg01
+  WARNING: Removed missing device /dev/sdb1 from volume group vg01
+```

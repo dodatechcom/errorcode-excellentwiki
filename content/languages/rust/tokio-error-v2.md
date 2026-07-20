@@ -7,118 +7,92 @@ severities: ["error"]
 weight: 5
 ---
 
-# tokio Runtime Builder Error
+# Tokio Error
 
-Fix tokio runtime builder errors. Handle multi-threaded runtime creation and configuration issues.
-
-## What This Error Means
-
-Tokio runtime builder errors occur when you try to create a runtime with invalid configuration or when the runtime cannot be started. Common messages include:
-
-```
-thread 'main' panicked at 'Cannot start a runtime from within a runtime'
-io error: unable to start the runtime: no available cores
-```
+Tokio errors occur when using the `tokio` runtime — spawn panics, task failures, and channel errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Creating a runtime inside an existing runtime
-let rt = tokio::runtime::Runtime::new().unwrap();
-rt.block_on(async {
-    let inner_rt = tokio::runtime::Runtime::new(); // PANIC!
+// Spawning on a shutdown runtime
+let rt = Runtime::new()?;
+rt.shutdown_timeout(Duration::from_secs(0));
+rt.spawn(async { }); // ERROR: runtime shut down
+
+// Panicking inside spawn — join error
+let handle = tokio::spawn(async {
+    panic!("task panicked");
 });
-
-// Cause 2: Worker threads set to 0
-let rt = tokio::runtime::Builder::new_multi_thread()
-    .worker_threads(0)
-    .enable_all()
-    .build(); // Error
-
-// Cause 3: Calling block_on from an async context
-#[tokio::main]
-async fn main() {
-    let val = futures::executor::block_on(some_future); // PANIC
-}
+handle.await??; // JoinError
 ```
 
 ## How to Fix
 
-### Fix 1: Use a single runtime or Handle::current
+1. **Handle spawn errors**
 
 ```rust
-use tokio::runtime::Handle;
+use tokio::task;
 
-#[tokio::main]
-async fn main() {
-    // Spawn a blocking task instead of creating a new runtime
-    let result = tokio::task::spawn_blocking(|| {
-        // Blocking code here
-        42
-    }).await.unwrap();
+let handle = task::spawn(async {
+    // work
+    42
+});
+
+match handle.await {
+    Ok(val) => println!("Result: {}", val),
+    Err(e) => eprintln!("Task panicked: {}", e),
 }
 ```
 
-### Fix 2: Set a valid number of worker threads
+2. **Use JoinSet for structured concurrency**
 
 ```rust
-use tokio::runtime::Builder;
+use tokio::task::JoinSet;
 
-fn main() {
-    let rt = Builder::new_multi_thread()
-        .worker_threads(num_cpus::get().max(1))
-        .enable_all()
-        .build()
-        .expect("Failed to create runtime");
-
-    rt.block_on(async_main());
+let mut set = JoinSet::new();
+for i in 0..10 {
+    set.spawn(async move { i * 2 });
+}
+while let Some(result) = set.join_next().await {
+    println!("Got: {}", result?);
 }
 ```
 
-### Fix 3: Use async operations in async contexts
+3. **Use select for multiple futures**
 
 ```rust
-#[tokio::main]
-async fn main() {
-    // Instead of block_on, use .await
-    let val = some_async_operation().await;
+use tokio::select;
 
-    // Or spawn a blocking task for CPU-bound work
-    let val = tokio::task::spawn_blocking(|| {
-        expensive_computation()
-    }).await.unwrap();
+tokio::select! {
+    val = async_op_1() => println!("Op1: {}", val),
+    val = async_op_2() => println!("Op2: {}", val),
 }
 ```
 
 ## Examples
 
 ```rust
-use tokio::runtime::Builder;
+use tokio::time::{sleep, Duration};
+use tokio::task;
 
-fn main() {
-    let rt = Builder::new_multi_thread()
-        .worker_threads(4)
-        .enable_io()
-        .enable_time()
-        .thread_name("my-worker")
-        .on_thread_start(|| {
-            println!("Worker thread started");
-        })
-        .build()
-        .expect("Failed to create runtime");
-
-    rt.block_on(async {
-        let handle = tokio::spawn(async {
-            "hello from task"
-        });
-        let result = handle.await.unwrap();
-        println!("{}", result);
+#[tokio::main]
+async fn main() {
+    let handle1 = task::spawn(async {
+        sleep(Duration::from_millis(100)).await;
+        "task 1"
     });
+    let handle2 = task::spawn(async {
+        sleep(Duration::from_millis(50)).await;
+        "task 2"
+    });
+
+    let (r1, r2) = tokio::join!(handle1, handle2);
+    println!("{} and {}", r1.unwrap(), r2.unwrap());
 }
 ```
 
 ## Related Errors
 
-- [Async Await]({{< relref "/languages/rust/async-await" >}}) — async/await error
-- [Thread Panic]({{< relref "/languages/rust/thread-panic" >}}) — thread panic
-- [Std Thread Error]({{< relref "/languages/rust/std-thread-error" >}}) — thread error
+- [Tokio Error v2]({{< relref "/languages/rust/tokio-error-v2" >}}) — tokio v2
+- [Crossbeam Error]({{< relref "/languages/rust/crossbeam-error" >}}) — concurrency
+- [MPSC Error]({{< relref "/languages/rust/rust-mpsc-error" >}}) — channels

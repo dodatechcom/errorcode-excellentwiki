@@ -1,144 +1,199 @@
 ---
-title: "[Solution] PHP Asymmetric Visibility Error Fix"
-description: "Fix asymmetric visibility errors in PHP 8.4. Learn public-read/private-write property patterns and proper access control."
-date: 2026-07-17T10:00:00+08:00
-draft: false
-language: "php"
-tags: ["php", "php84", "asymmetric-visibility", "access-control", "runtime-error"]
-severity: "error"
+title: "[Solution] PHP 8.4 Asymmetric Visibility Error — Invalid Visibility Modifier Combination"
+description: "Fix PHP 8.4 Asymmetric Visibility Error by using correct syntax (public private(set)), checking access levels, and understanding PHP 8.4 requirements. Copy-paste solutions with code examples."
+languages: ["php"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 315
 ---
 
-# Asymmetric Visibility Error
+# PHP 8.4 Asymmetric Visibility Error — Invalid Visibility Modifier Combination
 
-## Error Message
-
-```
-Fatal error: Asymmetric visibility is not supported for static properties in /path/to/file.php:8
-```
+An Asymmetric Visibility Error occurs when property visibility modifiers are combined incorrectly. PHP 8.4 introduced asymmetric visibility, allowing you to set different visibility levels for reading and writing a property — e.g., publicly readable but privately writable using the `public private(set)` syntax.
 
 ## Common Causes
 
-- Using asymmetric visibility on static properties, which is not allowed in PHP 8.4
-- Combining asymmetric visibility with readonly properties in an incompatible way
-- Trying to use asymmetric visibility in an interface or abstract class with incorrect syntax
-- Using public(set) visibility modifier which is not a valid PHP visibility keyword
+```php
+<?php
+// Cause 1: Wrong syntax — missing "set" keyword
+class User {
+    public private string $name; // Error — invalid syntax
+}
 
-## Solutions
+// Cause 2: Set visibility is more permissive than read visibility
+class Config {
+    private(set) public string $host; // Error — set can't be more visible than get
+}
 
-### Solution 1: Use public-read, private-write for immutable external state
+// Cause 3: Using asymmetric visibility with readonly
+class User2 {
+    public private(set) readonly string $name; // Error — readonly is already write-restricted
+}
 
-Asymmetric visibility lets consumers read a property while restricting writes to the class itself.
+// Cause 4: Invalid visibility keywords
+class Item {
+    public protected(set) string $name; // Error — "protected(set)" not valid in some contexts
+}
+
+// Cause 5: Asymmetric visibility on static properties
+class Counter {
+    public private(set) static int $count = 0; // Error — not supported on static
+}
+?>
+```
+
+## How to Fix
+
+### Fix 1: Use correct "visibility visibility(set)" syntax
 
 ```php
 <?php
 class User {
     public private(set) string $name;
-    public private(set) string $email;
-    public private(set) string $createdAt;
+    public private(set) int $age;
+    protected private(set) string $email;
 
-    public function __construct(string $name, string $email) {
+    public function __construct(string $name, int $age, string $email) {
         $this->name = $name;
+        $this->age = $age;
         $this->email = $email;
-        $this->createdAt = date('Y-m-d H:i:s');
     }
 
-    public function updateEmail(string $newEmail): void {
-        $this->email = $newEmail;
-    }
+    // Public can read, only this class can write
 }
 
-$user = new User('Alice', 'alice@example.com');
-echo $user->email; // 'alice@example.com'
-// $user->email = 'bob@example.com'; // Error: cannot set
-$user->updateEmail('alice@newdomain.com'); // Allowed via method
-echo $user->email; // 'alice@newdomain.com'
+$user = new User('Alice', 25, 'alice@example.com');
+echo $user->name; // OK — public read
+// $user->name = 'Bob'; // Error — private(set)
 ?>
 ```
 
-### Solution 2: Use protected-read, private-write for framework entities
-
-In framework contexts, use protected-read to allow subclass access while keeping writes private.
+### Fix 2: Ensure set visibility is same or more restrictive
 
 ```php
 <?php
-abstract class Entity {
-    protected private(set) int $id;
-    protected private(set) string $createdAt;
+class Article {
+    // Valid combinations
+    public private(set) string $title;        // public read, private write
+    public protected(set) string $slug;       // public read, protected write
+    public protected(set) string $author;     // public read, protected write
+    protected private(set) string $secret;    // protected read, private write
 
-    public function __construct() {
-        $this->createdAt = date('Y-m-d H:i:s');
-    }
-
-    public function getId(): int {
-        return $this->id;
-    }
+    // Invalid
+    // private public(set) string $bad;       // private read, public write — ERROR
 }
 
-class User extends Entity {
-    public function __construct(
-        public private(set) string $name,
-    ) {
-        parent::__construct();
-    }
-
-    // Only the class itself can set the ID (e.g., from ORM)
-    public function setId(int $id): void {
-        $this->id = $id;
+class BlogPost extends Article {
+    public function updateSlug(string $newSlug): void {
+        $this->slug = $newSlug; // OK — protected(set) allows child class
     }
 }
-
-$user = new User('Bob');
-$user->setId(42);
-echo $user->getId(); // 42
-echo $user->name;    // 'Bob'
-// $user->name = 'X'; // Error: private(set)
 ?>
 ```
 
-### Solution 3: Combine asymmetric visibility with constructor promotion
+### Fix 3: Don't combine with readonly (use one or the other)
 
-PHP 8.4 allows asymmetric visibility with promoted properties for concise, clean constructors.
+```php
+<?php
+// Option A: Use readonly for immutable properties
+class ImmutableUser {
+    public function __construct(
+        public readonly string $name,
+        public readonly int $age,
+    ) {}
+}
+
+// Option B: Use asymmetric visibility for public-read, private-write
+class MutableUser {
+    public private(set) string $name;
+    public private(set) int $age;
+
+    public function __construct(string $name, int $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+
+    public function updateName(string $name): void {
+        $this->name = $name;
+    }
+}
+?>
+```
+
+### Fix 4: Use PHPDoc for backward compatibility
+
+```php
+<?php
+/**
+ * @property-read string $name
+ */
+class UserBC {
+    private string $name;
+
+    public function __construct(string $name) {
+        $this->name = $name;
+    }
+
+    public function getName(): string {
+        return $this->name;
+    }
+}
+
+$user = new UserBC('Alice');
+echo $user->getName();
+?>
+```
+
+## Examples
 
 ```php
 <?php
 class Product {
-    public function __construct(
-        public private(set) string $sku,
-        public private(set) string $name,
-        public private(set) float $price,
-        private int $stock = 0,
-    ) {}
+    public private(set) string $id;
+    public private(set) string $name;
+    public protected(set) float $price;
+    public private(set) int $stock;
 
-    public function restock(int $quantity): void {
-        if ($quantity < 0) {
-            throw new \InvalidArgumentException('Quantity must be positive');
-        }
-        $this->stock += $quantity;
+    public function __construct(string $name, float $price, int $stock) {
+        $this->id = uniqid('prod_');
+        $this->name = $name;
+        $this->price = $price;
+        $this->stock = $stock;
     }
 
-    public function isAvailable(): bool {
-        return $this->stock > 0;
+    public function reduceStock(int $amount): void {
+        if ($amount > $this->stock) {
+            throw new InvalidArgumentException('Insufficient stock');
+        }
+        $this->stock -= $amount;
+    }
+
+    public function updatePrice(float $newPrice): void {
+        if ($newPrice < 0) {
+            throw new InvalidArgumentException('Price cannot be negative');
+        }
+        $this->price = $newPrice;
     }
 }
 
-$product = new Product('W-001', 'Widget', 9.99);
-$product->restock(10);
+$product = new Product('Widget', 9.99, 100);
+echo $product->name;     // Widget (public read)
+echo $product->price;    // 9.99 (public read)
+// $product->price = 5.0; // Error — protected(set)
 
-echo $product->name; // 'Widget' (public read)
-// $product->name = 'Other'; // Error: private(set)
-echo $product->isAvailable() ? 'In stock' : 'Out of stock'; // 'In stock'
+$product->updatePrice(7.99); // OK — via method
+$product->reduceStock(10);   // OK — via method
+
+class AdminProduct extends Product {
+    public function adminUpdatePrice(float $newPrice): void {
+        $this->price = $newPrice; // OK — protected(set) allows child access
+    }
+}
 ?>
 ```
 
-## Prevention Tips
-
-- Asymmetric visibility replaces the need for getter methods in many simple cases
-- public(private(set)) is the most common pattern — public read, private write
-- Asymmetric visibility is not supported on static properties or constants
-- Combine with readonly for fully immutable properties that are initialized at construction time
-
 ## Related Errors
 
-- [PHP Readonly Property Error]({{< relref "/languages/php/php81-readonly-property" >}})
-- [PHP Property Hook Error]({{< relref "/languages/php/php84-property-hook" >}})
-- [PHP Typed Property Error]({{< relref "/languages/php/php80-typed-property-error" >}})
+- [PHP 8.1 Readonly Property Error](/languages/php/php81-readonly-properties/) — Readonly as alternative to private(set)
+- [PHP 8.2 Readonly Class Error](/languages/php/php82-readonly-classes/) — Full readonly classes
+- [PHP 8.4 Property Hook Error](/languages/php/php84-property-hooks/) — Property hooks with visibility

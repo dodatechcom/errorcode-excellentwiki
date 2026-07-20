@@ -9,58 +9,79 @@ weight: 5
 
 # protobuf Marshal Error
 
-Fix Go protobuf marshal errors. Handle required fields, type mismatches, and encoding issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Protocol Buffers marshaling fails in Go when message fields have wrong types, required fields are missing in proto3 (which does not have required, but oneof or wrapper types may fail), the message is nil, or the generated code is out of sync with the `.proto` file. Protobuf encoding is compact but strict about schema compliance.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Nil message pointer
+msg := (*pb.User)(nil)
+data, err := proto.Marshal(msg)
+// panic: runtime error: invalid memory address
+
+// Cause 2: Field type mismatch
+msg := &pb.User{Name: 123} // Name is string, got int
+data, err := proto.Marshal(msg)
+
+// Cause 3: Generated code out of sync with proto file
+// Proto file changed but go_out not re-generated
+msg := &pb.User{Email: "a@b.com"}
+// unknown field "email" — generated code does not have this field
+
+// Cause 4: Oneof field not set
+msg := &pb.Event{} // no payload set
+// proto.Marshal works, but downstream may fail on empty oneof
+
+// Cause 5: Large message exceeds gRPC max message size
+data, err := proto.Marshal(largeMsg)
+// grpc: received message larger than max (4194304 vs. 2097152)
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Validate messages before marshaling
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "fmt"
 
-### Fix 2: Add proper error handling
+    "google.golang.org/protobuf/proto"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
-```
-
-### Fix 3: Add retry and timeout logic
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func safeMarshal(msg proto.Message) ([]byte, error) {
+    if msg == nil {
+        return nil, fmt.Errorf("cannot marshal nil message")
     }
+
+    if err := proto.Validate(msg); err != nil {
+        return nil, fmt.Errorf("validation failed: %w", err)
+    }
+
+    data, err := proto.Marshal(msg)
+    if err != nil {
+        return nil, fmt.Errorf("marshal failed: %w", err)
+    }
+    return data, nil
 }
+```
+
+### Fix 2: Regenerate protobuf code after proto changes
+
+```bash
+protoc --go_out=. --go_opt=paths=source_relative \
+    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+    myproto.proto
+```
+
+### Fix 3: Increase gRPC max message size
+
+```go
+import "google.golang.org/grpc"
+
+server := grpc.NewServer(
+    grpc.MaxRecvMsgSize(16 * 1024 * 1024), // 16MB
+    grpc.MaxSendMsgSize(16 * 1024 * 1024),
+)
 ```
 
 ## Examples
@@ -69,26 +90,37 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
     "log"
-    "time"
+
+    "google.golang.org/protobuf/proto"
+    pb "your-project/proto"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+    msg := &pb.User{
+        Name:  "Alice",
+        Email: "alice@example.com",
+        Age:   30,
     }
-    fmt.Println(result)
+
+    data, err := proto.Marshal(msg)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Marshaled %d bytes\n", len(data))
+
+    // Unmarshal
+    decoded := &pb.User{}
+    if err := proto.Unmarshal(data, decoded); err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Decoded: %+v\n", decoded)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [json-unmarshal]({{< relref "/languages/go/json-unmarshal" >}}) — JSON marshaling has similar nil/type issues
+- [encoding-binary]({{< relref "/languages/go/go-binary-error" >}}) — binary encoding with endianness issues
+- [go-grpc-gateway-error]({{< relref "/languages/go/go-grpc-gateway-error" >}}) — gRPC-gateway transcode fails on protobuf messages

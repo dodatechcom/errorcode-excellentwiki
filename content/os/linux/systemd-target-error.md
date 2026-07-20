@@ -7,54 +7,57 @@ error-types: ["boot-error"]
 weight: 10
 ---
 
-# Linux: systemd-target-error — Systemd target failed to activate
+# Linux: systemd Target Error Error
 
-Fix Linux systemd-target-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd target error errors occur when the systemd target error component fails to operate correctly.
 
 ## Common Causes
 
-- Default target wrong
-- Dependencies not satisfiable
-- Wants nonexistent services
-- Broken chain
+- Misconfiguration in unit files or systemd configuration
+- Permission or ownership issues on required paths
+- Dependency failures from other systemd units
+- Resource limits or system constraints reached
+- SELinux or AppArmor policy blocking operations
 
 ## How to Fix
 
-### 1. Check Default
+### 1. Check systemd Unit Status
+
 ```bash
-systemctl get-default
-systemctl list-units --type=target
+sudo systemctl status systemd-target-error
+sudo journalctl -u systemd-target-error --no-pager -n 50
 ```
 
-### 2. Set Default
+### 2. Verify Configuration Files
+
 ```bash
-sudo systemctl set-default multi-user.target
+ls /etc/systemd/*.conf /usr/lib/systemd/*.conf 2>/dev/null
+systemctl cat systemd-target-error
 ```
 
-### 3. Fix Deps
+### 3. Check System Logs
+
 ```bash
-systemctl list-dependencies multi-user.target
-systemctl --failed
+sudo journalctl -xe --no-pager -n 30
+sudo dmesg | tail -20
 ```
 
-### 4. Create Custom
+### 4. Restart and Re-evaluate
+
 ```bash
-[Unit]
-Description=MyApp Target
-Requires=myapp.service
-After=network.target
-[Install]
-WantedBy=multi-user.target
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-target-error
 ```
 
-## Common Scenarios
+## Examples
 
-- Wrong target at boot
-- Target inactive despite services
-- Custom target unreachable
+```bash
+$ sudo systemctl status systemd-target-error
+* systemd-target-error.service - systemd Target Error
+   Loaded: loaded (/usr/lib/systemd/system/systemd-target-error.service; static)
+   Active: failed (Result: exit-code)
 
-## Prevent It
-
-- Verify default target
-- Test with systemctl isolate
-- Keep dependency chains clean
+$ sudo journalctl -u systemd-target-error -n 10
+Jul 20 14:30:45 server systemd[target-error][12345]: Failed to process configuration
+Jul 20 14:30:45 server systemd[1]: systemd-target-error.service: Main process exited, code=exited, status=1/FAILURE
+```

@@ -7,29 +7,51 @@ error-types: ["network"]
 weight: 6
 ---
 
-# Linux: bridge-error — network bridge error
+# Linux: Bridge Error
 
-Fix Linux bridge-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Bridge network errors occur when the Linux Ethernet bridge fails to forward traffic properly.
 
 ## Common Causes
 
-- Bridge not created
-- Interface not added
-- STP not configured
-- Forwarding issue
+- Bridge interface not created or configured
+- STP (Spanning Tree Protocol) conflicts
+- No ports added to bridge
+- Iptables blocking bridged traffic
+- Bridge MTU mismatch with ports
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/bridge-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Bridge Status
 
-## Common Scenarios
+```bash
+ip link show type bridge
+bridge link show
+sudo brctl show 2>/dev/null
+```
 
-- Bridge not working
-- Interface not added
-- STP not configured
+### 2. Check Bridge Configuration
 
-## Prevent It
+```bash
+ip addr show br0
+cat /etc/network/interfaces 2>/dev/null || cat /etc/netplan/*.yaml
+```
 
-- Create bridge properly
-- Add interfaces
-- Configure STP
+### 3. Add Ports to Bridge
+
+```bash
+sudo ip link set eth0 master br0
+sudo bridge fdb show
+```
+
+## Examples
+
+```bash
+$ ip link show type bridge
+3: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP
+
+$ bridge link show
+2: eth0 state UP : <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br0
+
+$ sudo ip link set eth1 master br0
+# Now eth1 is also a bridge port
+```

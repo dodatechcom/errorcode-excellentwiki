@@ -10,64 +10,141 @@ comments: true
 
 # Quote Error
 
-Fix quote macro errors. Resolve token stream generation, hygiene, and code emission issues.
+Quote errors occur when using the `quote` crate to generate Rust token streams — incorrect interpolation, missing imports, or malformed token output.
 
-## Why It Happens
-
-- Interpolated variable type does not implement ToTokens
-- Generated tokens contain unmatched delimiters
-- Token hygiene rules prevent variable interpolation
-- Nested quote calls produce ambiguous output
-
-## Common Error Messages
-
-- `error: quote failed`
-- `thread panicked at 'quote crate operation failed'`
-- `Error: unable to complete quote crate operation`
-- `Fatal: quote crate configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure quote crate is properly configured
-use quote_crate::prelude::*;
+use quote::quote;
+
+// Wrong interpolation — using {} instead of #
+let name = "MyType";
+let tokens = quote! {
+    struct {name} { // ERROR: should be #name
+        field: i32,
+    }
+};
+
+// Missing span for error reporting
+let tokens = quote! {
+    impl MyTrait for #name {
+        fn method(&self) -> #unknown_type { } // unknown_type not in scope
+    }
+};
+
+// Forgetting to handle generic parameters
+let input: syn::DeriveInput = todo!();
+let name = &input.ident;
+let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+```
+
+## How to Fix
+
+1. **Use `#` for variable interpolation**
+
+```rust
+use quote::quote;
+
+fn generate_struct(name: &syn::Ident, fields: &[&syn::Ident]) -> proc_macro2::TokenStream {
+    quote! {
+        pub struct #name {
+            #(#fields: String),*
+        }
+    }
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct quote crate configuration");
+    let name = syn::Ident::new("Config", proc_macro2::Span::call_site());
+    let fields = vec![
+        syn::Ident::new("name", proc_macro2::Span::call_site()),
+        syn::Ident::new("value", proc_macro2::Span::call_site()),
+    ];
+    println!("{}", generate_struct(&name, &fields));
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Handle generics properly**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use quote::quote;
+use syn::{parse_macro_input, DeriveInput};
+
+#[proc_macro_derive(MyTrait)]
+pub fn my_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let name = &input.ident;
+    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+
+    let expanded = quote! {
+        impl #impl_generics MyTrait for #name #ty_generics #where_clause {
+            fn name(&self) -> &str { stringify!(#name) }
+        }
+    };
+    proc_macro::TokenStream::from(expanded)
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Use `format_ident!` for creating identifiers**
 
 ```rust
-use std::error::Error;
+use quote::{quote, format_ident};
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+fn generate_getters(fields: &[(syn::Ident, syn::Type)]) -> proc_macro2::TokenStream {
+    let methods = fields.iter().map(|(name, ty)| {
+        let getter = format_ident!("get_{}", name);
+        quote! {
+            pub fn #getter(&self) -> &#ty {
+                &self.#name
+            }
+        }
+    });
+    quote! { #(#methods)* }
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with quote crate
-2. Integrating quote crate into an existing codebase
-3. Upgrading quote crate to a newer version
+```rust
+use quote::quote;
+use syn::{parse_macro_input, DeriveInput};
 
-## Prevent It
+#[proc_macro_derive(Builder)]
+pub fn builder_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let name = &input.ident;
+    let builder = format_ident!("{}Builder", name);
 
-- Read the quote crate documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+    let fields = match &input.data {
+        syn::Data::Struct(data) => &data.fields,
+        _ => panic!("Builder only works on structs"),
+    };
+
+    let field_names: Vec<_> = fields.iter().map(|f| f.ident.as_ref().unwrap()).collect();
+    let field_types: Vec<_> = fields.iter().map(|f| &f.ty).collect();
+
+    let expanded = quote! {
+        pub struct #builder {
+            #(#field_names: Option<#field_types>),*
+        }
+
+        impl #builder {
+            pub fn new() -> Self {
+                Self { #(#field_names: None),* }
+            }
+
+            pub fn build(self) -> Result<#name, String> {
+                Ok(#name {
+                    #(#field_names: self.#field_names.ok_or("missing field")?),*
+                })
+            }
+        }
+    };
+    proc_macro::TokenStream::from(expanded)
+}
+```
+
+## Related Errors
+
+- [Syn Error]({{< relref "/languages/rust/rust-syn-error" >}}) — syntax parsing
+- [Proc Macro Error]({{< relref "/languages/rust/rust-proc-macro-error" >}}) — proc macros
+- [Derive Error]({{< relref "/languages/rust/rust-derive-error" >}}) — derive macros

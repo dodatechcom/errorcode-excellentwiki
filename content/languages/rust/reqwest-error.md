@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# reqwest Request Error
+# Reqwest Error
 
-Fix reqwest HTTP client errors. Handle network failures, TLS issues, and timeout configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Reqwest errors occur when using the `reqwest` crate for HTTP — connection, timeout, and TLS errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let resp = reqwest::get("http://localhost:9999").await?;
+
+// Timeout
+let client = reqwest::Client::builder()
+    .timeout(Duration::from_secs(5))
+    .build()?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure timeouts properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
-
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
-```
-
-### Fix 3: Add timeout and retry logic
-
-```rust
+use reqwest::Client;
 use std::time::Duration;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let client = Client::builder()
+    .connect_timeout(Duration::from_secs(10))
+    .timeout(Duration::from_secs(30))
+    .build()?;
+```
+
+2. **Handle TLS errors**
+
+```rust
+use reqwest::Client;
+
+let client = Client::builder()
+    .danger_accept_invalid_certs(true) // Only for testing!
+    .build()?;
+```
+
+3. **Use proper error handling**
+
+```rust
+let resp = reqwest::get("https://httpbin.org/get").await?;
+if resp.status().is_success() {
+    let body = resp.text().await?;
+    println!("{}", body);
+} else {
+    eprintln!("Error: {}", resp.status());
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use reqwest;
+use serde::Deserialize;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Deserialize, Debug)]
+struct Response { url: String }
+
+#[tokio::main]
+async fn main() -> Result<(), reqwest::Error> {
+    let resp = reqwest::get("https://httpbin.org/get").await?;
+    println!("Status: {}", resp.status());
+    let body = resp.text().await?;
+    println!("Body: {}", body);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — underlying HTTP
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network
+- [Native TLS Error]({{< relref "/languages/rust/native-tls-error" >}}) — TLS

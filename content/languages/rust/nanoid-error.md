@@ -7,75 +7,64 @@ severities: ["error"]
 weight: 5
 ---
 
-# nanoid Generation Error
+# Nanoid Error
 
-Fix nanoid generation errors. Handle character set issues, length configuration, and entropy..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Nanoid errors occur when using the `nanoid` crate — invalid alphabet or character set issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Empty alphabet
+let id = nanoid::nanoid_with!(0, &[]); // ERROR: empty alphabet
+
+// Custom alphabet too short
+let id = nanoid::nanoid_with!(10, &['a']); // only one character
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use the default alphabet**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+let id = nanoid::nanoid!(); // 21 chars from default alphabet
 ```
 
-### Fix 2: Add proper error handling
+2. **Provide adequate custom alphabet**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let alphabet: &[char] = &[
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'a', 'b', 'c', 'd', 'e', 'f',
+];
+let id = nanoid::nanoid_with!(16, alphabet);
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use non-atomic for non-crypto**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let id = nanoid::non_secure!(10);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use nanoid::nanoid;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let id = nanoid!();
+    println!("Generated: {} (len={})", id, id.len());
+
+    let short_id = nanoid!(8);
+    println!("Short: {}", short_id);
+
+    let custom: Vec<char> = "0123456789ABCDEF".chars().collect();
+    let hex_id = nanoid::nanoid_with!(12, &custom);
+    println!("Hex-style: {}", hex_id);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [UUID Error]({{< relref "/languages/rust/uuid-error" >}}) — UUID generation
+- [Random Number Error]({{< relref "/languages/rust/rust-std-time-error" >}}) — random
+- [Blake3 Error]({{< relref "/languages/rust/blake3-error" >}}) — hashing

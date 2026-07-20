@@ -6,30 +6,53 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: SSD Error
 
-# Linux: disk-ssd-error — SSD disk error
-
-Fix Linux disk-ssd-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+SSD errors indicate problems specific to solid-state drives, including NAND flash wear, controller failure, or interface issues.
 
 ## Common Causes
 
-- Wear leveling issue
-- TRIM not working
-- Write amplification
-- SMART warning
+- NAND flash wear beyond rated endurance (TBW exceeded)
+- Controller firmware bugs or hardware failure
+- Power loss causing mapping table corruption
+- Overheating causing throttling or data corruption
+- TRIM/unmap operation failures degrading performance
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-ssd-error.md' mode='w' encoding='UTF-8'>
+### 1. Check SSD Health
 
-## Common Scenarios
+```bash
+sudo smartctl -a /dev/sdX | grep -E "Percent_Life|Wear_Level|Media_Wearout|Total_LBAs_Written"
+```
 
-- SSD wearing out
-- TRIM not working
-- Performance degraded
+### 2. Check NVMe SMART
 
-## Prevent It
+```bash
+sudo nvme smart-log /dev/nvme0
+```
 
-- Monitor SSD wear
-- Enable TRIM
-- Keep firmware updated
+### 3. Check TRIM Support
+
+```bash
+lsblk -D
+sudo fstrim -v /
+sudo fstrim -av
+```
+
+### 4. Check Remaining Life
+
+```bash
+sudo smartctl -A /dev/sdX | grep -i "percent\|used"
+```
+
+## Examples
+
+```bash
+$ sudo smartctl -A /dev/sda | grep -iE "wear|life|used"
+233 Media_Wearout_Indicator  0x0032   100   100   000    Old_age   Always       -       0
+231 SSD_Life_Left             0x0032   100   100   010    Old_age   Always       -       100
+
+$ sudo nvme smart-log /dev/nvme0 | grep "percentage"
+percentage_used                     : 5%
+```

@@ -6,30 +6,71 @@ severities: ["warning"]
 error-types: ["security"]
 weight: 4
 ---
+# Linux: Password Expired
 
-# Linux: password-expired — password expired
-
-Fix Linux password-expired errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A password expired error occurs when a user's password has exceeded its maximum age and must be changed before login.
 
 ## Common Causes
 
-- Password aging
-- maxdays exceeded
-- Must change password
-- Account disabled
+- Password age policy requires periodic changes
+- chage -M set to a low value forcing frequent changes
+- New account with temporary password that must be changed
+- System security policy enforcing password rotation
+- Inactive account exceeding maximum days between password changes
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/password-expired.md' mode='w' encoding='UTF-8'>
+### 1. Check Password Status
 
-## Common Scenarios
+```bash
+sudo chage -l <username>
+# Shows: Last change, Min/Max/Inactive/Warn days
+```
 
-- Password expired
-- Must change password
-- Account locked
+### 2. Change Expired Password
 
-## Prevent It
+```bash
+# User changes own password
+passwd
 
-- Change password regularly
-- Set appropriate expiry
-- Use password policies
+# Admin sets new password
+sudo passwd <username>
+```
+
+### 3. Set Password to Never Expire
+
+```bash
+sudo chage -M -1 <username>
+sudo passwd -x -1 <username>
+```
+
+### 4. Set Specific Expiration Policy
+
+```bash
+# Set max days to 90
+sudo chage -M 90 <username>
+# Set warning 7 days before expiry
+sudo chage -W 7 <username>
+```
+
+## Examples
+
+```bash
+$ ssh jdoe@server
+WARNING: Your password has expired.
+Password change required but no TTY available.
+
+$ sudo chage -l jdoe
+Last password change                                    : Jan 01, 2025
+Password expires                                        : Jul 01, 2025
+Password inactive                                       : never
+Account expires                                         : never
+Minimum number of days between password change          : 0
+Maximum number of days between password change          : 180
+Number of days of warning before password expires       : 7
+
+$ sudo passwd jdoe
+New password: 
+Retype new password: 
+passwd: password updated successfully
+```

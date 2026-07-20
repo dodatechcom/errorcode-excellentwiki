@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# oauth2 Token Error
+# OAuth2 Error
 
-Fix oauth2 token errors. Handle authorization flows, token refresh, and scope management..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+OAuth2 errors occur when using the `oauth2` crate for OAuth 2.0 flows — token exchange failures and redirect URI mismatches.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Redirect URI mismatch
+let client = BasicClient::new(ClientId::new("id".into()))
+    .set_auth_uri(AuthUrl::new("https://auth.example.com".into())?)
+    .set_token_uri(TokenUrl::new("https://token.example.com".into())?)
+    .set_redirect_uri(RedirectUrl::new("http://wrong/callback".into())?);
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure the OAuth2 client correctly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use oauth2::{ClientId, ClientSecret, AuthUrl, TokenUrl, RedirectUrl};
+
+let client = BasicClient::new(ClientId::new("client_id".into()))
+    .set_client_secret(ClientSecret::new("secret".into()))
+    .set_auth_uri(AuthUrl::new("https://example.com/authorize".into())?)
+    .set_token_uri(TokenUrl::new("https://example.com/token".into())?)
+    .set_redirect_uri(RedirectUrl::new("http://localhost/callback".into())?);
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle token refresh**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+if token.is_expired() {
+    let new_token = client.exchange_refresh_token(&token.refresh_token().unwrap()).request()?;
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Validate CSRF state parameter**
 
 ```rust
-use std::time::Duration;
+use oauth2::CsrfToken;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let (auth_url, csrf_token) = client
+    .authorize_url(CsrfToken::new_random)
+    .url();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use oauth2::{
+    AuthUrl, ClientId, ClientSecret, CsrfToken,
+    RedirectUrl, TokenUrl, PkceCodeChallenge,
+};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = oauth2::basic::BasicClient::new(ClientId::new("id".into()))
+        .set_client_secret(ClientSecret::new("secret".into()))
+        .set_auth_uri(AuthUrl::new("https://example.com/authorize".into())?)
+        .set_token_uri(TokenUrl::new("https://example.com/token".into())?)
+        .set_redirect_uri(RedirectUrl::new("http://localhost/callback".into())?);
+
+    let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
+    let (url, _csrf) = client
+        .authorize_url(CsrfToken::new_random)
+        .set_pkce_challenge(pkce_challenge)
+        .url();
+    println!("Authorize at: {}", url);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [WebAuthn RS Error]({{< relref "/languages/rust/webauthn-rs-error" >}}) — WebAuthn
+- [OpenID Connect Error]({{< relref "/languages/rust/openidconnect-error" >}}) — OpenID Connect
+- [Keyring Error]({{< relref "/languages/rust/keyring-error" >}}) — credential storage

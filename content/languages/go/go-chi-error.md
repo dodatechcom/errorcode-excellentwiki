@@ -9,57 +9,70 @@ weight: 5
 
 # Chi Route Not Found
 
-Fix Chi router route not found errors. Handle route patterns, middleware groups, and URL parameters..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The Chi router returns 404 or panics when routes are not registered correctly, URL parameter patterns are mismatched, or sub-router mounting strips path prefixes unexpectedly. Chi uses a radix tree router where overlapping patterns cause conflicts.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Route registered after first request
+go func() {
+    time.Sleep(100 * time.Millisecond)
+    r.Get("/late", handler) // Chi not safe for concurrent route changes
+}()
+
+// Cause 2: Subrouter mount path stripping
+sub := chi.NewRouter()
+sub.Get("/", listItems)
+r.Mount("/items", sub) // sub does not see /items prefix
+
+// Cause 3: Using wrong HTTP method
+r.Post("/users", createUser)
+http.Get("/users") // 405
+
+// Cause 4: Missing trailing slash
+r.Get("/users", listUsers)
+// GET /users/ redirects to /users
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Set up all routes before starting server
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import "github.com/go-chi/chi/v5"
 
-### Fix 2: Add proper error handling
+func main() {
+    r := chi.NewRouter()
+    r.Use(middleware.Logger)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+    r.Get("/users", listUsers)
+    r.Post("/users", createUser)
+    r.Get("/users/{id}", getUser)
+
+    http.ListenAndServe(":3000", r)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use chi.URLParam
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+func getUser(w http.ResponseWriter, r *http.Request) {
+    id := chi.URLParam(r, "id")
+    fmt.Fprintf(w, "User: %s", id)
+}
+```
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
+### Fix 3: Use RouteGroup for sub-routers
+
+```go
+func apiRoutes() chi.Router {
+    r := chi.NewRouter()
+    r.Route("/users", func(r chi.Router) {
+        r.Get("/", listUsers)
+        r.Post("/", createUser)
+        r.Get("/{id}", getUser)
+    })
+    return r
 }
 ```
 
@@ -69,26 +82,39 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
-    "log"
-    "time"
+    "net/http"
+
+    "github.com/go-chi/chi/v5"
+    "github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    r := chi.NewRouter()
+    r.Use(middleware.Logger)
+    r.Use(middleware.Recoverer)
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+    r.Route("/articles", func(r chi.Router) {
+        r.Get("/", listArticles)
+        r.Post("/", createArticle)
+        r.Get("/{articleID}", getArticle)
+    })
+
+    http.ListenAndServe(":3000", r)
+}
+
+func listArticles(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "listing articles")
+}
+
+func getArticle(w http.ResponseWriter, r *http.Request) {
+    id := chi.URLParam(r, "articleID")
+    fmt.Fprintf(w, "article %s\n", id)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [http-status-404]({{< relref "/languages/go/http-status-404" >}}) — generic 404
+- [go-mux-error]({{< relref "/languages/go/go-mux-error" >}}) — gorilla/mux route mismatch
+- [broken-pipe]({{< relref "/languages/go/broken-pipe" >}}) — client disconnects

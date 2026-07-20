@@ -10,64 +10,115 @@ comments: true
 
 # Collections Error
 
-Fix collection errors. Resolve HashMap, BTreeMap, and other standard collection usage issues.
+Collections errors occur when using Rust's standard collections (`Vec`, `HashMap`, `BTreeMap`, etc.) incorrectly — index out of bounds, borrow conflicts, or type mismatches.
 
-## Why It Happens
-
-- HashMap key does not implement Hash and Eq
-- Entry API is used incorrectly causing duplicate inserts
-- BTreeMap range query has incorrect bounds
-- Collection capacity is not reserved before bulk insert
-
-## Common Error Messages
-
-- `error: collections failed`
-- `thread panicked at 'std collections operation failed'`
-- `Error: unable to complete std collections operation`
-- `Fatal: std collections configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure std collections is properly configured
-use std_collections::prelude::*;
+use std::collections::HashMap;
+
+// Index out of bounds
+let v = vec![1, 2, 3];
+let x = v[5]; // PANIC: index out of bounds
+
+// HashMap key type mismatch
+let mut map = HashMap::new();
+map.insert("key", 42);
+map.get(&1i32); // ERROR: expected &str, found &i32
+
+// Borrowing issues with HashMap
+let mut map = HashMap::new();
+map.insert("key".to_string(), vec![1, 2]);
+let val = map.get("key").unwrap();
+map.insert("key2".to_string(), vec![3]); // val still borrowed — cannot insert
+```
+
+## How to Fix
+
+1. **Use `.get()` instead of indexing for safe access**
+
+```rust
+let v = vec![1, 2, 3];
+
+// Safe: returns Option
+match v.get(5) {
+    Some(val) => println!("Found: {}", val),
+    None => println!("Index out of bounds"),
+}
+
+// Or use unwrap_or for defaults
+let val = v.get(5).unwrap_or(&0);
+```
+
+2. **Use entry API for HashMap operations**
+
+```rust
+use std::collections::HashMap;
+
+let mut map: HashMap<String, Vec<i32>> = HashMap::new();
+
+// Entry API avoids borrow conflicts
+map.entry("key".to_string())
+    .or_insert_with(Vec::new)
+    .push(42);
+
+// Count occurrences
+let words = vec!["hello", "world", "hello", "rust"];
+let mut counts = HashMap::new();
+for word in &words {
+    *counts.entry(word.to_string()).or_insert(0) += 1;
+}
+println!("{:?}", counts);
+```
+
+3. **Scope borrows correctly**
+
+```rust
+use std::collections::HashMap;
+
+let mut map = HashMap::new();
+map.insert("key".to_string(), vec![1, 2]);
+
+// Clone or collect before mutating
+let val = map.get("key").cloned().unwrap_or_default();
+map.insert("key2".to_string(), vec![3]);
+println!("Original: {:?}", map.get("key"));
+println!("Cloned: {:?}", val);
+```
+
+## Examples
+
+```rust
+use std::collections::HashMap;
 
 fn main() {
-    // Initialize properly
-    println!("Correct std collections configuration");
+    let mut scores: HashMap<&str, i32> = HashMap::new();
+    scores.insert("Alice", 95);
+    scores.insert("Bob", 87);
+    scores.insert("Charlie", 92);
+
+    // Safe access
+    for (name, score) in &scores {
+        println!("{}: {}", name, score);
+    }
+
+    // Update with entry
+    scores.entry("Alice").and_modify(|s| *s += 5);
+
+    // Remove and return
+    if let Some(removed) = scores.remove("Bob") {
+        println!("Bob's score was: {}", removed);
+    }
+
+    // Find highest
+    if let Some((name, score)) = scores.iter().max_by_key(|(_, s)| *s) {
+        println!("Highest: {} with {}", name, score);
+    }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with std collections
-2. Integrating std collections into an existing codebase
-3. Upgrading std collections to a newer version
-
-## Prevent It
-
-- Read the std collections documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Vec Error]({{< relref "/languages/rust/rust-vec-error" >}}) — vector issues
+- [String Error]({{< relref "/languages/rust/rust-string-error-rs" >}}) — string issues
+- [Iter Error]({{< relref "/languages/rust/rust-iter-error" >}}) — iterator issues

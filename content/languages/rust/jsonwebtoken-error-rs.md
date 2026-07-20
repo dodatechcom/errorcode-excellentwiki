@@ -7,75 +7,71 @@ severities: ["error"]
 weight: 5
 ---
 
-# jsonwebtoken Decode Error
+# Jsonwebtoken Error
 
-Fix jsonwebtoken decode errors. Handle token validation, algorithm verification, and expiration checks..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Jsonwebtoken errors occur when using the `jsonwebtoken` crate for JWT — encoding, decoding, and validation failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Expired token
+let token_data = decode::<Claims>(&token, &key, &Validation::default())?;
+
+// Invalid signature
+let key = DecodingKey::from_secret(b"wrong-secret");
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Encode tokens properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use jsonwebtoken::{encode, Header, EncodingKey};
+
+let claims = Claims { sub: "user1".into(), exp: 9999999999 };
+let token = encode(&Header::default(), &claims, &EncodingKey::from_secret(b"secret"))?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Validate tokens with correct key**
 
 ```rust
-use anyhow::Result;
+use jsonwebtoken::{decode, Validation, DecodingKey};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let key = DecodingKey::from_secret(b"secret");
+let mut validation = Validation::default();
+validation.set_required_spec_claims(&["exp"]);
+let token_data = decode::<Claims>(&token, &key, &validation)?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle expired tokens**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let mut validation = Validation::default();
+validation.set_validate_exp(false); // Skip expiry check
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use jsonwebtoken::{encode, decode, Header, Validation, EncodingKey, DecodingKey};
+use serde::{Serialize, Deserialize};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Debug, Serialize, Deserialize)]
+struct Claims { sub: String, exp: usize }
+
+fn main() -> Result<(), jsonwebtoken::errors::Error> {
+    let claims = Claims { sub: "user1".into(), exp: 9999999999 };
+    let token = encode(&Header::default(), &claims, &EncodingKey::from_secret(b"secret"))?;
+
+    let key = DecodingKey::from_secret(b"secret");
+    let token_data = decode::<Claims>(&token, &key, &Validation::default())?;
+    println!("Decoded: {:?}", token_data.claims);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto primitives
+- [OpenSSL Error]({{< relref "/languages/rust/openssl-error-rs" >}}) — TLS/crypto
+- [HMAC Error]({{< relref "/languages/rust/hmac-error" >}}) — HMAC signing

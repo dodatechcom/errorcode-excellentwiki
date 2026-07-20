@@ -10,64 +10,110 @@ comments: true
 
 # Sink Error
 
-Fix Sink trait errors. Resolve async sink implementation, backpressure handling, and flushing issues.
+Sink errors occur when using the `futures::Sink` trait — backpressure issues, flushing failures, and poll_ready behavior violations.
 
-## Why It Happens
-
-- Sink::poll_ready is not called before start_send
-- Flush is not called before dropping the sink
-- Backpressure is not respected in poll_flush
-- Sink is used from multiple tasks concurrently
-
-## Common Error Messages
-
-- `error: sink failed`
-- `thread panicked at 'Sink trait operation failed'`
-- `Error: unable to complete Sink trait operation`
-- `Fatal: Sink trait configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure Sink trait is properly configured
-use Sink_trait::prelude::*;
+use futures::SinkExt;
+use tokio::sync::mpsc;
 
-fn main() {
-    // Initialize properly
-    println!("Correct Sink trait configuration");
+// Not calling poll_ready before start_send
+// Sink::poll_ready must return Ready before start_send
+
+// Not flushing after sending
+async fn bad_send(sink: &mut impl futures::Sink<String>) {
+    sink.send("hello".into()).await.unwrap(); // May buffer without flushing
+}
+
+// Buffer overflow — sending faster than consuming
+```
+
+## How to Fix
+
+1. **Use `SinkExt::send` which handles ready + flush**
+
+```rust
+use futures::{SinkExt, StreamExt};
+use tokio::sync::mpsc;
+
+#[tokio::main]
+async fn main() {
+    let (tx, mut rx) = mpsc::channel(10);
+
+    let mut sink = futures::sink::unfold(tx, |mut tx, msg: String| async move {
+        tx.send(msg).await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+        Ok::<_, std::io::Error>(tx)
+    });
+
+    sink.send("Hello".into()).await.unwrap();
+    sink.send("World".into()).await.unwrap();
+
+    // Flush explicitly if needed
+    sink.flush().await.unwrap();
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Handle backpressure with `poll_ready`**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
+use futures::{Sink, SinkExt};
+
+async fn process_batch<S: Sink<Item>>(sink: &mut S, items: Vec<S::Item>)
+where S::Error: std::fmt::Display
+{
+    for item in items {
+        // Wait until sink is ready
+        std::future::poll_fn(|cx| sink.poll_ready(cx)).await.unwrap();
+        sink.start_send(item).unwrap();
+    }
+    sink.flush().await.unwrap();
+}
+```
+
+3. **Use buffered sinks for throughput**
+
+```rust
+use futures::stream::StreamExt;
+use futures::sink::Buffer;
+
+// Buffer wraps a sink and batches flush operations
+let sink = /* your sink */;
+let mut buffered = Buffer::new(sink, 100); // Buffer up to 100 items
+
+for i in 0..1000 {
+    buffered.send(i).await.unwrap();
+}
+buffered.flush().await.unwrap();
+```
+
+## Examples
+
+```rust
+use futures::{SinkExt, StreamExt};
+use tokio::net::TcpStream;
+use tokio_util::codec::{Framed, LinesCodec};
+
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    let stream = TcpStream::connect("127.0.0.1:8080").await?;
+    let mut framed = Framed::new(stream, LinesCodec::new());
+
+    // Send messages
+    framed.send("Hello".to_string()).await?;
+    framed.send("World".to_string()).await?;
+
+    // Receive responses
+    while let Some(Ok(line)) = framed.next().await {
+        println!("Received: {}", line);
+    }
+
     Ok(())
 }
 ```
 
-### Fix 3: Add proper error context
+## Related Errors
 
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with Sink trait
-2. Integrating Sink trait into an existing codebase
-3. Upgrading Sink trait to a newer version
-
-## Prevent It
-
-- Read the Sink trait documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Stream Error]({{< relref "/languages/rust/rust-stream-error-rs" >}}) — stream issues
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — async runtime
+- [Poll Error]({{< relref "/languages/rust/rust-poll-error" >}}) — polling issues

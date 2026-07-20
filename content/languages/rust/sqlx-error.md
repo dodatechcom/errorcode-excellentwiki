@@ -7,75 +7,81 @@ severities: ["error"]
 weight: 5
 ---
 
-# sqlx Query Error
+# SQLx Error
 
-Fix sqlx query errors. Handle database connections, query execution, and compile-time checking..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+SQLx errors occur when using the `sqlx` crate — compile-time checked queries, connection, and type mapping errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Compile-time check failure — wrong SQL
+let row = sqlx::query_as!(User, "SELECT * FROM nonexistent")
+    .fetch_one(&pool).await?;
+
+// Type mismatch in query parameters
+sqlx::query!("SELECT * WHERE id = $1", "not_an_int")
+    .fetch_one(&pool).await?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use runtime queries when schema changes**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use sqlx::PgPool;
+
+let pool = PgPool::connect("postgres://localhost/mydb").await?;
+let row = sqlx::query("SELECT id, name FROM users WHERE id = $1")
+    .bind(1i32)
+    .fetch_one(&pool)
+    .await?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle connection pool exhaustion**
 
 ```rust
-use anyhow::Result;
+use sqlx::postgres::PgPoolOptions;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let pool = PgPoolOptions::new()
+    .max_connections(5)
+    .connect("postgres://localhost/mydb")
+    .await?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use migrations**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+sqlx::migrate!("./migrations").run(&pool).await?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use sqlx::postgres::PgPoolOptions;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Debug, sqlx::FromRow)]
+struct User { id: i32, name: String }
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect("postgres://localhost/test").await?;
+
+    sqlx::query("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT)")
+        .execute(&pool).await?;
+
+    let user = sqlx::query_as::<_, User>("SELECT id, name FROM users WHERE id = $1")
+        .bind(1)
+        .fetch_optional(&pool)
+        .await?;
+    println!("{:?}", user);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [SQLx Error v2]({{< relref "/languages/rust/sqlx-error-v2" >}}) — SQLx v2
+- [Postgres Error]({{< relref "/languages/rust/postgres-error-rs" >}}) — PostgreSQL
+- [Sea ORM Error]({{< relref "/languages/rust/sea-orm-error" >}}) — SeaORM

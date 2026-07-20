@@ -7,53 +7,57 @@ error-types: ["config-error"]
 weight: 8
 ---
 
-# Linux: systemd-nsswitch-error — Name service switch configuration error
+# Linux: systemd Nsswitch Error Error
 
-Fix Linux systemd-nsswitch-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd nsswitch error errors occur when the systemd nsswitch error component fails to operate correctly.
 
 ## Common Causes
 
-- nsswitch.conf misconfigured
-- Module not installed
-- Lookup order wrong
-- Conflicting configs
+- Misconfiguration in unit files or systemd configuration
+- Permission or ownership issues on required paths
+- Dependency failures from other systemd units
+- Resource limits or system constraints reached
+- SELinux or AppArmor policy blocking operations
 
 ## How to Fix
 
-### 1. Check
+### 1. Check systemd Unit Status
+
 ```bash
-cat /etc/nsswitch.conf
-getent hosts <hostname>
+sudo systemctl status systemd-nsswitch-error
+sudo journalctl -u systemd-nsswitch-error --no-pager -n 50
 ```
 
-### 2. Test Lookups
+### 2. Verify Configuration Files
+
 ```bash
-getent passwd <user>
-getent hosts <hostname>
+ls /etc/systemd/*.conf /usr/lib/systemd/*.conf 2>/dev/null
+systemctl cat systemd-nsswitch-error
 ```
 
-### 3. Fix Config
+### 3. Check System Logs
+
 ```bash
-sudo tee /etc/nsswitch.conf << EOF
-passwd: files systemd
-group: files systemd
-hosts: files resolve dns
-EOF
+sudo journalctl -xe --no-pager -n 30
+sudo dmesg | tail -20
 ```
 
-### 4. Verify Modules
+### 4. Restart and Re-evaluate
+
 ```bash
-ls /lib/*/libnss_*.so 2>/dev/null
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-nsswitch-error
 ```
 
-## Common Scenarios
+## Examples
 
-- User lookup fails
-- DNS order wrong
-- System users not found
+```bash
+$ sudo systemctl status systemd-nsswitch-error
+* systemd-nsswitch-error.service - systemd Nsswitch Error
+   Loaded: loaded (/usr/lib/systemd/system/systemd-nsswitch-error.service; static)
+   Active: failed (Result: exit-code)
 
-## Prevent It
-
-- Keep module order consistent
-- Use resolve in hosts line
-- Test with getent
+$ sudo journalctl -u systemd-nsswitch-error -n 10
+Jul 20 14:30:45 server systemd[nsswitch-error][12345]: Failed to process configuration
+Jul 20 14:30:45 server systemd[1]: systemd-nsswitch-error.service: Main process exited, code=exited, status=1/FAILURE
+```

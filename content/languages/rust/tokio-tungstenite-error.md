@@ -7,75 +7,88 @@ severities: ["error"]
 weight: 5
 ---
 
-# tokio-tungstenite WebSocket Error
+# Tokio Tungstenite Error
 
-Fix tokio-tungstenite async WebSocket errors. Handle async connection, message handling, and reconnection..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Tokio tungstenite errors occur when using `tokio-tungstenite` for WebSocket — connection and protocol errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection failure
+let (ws_stream, _) = connect_async("ws://localhost:9999").await?;
+
+// Sending on closed connection
+sink.send(Message::Text("hello".into())).await?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle connection errors**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use tokio_tungstenite::connect_async;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match connect_async("ws://echo.websocket.org").await {
+    Ok((ws, _)) => println!("Connected"),
+    Err(e) => eprintln!("Connection failed: {}", e),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Check connection state**
 
 ```rust
-use std::time::Duration;
+use futures::{SinkExt, StreamExt};
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let (mut write, mut read) = ws_stream.split();
+
+// Send messages
+write.send(Message::Text("hello".into())).await?;
+
+// Read messages
+while let Some(msg) = read.next().await {
+    match msg {
+        Ok(Message::Text(text)) => println!("Received: {}", text),
+        Ok(Message::Close(_)) => break,
+        Err(e) => eprintln!("Error: {}", e),
+        _ => {}
+    }
+}
+```
+
+3. **Handle ping/pong**
+
+```rust
+use tokio_tungstenite::tungstenite::Message;
+
+match msg {
+    Ok(Message::Ping(data)) => {
+        write.send(Message::Pong(data)).await?;
+    }
+    _ => {}
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use futures::{SinkExt, StreamExt};
+use tokio_tungstenite::{connect_async, tungstenite::Message};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (mut ws, _) = connect_async("ws://echo.websocket.org").await?;
+
+    ws.send(Message::Text("Hello WebSocket!".into())).await?;
+
+    if let Some(Ok(msg)) = ws.next().await {
+        println!("Response: {}", msg);
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [H2 Error]({{< relref "/languages/rust/h2-error" >}}) — HTTP/2
+- [Quinn Error]({{< relref "/languages/rust/quinn-error" >}}) — QUIC
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — tokio runtime

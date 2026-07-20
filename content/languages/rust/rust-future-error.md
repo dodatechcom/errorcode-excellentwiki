@@ -10,64 +10,118 @@ comments: true
 
 # Future Error
 
-Fix Future trait errors. Resolve async future implementation, Poll states, and executor issues.
+Future errors occur when working with `Future` and `Pin` in async Rust — issues with unpinning, self-referential structs, polling after completion, or lifetime violations in async blocks.
 
-## Why It Happens
-
-- Future is not Send but is spawned on multi-threaded runtime
-- Future borrows data that does not live long enough
-- Poll implementation does not properly wake the waker
-- Future is polled after completion
-
-## Common Error Messages
-
-- `error: future failed`
-- `thread panicked at 'Future trait operation failed'`
-- `Error: unable to complete Future trait operation`
-- `Fatal: Future trait configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure Future trait is properly configured
-use Future_trait::prelude::*;
+use std::future::Future;
+use std::pin::Pin;
 
-fn main() {
-    // Initialize properly
-    println!("Correct Future trait configuration");
+// Self-referential struct — cannot be safely constructed
+struct MyFuture { data: String, ptr: *const String }
+
+// Missing Send — cannot spawn on multi-threaded runtime
+async fn compute() -> i32 { 42 }
+tokio::spawn(compute()); // ERROR: !Send
+
+// Polling a future after it returned Ready
+// Manually implementing Future incorrectly
+
+// Async block borrowing across await points
+async fn bad(data: Vec<i32>) -> Vec<i32> {
+    let r = &data;
+    tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+    // data might be dropped while r is borrowed
+    r.clone()
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## How to Fix
+
+1. **Use `Box::pin` for self-referential or large futures**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use std::future::Future;
+use std::pin::Pin;
+
+fn make_future() -> Pin<Box<dyn Future<Output = i32> + Send>> {
+    Box::pin(async {
+        tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+        42
+    })
+}
+
+#[tokio::main]
+async fn main() {
+    let result = make_future().await;
+    println!("Result: {}", result);
 }
 ```
 
-### Fix 3: Add proper error context
+2. **Ensure async functions used with spawn are Send**
 
 ```rust
-use std::error::Error;
+// If you need to spawn, ensure all data is Send
+async fn process(data: Vec<u8>) -> usize {
+    data.len()
+}
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+#[tokio::main]
+async fn main() {
+    let data = vec![1u8, 2, 3];
+    // data is Send, so this works
+    let handle = tokio::spawn(async move {
+        process(data).await
+    });
+    println!("Length: {}", handle.await.unwrap());
 }
 ```
 
-## Common Scenarios
+3. **Don't borrow across await points — clone or move data**
 
-1. Setting up a new project with Future trait
-2. Integrating Future trait into an existing codebase
-3. Upgrading Future trait to a newer version
+```rust
+async fn safe_fn(data: Vec<i32>) -> Vec<i32> {
+    let data_clone = data.clone(); // Clone before await
+    tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+    data_clone // Use the clone after await
+}
+```
 
-## Prevent It
+## Examples
 
-- Read the Future trait documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+```rust
+use std::future::Future;
+use std::pin::Pin;
+use std::task::{Context, Poll};
+
+struct Countdown { count: u32 }
+
+impl Future for Countdown {
+    type Output = String;
+
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<String> {
+        if self.count == 0 {
+            Poll::Ready("Done!".to_string())
+        } else {
+            println!("Count: {}", self.count);
+            self.count -= 1;
+            cx.waker().wake_by_ref();
+            Poll::Pending
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() {
+    let result = Countdown { count: 3 }.await;
+    println!("{}", result);
+}
+```
+
+## Related Errors
+
+- [Pin Error]({{< relref "/languages/rust/rust-pin-error" >}}) — pinning issues
+- [Poll Error]({{< relref "/languages/rust/rust-poll-error" >}}) — polling issues
+- [Waker Error]({{< relref "/languages/rust/rust-waker-error" >}}) — waker issues
+- [Stream Error]({{< relref "/languages/rust/rust-stream-error-rs" >}}) — stream issues

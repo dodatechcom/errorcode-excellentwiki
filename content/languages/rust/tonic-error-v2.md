@@ -7,89 +7,55 @@ severities: ["error"]
 weight: 5
 ---
 
-# tonic gRPC Transport Error
+# Tonic Error
 
-Fix tonic gRPC transport errors. Handle connection failures, channel errors, and transport layer issues.
-
-## What This Error Means
-
-tonic transport errors occur when the gRPC client or server cannot establish or maintain a connection:
-
-```
-tonic::transport::Error(Transport, connect error: os error 111)
-Status { code: Unavailable, message: "connection refused" }
-```
+Tonic errors occur when using the `tonic` crate for gRPC — connection, transport, and status errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Server not running or wrong address
-let client = MyServiceClient::connect("http://localhost:50051").await?;
+// Connection refused
+let channel = Channel::from_static("http://wrong:50051").connect().await?;
 
-// Cause 2: TLS mismatch (client expects TLS, server uses plaintext)
-// Cause 3: DNS resolution failure
-// Cause 4: Connection timeout under load
-// Cause 5: Max concurrent streams exceeded
+// Invalid protobuf message
+let response = client.get_user(request).await?;
 ```
 
 ## How to Fix
 
-### Fix 1: Configure channel options
+1. **Configure channel properly**
 
 ```rust
 use tonic::transport::Channel;
 
 let channel = Channel::from_static("http://[::1]:50051")
-    .connect_timeout(std::time::Duration::from_secs(5))
-    .keep_alive(std::time::Duration::from_secs(30), "ping".parse().unwrap())
-    .max_concurrent_streams(100)
     .connect()
     .await?;
-
-let mut client = MyServiceClient::new(channel);
 ```
 
-### Fix 2: Add reconnection logic
+2. **Handle gRPC status codes**
 
 ```rust
-use tonic::transport::Channel;
-use std::time::Duration;
+use tonic::Status;
 
-async fn connect_with_retry(endpoint: &str) -> Result<Channel, tonic::transport::Error> {
-    let mut delay = Duration::from_secs(1);
-
-    for attempt in 0..5 {
-        match Channel::from_shared(endpoint.to_string())?.connect().await {
-            Ok(channel) => return Ok(channel),
-            Err(e) => {
-                eprintln!("Connection attempt {} failed: {}", attempt + 1, e);
-                tokio::time::sleep(delay).await;
-                delay = (delay * 2).min(Duration::from_secs(30));
-            }
-        }
-    }
-
-    Err(tonic::transport::Error::new("Failed to connect after 5 attempts"))
+match client.get_user(request).await {
+    Ok(response) => println!("{:?}", response.into_inner()),
+    Err(Status::NotFound(msg)) => eprintln!("Not found: {}", msg),
+    Err(Status::InvalidArgument(msg)) => eprintln!("Invalid: {}", msg),
+    Err(status) => eprintln!("RPC error: {}", status),
 }
 ```
 
-### Fix 3: Use appropriate transport (TLS vs plaintext)
+3. **Use interceptors for auth**
 
 ```rust
 use tonic::transport::{Channel, ClientTlsConfig};
 
-// Plaintext connection
-let channel = Channel::from_static("http://localhost:50051")
-    .connect()
-    .await?;
+let tls = ClientTlsConfig::new()
+    .domain_name("example.com");
 
-// TLS connection
-let tls_config = ClientTlsConfig::new()
-    .domain_name("example.com")
-    .ca_certificate(tonic::transport::Certificate::from_pem(ca_pem));
-
-let channel = Channel::from_static("https://example.com:50051")
-    .tls_config(tls_config)?
+let channel = Channel::from_static("https://example.com")
+    .tls_config(tls)?
     .connect()
     .await?;
 ```
@@ -97,29 +63,23 @@ let channel = Channel::from_static("https://example.com:50051")
 ## Examples
 
 ```rust
-use tonic::{Request, Status, Response};
+use tonic::{transport::Server, Request, Response, Status};
+
+pub trait MyService {
+    async fn say_hello(&self, req: Request<HelloRequest>)
+        -> Result<Response<HelloReply>, Status>;
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let channel = tonic::transport::Channel::from_static("http://[::1]:50051")
-        .connect()
-        .await?;
-
-    let mut client = GreeterClient::new(channel);
-
-    let request = Request::new(HelloRequest {
-        name: "World".into(),
-    });
-
-    let response = client.say_hello(request).await?;
-    println!("Response: {:?}", response.into_inner());
-
+    let addr = "[::1]:50051".parse()?;
+    println!("Server listening on {}", addr);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [H2 Error]({{< relref "/languages/rust/h2-error" >}}) — HTTP/2 error
-- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — hyper error
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
+- [Tonic Error v2]({{< relref "/languages/rust/tonic-error-v2" >}}) — tonic v2
+- [H2 Error]({{< relref "/languages/rust/h2-error" >}}) — HTTP/2
+- [Quinn Error]({{< relref "/languages/rust/quinn-error" >}}) — QUIC

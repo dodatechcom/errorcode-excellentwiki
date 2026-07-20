@@ -10,64 +10,124 @@ comments: true
 
 # Egui Error
 
-Fix egui immediate mode GUI errors. Resolve rendering context, state, and widget configuration issues.
+Egui errors occur when using the egui immediate-mode GUI library — issues with painting, context management, and integration with rendering backends.
 
-## Why It Happens
-
-- UI is modified outside the egui context
-- Widget ID is duplicated causing state conflicts
-- Font texture is not loaded before rendering
-- Frame is not properly passed to paint callbacks
-
-## Common Error Messages
-
-- `error: egui failed`
-- `thread panicked at 'egui framework operation failed'`
-- `Error: unable to complete egui framework operation`
-- `Fatal: egui framework configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure egui framework is properly configured
-use egui_framework::prelude::*;
+use eframe::egui;
 
-fn main() {
-    // Initialize properly
-    println!("Correct egui framework configuration");
+// Painting outside of a frame
+let ctx = egui::Context::default();
+ctx.begin_pass(egui::Pos2::ZERO, &egui::RawInput::default());
+// Missing end_pass — causes panic
+
+// Updating UI from wrong thread
+// eframe contexts are single-threaded
+
+// Missing repaint request — UI doesn't refresh
+fn update(ctx: &egui::Context) {
+    // Without request_repaint(), the UI freezes until next event
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## How to Fix
+
+1. **Always pair begin_pass with end_pass**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use eframe::egui;
+
+fn draw_ui(ctx: &egui::Context) {
+    egui::CentralPanel::default().show(ctx, |ui| {
+        ui.heading("Hello, Egui!");
+        if ui.button("Click me").clicked() {
+            println!("Button clicked!");
+        }
+    });
 }
 ```
 
-### Fix 3: Add proper error context
+2. **Use request_repaint for continuous updates**
 
 ```rust
-use std::error::Error;
+use eframe::egui;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+fn update(ctx: &egui::Context) {
+    // Request repaint for animations or real-time updates
+    ctx.request_repaint();
+
+    egui::CentralPanel::default().show(ctx, |ui| {
+        let time = ctx.input(|i| i.time);
+        ui.label(format!("Time: {:.2}", time));
+    });
 }
 ```
 
-## Common Scenarios
+3. **Use channels for cross-thread communication**
 
-1. Setting up a new project with egui framework
-2. Integrating egui framework into an existing codebase
-3. Upgrading egui framework to a newer version
+```rust
+use std::sync::mpsc;
 
-## Prevent It
+struct App {
+    receiver: mpsc::Receiver<String>,
+}
 
-- Read the egui framework documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+impl App {
+    fn new() -> (Self, mpsc::Sender<String>) {
+        let (tx, rx) = mpsc::channel();
+        (App { receiver: rx }, tx)
+    }
+}
+
+impl eframe::App for App {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Check for messages from other threads
+        while let Ok(msg) = self.receiver.try_recv() {
+            ctx.request_repaint();
+        }
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.label("Egui app running");
+        });
+    }
+}
+```
+
+## Examples
+
+```rust
+use eframe::egui;
+
+struct MyApp { count: i32 }
+
+impl Default for MyApp {
+    fn default() -> Self { MyApp { count: 0 } }
+}
+
+impl eframe::App for MyApp {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("Egui Counter");
+            ui.horizontal(|ui| {
+                if ui.button("-").clicked() { self.count -= 1; }
+                ui.label(format!("{}", self.count));
+                if ui.button("+").clicked() { self.count += 1; }
+            });
+        });
+    }
+}
+
+fn main() -> eframe::Result<()> {
+    eframe::run_native(
+        "My App",
+        eframe::NativeOptions::default(),
+        Box::new(|_| Ok(Box::new(MyApp::default()))),
+    )
+}
+```
+
+## Related Errors
+
+- [Iced Error]({{< relref "/languages/rust/rust-iced-error" >}}) — Iced framework issues
+- [Slint Error]({{< relref "/languages/rust/rust-slint-error" >}}) — Slint framework issues
+- [Tauri Error]({{< relref "/languages/rust/rust-tauri-error" >}}) — Tauri framework issues

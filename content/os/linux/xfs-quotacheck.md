@@ -7,29 +7,57 @@ error-types: ["filesystem-error"]
 weight: 8
 ---
 
-# Linux: xfs-quotacheck — XFS quotacheck error
+# Linux: XFS Quotacheck Error
 
-Fix Linux xfs-quotacheck errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+XFS quotacheck errors occur when the XFS high-performance journaling filesystem encounters issues.
 
 ## Common Causes
 
-- Quota not mounted
-- Accounting inconsistent
-- Corrupted quota data
-- Mount options wrong
+- Filesystem metadata corruption from hardware failure
+- Dirty journal requiring log replay
+- Allocation group header damage
+- Superblock inconsistency
+- Storage subsystem write ordering issues
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/xfs-quotacheck.md' mode='w' encoding='UTF-8'>
+### 1. Check XFS Status
 
-## Common Scenarios
+```bash
+sudo xfs_info /mount/point 2>/dev/null
+sudo dmesg | grep -i "xfs" | tail -20
+```
 
-- Quotacheck not working
-- Quota data inconsistent
-- Cannot check quota
+### 2. Check Filesystem
 
-## Prevent It
+```bash
+sudo umount /mount/point
+sudo xfs_repair -n /dev/sda1 2>&1 | head -30
+```
 
-- Ensure quota mount options
-- Remount with uquota/gquota
-- Run xfs_repair
+### 3. Repair
+
+```bash
+sudo xfs_repair /dev/sda1
+```
+
+### 4. Force Log Replay
+
+```bash
+sudo mount -o force /dev/sda1 /mount/point
+```
+
+## Examples
+
+```bash
+$ sudo dmesg | grep -i xfs | tail -5
+[12345.678] XFS (sda1): Metadata corruption detected at xfs_quotacheck
+
+$ sudo xfs_repair /dev/sda1
+Phase 1 - find and verify superblock...
+Phase 2 - using internal log
+Phase 3 - checking AG structures...
+Phase 4 - checking inodes...
+Phase 5 - rebuilding AG headers...
+Phase 6 - checking link counts...
+```

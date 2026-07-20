@@ -7,29 +7,57 @@ error-types: ["network"]
 weight: 6
 ---
 
-# Linux: ssh-hostkey-error — SSH host key error
+# Linux: SSH Hostkey Error Error
 
-Fix Linux ssh-hostkey-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+SSH hostkey error errors occur during SSH connection establishment due to configuration or authentication issues.
 
 ## Common Causes
 
-- Host key changed
-- Man-in-the-middle
-- Key not found
-- Unknown host
+- SSH server not running or not accessible
+- Firewall blocking port 22
+- Authentication method mismatch
+- Host key verification failure
+- Client configuration errors
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/ssh-hostkey-error.md' mode='w' encoding='UTF-8'>
+### 1. Check SSH Server Status
 
-## Common Scenarios
+```bash
+sudo systemctl status sshd
+sudo ss -tlnp | grep :22
+```
 
-- Host key changed warning
-- Possible MITM
-- Cannot connect
+### 2. Check Firewall
 
-## Prevent It
+```bash
+sudo ufw status
+sudo iptables -L -n | grep :22
+```
 
-- Verify new host key
-- Remove old known_hosts
-- Regenerate if needed
+### 3. Verbose Connection Debug
+
+```bash
+ssh -vvv user@remote-host 2>&1 | tail -30
+```
+
+### 4. Check SSH Configuration
+
+```bash
+cat /etc/ssh/sshd_config | grep -v "^#" | grep -v "^$"
+cat ~/.ssh/config
+```
+
+## Examples
+
+```bash
+$ sudo systemctl status sshd
+* sshd.service - OpenSSH server daemon
+   Active: active (running)
+
+$ ssh -vvv user@remote-host
+debug1: Authentication succeeded (publickey).
+debug1: channel 0: new [client-session]
+$ ssh user@remote-host
+Welcome to Ubuntu 22.04 LTS
+```

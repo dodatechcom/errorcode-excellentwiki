@@ -10,64 +10,132 @@ comments: true
 
 # Syn Error
 
-Fix syn parsing errors in procedural macros. Resolve token stream parsing, syntax tree construction, and derive issues.
+Syn errors occur when parsing Rust syntax with the `syn` crate — parse failures, incorrect AST traversal, and token stream manipulation errors.
 
-## Why It Happens
-
-- Parsed token stream contains unexpected syntax
-- Derive input is missing required attributes
-- Type parsing fails on complex generic types
-- Custom parse function does not consume all tokens
-
-## Common Error Messages
-
-- `error: syn failed`
-- `thread panicked at 'syn crate operation failed'`
-- `Error: unable to complete syn crate operation`
-- `Fatal: syn crate configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure syn crate is properly configured
-use syn_crate::prelude::*;
+use syn::{parse_str, ItemFn};
+
+// Parse failure
+let invalid = "fn foo(";
+let _: ItemFn = parse_str(invalid).unwrap(); // ERROR: unexpected end of input
+
+// Missing import
+// syn::DeriveInput — needs `#[proc_macro_derive]` context
+
+// Wrong AST traversal
+```
+
+## How to Fix
+
+1. **Handle parse errors with proper error messages**
+
+```rust
+use syn::{parse_str, ItemFn};
+use proc_macro2::TokenStream;
+
+fn parse_function(code: &str) -> Result<ItemFn, String> {
+    parse_str(code).map_err(|e| format!("Parse error at {}: {}", e.span(), e))
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct syn crate configuration");
+    match parse_function("fn hello() { println!(\"hi\"); }") {
+        Ok(item) => println!("Parsed: {}", item.sig.ident),
+        Err(e) => eprintln!("Failed: {}", e),
+    }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Use `syn::visit` for AST traversal**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use syn::{visit::Visit, ItemFn, Expr};
+
+struct FunctionVisitor;
+
+impl<'ast> Visit<'ast> for FunctionVisitor {
+    fn visit_expr(&mut self, expr: &'ast Expr) {
+        if let Expr::Path(_) = expr {
+            println!("Found expression path");
+        }
+        syn::visit::visit_expr(self, expr);
+    }
+}
+
+fn main() {
+    let code = "fn main() { let x = foo::bar(); }";
+    let item: ItemFn = syn::parse_str(code).unwrap();
+    let mut visitor = FunctionVisitor;
+    visitor.visit_item_fn(&item);
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Use `syn::parse2` for working with token streams**
 
 ```rust
-use std::error::Error;
+use syn::{parse2, DeriveInput};
+use proc_macro2::TokenStream;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+fn derive_from_tokens(tokens: TokenStream) -> Result<DeriveInput, syn::Error> {
+    parse2(tokens)
+}
+
+fn main() {
+    let tokens: TokenStream = "struct MyStruct { field: i32 }".parse().unwrap();
+    match derive_from_tokens(tokens) {
+        Ok(ast) => println!("Parsed: {}", ast.ident),
+        Err(e) => eprintln!("Error: {}", e),
+    }
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with syn crate
-2. Integrating syn crate into an existing codebase
-3. Upgrading syn crate to a newer version
+```rust
+use syn::{parse_str, DeriveInput, Data, Fields};
+use quote::quote;
 
-## Prevent It
+fn analyze_derive(code: &str) -> String {
+    let input: DeriveInput = parse_str(code).unwrap();
+    let name = &input.ident;
 
-- Read the syn crate documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+    match &input.data {
+        Data::Struct(data) => {
+            let fields = match &data.fields {
+                Fields::Named(fields) => {
+                    fields.named.iter()
+                        .map(|f| f.ident.as_ref().unwrap().to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                }
+                _ => "unnamed".to_string(),
+            };
+            format!("Struct {} with fields: {}", name, fields)
+        }
+        Data::Enum(data) => {
+            let variants: Vec<_> = data.variants.iter()
+                .map(|v| v.ident.to_string())
+                .collect();
+            format!("Enum {} with variants: {}", name, variants.join(", "))
+        }
+        Data::Union(_) => format!("Union {}", name),
+    }
+}
+
+fn main() {
+    let code = r#"
+        struct Config {
+            name: String,
+            value: i32,
+        }
+    "#;
+    println!("{}", analyze_derive(code));
+}
+```
+
+## Related Errors
+
+- [Quote Error]({{< relref "/languages/rust/rust-quote-error" >}}) — token generation
+- [Proc Macro Error]({{< relref "/languages/rust/rust-proc-macro-error" >}}) — proc macros
+- [Derive Error]({{< relref "/languages/rust/rust-derive-error" >}}) — derive macros

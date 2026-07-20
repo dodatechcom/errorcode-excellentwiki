@@ -1,70 +1,95 @@
 ---
-title: "[Solution] Docker Network Error — network bridge creation failed"
-description: "Fix Docker network bridge creation errors. Resolve Docker networking issues."
-tools: ["docker"]
-error-types: ["tool-error"]
-severities: ["error"]
-weight: 5
+title: "[Solution] Docker Network Error — Network not found"
+description: "Fix Docker 'Network not found' error. Create and manage networks for container-to-container communication."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+tool: "docker"
+tags: ["docker", "containers", "networking", "bridge", "containers"]
+severity: "error"
+weight: 6
 ---
 
-A Docker network error occurs when Docker cannot create or manage network bridges. This prevents containers from communicating with each other or with the host.
+# ERROR: Network not found
+
+## Error Message
+
+```
+Error: Network myapp_default not found
+
+Error response from daemon: network myapp_default not found: not found
+```
+
+This error occurs when a container or Compose project references a Docker network that does not exist. Containers cannot start if their required network has not been created first.
 
 ## Common Causes
 
-- Docker daemon is not running or has crashed
-- Network interface conflicts on the host
-- Insufficient permissions to create network interfaces
-- The network name already exists
-- iptables rules are blocking network creation
+- The network was removed while containers were still attached to it
+- `docker compose down` removed the project network
+- The network name is misspelled in the Compose file or run command
+- You are referencing a network from a different Compose project that is not running
 
-## How to Fix
+## Solutions
 
-### Check Docker Daemon Status
+### Solution 1: Create the Network and Recreate Containers
+
+Create the missing network with the exact name your Compose file expects, then restart the containers.
 
 ```bash
-sudo systemctl status docker
+docker network create myapp_default
+docker compose up -d
 ```
 
-### List Existing Networks
+### Solution 2: Let Compose Create the Network
+
+Define the network explicitly in your Compose file so `docker compose up` creates it automatically. This is the recommended approach for new projects.
+
+```yaml
+services:
+  web:
+    image: nginx:alpine
+    networks:
+      - frontend
+  api:
+    image: node:20
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+  backend:
+```
+
+```bash
+docker compose up -d
+```
+
+### Solution 3: Inspect and Recover an Existing Network
+
+Check what networks currently exist and reconnect containers to the correct one if they drifted to the wrong network.
 
 ```bash
 docker network ls
+docker network inspect myapp_default
+docker network connect myapp_default my_container
 ```
 
-### Create a Custom Network
+### Solution 4: Use the Host Network for Simple Setups
+
+For single-container setups or debugging, use the host network to bypass network configuration entirely.
 
 ```bash
-docker network create my-network
+docker run --network host myimage
 ```
 
-### Remove Conflicting Network
+## Prevention Tips
 
-```bash
-docker network rm my-network
-docker network prune
-```
-
-### Restart Docker Daemon
-
-```bash
-sudo systemctl restart docker
-```
-
-## Examples
-
-```bash
-# Example 1: Create a bridge network
-docker network create --driver bridge my-app-network
-
-# Example 2: Run containers on custom network
-docker run --network my-app-network --name web nginx
-docker run --network my-app-network --name app my-app
-
-# Example 3: Prune unused networks
-docker network prune -f
-```
+- Always define networks in your Compose file rather than relying on automatic creation
+- Use `docker compose up --remove-orphans` to clean up stale network references
+- Avoid manually removing networks that active Compose projects depend on
+- Name your networks explicitly to avoid collisions with default project networks
 
 ## Related Errors
 
-- [Docker Compose Error]({{< relref "/tools/docker/docker-compose-error" >}}) — docker-compose up failed
-- [Docker Volume Error]({{< relref "/tools/docker/docker-volume-error" >}}) — volume mount permission denied
+- [Docker Port Conflict]({{< relref "/tools/docker/port-conflict" >}}) — port is already allocated
+- [Docker DNS Resolution Failed]({{< relref "/tools/docker/dns-resolution-failed" >}}) — DNS lookup failures

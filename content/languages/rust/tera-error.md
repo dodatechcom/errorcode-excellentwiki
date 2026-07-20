@@ -7,75 +7,72 @@ severities: ["error"]
 weight: 5
 ---
 
-# tera Template Error
+# Tera Error
 
-Fix tera template errors. Handle template parsing, variable resolution, and filter errors..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Tera errors occur when using the `tera` crate for templating — template rendering and syntax errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Undefined variable
+let mut context = tera::Context::new();
+let rendered = tera.tera.render("index", &context)?;
+// Template references {{ undefined_var }}
+
+// Syntax error in template
+tera.add_raw_template("bad", "{% if %}")?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Provide all template variables**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use tera::{Tera, Context};
+
+let mut tera = Tera::default();
+tera.add_raw_template("hello", "Hello, {{ name }}!")?;
+let mut context = Context::new();
+context.insert("name", "World");
+let rendered = tera.render("hello", &context)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Use default filters**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+// {{ value | default(fallback) }}
+tera.add_raw_template("t", "{{ val | default('N/A') }}")?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle template loading**
 
 ```rust
-use std::time::Duration;
+use tera::Tera;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let tera = Tera::new("templates/**/*.html")?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use tera::{Tera, Context};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut tera = Tera::default();
+    tera.add_raw_template("greeting", "Hello, {{ name }}! You are {{ age }}.")?;
+
+    let mut context = Context::new();
+    context.insert("name", "Alice");
+    context.insert("age", &30);
+
+    let rendered = tera.render("greeting", &context)?;
+    println!("{}", rendered);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Handlebars Error]({{< relref "/languages/rust/handlebars-error" >}}) — Handlebars
+- [Askama Error]({{< relref "/languages/rust/askama-error" >}}) — Askama
+- [Maud Error]({{< relref "/languages/rust/maud-error" >}}) — Maud

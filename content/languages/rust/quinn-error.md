@@ -7,75 +7,75 @@ severities: ["error"]
 weight: 5
 ---
 
-# quinn QUIC Error
+# Quinn Error
 
-Fix quinn QUIC protocol errors. Handle connection establishment, streams, and congestion control..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Quinn errors occur when using the `quinn` crate for QUIC — connection and stream errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let endpoint = Endpoint::client("0.0.0.0:0".parse()?)?;
+let conn = endpoint.connect(addr, "localhost")?.await?;
+
+// TLS certificate errors
+// Self-signed certs not accepted by default
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure the endpoint properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use quinn::Endpoint;
+
+let mut endpoint = Endpoint::client("0.0.0.0:0".parse()?)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle self-signed certificates for testing**
 
 ```rust
-use anyhow::Result;
+use quinn::crypto::rustls::QuicClientConfig;
+use rustls::ClientConfig;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let mut roots = rustls::RootCertStore::empty();
+roots.add(cert)?;
+let mut config = ClientConfig::builder()
+    .with_root_certificates(roots)
+    .with_no_client_auth();
+```
+
+3. **Use accept() properly**
+
+```rust
+while let Some(conn) = endpoint.accept().await {
+    tokio::spawn(async move {
+        if let Ok(conn) = conn.await {
+            // handle connection
+        }
+    });
 }
-```
-
-### Fix 3: Add timeout and retry logic
-
-```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use quinn::{Endpoint, ServerConfig};
+use std::net::SocketAddr;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let addr: SocketAddr = "127.0.0.1:4433".parse()?;
+    let endpoint = Endpoint::client("0.0.0.0:0".parse()?)?;
+    let conn = endpoint.connect(addr, "localhost")?.await?;
+    let mut stream = conn.open_bi().await?.0;
+    stream.write_all(b"hello").await?;
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Rustls Error]({{< relref "/languages/rust/rustls-error" >}}) — TLS layer
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — async runtime

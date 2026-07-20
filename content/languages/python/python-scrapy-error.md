@@ -1,129 +1,127 @@
 ---
-title: "[Solution] Python Scrapy Spider Error — How to Fix"
-description: "Fix Python Scrapy spider errors. Resolve request failures, pipeline issues, and middleware configuration problems."
+title: "[Solution] Python Scrapy Error — Spider and Crawler Failures"
+description: "Fix Python Scrapy errors like Spider errors, middleware failures, item pipeline issues, and selector errors. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 423
 ---
 
-# Python Scrapy Spider Error
+# Python Scrapy Error — Spider and Crawler Failures
 
-A `scrapy.exceptions.CloseSpider` or `scrapy.http.response.error` occurs when Scrapy spiders fail to make requests, encounter response errors, or when pipelines and middlewares are misconfigured.
+Scrapy errors occur when spiders fail to parse responses, middleware encounters exceptions, item pipelines reject data, or CSS/XPath selectors return empty results. These are common in large-scale crawling projects.
 
-## Why It Happens
+## Common Causes
 
-Scrapy is a web scraping framework that manages requests asynchronously. Errors arise when spiders follow broken links, when item pipelines fail to process scraped data, when middlewares block requests, or when robots.txt restrictions are violated.
+```python
+# Spider not found by Scrapy
+# scrapy genspider example example.com  # typo in spider name
 
-## Common Error Messages
+# Selector returns empty results
+import scrapy
+response = scrapy.Selector(text="<div>Hello</div>")
+title = response.css("h1::text").get()  # None — h1 doesn't exist
 
-- `CloseSpider: Crawled (404)` - page not found
-- `ERROR: Spider error processing <url>`
-- `DropItem: Missing required field in item`
-- `twisted.internet.error.TimeoutError: User timeout exceeded`
+# Item pipeline Drop exception
+class ValidationPipeline:
+    def process_item(self, item, spider):
+        if not item.get("title"):
+            raise scrapy.exceptions.DropItem("Missing title")
 
-## How to Fix It
+# Middleware import error
+# DOWNLOADER_MIDDLEWARES = {"myproject.middlewares.CustomMiddleware": 400}
+# but the class doesn't exist in the module
 
-### Fix 1: Handle request errors
+# Callback returns None instead of items
+def parse(self, response):
+    yield {"url": response.url}  # forgot yield from loop
+```
 
+## How to Fix
+
+### Fix 1: Verify Spider Is Registered Correctly
+Ensure the spider name matches and is discoverable by Scrapy.
+```bash
+scrapy list  # shows all available spiders
+```
+```python
+class ExampleSpider(scrapy.Spider):
+    name = "example"  # must match what you pass to scrapy crawl
+    allowed_domains = ["example.com"]
+    start_urls = ["https://example.com"]
+```
+
+### Fix 2: Handle Empty Selector Results Safely
+Always check for None before using selector results.
 ```python
 import scrapy
 
-class MySpider(scrapy.Spider):
-    name = "my_spider"
-    start_urls = ["https://example.com"]
-
-    def parse(self, response):
-        if response.status != 200:
-            self.logger.warning(f"Bad response {response.status} from {response.url}")
-            return
-
-        for link in response.css("a.product::attr(href)").getall():
-            yield response.follow(link, callback=self.parse_product)
-
-    def parse_product(self, response):
-        yield {
-            "name": response.css("h1.title::text").get(),
-            "price": response.css("span.price::text").get(),
-            "url": response.url,
-        }
-
-    def errback_httpbin(self, failure):
-        self.logger.error(f"Request failed: {failure.request.url}")
+def parse(self, response):
+    title = response.css("h1::text").get()
+    if title is None:
+        title = response.css("h2::text").get(default="No title")
+    yield {"title": title}
 ```
 
-### Fix 2: Configure item pipelines
-
+### Fix 3: Configure Middleware Correctly
+Ensure middleware classes exist and are properly referenced.
 ```python
-# pipelines.py
-class ValidationPipeline:
-    def process_item(self, item, spider):
-        if not item.get("name"):
-            from scrapy.exceptions import DropItem
-            raise DropItem(f"Missing name in {item}")
-        return item
-
-class SavePipeline:
-    def process_item(self, item, spider):
-        # Save to database
-        return item
-
 # settings.py
-ITEM_PIPELINES = {
-    "mypipelines.ValidationPipeline": 100,
-    "mypipelines.SavePipeline": 300,
+DOWNLOADER_MIDDLEWARES = {
+    "myproject.middlewares.RetryMiddleware": 400,
 }
 ```
 
-### Fix 3: Configure middlewares
-
+### Fix 4: Validate Items in the Pipeline
+Use proper error handling in pipeline classes.
 ```python
-# middlewares.py
-class RetryMiddleware:
-    def process_response(self, request, response, spider):
-        if response.status in [500, 502, 503]:
-            reason = f"HTTP {response.status}"
-            return request.replace(dont_filter=True)
-        return response
-
-# settings.py
-RETRY_ENABLED = True
-RETRY_TIMES = 3
-RETRY_HTTP_CODES = [500, 502, 503, 504]
-DOWNLOAD_TIMEOUT = 30
+class ValidationPipeline:
+    def process_item(self, item, spider):
+        if not item.get("title"):
+            spider.logger.warning("Item missing title: %s", item)
+            raise scrapy.exceptions.DropItem("Missing title")
+        return item
 ```
 
-### Fix 4: Respect robots.txt and rate limiting
-
+### Fix 5: Ensure All Callbacks Yield Items
+Every parse method should yield or return items or requests.
 ```python
-# settings.py
-ROBOTSTXT_OBEY = True
-DOWNLOAD_DELAY = 1
-CONCURRENT_REQUESTS = 8
-CONCURRENT_REQUESTS_PER_DOMAIN = 4
-
-# Auto throttle
-AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 1
-AUTOTHROTTLE_MAX_DELAY = 10
-AUTOTHROTTLE_TARGET_CONCURRENCY = 2.0
+def parse(self, response):
+    for article in response.css("article"):
+        yield {
+            "title": article.css("h2::text").get(),
+            "url": article.css("a::attr(href)").get(),
+        }
+    next_page = response.css("a.next::attr(href)").get()
+    if next_page:
+        yield response.follow(next_page, self.parse)
 ```
 
-## Common Scenarios
+## Examples
 
-- **403 Forbidden** — Target site blocks requests without proper User-Agent or cookies.
-- **Missing items** — CSS selectors do not match the page structure due to site changes.
-- **Pipeline drops** — Items fail validation and are dropped before saving.
+```python
+# Complete spider with error handling
+import scrapy
 
-## Prevent It
+class NewsSpider(scrapy.Spider):
+    name = "news"
+    start_urls = ["https://example.com/news"]
 
-- Always implement `errback` handlers on requests to catch and log failures.
-- Use `scrapy crawl` with `-s LOG_LEVEL=DEBUG` to diagnose pipeline issues.
-- Configure `AUTOTHROTTLE` to avoid overwhelming target servers.
+    def parse(self, response):
+        for article in response.css("article.post"):
+            yield {
+                "title": article.css("h2.title::text").get(),
+                "author": article.css("span.author::text").get(default="Unknown"),
+                "date": article.css("time::attr(datetime)").get(),
+            }
+
+        next_page = response.css("a.next-page::attr(href)").get()
+        if next_page:
+            yield response.follow(next_page, self.parse)
+```
 
 ## Related Errors
 
-- [CloseSpider](/languages/python/close-spider/) — spider closed by engine
-- [DropItem](/languages/python/drop-item/) — item rejected by pipeline
-- [TimeoutError](/languages/python/timeouterror/) — request timed out
+- [Python BeautifulSoup Error](/languages/python/python-beautifulsoup-error/)
+- [Python Requests Error](/languages/python/python-requests-error/)
+- [Python httpx Error](/languages/python/python-httpx-error/)

@@ -9,57 +9,109 @@ weight: 5
 
 # dgrijalva/jwt-go Token Expired
 
-Fix Go JWT token expired errors. Handle token validation, signing, and refresh logic..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The JWT token library (`github.com/dgrijalva/jwt-go` or `github.com/golang-jwt/jwt`) fails when the token is expired, the signing method does not match, the secret key is wrong, or the token claims are invalid. JWT validation is a critical security step that must be done on every authenticated request.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Token expired
+token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+    return signingKey, nil
+})
+// token is expired — Claims.Expiry < time.Now()
+
+// Cause 2: Wrong signing method
+token, _ := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+    if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+        return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+    }
+    return signingKey, nil
+})
+// alg: none attack — token signed with "none" algorithm
+
+// Cause 3: Secret key mismatch
+// Signed with "secret-1", verified with "secret-2"
+// signature is invalid
+
+// Cause 4: Token format invalid
+// "not.a.jwt.token"
+// token contains an invalid number of segments
+
+// Cause 5: Claims validation fails
+// Token has valid signature but invalid claims
+// (missing required fields, wrong issuer, etc.)
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Validate token with proper claims
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "fmt"
+    "os"
+    "time"
 
-### Fix 2: Add proper error handling
+    "github.com/golang-jwt/jwt/v5"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+type Claims struct {
+    UserID string `json:"user_id"`
+    Role   string `json:"role"`
+    jwt.RegisteredClaims
+}
+
+func validateToken(tokenString string) (*Claims, error) {
+    secretKey := []byte(os.Getenv("JWT_SECRET"))
+
+    claims := &Claims{}
+    token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
+        if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+        }
+        return secretKey, nil
+    })
+
+    if err != nil || !token.Valid {
+        return nil, fmt.Errorf("invalid token: %w", err)
+    }
+
+    return claims, nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Create tokens with proper expiry
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+func createToken(userID, role string) (string, error) {
+    secretKey := []byte(os.Getenv("JWT_SECRET"))
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    claims := &Claims{
+        UserID: userID,
+        Role:   role,
+        RegisteredClaims: jwt.RegisteredClaims{
+            ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+            IssuedAt:  jwt.NewNumericDate(time.Now()),
+            Issuer:    "myapp",
+        },
     }
+
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    return token.SignedString(secretKey)
+}
+```
+
+### Fix 3: Use refresh tokens for long-lived sessions
+
+```go
+func refreshAccessToken(refreshToken string) (string, error) {
+    claims, err := validateToken(refreshToken)
+    if err != nil {
+        return "", fmt.Errorf("invalid refresh token: %w", err)
+    }
+
+    // Create new access token
+    return createToken(claims.UserID, claims.Role)
 }
 ```
 
@@ -69,26 +121,51 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
     "log"
+    "os"
     "time"
+
+    "github.com/golang-jwt/jwt/v5"
 )
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+type Claims struct {
+    UserID string `json:"user_id"`
+    jwt.RegisteredClaims
+}
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+func main() {
+    secretKey := []byte(os.Getenv("JWT_SECRET"))
+
+    // Create token
+    claims := &Claims{
+        UserID: "user-123",
+        RegisteredClaims: jwt.RegisteredClaims{
+            ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+        },
     }
-    fmt.Println(result)
+
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    tokenString, err := token.SignedString(secretKey)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println("Token:", tokenString)
+
+    // Validate token
+    parsedClaims := &Claims{}
+    _, err = jwt.ParseWithClaims(tokenString, parsedClaims, func(t *jwt.Token) (interface{}, error) {
+        return secretKey, nil
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("User: %s\n", parsedClaims.UserID)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [http-status-401]({{< relref "/languages/go/http-status-401" >}}) — HTTP 401 when JWT is invalid
+- [go-oauth-error]({{< relref "/languages/go/go-oauth-error" >}}) — OAuth token exchange similar flow
+- [go-vault-error]({{< relref "/languages/go/go-vault-error" >}}) — Vault token validation similar pattern

@@ -6,30 +6,50 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 6
 ---
+# Linux: Quota Error
 
-# Linux: disk-quota-error — disk quota system error
-
-Fix Linux disk-quota-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Quota errors occur when the disk quota subsystem cannot read or enforce user or group disk usage limits.
 
 ## Common Causes
 
-- Quota not enabled
-- Quota file corrupted
-- Not mounted with quota
-- Accounting error
+- Quota database (aquota.user, aquota.group) missing or corrupted
+- Filesystem mounted without quota support options
+- Quota kernel module not loaded
+- Quota limits configured incorrectly or inconsistently
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-quota-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Quota Status
 
-## Common Scenarios
+```bash
+sudo quota -v
+sudo repquota -a
+```
 
-- Quota not working
-- Quota not enabled
-- Accounting error
+### 2. Initialize Quota Files
 
-## Prevent It
+```bash
+sudo touch /aquota.user /aquota.group
+sudo quotacheck -cugm /dev/sdX
+```
 
-- Enable quota in fstab
-- Run quotacheck
-- Check mount options
+### 3. Remount with Quota Options
+
+```bash
+sudo mount -o remount,usrquota,grpquota /dev/sdX
+```
+
+### 4. Enable Quotas
+
+```bash
+sudo quotaon -v /dev/sdX
+```
+
+## Examples
+
+```bash
+$ sudo repquota -a
+** Reporting quotas for /dev/sda1
+User ID  Used   Soft   Hard  Grace   Files  Soft  Hard  Grace
+jdoe  123456 100000 120000  7days    1234     0     0
+```

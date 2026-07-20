@@ -7,29 +7,57 @@ error-types: ["network"]
 weight: 6
 ---
 
-# Linux: ssh-permission-denied — SSH permission denied publickey
+# Linux: SSH Permission Denied Error
 
-Fix Linux ssh-permission-denied errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+SSH permission denied errors occur during SSH connection establishment due to configuration or authentication issues.
 
 ## Common Causes
 
-- Key not authorized
-- Wrong permissions
-- SSH agent not loaded
-- Key not in agent
+- SSH server not running or not accessible
+- Firewall blocking port 22
+- Authentication method mismatch
+- Host key verification failure
+- Client configuration errors
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/ssh-permission-denied.md' mode='w' encoding='UTF-8'>
+### 1. Check SSH Server Status
 
-## Common Scenarios
+```bash
+sudo systemctl status sshd
+sudo ss -tlnp | grep :22
+```
 
-- Permission denied (publickey)
-- Key not authorized
-- Cannot login
+### 2. Check Firewall
 
-## Prevent It
+```bash
+sudo ufw status
+sudo iptables -L -n | grep :22
+```
 
-- Add key to ssh-agent
-- Fix key permissions
-- Check server config
+### 3. Verbose Connection Debug
+
+```bash
+ssh -vvv user@remote-host 2>&1 | tail -30
+```
+
+### 4. Check SSH Configuration
+
+```bash
+cat /etc/ssh/sshd_config | grep -v "^#" | grep -v "^$"
+cat ~/.ssh/config
+```
+
+## Examples
+
+```bash
+$ sudo systemctl status sshd
+* sshd.service - OpenSSH server daemon
+   Active: active (running)
+
+$ ssh -vvv user@remote-host
+debug1: Authentication succeeded (publickey).
+debug1: channel 0: new [client-session]
+$ ssh user@remote-host
+Welcome to Ubuntu 22.04 LTS
+```

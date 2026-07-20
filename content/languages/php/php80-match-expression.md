@@ -1,103 +1,162 @@
 ---
-title: "[Solution] PHP Unhandled Match Value Error Fix"
-description: "Fix 'Unhandled match value' errors in PHP 8.0+. Learn exhaustive matching and default arms in match expressions."
-date: 2026-07-17T10:00:00+08:00
-draft: false
-language: "php"
-tags: ["php", "php80", "match-expression", "exhaustiveness", "runtime-error"]
-severity: "error"
+title: "[Solution] PHP 8.0 Match Expression Error — Non-Exhaustive Match Cases"
+description: "Fix PHP 8.0 Match Expression Error by adding default arms, covering all cases, and using proper syntax. Copy-paste solutions with code examples."
+languages: ["php"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 302
 ---
 
-# Unhandled Match Value
+# PHP 8.0 Match Expression Error — Non-Exhaustive Match Cases
 
-## Error Message
-
-```
-Uncaught ValueError: Unhandled match value of type string in /path/to/file.php:10
-```
+The Match Expression Error occurs when a `match` expression doesn't cover all possible values or is missing a default arm. PHP 8.0 introduced the `match` expression as a strict, type-safe alternative to `switch`. Unlike `switch`, `match` uses strict comparison (`===`) and should handle every possible case.
 
 ## Common Causes
 
-- The match expression does not cover all possible input values and has no default arm
-- Passing an unexpected type to a match expression that only handles specific enum cases
-- Refactoring code that uses switch without default to match without adding a default arm
-- Using match with a typed enum but forgetting a case for one of its values
-
-## Solutions
-
-### Solution 1: Add a default arm to the match expression
-
-Include a default arm (using the underscore syntax) to catch any unhandled values gracefully.
-
 ```php
 <?php
-$status = getOrderStatus($orderId);
-
-$result = match($status) {
-    'pending'   => 'Order is pending',
-    'shipped'   => 'Order has shipped',
-    'delivered' => 'Order delivered',
-    default     => 'Unknown status: ' . $status,
+// Cause 1: Missing default arm and not all cases covered
+$status = getStatus(); // Returns 0, 1, or 2
+$message = match($status) {
+    0 => 'Pending',
+    1 => 'Active',
+    // Error — 2 is not covered and no default arm
 };
 
-echo $result;
-?>
-```
+// Cause 2: Loose vs strict comparison mismatch
+$flag = match($input) {
+    '0' => 'string zero',
+    0 => 'int zero',
+    // Unexpected behavior — match uses ===, not ==
+};
 
-### Solution 2: Cover all possible values explicitly
+// Cause 3: Non-exhaustive enum match (PHP 8.1+)
+enum Status { case Active; case Inactive; case Pending; }
+$s = Status::Active;
+$result = match($s) {
+    Status::Active => 'Active',
+    // Error — missing Inactive and Pending
+};
 
-When working with enums or known value sets, list every possible case so no value slips through.
-
-```php
-<?php
-enum Color {
-    case Red;
-    case Green;
-    case Blue;
-}
-
-function colorHex(Color $c): string {
-    return match($c) {
-        Color::Red   => '#FF0000',
-        Color::Green => '#00FF00',
-        Color::Blue  => '#0000FF',
-    }; // Safe: all cases covered, no default needed
-}
-
-echo colorHex(Color::Red); // '#FF0000'
-?>
-```
-
-### Solution 3: Use default with a thrown exception for strict validation
-
-When unhandled values indicate a bug, throw an exception in the default arm to fail fast.
-
-```php
-<?php
-function handlePayment(string $method): string {
-    return match($method) {
-        'credit_card' => 'Processing credit card',
-        'paypal'      => 'Redirecting to PayPal',
-        'crypto'      => 'Processing crypto payment',
-        default       => throw new InvalidArgumentException(
-            "Unsupported payment method: $method"
-        ),
+// Cause 4: Return type mismatch in match arms
+function getCode(): int|string {
+    return match(rand(0, 1)) {
+        0 => 'zero',
+        1 => 1,
+        // TypeError — arms return different types
     };
 }
 
-handlePayment('wire'); // throws InvalidArgumentException
+// Cause 5: Match with void expression
+match($value) {
+    'save' => saveData(),   // void return
+    'load' => loadData(),   // void return — match result unused but inconsistent
+};
 ?>
 ```
 
-## Prevention Tips
+## How to Fix
 
-- Always add a default arm unless you are 100% certain all values are covered
-- Use enums with match for type-safe exhaustive matching in PHP 8.1+
-- Match uses strict comparison (===), unlike switch which uses loose comparison — be aware of type differences
-- PHPStan can detect non-exhaustive match expressions when using enums
+### Fix 1: Add a default arm to cover all remaining cases
+
+```php
+<?php
+$status = getStatus();
+$message = match($status) {
+    0 => 'Pending',
+    1 => 'Active',
+    default => 'Unknown', // Catches all other values
+};
+?>
+```
+
+### Fix 2: Cover every possible value explicitly
+
+```php
+<?php
+$direction = getDirection(); // 'north', 'south', 'east', or 'west'
+$delta = match($direction) {
+    'north' => [0, -1],
+    'south' => [0, 1],
+    'east'  => [1, 0],
+    'west'  => [-1, 0],
+};
+?>
+```
+
+### Fix 3: Handle enum exhaustiveness with all cases
+
+```php
+<?php
+enum Status {
+    case Active;
+    case Inactive;
+    case Pending;
+}
+
+$s = getStatus();
+$result = match($s) {
+    Status::Active   => 'Active',
+    Status::Inactive => 'Inactive',
+    Status::Pending  => 'Pending',
+};
+?>
+```
+
+### Fix 4: Ensure consistent return types
+
+```php
+<?php
+function getCode(): int|string {
+    return match(rand(0, 1)) {
+        0 => 'zero',
+        1 => 'one',
+    };
+}
+
+// Or keep consistent types
+function getStatusCode(): int {
+    return match(getInput()) {
+        'ok'    => 200,
+        'error' => 500,
+        default => 404,
+    };
+}
+?>
+```
+
+## Examples
+
+```php
+<?php
+// Match with multiple conditions per arm
+$code = match(true) {
+    $x > 0 && $y > 0  => 1,
+    $x < 0 && $y > 0  => 2,
+    $x < 0 && $y < 0  => 3,
+    default            => 4,
+};
+
+// Match with function calls
+$result = match($action) {
+    'create' => createUser($data),
+    'update' => updateUser($data),
+    'delete' => deleteUser($data),
+    default  => throw new InvalidArgumentException("Unknown action: $action"),
+};
+
+// Match returning different types (valid if return type allows it)
+function describe(int|string $value): string {
+    return match(true) {
+        is_int($value)    => "Integer: $value",
+        is_string($value) => "String: \"$value\"",
+    };
+}
+?>
+```
 
 ## Related Errors
 
-- [PHP Match Expression Error]({{< relref "/languages/php/php-match-error" >}})
-- [PHP Enum Error]({{< relref "/languages/php/php81-enum-error" >}})
-- [PHP Fatal Error]({{< relref "/languages/php/fatal-error" >}})
+- [PHP 8.0 Named Argument Error](/languages/php/php80-named-argument/) — Incorrect named arguments in function calls
+- [PHP 8.1 Enum Error](/languages/php/php81-enums/) — Invalid enum definition or usage
+- [PHP 8.0 Match Expression Exhaustiveness](/languages/php/php80-match-expression/) — Ensuring all cases are covered

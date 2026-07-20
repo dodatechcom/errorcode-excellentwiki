@@ -7,48 +7,60 @@ error-types: ["process-error"]
 weight: 8
 ---
 
-# Fix kernel tainted warning — Fix kernel tainted warning
+# Linux: Kernel Tainted Error
 
-Warning kernel tainted with non-GPL module loaded. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Kernel tainted errors occur when the kernel encounters issues with tainted operations or subsystem components.
 
 ## Common Causes
 
-- Non-GPL module loaded
-- Proprietary driver
-- Unsigned module
-- Test code
+- Hardware incompatibility or failure affecting tainted
+- Kernel module or driver bugs in the tainted subsystem
+- Insufficient system resources or configuration limits
+- Firmware or microcode issues
+- Kernel parameter misconfiguration
 
 ## How to Fix
 
-### 1. Check Taint
+### 1. Check Kernel Logs
+
 ```bash
-cat /proc/sys/kernel/tainted
+sudo dmesg | grep -i "tainted" | tail -30
+sudo journalctl -k --no-pager -n 50 | grep -i "tainted"
 ```
 
-### 2. Check Modules
+### 2. Check Kernel Parameters
+
 ```bash
-dmesg | grep -i tainted
-lsmod | grep -i proprietary
+cat /proc/cmdline
+sysctl -a 2>/dev/null | grep -i "tainted"
 ```
 
-### 3. Unload Module
+### 3. Update or Reconfigure
+
 ```bash
-sudo modprobe -r <module>
+# Update kernel
+sudo apt update && sudo apt install linux-image-$(uname -r)
+# Or adjust kernel parameters
+sudo sysctl -w <parameter>=<value>
 ```
 
-### 4. Check Log
+### 4. Check Hardware Status
+
 ```bash
-dmesg | grep taint
+sudo lspci -vvv | grep -i "tainted" | head -20
+sudo lsusb -v 2>/dev/null | grep -i "tainted" | head -10
 ```
 
-## Common Scenarios
+## Examples
 
-- Kernel tainted
-- Non-GPL module loaded
-- Proprietary driver
+```bash
+$ dmesg | grep -i "tainted" | tail -5
+[12345.678] kernel: tainted error detected on device
+[12345.679] kernel: tainted subsystem: failed to initialize
 
-## Prevent It
+$ cat /proc/cmdline
+BOOT_IMAGE=/vmlinuz-... root=... ro quiet
 
-- Use open source modules
-- Check module compatibility
-- Monitor taint status
+# Adjust kernel parameter and reboot
+$ echo "<parameter>=<value>" | sudo tee -a /etc/sysctl.d/99-tainted.conf
+```

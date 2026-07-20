@@ -6,30 +6,49 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: NFS Mount Error
 
-# Linux: disk-nfs-error — NFS mount error
-
-Fix Linux disk-nfs-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+NFS errors occur when mounting or accessing remote filesystems over the Network File System protocol.
 
 ## Common Causes
 
-- NFS server unreachable
-- Mount failed
-- Permission denied
-- Version mismatch
+- NFS server not running or firewall blocking port 2049
+- Export not configured in /etc/exports or permissions too restrictive
+- NFS client missing required services (rpcbind, nfs-common)
+- Network connectivity or routing issues between client and server
+- NFS version mismatch
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-nfs-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Server Exports
 
-## Common Scenarios
+```bash
+showmount -e <server>
+rpcinfo -p <server>
+```
 
-- NFS mount failed
-- Server unreachable
-- Permission denied
+### 2. Check NFS Service on Server
 
-## Prevent It
+```bash
+sudo systemctl status nfs-kernel-server  # Debian/Ubuntu
+sudo systemctl status nfs-server          # RHEL/CentOS
+```
 
-- Check NFS server
-- Verify exports
-- Restart services if needed
+### 3. Mount with Options
+
+```bash
+sudo mount -t nfs4 <server>:/export /mnt
+sudo mount -t nfs -o vers=3 <server>:/export /mnt
+sudo mount -t nfs -o rw,hard,intr,timeo=30,retrans=3 <server>:/export /mnt
+```
+
+## Examples
+
+```bash
+$ showmount -e nfsserver
+Export list for nfsserver:
+/data *(rw,sync,no_subtree_check)
+
+$ sudo mount -t nfs4 nfsserver:/data /mnt
+mount.nfs4: Connection refused
+```

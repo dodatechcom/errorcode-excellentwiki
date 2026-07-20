@@ -10,64 +10,105 @@ comments: true
 
 # Cargo Workspace Error
 
-Fix Cargo workspace errors. Resolve workspace configuration, dependency resolution, and member issues.
+Cargo workspace errors occur when configuring or building multi-crate workspaces. Issues include circular dependencies, inconsistent versions, and incorrect path specifications.
 
-## Why It Happens
+## Common Causes
 
-- Workspace member path does not exist
-- Dependency version conflicts between workspace members
-- Cargo.lock is out of sync with workspace changes
-- Virtual manifest is missing [workspace] section
+```toml
+# Circular dependency between workspace members
+[workspace]
+members = ["crate-a", "crate-b"]
+# crate-a depends on crate-b, crate-b depends on crate-a — ERROR
 
-## Common Error Messages
+# Missing resolver for edition 2021
+[workspace]
+members = ["crate-a", "crate-b"]
+# Missing: resolver = "2"
 
-- `error: cargoworkspace failed`
-- `thread panicked at 'cargo workspaces operation failed'`
-- `Error: unable to complete cargo workspaces operation`
-- `Fatal: cargo workspaces configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
-
-```rust
-// Ensure cargo workspaces is properly configured
-use cargo_workspaces::prelude::*;
-
-fn main() {
-    // Initialize properly
-    println!("Correct cargo workspaces configuration");
-}
+# Path to member doesn't exist
+[workspace]
+members = ["crates/my-crate"]  # ERROR: directory not found
 ```
 
-### Fix 2: Handle errors explicitly
+## How to Fix
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
+1. **Use `workspace.dependencies` for centralized version management**
+
+```toml
+# Root Cargo.toml
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+
+# In member Cargo.toml
+[dependencies]
+serde = { workspace = true }
+tokio = { workspace = true }
 ```
 
-### Fix 3: Add proper error context
+2. **Avoid circular dependencies by extracting shared code**
 
-```rust
-use std::error::Error;
+```toml
+# Create a shared crate
+[workspace]
+members = ["crates/core", "crates/api", "crates/shared"]
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
+# crates/core/Cargo.toml
+[dependencies]
+shared = { path = "../shared" }  # Shared depends on nothing
+
+# crates/api/Cargo.toml
+[dependencies]
+core = { path = "../core" }
 ```
 
-## Common Scenarios
+3. **Use proper path specifications**
 
-1. Setting up a new project with cargo workspaces
-2. Integrating cargo workspaces into an existing codebase
-3. Upgrading cargo workspaces to a newer version
+```toml
+[workspace]
+members = [
+    "crates/my-crate",
+    "apps/my-app",
+    "libs/my-lib",
+]
+exclude = ["old-crates"]
+```
 
-## Prevent It
+## Examples
 
-- Read the cargo workspaces documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+```toml
+# Complete workspace Cargo.toml
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+thiserror = "1.0"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+```
+
+```bash
+# Build all workspace members
+$ cargo build --workspace
+
+# Test all members
+$ cargo test --workspace
+
+# Build specific member
+$ cargo build -p my-crate
+```
+
+## Related Errors
+
+- [Cargo Audit Error]({{< relref "/languages/rust/rust-cargo-audit-error" >}}) — security vulnerabilities
+- [Cargo Publish Error]({{< relref "/languages/rust/rust-cargo-publish-error" >}}) — publishing failures
+- [Cargo Vendor Error]({{< relref "/languages/rust/rust-cargo-vendor-error" >}}) — vendoring issues

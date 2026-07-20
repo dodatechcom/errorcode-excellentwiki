@@ -1,55 +1,70 @@
 ---
-title: "[Solution] Python Typer CLI Framework Error — How to Fix"
-description: "Fix Python Typer CLI framework errors. Resolve argument parsing failures, option conflicts, and callback issues."
+title: "[Solution] Python Typer Error — Parameter Validation, Dependency Injection & CLI Invocation"
+description: "Fix Python Typer errors by resolving parameter validation, dependency injection, and CLI invocation issues. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 415
 ---
 
-# Python Typer CLI Framework Error
+# Python Typer Error — Parameter Validation, Dependency Injection & CLI Invocation
 
-A `typer.BadParameter` or `click.exceptions.UsageError` occurs when Typer fails to parse command-line arguments, encounters conflicting option definitions, or receives invalid parameter types from user input.
+Typer errors occur when CLI parameters fail validation, dependency injection is misconfigured, type annotations are incorrect, or callback functions raise exceptions during argument processing. Typer builds on Click with strict type hints.
 
-## Why It Happens
-
-Typer builds CLI applications on top of Click. Errors arise when function signatures do not match expected argument types, when required options are missing, when parameter names conflict across commands, or when default values are incompatible with the parameter type.
-
-## Common Error Messages
-
-- `Error: Missing argument 'NAME'`
-- `Error: Invalid value for 'AGE': 'abc' is not a valid integer`
-- `Error: No such option: --invalid`
-- `RuntimeError: Typer app not configured`
-
-## How to Fix It
-
-### Fix 1: Define argument types correctly
+## Common Causes
 
 ```python
 import typer
 
+# 1. Missing required parameter
 app = typer.Typer()
 
-# Wrong — type annotation missing
-# @app.command()
-# def greet(name):  # name is str by default but no validation
-#     typer.echo(f"Hello {name}")
-
-# Correct — use proper type annotations
 @app.command()
-def greet(
-    name: str = typer.Argument(..., help="User's name"),
-    age: int = typer.Argument(..., help="User's age"),
-):
-    typer.echo(f"Hello {name}, age {age}")
+def greet(name: str):
+    typer.echo(f"Hello {name}")
 
-if __name__ == "__main__":
-    app()
+app()  # Missing argument: name
 ```
 
-### Fix 2: Handle option parsing errors
+```python
+# 2. Type mismatch in option
+@app.command()
+def process(count: int):
+    typer.echo(count)
+
+app(["--count", "abc"])  # Invalid value for "count": not a valid integer
+```
+
+```python
+# 3. Annotated type not supported
+from typing import Optional
+
+@app.command()
+def find(name: dict):  # Typer cannot handle dict type
+    typer.echo(name)
+```
+
+```python
+# 4. Callback dependency not injected
+@app.callback()
+def main(name: str = typer.Argument(...)):
+    typer.echo(f"Global: {name}")
+
+@app.command()
+def subcmd():
+    typer.echo("sub")  # name not available
+```
+
+```python
+# 5. Conflicting default and Argument
+@app.command()
+def bad(name: str = typer.Argument(default=None, help="Name")):
+    typer.echo(name)  # may behave unexpectedly
+```
+
+## How to Fix
+
+### Fix 1: Use Optional types with defaults
 
 ```python
 import typer
@@ -57,106 +72,120 @@ from typing import Optional
 
 app = typer.Typer()
 
-# Wrong — optional option without default
-# @app.command()
-# def process(output: Optional[str] = typer.Option(...)):
-#     typer.echo(f"Output: {output}")
+@app.command()
+def greet(name: str = typer.Argument(..., help="Name to greet"), title: Optional[str] = typer.Option(None, help="Optional title")):
+    if title:
+        typer.echo(f"Hello {title} {name}!")
+    else:
+        typer.echo(f"Hello {name}!")
 
-# Correct — provide default for optional options
+if __name__ == "__main__":
+    app()
+```
+
+### Fix 2: Use valid type annotations
+
+```python
+import typer
+from typing import Optional, List
+
+app = typer.Typer()
+
 @app.command()
 def process(
-    input_file: str = typer.Argument(..., help="Input file path"),
-    output: Optional[str] = typer.Option(None, help="Output file path"),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
+    name: str = typer.Argument(..., help="Resource name"),
+    count: int = typer.Option(1, help="Number to process"),
+    verbose: bool = typer.Option(False, "--verbose", "-v"),
+    tags: Optional[List[str]] = typer.Option(None, help="Tags"),
 ):
-    if output:
-        typer.echo(f"Writing to {output}")
-    else:
-        typer.echo(f"Processing {input_file}")
+    typer.echo(f"Processing {name} x{count}")
+    if verbose:
+        typer.echo(f"Tags: {tags}")
 
 if __name__ == "__main__":
     app()
 ```
 
-### Fix 3: Use callbacks for validation
+### Fix 3: Use dependency injection correctly
+
+```python
+import typer
+from typing import Optional
+
+app = typer.Typer()
+
+def get_db():
+    return {"connected": True}
+
+@app.command()
+def query(db: dict = typer.Depends(get_db)):
+    if db.get("connected"):
+        typer.echo("Database connected")
+    else:
+        typer.echo("Connection failed")
+
+if __name__ == "__main__":
+    app()
+```
+
+### Fix 4: Use callbacks with proper initialization
 
 ```python
 import typer
 
 app = typer.Typer()
 
-def validate_port(port: int) -> int:
-    if not 1 <= port <= 65535:
-        raise typer.BadParameter(f"Port {port} out of range (1-65535)")
-    return port
+@app.callback()
+def main(verbose: bool = typer.Option(False, "--verbose")):
+    if verbose:
+        typer.echo("Verbose mode enabled")
 
 @app.command()
-def serve(
-    host: str = typer.Option("localhost", help="Bind host"),
-    port: int = typer.Option(8000, callback=validate_port, help="Port number"),
-):
-    typer.echo(f"Serving on {host}:{port}")
+def deploy(environment: str):
+    typer.echo(f"Deploying to {environment}")
 
 if __name__ == "__main__":
     app()
 ```
 
-### Fix 4: Handle subcommands correctly
+## Examples
 
 ```python
 import typer
+from typing import Optional
+from enum import Enum
 
 app = typer.Typer()
-db_app = typer.Typer()
-app.add_typer(db_app, name="db")
 
-# Wrong — conflicting parameter names
-# @app.command()
-# @db_app.command()
-# def both(name: str):
-#     typer.echo(name)
+class Environment(str, Enum):
+    dev = "dev"
+    staging = "staging"
+    prod = "prod"
 
-# Correct — unique command structure
 @app.command()
-def init(
-    name: str = typer.Argument(..., help="Project name"),
-    force: bool = typer.Option(False, help="Overwrite existing"),
+def deploy(
+    env: Environment = typer.Argument(..., help="Target environment"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Simulate deployment"),
+    config: Optional[str] = typer.Option(None, "--config", "-c", help="Config file path"),
 ):
-    typer.echo(f"Initializing {name}")
+    """Deploy application to the specified environment."""
+    typer.echo(f"Environment: {env.value}")
+    typer.echo(f"Dry run: {dry_run}")
+    if config:
+        typer.echo(f"Config: {config}")
 
-@db_app.command("migrate")
-def db_migrate(
-    version: str = typer.Option("latest", help="Target version"),
-):
-    typer.echo(f"Migrating to {version}")
-
-@db_app.command("reset")
-def db_reset(
-    confirm: bool = typer.Option(False, help="Confirm reset"),
-):
-    if confirm:
-        typer.echo("Database reset")
-    else:
-        typer.echo("Use --confirm to reset")
+    if env == Environment.prod and not dry_run:
+        confirm = typer.confirm("Deploy to production?")
+        if not confirm:
+            raise typer.Abort()
+        typer.echo("Deploying to production...")
 
 if __name__ == "__main__":
     app()
 ```
-
-## Common Scenarios
-
-- **Missing type annotation** — Typer cannot determine the parameter type without explicit type hints.
-- **Conflicting option names** — Two options with the same short flag cause UsageError.
-- **Required argument ordering** — Required arguments placed after optional options cause parsing failures.
-
-## Prevent It
-
-- Always use explicit type annotations on all command parameters for Typer to generate correct parsers.
-- Use `typer.Option()` with explicit names like `--output` to avoid conflicts with built-in options.
-- Test CLI commands with `typer.testing.CliRunner` to catch parsing issues before deployment.
 
 ## Related Errors
 
-- [click.exceptions.UsageError](/languages/python/click-error/) — invalid CLI usage
-- [ValueError](/languages/python/valueerror/) — invalid parameter value
-- [TypeError](/languages/python/typeerror/) — missing type annotation
+- [UsageError](/languages/python/usage-error/) — invalid CLI usage
+- [BadParameter](/languages/python/bad-parameter/) — invalid parameter value
+- [TypeError](/languages/python/typeerror/) — wrong type annotation

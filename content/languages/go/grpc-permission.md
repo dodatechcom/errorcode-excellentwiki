@@ -9,56 +9,83 @@ weight: 5
 
 # gRPC PermissionDenied
 
-Fix Go gRPC permission denied errors. Handle authorization, access control, and interceptor errors..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+A gRPC server returns `codes.PermissionDenied` when the client lacks required authorization, the interceptor rejects the request, or the service account does not have access to the requested resource. This maps to HTTP 403 and is distinct from `Unauthenticated` (HTTP 401).
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Missing or invalid metadata (authorization token)
+md, _ := metadata.FromOutgoingContext(ctx)
+// no "authorization" key in metadata
+
+// Cause 2: Server interceptor rejects based on missing role
+func authInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+    md, ok := metadata.FromIncomingContext(ctx)
+    if !ok {
+        return nil, status.Error(codes.PermissionDenied, "missing metadata")
+    }
+}
+
+// Cause 3: Service account lacks permission in IAM
+
+// Cause 4: mTLS client certificate not trusted
+
+// Cause 5: Method-level access control blocks the call
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Attach authorization token to every RPC call
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "context"
 
-### Fix 2: Add proper error handling
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/credentials/insecure"
+    "google.golang.org/grpc/metadata"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func dialWithToken(addr, token string) (*grpc.ClientConn, error) {
+    return grpc.Dial(addr,
+        grpc.WithTransportCredentials(insecure.NewCredentials()),
+        grpc.WithPerRPCCredentials(&tokenProvider{token: token}),
+    )
 }
+
+type tokenProvider struct {
+    token string
+}
+
+func (t *tokenProvider) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
+    return map[string]string{"authorization": t.token}, nil
+}
+
+func (t *tokenProvider) RequireTransportSecurity() bool { return false }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Implement server-side authorization interceptor
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+func authorizeInterceptor() grpc.UnaryServerInterceptor {
+    return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+        md, ok := metadata.FromIncomingContext(ctx)
+        if !ok {
+            return nil, status.Error(codes.Unauthenticated, "missing metadata")
+        }
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+        token := md.Get("authorization")
+        if len(token) == 0 {
+            return nil, status.Error(codes.Unauthenticated, "missing token")
+        }
+
+        role, err := validateToken(token[0])
+        if err != nil {
+            return nil, status.Error(codes.PermissionDenied, "insufficient permissions")
+        }
+
+        ctx = context.WithValue(ctx, "role", role)
+        return handler(ctx, req)
     }
 }
 ```
@@ -70,25 +97,41 @@ package main
 
 import (
     "context"
-    "fmt"
     "log"
-    "time"
+    "net"
+
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/metadata"
+    "google.golang.org/grpc/status"
 )
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+type server struct{}
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+func (s *server) GetSecret(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
+    md, ok := metadata.FromIncomingContext(ctx)
+    if !ok {
+        return nil, status.Error(codes.Unauthenticated, "no metadata")
     }
-    fmt.Println(result)
+
+    token := md.Get("x-api-key")
+    if len(token) == 0 || token[0] != "valid-key" {
+        return nil, status.Error(codes.PermissionDenied, "invalid API key")
+    }
+
+    return &pb.Secret{Value: "super-secret"}, nil
+}
+
+func main() {
+    lis, _ := net.Listen("tcp", ":50051")
+    gs := grpc.NewServer()
+    pb.RegisterSecretServiceServer(gs, &server{})
+    log.Fatal(gs.Serve(lis))
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [grpc-unauthenticated]({{< relref "/languages/go/grpc-unauthenticated" >}}) — missing credentials entirely
+- [grpc-unavailable]({{< relref "/languages/go/grpc-unavailable" >}}) — server unreachable
+- [go-vault-error]({{< relref "/languages/go/go-vault-error" >}}) — Vault permission denied for secret access

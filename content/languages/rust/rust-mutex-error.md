@@ -10,64 +10,118 @@ comments: true
 
 # Mutex Error
 
-Fix Mutex synchronization errors. Resolve deadlock, poisoning, and lock acquisition issues.
+Mutex errors occur when using `std::sync::Mutex` or `tokio::sync::Mutex` incorrectly — poisoning, deadlock, holding locks across await points, or lock contention.
 
-## Why It Happens
-
-- Mutex is poisoned due to panic while locked
-- Lock is held across an await point
-- Deadlock occurs from lock ordering violations
-- MutexGuard outlives the Mutex
-
-## Common Error Messages
-
-- `error: mutex failed`
-- `thread panicked at 'Mutex type operation failed'`
-- `Error: unable to complete Mutex type operation`
-- `Fatal: Mutex type configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure Mutex type is properly configured
-use Mutex_type::prelude::*;
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+// Mutex poisoning — panic while holding lock
+let data = Arc::new(Mutex::new(vec![1, 2, 3]));
+let data_clone = Arc::clone(&data);
+let handle = thread::spawn(move || {
+    let mut d = data_clone.lock().unwrap();
+    d.push(4);
+    panic!("Oops!"); // Poisoned mutex
+});
+let _ = handle.join();
+let d = data.lock().unwrap(); // ERROR: mutex is poisoned
+
+// Holding std::sync::Mutex across await points
+async fn bad(data: &Arc<Mutex<Vec<i32>>>) {
+    let guard = data.lock().unwrap();
+    tokio::time::sleep(std::time::Duration::from_secs(1)).await; // BAD: holding lock
+}
+
+// Deadlock: acquiring locks in different order
+let a = Mutex::new(1);
+let b = Mutex::new(2);
+// Thread 1: lock a, then b
+// Thread 2: lock b, then a — DEADLOCK
+```
+
+## How to Fix
+
+1. **Use `.lock().unwrap_or_else(|e| e.into_inner())` to recover from poisoned mutex**
+
+```rust
+use std::sync::Mutex;
+
+let m = Mutex::new(vec![1, 2, 3]);
+// If poisoned, recover the data
+let data = m.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+println!("{:?}", *data);
+```
+
+2. **Never hold std::sync::Mutex across await points — use tokio::sync::Mutex**
+
+```rust
+use tokio::sync::Mutex;
+use std::sync::Arc;
+
+async fn process(data: &Arc<Mutex<Vec<i32>>>) {
+    let mut guard = data.lock().await;
+    guard.push(4);
+    tokio::time::sleep(std::time::Duration::from_secs(1)).await; // OK with tokio Mutex
+    guard.push(5);
+}
+```
+
+3. **Always acquire locks in a consistent order**
+
+```rust
+use std::sync::{Arc, Mutex};
+
+struct Account {
+    balance: Mutex<f64>,
+}
+
+// Always acquire locks in address order to prevent deadlock
+fn transfer(a: &Account, b: &Account, amount: f64) {
+    let a_addr = a as *const _ as usize;
+    let b_addr = b as *const _ as usize;
+
+    if a_addr < b_addr {
+        let mut a_lock = a.balance.lock().unwrap();
+        let mut b_lock = b.balance.lock().unwrap();
+        *a_lock -= amount;
+        *b_lock += amount;
+    } else {
+        let mut b_lock = b.balance.lock().unwrap();
+        let mut a_lock = a.balance.lock().unwrap();
+        *a_lock -= amount;
+        *b_lock += amount;
+    }
+}
+```
+
+## Examples
+
+```rust
+use std::sync::{Arc, Mutex};
+use std::thread;
 
 fn main() {
-    // Initialize properly
-    println!("Correct Mutex type configuration");
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        handles.push(thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        }));
+    }
+
+    for h in handles { h.join().unwrap(); }
+    println!("Final count: {}", *counter.lock().unwrap());
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with Mutex type
-2. Integrating Mutex type into an existing codebase
-3. Upgrading Mutex type to a newer version
-
-## Prevent It
-
-- Read the Mutex type documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [RwLock Error]({{< relref "/languages/rust/rust-rwlock-error" >}}) — read-write locks
+- [Arc Error]({{< relref "/languages/rust/rust-arc-error" >}}) — shared ownership
+- [Std Sync Error]({{< relref "/languages/rust/rust-std-sync-error" >}}) — sync primitives

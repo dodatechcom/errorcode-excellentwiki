@@ -6,30 +6,63 @@ severities: ["warning"]
 error-types: ["process-error"]
 weight: 8
 ---
+# Linux: Kernel Module Error
 
-# Linux: module-error — kernel module error
-
-Fix Linux module-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Kernel module errors occur when loading, unloading, or using a kernel module.
 
 ## Common Causes
 
-- Module not found
-- Symbol not resolved
-- Version mismatch
-- Loading failed
+- Kernel module not available for the current kernel version
+- Module dependencies not met (symbol dependency)
+- Module already loaded or conflicts with another module
+- Module parameters invalid or incomplete
+- Module built for different kernel version
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/module-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Module Status
 
-## Common Scenarios
+```bash
+lsmod | grep <module>
+modinfo <module>
+```
 
-- Module not loaded
-- Symbol not found
-- Version mismatch
+### 2. Load/Unload Module
 
-## Prevent It
+```bash
+sudo modprobe <module>
+sudo modprobe -r <module>
+```
 
-- Check module dependencies
-- Verify kernel version
-- Use modprobe not insmod
+### 3. Check Kernel Version
+
+```bash
+uname -r
+ls /lib/modules/$(uname -r)/
+```
+
+### 4. Load with Parameters
+
+```bash
+sudo modprobe <module> param_name=value
+```
+
+### 5. Blacklist Problematic Module
+
+```bash
+echo "blacklist <module>" | sudo tee /etc/modprobe.d/blacklist-<module>.conf
+sudo update-initramfs -u  # Debian/Ubuntu
+```
+
+## Examples
+
+```bash
+$ sudo modprobe nvidia
+modprobe: FATAL: Module nvidia not found in directory /lib/modules/5.15.0-86-generic
+
+$ modinfo nvidia
+modinfo: ERROR: Module nvidia not found.
+
+$ ls /lib/modules/$(uname -r)/kernel/drivers/video/
+nvidia-current  nvidia.ko  nouveau.ko
+```

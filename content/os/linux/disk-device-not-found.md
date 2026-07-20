@@ -6,30 +6,54 @@ severities: ["critical"]
 error-types: ["disk"]
 weight: 10
 ---
+# Linux: Disk Device Not Found
 
-# Linux: disk-device-not-found — disk device not found error
-
-Fix Linux disk-device-not-found errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A device not found error means the kernel cannot detect a storage device, preventing all access to it.
 
 ## Common Causes
 
-- Device not detected
-- Driver missing
-- Cable disconnected
-- BIOS not recognizing
+- Drive not powered on or not connected properly
+- SATA/SAS cable loose, damaged, or disconnected
+- Faulty power supply cable not providing power
+- USB storage device not detected (driver or port issue)
+- Drive completely failed and not responding to bus
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-device-not-found.md' mode='w' encoding='UTF-8'>
+### 1. Check Physical Connections
 
-## Common Scenarios
+Verify power and data cables are properly seated.
 
-- Disk not found
-- Device missing
-- Cannot mount
+### 2. Rescan SCSI/SATA Buses
 
-## Prevent It
+```bash
+echo "- - -" | sudo tee /sys/class/scsi_host/host*/scan
+```
 
-- Check cables
-- Verify BIOS settings
-- Rescan SCSI bus
+### 3. Check Kernel Detection
+
+```bash
+dmesg | grep -iE "ata|sata|usb|nvme|sd[a-z]" | tail -30
+```
+
+### 4. Check Hardware Listing
+
+```bash
+sudo lshw -class disk
+lspci | grep -iE "sata|nvme|usb|sas"
+```
+
+## Examples
+
+```bash
+$ sudo lsblk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0 238.5G  0 disk
+├─sda1   8:1    0   512M  0 part /boot/efi
+└─sda2   8:2    0 238.0G  0 part /
+# Second drive (sdb) is missing
+
+$ echo "- - -" | sudo tee /sys/class/scsi_host/host2/scan
+$ sudo lsblk
+# sdb now appears
+```

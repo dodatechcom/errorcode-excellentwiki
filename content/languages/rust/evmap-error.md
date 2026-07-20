@@ -7,75 +7,69 @@ severities: ["error"]
 weight: 5
 ---
 
-# evmap Event Map Error
+# Evmap Error
 
-Fix evmap event map errors. Handle multiple reader-single writer pattern and consistency..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Evmap errors occur when using the `evmap` crate for lock-free concurrent hash maps — stale reads and handle management issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Reading stale data without refreshing
+let rHandle = rhandle.refresh();
+// Missing: must call refresh() to see latest writes
+
+// Dropping writer handle prematurely
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Refresh read handle to see latest writes**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use evmap::ReadHandleFactory;
 
-### Fix 2: Add proper error handling
+let mut wHandle = wHandle.clone();
+wHandle.insert("key".to_string(), 42);
+wHandle.flush();
 
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let mut rHandle = rHandle.clone();
+rHandle.refresh(); // Required to see new data
+if let Some(values) = rHandle.get("key") {
+    for val in values { println!("{}", val); }
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Keep writer handle alive for the duration of use**
 
 ```rust
-use std::time::Duration;
+use evmap::EvMap;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let (mut wHandle, rHandle) = EvMap::new();
+wHandle.insert("key".to_string(), "value".to_string());
+wHandle.flush();
+// wHandle must remain alive
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use evmap::{EvMap, ReadHandleFactory};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let (mut w, r) = EvMap::new();
+    w.insert("hello".to_string(), 42);
+    w.flush();
+
+    let mut r = r.clone();
+    r.refresh();
+    if let Some(values) = r.get("hello") {
+        for v in values { println!("Value: {}", v); }
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [DashMap Error]({{< relref "/languages/rust/dashmap-error" >}}) — concurrent maps
+- [Mutex Error]({{< relref "/languages/rust/rust-mutex-error" >}}) — shared state
+- [Crossbeam Error]({{< relref "/languages/rust/crossbeam-error" >}}) — concurrent primitives

@@ -6,30 +6,62 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: NVMe Temperature Warning
 
-# Linux: disk-nvme-temperature — NVMe disk temperature warning
-
-Fix Linux disk-nvme-temperature errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+NVMe SSDs report temperature through SMART data. Exceeding critical thresholds causes throttling or shutdown to prevent damage.
 
 ## Common Causes
 
-- Overheating
-- Poor airflow
-- Heavy workload
-- Fan failure
+- Inadequate airflow or cooling in the system chassis
+- High ambient temperature in the server room
+- Sustained heavy write workloads generating excess heat
+- Missing or poorly installed thermal pads on the NVMe drive
+- Dust accumulation blocking heat dissipation
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-nvme-temperature.md' mode='w' encoding='UTF-8'>
+### 1. Check Temperature
 
-## Common Scenarios
+```bash
+sudo nvme smart-log /dev/nvme0 | grep -i temp
+cat /sys/class/nvme/nvme0/device/temp
+```
 
-- Temperature too high
-- Throttling
-- Hardware failure risk
+### 2. Monitor Over Time
 
-## Prevent It
+```bash
+watch -n 5 'sudo nvme smart-log /dev/nvme0 | grep -i temp'
+```
 
-- Monitor temperature
-- Improve cooling
-- Reduce workload if needed
+### 3. Check Throttling
+
+```bash
+sudo nvme get-feature /dev/nvme0 -f 0x10 -c 0
+```
+
+### 4. Improve Cooling
+
+```bash
+# Check system fans and temperatures
+sudo sensors
+```
+
+### 5. Reduce Workload During Hot Periods
+
+```bash
+# Pause heavy I/O operations
+# Consider adding heatsinks to NVMe drives
+```
+
+## Examples
+
+```bash
+$ sudo nvme smart-log /dev/nvme0
+Smart Log for NVME device:nvme0 namespace-id:ffffffff
+temperature                         : 78 C
+warning_temp_time                   : 120
+critical_comp_time                  : 0
+
+$ cat /sys/class/nvme/nvme0/device/temp
+78
+```

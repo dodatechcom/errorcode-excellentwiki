@@ -1,124 +1,176 @@
 ---
-title: "[Solution] PHP Implicitly Nullable Parameter Deprecation Fix"
-description: "Fix 'Deprecated: Implicitly nullable parameter' warnings in PHP 8.4. Use explicit nullable type declarations."
-date: 2026-07-17T10:00:00+08:00
-draft: false
-language: "php"
-tags: ["php", "php84", "nullable-types", "deprecation", "e-deprecated"]
-severity: "error"
+title: "[Solution] PHP 8.4 Nullable Type Error — Invalid Nullable Type Declaration"
+description: "Fix PHP 8.4 Nullable Type Error by using correct syntax (?Type), checking type compatibility, and understanding PHP 8.4 requirements. Copy-paste solutions with code examples."
+languages: ["php"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 318
 ---
 
-# Deprecated: Implicitly Nullable Parameter Declaration
+# PHP 8.4 Nullable Type Error — Invalid Nullable Type Declaration
 
-## Error Message
-
-```
-Deprecated: Implicitly marking parameter $name as nullable is deprecated, the explicit nullable type must be used instead in /path/to/file.php:5
-```
+A Nullable Type Error occurs when the nullable type syntax is incorrect, used with incompatible types, or when nullable types conflict with other PHP features like readonly or enums. PHP has supported `?Type` syntax since PHP 7.1, but PHP 8.0+ added union types (`Type|null`) and PHP 8.4 may enforce stricter rules on nullable declarations.
 
 ## Common Causes
 
-- Using a default value of null on a non-nullable type hint (e.g., function foo(string $s = null))
-- Legacy PHP code written before the explicit nullable syntax (?Type) was recommended
-- Third-party libraries that haven't been updated for PHP 8.4 compatibility
-- Copy-pasting old PHP examples that use the implicit nullable pattern
-
-## Solutions
-
-### Solution 1: Use explicit nullable type syntax (?Type)
-
-Replace 'Type $param = null' with '?Type $param = null' to explicitly mark parameters as nullable.
-
 ```php
 <?php
-// WRONG: Implicit nullable — deprecated in PHP 8.4
-function greet(string $name = null): string {
-    return $name ? "Hello, $name" : 'Hello, stranger';
+// Cause 1: Using ? on compound types (intersection, union)
+function handle(?int|string $value) { // Error — can't use ? with union
 }
 
-// CORRECT: Explicit nullable
-function greet(?string $name = null): string {
-    return $name ? "Hello, $name" : 'Hello, stranger';
+// Cause 2: ?void is not valid
+function process(?void $value) { // Error — void is already null-equivalent
 }
 
-echo greet('Alice');  // 'Hello, Alice'
-echo greet();         // 'Hello, stranger'
+// Cause 3: Nullable type on readonly with default null
+class Config {
+    public readonly ?string $host = null; // Valid, but may cause confusion
+}
+
+// Cause 4: Using ? on a class that can't be null
+class User {
+    public ?User $parent; // Valid but requires careful initialization
+}
+
+// Cause 5: Conflicting nullable declarations
+function store(string|null|null $value) { // Redundant null
+}
 ?>
 ```
 
-### Solution 2: Audit and fix all implicit nullable parameters
+## How to Fix
 
-Search your codebase for the deprecated pattern and update every instance systematically.
-
-```php
-<?php
-// WRONG: All three parameters use implicit nullable
-function createUser(
-    string $name,
-    string $email = null,
-    int $age = null,
-): array {
-    return compact('name', 'email', 'age');
-}
-
-// CORRECT: All three use explicit nullable
-function createUser(
-    string $name,
-    ?string $email = null,
-    ?int $age = null,
-): array {
-    return [
-        'name'  => $name,
-        'email' => $email,
-        'age'   => $age,
-    ];
-}
-
-print_r(createUser('Alice')); // ['name'=>'Alice', 'email'=>null, 'age'=>null]
-?>
-```
-
-### Solution 3: Use a search-and-replace regex to fix all occurrences
-
-Use a regex pattern to find and replace the deprecated pattern across your entire codebase.
+### Fix 1: Use `?Type` or `Type|null` — not both together
 
 ```php
 <?php
-// Run from command line to find all instances:
-// grep -rn "= null" --include="*.php" src/
-
-// In your CI pipeline, add a static analysis check:
-// phpstan analyse --level=9 src/ will flag implicit nullable deprecations
-
-// Example of properly typed optional parameters:
-function processOrder(
-    int $orderId,
-    ?string $couponCode = null,
-    ?float $discountPercent = null,
-    ?string $notes = null,
-): array {
-    return [
-        'orderId'  => $orderId,
-        'coupon'   => $couponCode,
-        'discount' => $discountPercent,
-        'notes'    => $notes,
-    ];
+// These are equivalent in PHP 8.0+
+function find(int $id): ?string { // ?Type syntax
+    return null; // Returns string or null
 }
 
-$order = processOrder(123, 'SAVE20', 20.0);
-print_r($order);
+function findById(int $id): string|null { // Union syntax
+    return null;
+}
+
+// Wrong — don't combine both
+// function bad(?int|string $value) { }
 ?>
 ```
 
-## Prevention Tips
+### Fix 2: Never use ?void
 
-- Search for '= null' in parameter lists and replace 'Type $p = null' with '?Type $p = null'
-- PHPStan at level 9 and Psalm detect implicit nullable deprecations automatically
-- Update third-party libraries that trigger this deprecation — check their issue trackers
-- The ?Type syntax has been supported since PHP 7.1, so this is safe to apply in all modern PHP versions
+```php
+<?php
+// Wrong
+// function process(?void $value) { }
+
+// Correct — use Type|null for nullable return
+function process(mixed $input): ?int {
+    if ($input === null) {
+        return null;
+    }
+    return (int)$input;
+}
+
+// Or return null explicitly
+function doWork(): ?string {
+    $result = performAction();
+    return $result !== false ? $result : null;
+}
+?>
+```
+
+### Fix 3: Handle nullable initialization properly
+
+```php
+<?php
+class User {
+    private ?string $nickname;
+
+    public function __construct(?string $nickname = null) {
+        $this->nickname = $nickname;
+    }
+
+    public function getDisplayName(): string {
+        // Always check before using nullable
+        return $this->nickname ?? $this->getDefaultName();
+    }
+
+    private function getDefaultName(): string {
+        return 'Anonymous';
+    }
+}
+
+$user1 = new User();        // nickname = null
+$user2 = new User('Alice'); // nickname = 'Alice'
+echo $user1->getDisplayName(); // Anonymous
+echo $user2->getDisplayName(); // Alice
+?>
+```
+
+### Fix 4: Use union types for multiple non-null types
+
+```php
+<?php
+// For multiple types including null, use union
+function process(int|string|null $value): int|string|null {
+    return $value;
+}
+
+// Or use nullable with single type
+function findById(int $id): ?array {
+    return findInDatabase($id) ?: null;
+}
+?>
+```
+
+## Examples
+
+```php
+<?php
+// Nullable types in class hierarchy
+class BaseRepository {
+    protected function find(int $id): ?array {
+        return $this->db->select('WHERE id = ?', [$id]);
+    }
+}
+
+class UserRepository extends BaseRepository {
+    public function findUser(int $id): ?User {
+        $data = parent::find($id);
+        return $data !== null ? new User($data) : null;
+    }
+}
+
+// Nullable with type coercion
+function normalize(mixed $value): string {
+    return match(true) {
+        is_string($value)  => $value,
+        is_int($value)     => (string)$value,
+        is_float($value)   => number_format($value, 2),
+        $value === null    => '',
+        default            => throw new TypeError('Unsupported type'),
+    };
+}
+
+// Nullable in PHPDoc for backward compatibility
+/**
+ * @param int|string|null $id
+ * @return User|null
+ */
+function findUser($id) {
+    if ($id === null) {
+        return null;
+    }
+    return User::find($id);
+}
+?>
+```
 
 ## Related Errors
 
-- [PHP Deprecated Function Usage]({{< relref "/languages/php/php-deprecated" >}})
-- [PHP Union Type Error]({{< relref "/languages/php/php80-union-type-error" >}})
-- [PHP Intersection Type Error]({{< relref "/languages/php/php81-intersection-type" >}})
+- [PHP 8.0 Union Type Error](/languages/php/php80-union-type-error/) — Union type vs nullable
+- [PHP 8.0 Union Type Declaration Error](/languages/php/php80-union-type-declaration/) — Union type syntax
+- [PHP 8.4 Asymmetric Visibility Error](/languages/php/php84-asymmetric-visibility/) — Visibility with types

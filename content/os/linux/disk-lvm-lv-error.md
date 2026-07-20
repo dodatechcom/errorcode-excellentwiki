@@ -6,30 +6,55 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: LVM Logical Volume Error
 
-# Linux: disk-lvm-lv-error — LVM logical volume error
-
-Fix Linux disk-lvm-lv-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+LVM logical volume (LV) errors occur when accessing or activating logical volumes within a volume group.
 
 ## Common Causes
 
-- LV not found
-- LV corrupted
-- Snapshot failed
-- Space exhausted
+- Logical volume not automatically activated after system boot
+- Snapshot overflow (100% full, causing invalidation)
+- Filesystem on the LV corrupted and needs fsck
+- LV device node missing in /dev due to device mapper issues
+- LV metadata size mismatch
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-lvm-lv-error.md' mode='w' encoding='UTF-8'>
+### 1. Check LV Status
 
-## Common Scenarios
+```bash
+sudo lvs -a -o +devices
+sudo lvdisplay -m
+```
 
-- LV not found
-- LV not activated
-- Snapshot failed
+### 2. Activate the LV
 
-## Prevent It
+```bash
+sudo lvchange -ay <vg_name>/<lv_name>
+```
 
-- Monitor LV status
-- Check snapshot usage
-- Extend before full
+### 3. Check Snapshot Status
+
+```bash
+sudo lvs -a -o +snap_percent
+# Remove invalid snapshot
+sudo lvremove <vg_name>/<snap_name>
+```
+
+### 4. Extend LV if Full
+
+```bash
+sudo lvextend -r -L +10G <vg_name>/<lv_name>
+```
+
+## Examples
+
+```bash
+$ sudo lvs -a -o +devices,snap_percent
+  LV       VG   Attr       LSize  Snap%  Devices
+  root     vg01 -wi-a----- 50.00g        /dev/sda1
+  snap_r   vg01 swi-a-s--- 10.00g 100.00 /dev/sda1
+
+$ sudo lvremove vg01/snap_r
+  Logical volume "snap_r" successfully removed
+```

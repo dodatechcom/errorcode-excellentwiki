@@ -7,48 +7,57 @@ error-types: ["runtime-error"]
 weight: 10
 ---
 
-# Linux: systemd-freezer-error — Cgroup freezer state error
+# Linux: systemd Freezer Error Error
 
-Fix Linux systemd-freezer-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd freezer error errors occur when the systemd freezer error component fails to operate correctly.
 
 ## Common Causes
 
-- Controller not available
-- Unexpected freezer state
-- Container freeze failure
-- cgroup v2 migration
+- Misconfiguration in unit files or systemd configuration
+- Permission or ownership issues on required paths
+- Dependency failures from other systemd units
+- Resource limits or system constraints reached
+- SELinux or AppArmor policy blocking operations
 
 ## How to Fix
 
-### 1. Check Version
+### 1. Check systemd Unit Status
+
 ```bash
-mount | grep cgroup
-stat -f -c %T /sys/fs/cgroup/
+sudo systemctl status systemd-freezer-error
+sudo journalctl -u systemd-freezer-error --no-pager -n 50
 ```
 
-### 2. Check State
+### 2. Verify Configuration Files
+
 ```bash
-cat /sys/fs/cgroup/system.slice/<unit>/cgroup.freeze
+ls /etc/systemd/*.conf /usr/lib/systemd/*.conf 2>/dev/null
+systemctl cat systemd-freezer-error
 ```
 
-### 3. Unfreeze
+### 3. Check System Logs
+
 ```bash
-echo 0 | sudo tee /sys/fs/cgroup/system.slice/<unit>/cgroup.freeze
+sudo journalctl -xe --no-pager -n 30
+sudo dmesg | tail -20
 ```
 
-### 4. Enable Controllers
+### 4. Restart and Re-evaluate
+
 ```bash
-# Add: systemd.unified_cgroup_hierarchy=1
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-freezer-error
 ```
 
-## Common Scenarios
+## Examples
 
-- Processes stuck frozen
-- Cannot suspend/resume containers
-- Freezer errors in journal
+```bash
+$ sudo systemctl status systemd-freezer-error
+* systemd-freezer-error.service - systemd Freezer Error
+   Loaded: loaded (/usr/lib/systemd/system/systemd-freezer-error.service; static)
+   Active: failed (Result: exit-code)
 
-## Prevent It
-
-- Ensure cgroup hierarchy mounted
-- Use cgroup v2
-- Monitor freezer state
+$ sudo journalctl -u systemd-freezer-error -n 10
+Jul 20 14:30:45 server systemd[freezer-error][12345]: Failed to process configuration
+Jul 20 14:30:45 server systemd[1]: systemd-freezer-error.service: Main process exited, code=exited, status=1/FAILURE
+```

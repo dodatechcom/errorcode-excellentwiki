@@ -7,75 +7,97 @@ severities: ["error"]
 weight: 5
 ---
 
-# comrak Markdown Error
+# Comrak Error
 
-Fix comrak markdown errors. Handle parsing, rendering, and extension configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Comrak errors occur when using the `comrak` crate for CommonMark/Markdown parsing — invalid syntax and extension conflicts.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use comrak::{parse_document, Arena, ComrakOptions};
+
+// Invalid markdown syntax
+let arena = Arena::new();
+let root = parse_document(&arena, "Unclosed **bold text", &ComrakOptions::default());
+
+// Missing extensions
+let options = ComrakOptions::default();
+// tables, tasklists, etc. not enabled by default
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Enable required extensions**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use comrak::{parse_document, Arena, ComrakOptions, markdown_to_html};
+
+let mut options = ComrakOptions::default();
+options.extension.table = true;
+options.extension.tasklist = true;
+options.extension.strikethrough = true;
+
+let html = markdown_to_html("# Hello\n\n| A | B |\n|---|---|\n| 1 | 2 |", &options);
+println!("{}", html);
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle malformed input gracefully**
 
 ```rust
-use anyhow::Result;
+use comrak::{parse_document, Arena, ComrakOptions};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let arena = Arena::new();
+let options = ComrakOptions::default();
+// comrak handles malformed markdown gracefully
+let root = parse_document(&arena, "Some **unclosed bold", &options);
+// Returns a valid AST even for malformed input
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use sanitization for untrusted input**
 
 ```rust
-use std::time::Duration;
+use comrak::{parse_document, Arena, ComrakOptions, markdown_to_html};
+use comrak::plugins::syntect::SyntectPlugin;
+use comrak::ComrakPlugins;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let mut options = ComrakOptions::default();
+options.parse.smart = true;
+
+let html = markdown_to_html("# Safe Markdown\n\n[link](https://example.com)", &options);
+println!("{}", html);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use comrak::{markdown_to_html, ComrakOptions};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let mut options = ComrakOptions::default();
+    options.extension.table = true;
+    options.extension.tasklist = true;
+    options.render.unsafe_ = false; // Escape HTML
+
+    let input = r#"
+# Hello, Comrak!
+
+This is **bold** and *italic*.
+
+- [x] Task 1
+- [ ] Task 2
+
+| Name | Value |
+|------|-------|
+| A    | 1     |
+"#;
+
+    let html = markdown_to_html(input, &options);
+    println!("{}", html);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Pulldown-Cmark Error]({{< relref "/languages/rust/pulldown-cmark-error" >}}) — markdown parsing
+- [Regex Error]({{< relref "/languages/rust/regex-error" >}}) — pattern matching
+- [Handlebars Error]({{< relref "/languages/rust/handlebars-error" >}}) — templating

@@ -6,30 +6,52 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: LVM Physical Volume Error
 
-# Linux: disk-lvm-pv-error — LVM physical volume error
-
-Fix Linux disk-lvm-pv-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+LVM physical volume (PV) errors indicate problems with the underlying block devices used by LVM for storage pools.
 
 ## Common Causes
 
-- PV missing
-- Device not found
-- Metadata corrupted
-- UUID mismatch
+- Physical volume device not connected at boot (external drive, SAN LUN)
+- Disk replaced without proper LVM removal procedures
+- Partition table changed on a device that is an LVM PV
+- PV UUID mismatch or duplicate after disk cloning
+- Device mapper issues preventing PV detection
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-lvm-pv-error.md' mode='w' encoding='UTF-8'>
+### 1. Scan for Physical Volumes
 
-## Common Scenarios
+```bash
+sudo pvscan
+sudo pvs -v
+```
 
-- PV not found
-- Device missing
-- Metadata error
+### 2. Restore PV Metadata
 
-## Prevent It
+```bash
+sudo pvck -d /dev/sdX
+sudo pvcreate --restorefile /etc/lvm/backup/<vg_name> /dev/sdX
+```
 
-- Backup metadata
-- Monitor PV status
-- Replace missing PVs
+### 3. Handle Missing PVs
+
+```bash
+# Remove missing PV from VG
+sudo vgreduce --removemissing <vg_name>
+
+# Replace with new PV
+sudo pvmove /dev/old_pv /dev/new_pv
+sudo vgreduce <vg_name> /dev/old_pv
+```
+
+## Examples
+
+```bash
+$ sudo pvscan
+  PV /dev/sda1   VG vg01         lvm2 [100.00 GiB]
+  PV [unknown]   VG vg01         lvm2 [500.00 GiB]
+  
+$ sudo vgreduce --removemissing vg01
+  Removed missing device from volume group vg01
+```

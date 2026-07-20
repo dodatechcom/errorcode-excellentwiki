@@ -7,131 +7,96 @@ severities: ["error"]
 weight: 5
 ---
 
-# anyhow Context Chain Error
+# Anyhow Error
 
-Fix anyhow context chain errors. Handle error context propagation, chaining, and backtrace capture.
-
-## What This Error Means
-
-anyhow context chain errors provide rich error messages with layered context:
-
-```
-Error: Failed to process config
-Caused by: Failed to read file
-Caused by: No such file or directory (os error 2)
-```
-
-The chain helps identify exactly where in the call stack an error originated.
+Anyhow errors occur when using the `anyhow` crate for application-level error handling — context chains, downcast failures, and conversion issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Missing context in deep call stacks
-fn process() -> Result<()> {
-    let data = std::fs::read_to_string("config.json")?; // Raw OS error
+use anyhow::{Context, Result};
+
+// Missing context
+fn read(path: &str) -> Result<String> {
+    std::fs::read_to_string(path)? // No context about which file
 }
 
-// Cause 2: Context overwriting previous context
-// Cause 3: Large backtraces cluttering error output
-// Cause 4: Mixing anyhow::Result with custom error types
+// Using anyhow in library crates (hides types from callers)
+pub fn parse(input: &str) -> anyhow::Result<i32> { input.parse().unwrap(); Ok(0) }
 ```
 
 ## How to Fix
 
-### Fix 1: Add context at each level
+1. **Add context to errors**
 
 ```rust
 use anyhow::{Context, Result};
 
-fn load_config(path: &str) -> Result<Config> {
-    let content = std::fs::read_to_string(path)
-        .with_context(|| format!("Failed to read config file: {}", path))?;
-
-    let config: Config = toml::from_str(&content)
-        .context("Failed to parse config TOML")?;
-
-    Ok(config)
+fn load_config(path: &str) -> Result<String> {
+    std::fs::read_to_string(path)
+        .with_context(|| format!("Failed to read config from '{}'", path))
 }
 ```
 
-### Fix 2: Use map_err for custom error messages
+2. **Use thiserror for libraries, anyhow for applications**
 
 ```rust
-use anyhow::{Result, bail};
+// Library: thiserror
+use thiserror::Error;
+#[derive(Error, Debug)]
+pub enum ConfigError {
+    #[error("IO: {0}")]
+    Io(#[from] std::io::Error),
+    #[error("Parse: {0}")]
+    Parse(String),
+}
 
-fn validate_port(port: u16) -> Result<()> {
-    if port == 0 {
-        bail!("Port cannot be zero");
-    }
-    if port < 1024 {
-        anyhow::bail!("Port {} is reserved (below 1024)", port);
-    }
+// App: anyhow
+use anyhow::Result;
+fn main() -> Result<()> {
+    let cfg = std::fs::read_to_string("config.toml").context("Reading config")?;
     Ok(())
 }
 ```
 
-### Fix 3: Use nested context for error chains
+3. **Downcast when matching specific errors**
 
 ```rust
-use anyhow::{Context, Result};
+use anyhow::Result;
 
-async fn fetch_and_parse(url: &str) -> Result<Data> {
-    let response = reqwest::get(url).await
-        .context("HTTP request failed")?;
+fn fetch() -> Result<String> { todo!() }
 
-    let text = response.text().await
-        .context("Failed to read response body")?;
-
-    let data: Data = serde_json::from_str(&text)
-        .context("Failed to parse JSON response")?;
-
-    Ok(data)
+fn handle() {
+    match fetch() {
+        Ok(val) => println!("{}", val),
+        Err(e) => {
+            if let Some(io_err) = e.downcast_ref::<std::io::Error>() {
+                eprintln!("IO: {}", io_err);
+            }
+        }
+    }
 }
 ```
 
 ## Examples
 
 ```rust
-use anyhow::{Context, Result};
+use anyhow::{Context, Result, ensure};
 
-fn process_items(items: &[String]) -> Result<Vec<ProcessedItem>> {
-    items.iter()
-        .enumerate()
-        .map(|(i, item)| {
-            process_item(item)
-                .with_context(|| format!("Failed to process item at index {}", i))
-        })
-        .collect()
-}
-
-fn process_item(item: &str) -> Result<ProcessedItem> {
-    let value: i64 = item.parse()
-        .context("Failed to parse item as integer")?;
-
-    if value < 0 {
-        anyhow::bail!("Value {} is negative", value);
-    }
-
-    Ok(ProcessedItem { value })
-}
-
-#[derive(Debug)]
-struct ProcessedItem {
-    value: i64,
+fn divide(a: f64, b: f64) -> Result<f64> {
+    ensure!(b != 0.0, "Cannot divide {} by zero", a);
+    Ok(a / b)
 }
 
 fn main() -> Result<()> {
-    let items = vec!["42".into(), "abc".into(), "100".into()];
-    match process_items(&items) {
-        Ok(results) => println!("Processed: {:?}", results),
-        Err(e) => eprintln!("Error: {:#}", e),
-    }
+    let result = divide(10.0, 0.0).context("Computing ratio")?;
+    println!("{}", result);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Thiserror Error]({{< relref "/languages/rust/thiserror-error-v2" >}}) — thiserror derive error
-- [Trait Error]({{< relref "/languages/rust/trait-error" >}}) — trait object error
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Thiserror Error]({{< relref "/languages/rust/thiserror-error" >}}) — thiserror crate
+- [Error Handling]({{< relref "/languages/rust/rust-error-handling-rs" >}}) — general error handling
+- [Color Eyre Error]({{< relref "/languages/rust/color-eyre-error" >}}) — color-eyre

@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# tonic gRPC Error
+# Tonic Error
 
-Fix tonic gRPC errors. Handle transport issues, codec errors, and interceptor configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Tonic errors occur when using the `tonic` crate for gRPC — connection, transport, and status errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let channel = Channel::from_static("http://wrong:50051").connect().await?;
+
+// Invalid protobuf message
+let response = client.get_user(request).await?;
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure channel properly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use tonic::transport::Channel;
+
+let channel = Channel::from_static("http://[::1]:50051")
+    .connect()
+    .await?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle gRPC status codes**
 
 ```rust
-use anyhow::Result;
+use tonic::Status;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match client.get_user(request).await {
+    Ok(response) => println!("{:?}", response.into_inner()),
+    Err(Status::NotFound(msg)) => eprintln!("Not found: {}", msg),
+    Err(Status::InvalidArgument(msg)) => eprintln!("Invalid: {}", msg),
+    Err(status) => eprintln!("RPC error: {}", status),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use interceptors for auth**
 
 ```rust
-use std::time::Duration;
+use tonic::transport::{Channel, ClientTlsConfig};
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let tls = ClientTlsConfig::new()
+    .domain_name("example.com");
+
+let channel = Channel::from_static("https://example.com")
+    .tls_config(tls)?
+    .connect()
+    .await?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use tonic::{transport::Server, Request, Response, Status};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+pub trait MyService {
+    async fn say_hello(&self, req: Request<HelloRequest>)
+        -> Result<Response<HelloReply>, Status>;
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let addr = "[::1]:50051".parse()?;
+    println!("Server listening on {}", addr);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tonic Error v2]({{< relref "/languages/rust/tonic-error-v2" >}}) — tonic v2
+- [H2 Error]({{< relref "/languages/rust/h2-error" >}}) — HTTP/2
+- [Quinn Error]({{< relref "/languages/rust/quinn-error" >}}) — QUIC

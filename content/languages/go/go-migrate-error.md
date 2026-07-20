@@ -9,57 +9,95 @@ weight: 5
 
 # golang-migrate Migration Error
 
-Fix golang-migrate migration errors. Handle schema changes, version conflicts, and rollback failures..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `golang-migrate` library fails when migration files have syntax errors, the database connection drops mid-migration, a migration is applied twice, or the migration version does not match the expected state. Migrations must be idempotent and reversible.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Migration SQL syntax error
+// 000001_create_users.up.sql
+// CREATE TABLE users (id INT PRIMARY KEY,);  -- trailing comma
+
+// Cause 2: Database connection drops mid-migration
+m, err := migrate.NewWithDatabaseInstance(
+    "file://migrations",
+    "postgres",
+    dbInstance,
+)
+err = m.Up() // connection lost — migration partially applied
+
+// Cause 3: Migration applied twice
+// Running migrate.Up() twice — table already exists
+
+// Cause 4: Down migration not implemented
+// 000001_create_users.down.sql is empty
+// migrate.Down() does nothing
+
+// Cause 5: Migration version conflict
+// Database at version 3, migration file has version 5
+// skipping versions 4 — may miss schema changes
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Use proper migration file structure
 
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+```sql
+-- 000001_create_users.up.sql
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 000001_create_users.down.sql
+DROP TABLE IF EXISTS users;
 ```
 
-### Fix 2: Add proper error handling
+### Fix 2: Handle migration errors with proper connection
 
 ```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+import (
+    "github.com/golang-migrate/migrate/v4"
+    _ "github.com/golang-migrate/migrate/v4/database/postgres"
+    _ "github.com/golang-migrate/migrate/v4/source/file"
+)
+
+func runMigration(dbURL string) error {
+    m, err := migrate.New("file://migrations", dbURL)
+    if err != nil {
+        return fmt.Errorf("create migrate instance: %w", err)
+    }
+    defer m.Close()
+
+    if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+        return fmt.Errorf("migrate up: %w", err)
+    }
+
+    version, dirty, _ := m.Version()
+    fmt.Printf("Migration version: %d, dirty: %v\n", version, dirty)
+    return nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 3: Use programmatic migration for complex changes
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+func migrateUp(db *sql.DB) error {
+    // Check current version
+    var version int
+    db.QueryRow("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").Scan(&version)
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    if version >= 3 {
+        return nil // already up to date
     }
+
+    // Apply migration
+    _, err := db.Exec(`
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20);
+    `)
+    return err
 }
 ```
 
@@ -69,26 +107,34 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
     "log"
-    "time"
+
+    "github.com/golang-migrate/migrate/v4"
+    _ "github.com/golang-migrate/migrate/v4/database/postgres"
+    _ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    m, err := migrate.New(
+        "file://migrations",
+        "postgres://user:pass@localhost:5432/mydb?sslmode=disable",
+    )
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    defer m.Close()
+
+    if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+        log.Fatal(err)
+    }
+
+    fmt.Println("Migration completed successfully")
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-pgerror]({{< relref "/languages/go/go-pgerror" >}}) — PostgreSQL errors during migration
+- [go-mysql-error]({{< relref "/languages/go/go-mysql-error" >}}) — MySQL errors during migration
+- [sql-no-rows]({{< relref "/languages/go/sql-no-rows-2" >}}) — no schema_migrations table

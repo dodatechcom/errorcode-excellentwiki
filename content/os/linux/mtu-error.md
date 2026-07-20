@@ -6,30 +6,62 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 6
 ---
+# Linux: MTU Error
 
-# Linux: mtu-error — MTU configuration error
-
-Fix Linux mtu-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+MTU (Maximum Transmission Unit) errors occur when a packet is too large for a network link and cannot be fragmented. This often appears as "Message too long" or connectivity issues with VPNs/tunnels.
 
 ## Common Causes
 
-- MTU too large
-- Fragmentation issues
-- Path MTU discovery failed
-- Jumbo frame mismatch
+- VPN or tunnel interface has a lower MTU than the physical interface
+- Path MTU discovery (PMTUD) disabled or ICMP blocked by firewall
+- Jumbo frames enabled on switch but not on all devices in path
+- PPPoE or other encapsulation overhead not accounted for
+- Incorrect MTU setting on the interface
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/mtu-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Current MTU
 
-## Common Scenarios
+```bash
+ip link show | grep mtu
+```
 
-- Large packets dropped
-- Fragmentation issues
-- Jumbo frame mismatch
+### 2. Test with Different Packet Sizes
 
-## Prevent It
+```bash
+# Test ping with specific MTU size
+ping -M do -s 1472 google.com   # 1500 - 28 (IP+ICMP header)
+ping -M do -s 1452 google.com   # 1492 - 40 (PPPoE overhead)
+```
 
-- Use standard MTU (1500)
-- Test path MTU
-- Match MTU across network
+### 3. Change MTU on Interface
+
+```bash
+sudo ip link set eth0 mtu 1400
+```
+
+### 4. Change MTU for VPN Tunnel
+
+```bash
+sudo ip link set tun0 mtu 1400
+```
+
+### 5. Make Persistent
+
+```bash
+# For Netplan
+sudo nano /etc/netplan/*.yaml
+# Add: mtu: 1400
+```
+
+## Examples
+
+```bash
+$ ping -M do -s 1472 google.com
+PING google.com (142.250.80.46) 56(84) bytes of data.
+ping: local error: message too long, mtu=1500
+
+$ ping -M do -s 1400 google.com
+PING google.com (142.250.80.46) 56(84) bytes of data.
+64 bytes from 142.250.80.46: icmp_seq=1 ttl=117 time=12.3 ms
+```

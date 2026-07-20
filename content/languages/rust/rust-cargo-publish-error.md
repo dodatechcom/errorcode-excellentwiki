@@ -10,64 +10,75 @@ comments: true
 
 # Cargo Publish Error
 
-Fix Cargo publish errors. Resolve crate publishing, registry authentication, and metadata issues.
+Cargo publish errors occur when running `cargo publish` to push a crate to crates.io. Common issues include missing metadata, invalid versions, and packaging failures.
 
-## Why It Happens
+## Common Causes
 
-- Crate metadata is missing required fields
-- Registry token is expired or invalid
-- Package contains files not listed in Cargo.toml
-- Version has already been published to crates.io
-
-## Common Error Messages
-
-- `error: cargopublish failed`
-- `thread panicked at 'cargo publish operation failed'`
-- `Error: unable to complete cargo publish operation`
-- `Fatal: cargo publish configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
-
-```rust
-// Ensure cargo publish is properly configured
-use cargo_publish::prelude::*;
-
-fn main() {
-    // Initialize properly
-    println!("Correct cargo publish configuration");
-}
+```toml
+[package]
+name = "my-crate"
+version = "0.1.0"
+# Missing: description, license
+# Invalid: version = "v0.1.0"  # 'v' prefix not allowed
+# Duplicate: version already exists on crates.io
 ```
 
-### Fix 2: Handle errors explicitly
+## How to Fix
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
+1. **Add all required metadata fields**
+
+```toml
+[package]
+name = "my-crate"
+version = "0.1.0"
+edition = "2021"
+description = "A brief description"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/user/my-crate"
+readme = "README.md"
+keywords = ["utility", "helper"]
+categories = ["development-tools"]
 ```
 
-### Fix 3: Add proper error context
+2. **Dry-run before publishing**
 
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
+```bash
+$ cargo publish --dry-run
+$ cargo package --list
+$ cargo build --release
 ```
 
-## Common Scenarios
+3. **Use `cargo-release` for managed releases**
 
-1. Setting up a new project with cargo publish
-2. Integrating cargo publish into an existing codebase
-3. Upgrading cargo publish to a newer version
+```bash
+$ cargo install cargo-release
+$ cargo release patch   # 0.1.0 -> 0.1.1
+$ cargo release minor   # 0.1.0 -> 0.2.0
+```
 
-## Prevent It
+## Examples
 
-- Read the cargo publish documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+```toml
+[package]
+name = "my-awesome-crate"
+version = "0.2.1"
+edition = "2021"
+description = "A utility crate"
+license = "MIT"
+repository = "https://github.com/user/my-awesome-crate"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+```
+
+```bash
+$ cargo login <token>
+$ cargo publish --dry-run
+$ cargo publish
+```
+
+## Related Errors
+
+- [Cargo Audit Error]({{< relref "/languages/rust/rust-cargo-audit-error" >}}) — security audit failures
+- [Cargo Workspace Error]({{< relref "/languages/rust/rust-cargo-workspace-error" >}}) — workspace issues
+- [Cargo Vendor Error]({{< relref "/languages/rust/rust-cargo-vendor-error" >}}) — vendoring issues

@@ -7,75 +7,51 @@ severities: ["error"]
 weight: 5
 ---
 
-# fido2 WebAuthn Error
+# FIDO2 Error
 
-Fix FIDO2/WebAuthn errors. Handle credential creation, authentication, and attestation..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+FIDO2 errors occur when using the `fido2-authenticator` crate for WebAuthn/FIDO2 authentication — credential creation failures and attestation issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Missing challenge
+let challenge = vec![]; // Empty challenge — must be random
+
+// Wrong credential type
+// Must use PublicKeyCredentialSource
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Generate proper random challenges**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use rand::Rng;
+
+let mut challenge = vec![0u8; 32];
+rand::thread_rng().fill(&mut challenge[..]);
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle attestation correctly**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
-```
-
-### Fix 3: Add timeout and retry logic
-
-```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+// Use proper attestation format
+let attestation = "none"; // or "direct", "indirect"
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use fido2_authenticator::*;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let challenge = vec![0u8; 32]; // Random challenge in production
+    println!("Challenge: {:02x?}", &challenge[..8]);
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [WebAuthn RS Error]({{< relref "/languages/rust/webauthn-rs-error" >}}) — WebAuthn
+- [WebPKI Error]({{< relref "/languages/rust/webpki-error" >}}) — certificate validation
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto

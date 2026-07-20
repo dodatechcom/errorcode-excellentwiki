@@ -7,75 +7,102 @@ severities: ["error"]
 weight: 5
 ---
 
-# toml Deserialization Error
+# TOML Error
 
-Fix toml crate deserialization errors. Handle malformed TOML, missing fields, and type issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+TOML errors occur when using the `toml` crate — syntax errors and type mismatches.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Missing quotes around string
+let _v: Value = toml::from_str("key = value")?;
+
+// Incorrect table nesting
+let _v: Value = toml::from_str("[a]
+b = 1
+[a] c = 2")?; // Duplicate table
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Validate TOML syntax**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use toml::Value;
+
+let toml_str = r#"
+[server]
+host = "localhost"
+port = 8080
+"#;
+let value: Value = toml::from_str(toml_str)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Use serde for deserialization**
 
 ```rust
-use anyhow::Result;
+use serde::Deserialize;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+#[derive(Deserialize)]
+struct Config {
+    server: ServerConfig,
 }
+
+#[derive(Deserialize)]
+struct ServerConfig {
+    host: String,
+    port: u16,
+}
+
+let config: Config = toml::from_str(toml_str)?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle missing fields**
 
 ```rust
-use std::time::Duration;
+use serde::Deserialize;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+#[derive(Deserialize)]
+struct Config {
+    #[serde(default)]
+    name: String,
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use serde::{Serialize, Deserialize};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Serialize, Deserialize, Debug)]
+struct Config {
+    database: Database,
+    server: Server,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Database { url: String }
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Server { host: String, port: u16 }
+
+fn main() -> Result<(), toml::de::Error> {
+    let toml = r#"
+[database]
+url = "postgres://localhost/mydb"
+
+[server]
+host = "0.0.0.0"
+port = 3000
+"#;
+    let config: Config = toml::from_str(toml)?;
+    println!("{:#?}", config);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [YAML Error]({{< relref "/languages/rust/yaml-error" >}}) — YAML
+- [Serde Error]({{< relref "/languages/rust/serde-error" >}}) — serde
+- [Serde JSON Error]({{< relref "/languages/rust/serde-json-error" >}}) — JSON

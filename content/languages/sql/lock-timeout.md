@@ -1,88 +1,111 @@
 ---
-title: "[Solution] SQL Lock Wait Timeout Error Fix"
-description: "Fix 'Lock wait timeout exceeded' when a transaction waits too long to acquire a row lock."
-languages: ["sql"]
-severities: ["error"]
-error-types: ["runtime-error"]
-weight: 5
+title: "[Solution] Lock Wait Timeout Exceeded"
+description: "Fix 'Lock wait timeout exceeded' when a transaction waits too long for a lock held by another transaction."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+language: "sql"
+tags: ["sql", "lock, timeout"]
+severity: "error"
 ---
 
-# SQL Lock Wait Timeout Error Fix
+# Lock Wait Timeout Exceeded
 
-This error occurs when a transaction waits longer than the configured timeout to acquire a lock on a row or table. The message reads: `Lock wait timeout exceeded; try restarting transaction`.
+## Error Message
 
-## Description
-
-When a transaction modifies a row, it acquires a lock that prevents other transactions from modifying the same row until the first transaction commits or rolls back. If another transaction tries to modify that row and waits too long, this error is raised.
+```
+ERROR 1205: Lock wait timeout exceeded; try restarting transaction — The transaction waited longer than the lock_wait_timeout setting for a lock held by another transaction.
+```
 
 ## Common Causes
 
-- **Long-running transaction** — a transaction holds locks for too long.
-- **Deadlock between transactions** — two transactions waiting on each other's locks.
-- **High concurrency** — many transactions competing for the same rows.
-- **Missing indexes** — locks escalate to table-level when indexes are missing.
+- Another transaction holds a lock on the rows or table for too long
+- High concurrency with many transactions competing for the same rows
+- Long-running SELECT queries hold shared locks that block WRITE operations
+- Lock_wait_timeout is set too low for the workload
 
-## How to Fix
+## Solutions
 
-### Fix 1: Reduce transaction duration
+### Solution 1: Reduce lock hold time
+
+Release locks as quickly as possible by keeping transactions short.
 
 ```sql
--- Commit quickly — don't hold transactions open
+-- Wrong: long transaction holds locks
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+-- ... long processing ...
+-- ... even more processing ...
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+-- ... more work while holding lock ...
+COMMIT;
+
+-- Correct: minimize lock hold time
 START TRANSACTION;
 UPDATE accounts SET balance = balance - 100 WHERE id = 1;
 UPDATE accounts SET balance = balance + 100 WHERE id = 2;
-COMMIT;  -- Commit immediately, not after more work
+COMMIT; -- commit immediately after updates
 ```
 
-### Fix 2: Increase lock timeout temporarily
+### Solution 2: Increase lock wait timeout if needed
+
+Adjust the timeout setting to allow longer waits for legitimate lock contention.
 
 ```sql
--- Check current timeout (default is 50 seconds in MySQL)
-SHOW VARIABLES LIKE 'innodb_lock_wait_timeout';
+-- MySQL: increase lock wait timeout
+SET SESSION innodb_lock_wait_timeout = 60; -- 60 seconds
 
--- Increase it (in seconds)
-SET innodb_lock_wait_timeout = 120;
+-- PostgreSQL: increase lock timeout
+SET lock_timeout = '60s'; -- 60 seconds
+
+-- SQL Server: increase lock timeout (default is -1 = wait forever)
+SET LOCK_TIMEOUT 60000; -- 60 seconds in milliseconds
+
+-- Check current timeout settings
+SHOW VARIABLES LIKE 'innodb_lock_wait_timeout'; -- MySQL
+SHOW lock_timeout; -- PostgreSQL
+SELECT LOCK_TIMEOUT; -- SQL Server
 ```
 
-### Fix 3: Add proper indexes
+### Solution 3: Identify and terminate blocking transactions
+
+Find long-running transactions and terminate them if necessary.
 
 ```sql
--- Missing indexes cause full table locks
--- Add index on the column used in WHERE
-CREATE INDEX idx_user_id ON orders(user_id);
+-- MySQL: find blocking transactions
+SELECT * FROM information_schema.INNODB_TRX;
+SHOW ENGINE INNODB STATUS;
+SELECT * FROM information_schema.INNODB_LOCK_WAITS;
 
--- Now row-level locks are used instead of table locks
-UPDATE orders SET status = 'shipped' WHERE user_id = 1;
+-- PostgreSQL: find blocking queries
+SELECT
+    blocked.pid AS blocked_pid,
+    blocked.query AS blocked_query,
+    blocking.pid AS blocking_pid,
+    blocking.query AS blocking_query
+FROM pg_stat_activity blocked
+JOIN pg_locks bl ON blocked.pid = bl.pid
+JOIN pg_locks kl ON bl.locktype = kl.locktype
+    AND bl.database IS NOT DISTINCT FROM kl.database
+    AND bl.relation IS NOT DISTINCT FROM kl.relation
+    AND bl.page IS NOT DISTINCT FROM kl.page
+    AND bl.tuple IS NOT DISTINCT FROM kl.tuple
+    AND bl.transactionid IS NOT DISTINCT FROM kl.transactionid
+JOIN pg_stat_activity blocking ON kl.pid = blocking.pid
+WHERE NOT bl.granted;
+
+-- SQL Server: find blocking processes
+SELECT * FROM sys.dm_exec_requests WHERE blocking_session_id > 0;
+KILL <blocking_session_id>;
 ```
 
-### Fix 4: Use optimistic locking
+## Prevention Tips
 
-```sql
--- Instead of locking, use a version check
-UPDATE products
-SET stock = stock - 1, version = version + 1
-WHERE id = 10 AND version = 5;
-
--- Check if the update succeeded
-SELECT ROW_COUNT();
--- If 0, the row was modified by another transaction
-```
-
-## Examples
-
-```sql
--- Transaction A holds a lock
-START TRANSACTION;
-UPDATE accounts SET balance = 500 WHERE id = 1;
--- ... long processing, not yet committed
-
--- Transaction B waits for the same row
-UPDATE accounts SET balance = 300 WHERE id = 1;
--- ERROR 1205: Lock wait timeout exceeded; try restarting transaction
-```
+- Monitor lock wait timeouts to identify patterns of contention and redesign affected queries
+- Use SELECT ... FOR UPDATE with SKIP LOCKED to avoid waiting for locked rows in queue-like workloads
+- Implement exponential backoff retry logic in application code to handle lock timeouts gracefully
 
 ## Related Errors
 
-- [Deadlock](deadlock.md) — two transactions waiting on each other.
-- [Foreign Key](foreign-key.md) — constraint violations during concurrent updates.
-- [Duplicate Entry](duplicate-entry.md) — race conditions in unique constraints.
+- [Deadlock Error]({{< relref "/languages/sql/deadlock-error" >}})
+- [Table Lock Error]({{< relref "/languages/sql/table-lock-error" >}})
+- [Timeout Error]({{< relref "/languages/sql/timeout-error" >}})

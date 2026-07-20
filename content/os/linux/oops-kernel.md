@@ -7,29 +7,56 @@ error-types: ["process-error"]
 weight: 10
 ---
 
-# Linux: oops-kernel — kernel oops
+# Linux: Kernel Oops
 
-Fix Linux oops-kernel errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A kernel Oops is a non-fatal error where the kernel continues running after detecting a problem.
 
 ## Common Causes
 
-- Bad pointer dereference
-- Driver bug
-- Memory corruption
-- Race condition
+- NULL pointer dereference in kernel code
+- Invalid memory access by kernel module
+- Driver bug or hardware issue
+- Stack corruption
+- Bad kernel module loaded
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/oops-kernel.md' mode='w' encoding='UTF-8'>
+### 1. Capture Oops Message
 
-## Common Scenarios
+```bash
+sudo dmesg | grep -i "Oops\|BUG\|RIP" | tail -30
+```
 
-- Kernel oops in logs
-- System unstable
-- Possible crash
+### 2. Identify Faulting Module
 
-## Prevent It
+```bash
+sudo dmesg | grep "CPU:.*PID.*Tainted" | tail -5
+lsmod | grep <module>
+```
 
-- Update kernel
-- Check drivers
-- Monitor system stability
+### 3. Check System Logs
+
+```bash
+sudo journalctl -k --no-pager -n 100 | grep -i "oops\|error\|call trace"
+```
+
+### 4. Update or Remove Faulty Module
+
+```bash
+sudo modprobe -r <faulty_module>
+sudo modprobe <faulty_module> # with updated version
+```
+
+## Examples
+
+```bash
+$ dmesg | tail -10
+[12345.678] BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
+[12345.679] IP: [<ffffffff81234567>] my_driver_read+0x12/0x50 [my_driver]
+[12345.680] Call Trace:
+[12345.681]  [<ffffffff81234568>] vfs_read+0x89/0x120
+[12345.682]  [<ffffffff81234569>] sys_read+0x45/0x90
+
+$ sudo modprobe -r my_driver
+$ sudo modprobe my_driver version=new
+```

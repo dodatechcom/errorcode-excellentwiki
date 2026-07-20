@@ -9,57 +9,103 @@ weight: 5
 
 # compress/gzip Read Error
 
-Fix Go gzip compression errors. Handle invalid gzip data, buffer issues, and decompression failures..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `compress/gzip` package fails when reading gzip-compressed data due to wrong magic bytes, the reader is not closed to flush the footer, the data is not actually gzip-compressed, or the decompressed data exceeds memory limits. Gzip readers must be fully consumed and closed to verify data integrity.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Data is not gzip-compressed
+reader, err := gzip.NewReader(bytes.NewReader(data))
+// gzip: invalid header
+
+// Cause 2: Reader not closed — footer not verified
+reader, _ := gzip.NewReader(file)
+io.Copy(buf, reader)
+// forgot: reader.Close() — may miss corruption errors
+
+// Cause 3: Wrong compression level used for writing
+writer, _ := gzip.NewWriterLevel(buf, gzip.BestCompression)
+// Much slower, but not wrong — just performance issue
+
+// Cause 4: Concurrent reads on same gzip.Reader
+// gzip.Reader is not safe for concurrent use
+
+// Cause 5: Truncated gzip stream
+// Network transfer interrupted mid-stream
+reader, _ := gzip.NewReader(truncatedData)
+io.Copy(buf, reader) // may succeed with partial data
+reader.Close() // error: unexpected EOF
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Always close the gzip reader to verify integrity
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "compress/gzip"
+    "fmt"
+    "io"
+    "os"
+)
 
-### Fix 2: Add proper error handling
+func decompressFile(path string) ([]byte, error) {
+    f, err := os.Open(path)
+    if err != nil {
+        return nil, err
+    }
+    defer f.Close()
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+    reader, err := gzip.NewReader(f)
+    if err != nil {
+        return nil, fmt.Errorf("gzip reader: %w", err)
+    }
+    defer reader.Close()
+
+    data, err := io.ReadAll(reader)
+    if err != nil {
+        return nil, fmt.Errorf("read: %w", err)
+    }
+    return data, nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use gzip.NewReader with proper error handling
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func decompressWithHeader(r io.Reader) ([]byte, error) {
+    reader, err := gzip.NewReader(r)
+    if err != nil {
+        return nil, err
     }
+    defer reader.Close()
+
+    // Read gzip metadata
+    fmt.Println("Comment:", reader.Comment)
+    fmt.Println("Extra:", reader.Extra)
+
+    return io.ReadAll(reader)
+}
+```
+
+### Fix 3: Compress with appropriate level
+
+```go
+func compressData(data []byte) ([]byte, error) {
+    var buf bytes.Buffer
+    writer, err := gzip.NewWriterLevel(&buf, gzip.DefaultCompression)
+    if err != nil {
+        return nil, err
+    }
+
+    if _, err := writer.Write(data); err != nil {
+        return nil, err
+    }
+    if err := writer.Close(); // important: flushes footer
+    err != nil {
+        return nil, err
+    }
+    return buf.Bytes(), nil
 }
 ```
 
@@ -69,26 +115,39 @@ if err != nil {
 package main
 
 import (
-    "context"
+    "bytes"
+    "compress/gzip"
     "fmt"
+    "io"
     "log"
-    "time"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+    original := []byte("Hello, gzip compression!")
 
-    result, err := doWork(ctx)
+    // Compress
+    var compressed bytes.Buffer
+    writer, _ := gzip.NewWriterLevel(&compressed, gzip.BestCompression)
+    writer.Write(original)
+    writer.Close()
+
+    fmt.Printf("Original: %d bytes, Compressed: %d bytes\n",
+        len(original), compressed.Len())
+
+    // Decompress
+    reader, err := gzip.NewReader(&compressed)
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    defer reader.Close()
+
+    decompressed, _ := io.ReadAll(reader)
+    fmt.Printf("Decompressed: %s\n", string(decompressed))
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [io-eof]({{< relref "/languages/go/io-eof" >}}) — unexpected end of compressed stream
+- [go-archive-error]({{< relref "/languages/go/go-archive-error" >}}) — archive/tar header errors
+- [out-of-memory]({{< relref "/languages/go/out-of-memory" >}}) — decompression bomb exhausting memory

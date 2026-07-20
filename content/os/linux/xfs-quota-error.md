@@ -7,29 +7,57 @@ error-types: ["filesystem-error"]
 weight: 10
 ---
 
-# Linux: xfs-quota-error — XFS quota error
+# Linux: XFS Quota Error Error
 
-Fix Linux xfs-quota-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+XFS quota error errors occur when the XFS high-performance journaling filesystem encounters issues.
 
 ## Common Causes
 
-- Quota not enabled
-- Accounting error
-- Limit exceeded
-- Quota file corrupted
+- Filesystem metadata corruption from hardware failure
+- Dirty journal requiring log replay
+- Allocation group header damage
+- Superblock inconsistency
+- Storage subsystem write ordering issues
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/xfs-quota-error.md' mode='w' encoding='UTF-8'>
+### 1. Check XFS Status
 
-## Common Scenarios
+```bash
+sudo xfs_info /mount/point 2>/dev/null
+sudo dmesg | grep -i "xfs" | tail -20
+```
 
-- Quota not enforced
-- Users exceeding limits
-- Quota errors in logs
+### 2. Check Filesystem
 
-## Prevent It
+```bash
+sudo umount /mount/point
+sudo xfs_repair -n /dev/sda1 2>&1 | head -30
+```
 
-- Enable quota at mount
-- Monitor usage
-- Set realistic limits
+### 3. Repair
+
+```bash
+sudo xfs_repair /dev/sda1
+```
+
+### 4. Force Log Replay
+
+```bash
+sudo mount -o force /dev/sda1 /mount/point
+```
+
+## Examples
+
+```bash
+$ sudo dmesg | grep -i xfs | tail -5
+[12345.678] XFS (sda1): Metadata corruption detected at xfs_quota-error
+
+$ sudo xfs_repair /dev/sda1
+Phase 1 - find and verify superblock...
+Phase 2 - using internal log
+Phase 3 - checking AG structures...
+Phase 4 - checking inodes...
+Phase 5 - rebuilding AG headers...
+Phase 6 - checking link counts...
+```

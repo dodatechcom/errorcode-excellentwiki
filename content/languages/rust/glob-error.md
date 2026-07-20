@@ -7,75 +7,68 @@ severities: ["error"]
 weight: 5
 ---
 
-# glob Pattern Error
+# Glob Error
 
-Fix glob pattern errors. Handle invalid patterns, path matching, and configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Glob errors occur when using the `glob` crate for pattern matching file paths — invalid patterns and Unicode issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Invalid glob pattern
+let pattern = "[invalid"; // Unbalanced bracket
+
+// Non-UTF8 paths
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Validate patterns before use**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use glob::glob;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+fn find_files(pattern: &str) -> Vec<String> {
+    glob(pattern)
+        .filter_map(|entry| entry.ok())
+        .map(|path| path.display().to_string())
+        .collect()
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Handle errors gracefully**
 
 ```rust
-use std::time::Duration;
+use glob::{glob_with, MatchOptions};
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let options = MatchOptions {
+    case_sensitive: false,
+    require_literal_separator: false,
+    require_literal_leading_dot: false,
+};
+
+let paths: Vec<_> = glob_with("src/**/*.rs", options)
+    .unwrap()
+    .filter_map(|e| e.ok())
+    .collect();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use glob::glob;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    for entry in glob("src/**/*.rs").unwrap() {
+        match entry {
+            Ok(path) => println!("{}", path.display()),
+            Err(e) => eprintln!("Error: {}", e),
+        }
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Regex Error]({{< relref "/languages/rust/regex-error" >}}) — pattern matching
+- [Walkdir Error]({{< relref "/languages/rust/walkdir-error" >}}) — directory traversal
+- [Std FS Error]({{< relref "/languages/rust/rust-std-fs-error" >}}) — filesystem

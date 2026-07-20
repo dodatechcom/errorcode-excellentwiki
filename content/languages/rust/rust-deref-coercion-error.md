@@ -10,76 +10,121 @@ comments: true
 
 # Deref Coercion Error
 
-Deref coercion errors occur when Rust cannot automatically convert a type implementing `Deref` into the expected target type, often due to missing trait implementations or ambiguous coercion paths.
+Deref coercion errors occur when Rust's automatic deref coercion fails — typically when the compiler cannot infer which deref path to take, or when custom `Deref` implementations conflict.
 
-## Why It Happens
-
-- The type does not implement `Deref` or `DerefMut` for the expected target
-- Multiple deref paths create ambiguity the compiler cannot resolve
-- A custom smart pointer has a non-standard `Deref` implementation
-- Coercion chains exceed Rust's deref depth limit
-
-## Common Error Messages
-
-- `the trait bound ... is not satisfied`
-- `expected &str, found &String` (without deref coercion)
-- `cannot dereference ... in this context`
-- `no implementation for ... dereferences to ...`
-
-## How to Fix It
-
-### Fix 1: Implement the Deref trait correctly
+## Common Causes
 
 ```rust
 use std::ops::Deref;
 
-struct MyBox<T>(T);
+// Ambiguous deref — multiple Deref paths
+struct MyString(String);
+struct Wrapper(MyString);
 
-impl<T> Deref for MyBox<T> {
-    type Target = T;
-    fn deref(&self) -> &T {
-        &self.0
+impl Deref for MyString {
+    type Target = str;
+    fn deref(&self) -> &str { &self.0 }
+}
+
+impl Deref for Wrapper {
+    type Target = MyString;
+    fn deref(&self) -> &MyString { &self.0 }
+}
+
+// Deref into a type that doesn't implement the needed trait
+fn takes_str(s: &str) {}
+let my = MyString(String::from("hello"));
+takes_str(&my); // Works via Deref
+
+// Infinite deref chain
+struct A(B);
+struct B(A);
+impl Deref for A { type Target = B; fn deref(&self) -> &B { &self.0 } }
+impl Deref for B { type Target = A; fn deref(&self) -> &A { &self.0 } }
+```
+
+## How to Fix
+
+1. **Implement Deref targeting str or [T] for custom string/slice types**
+
+```rust
+use std::ops::Deref;
+
+struct SmartString { data: Vec<u8> }
+
+impl Deref for SmartString {
+    type Target = str;
+    fn deref(&self) -> &str {
+        std::str::from_utf8(&self.data).unwrap()
     }
 }
 
-fn greet(name: &str) {
-    println!("Hello, {}!", name);
-}
-
 fn main() {
-    let name = MyBox(String::from("Alice"));
-    greet(&name); // Works via deref coercion
+    let s = SmartString { data: b"hello".to_vec() };
+    println!("Length: {}", s.len()); // Deref to str, then len()
+    println!("Uppercase: {}", s.to_uppercase());
 }
 ```
 
-### Fix 2: Explicitly dereference when coercion fails
+2. **Avoid infinite deref cycles**
 
 ```rust
-fn main() {
-    let s = String::from("hello");
-    let r: &str = &*s; // Explicit deref
-    println!("{}", r);
+struct Wrapper(String);
+
+impl std::ops::Deref for Wrapper {
+    type Target = str;
+    fn deref(&self) -> &str { &self.0 }
 }
+
+// This works: deref to str, then call str methods
+let w = Wrapper("hello".to_string());
+assert_eq!(w.len(), 5);
+assert!(w.starts_with("hel"));
 ```
 
-### Fix 3: Use `as_ref()` or `as_str()` as fallback
+3. **Use explicit method calls when deref is ambiguous**
 
 ```rust
+struct Container(Vec<i32>);
+
+impl std::ops::Deref for Container {
+    type Target = Vec<i32>;
+    fn deref(&self) -> &Vec<i32> { &self.0 }
+}
+
+let c = Container(vec![1, 2, 3]);
+
+// Explicit calls avoid ambiguity
+let len = (*c).len(); // or c.len() which works via deref
+let first = (*c).first(); // explicit
+```
+
+## Examples
+
+```rust
+use std::ops::Deref;
+
+struct UniquePtr<T> { value: Box<T> }
+
+impl<T> UniquePtr<T> {
+    fn new(value: T) -> Self { UniquePtr { value: Box::new(value) } }
+}
+
+impl<T> Deref for UniquePtr<T> {
+    type Target = T;
+    fn deref(&self) -> &T { &self.value }
+}
+
 fn main() {
-    let owned = String::from("hello");
-    let slice: &str = owned.as_str();
-    println!("{}", slice);
+    let name = UniquePtr::new(String::from("Rust"));
+    // Deref to String, then to str
+    println!("Length: {}", name.len());
+    println!("Contains 'u': {}", name.contains('u'));
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. **Custom smart pointers** — implementing `Deref` incorrectly causes coercion failures
-2. **Function arguments** — passing `&String` where `&str` is expected with non-standard types
-3. **Trait object coercion** — coercing `&MyType` to `&dyn Trait` when `Deref` interferes
-
-## Prevent It
-
-- Always implement both `Deref` and `DerefMut` when your type wraps another type
-- Test coercion paths with simple functions before building complex abstractions
-- Prefer standard library smart pointers (`Box`, `Rc`, `Arc`) when possible
+- [Deref Coercion Error]({{< relref "/languages/rust/rust-deref-coercion-error" >}}) — deref coercion issues
+- [Trait Object Error]({{< relref "/languages/rust/rust-trait-object-error" >}}) — trait object issues
+- [Box Error]({{< relref "/languages/rust/rust-box-error" >}}) — smart pointer issues

@@ -10,64 +10,81 @@ comments: true
 
 # Cargo Audit Error
 
-Fix Cargo audit security errors. Resolve vulnerability detection, advisory database, and fix recommendations.
+Cargo audit errors occur when `cargo audit` discovers known security vulnerabilities in your project's dependencies. The tool checks the RustSec Advisory Database for reported issues.
 
-## Why It Happens
+## Common Causes
 
-- Advisory database is outdated
-- Vulnerability has no available fix version
-- Audit database connection fails
-- Audit is run on a workspace with conflicting versions
-
-## Common Error Messages
-
-- `error: cargoaudit failed`
-- `thread panicked at 'cargo audit operation failed'`
-- `Error: unable to complete cargo audit operation`
-- `Fatal: cargo audit configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
-
-```rust
-// Ensure cargo audit is properly configured
-use cargo_audit::prelude::*;
-
-fn main() {
-    // Initialize properly
-    println!("Correct cargo audit configuration");
-}
+```toml
+# Cargo.toml — outdated dependencies with known CVEs
+[dependencies]
+hyper = "0.12"    # Old version with HTTP/2 vulnerabilities
+openssl = "0.10.20"  # May have security CVEs
+ring = "0.16"     # Outdated crypto implementation
 ```
 
-### Fix 2: Handle errors explicitly
-
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
+```bash
+$ cargo audit
+    ID       Title              Severity     Patched
+    RUSTSEC-2023-0052   hyper HTTP/2    critical   >=0.14.18
 ```
 
-### Fix 3: Add proper error context
+## How to Fix
 
-```rust
-use std::error::Error;
+1. **Update affected dependencies to patched versions**
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
+```bash
+$ cargo update -p hyper
+$ cargo audit
 ```
 
-## Common Scenarios
+2. **Use `cargo audit fix` for automatic remediation**
 
-1. Setting up a new project with cargo audit
-2. Integrating cargo audit into an existing codebase
-3. Upgrading cargo audit to a newer version
+```bash
+$ cargo audit fix --dry-run  # Preview
+$ cargo audit fix            # Apply
+```
 
-## Prevent It
+3. **Add `cargo audit` to CI and manage false positives**
 
-- Read the cargo audit documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+```yaml
+# .github/workflows/security.yml
+name: Security Audit
+on: [push, pull_request]
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rustsec/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+```toml
+# .cargo/audit.toml
+[advisories]
+ignore = ["RUSTSEC-2023-0001"]  # False positive
+```
+
+## Examples
+
+```bash
+$ cargo install cargo-audit
+$ cargo audit                    # Full audit
+$ cargo audit -p serde           # Audit specific crate
+$ cargo audit --json > report.json  # JSON output
+$ cargo audit fix                # Auto-fix
+```
+
+```toml
+# Cargo.toml — keep deps current
+[dependencies]
+serde = "1.0"
+tokio = { version = "1", features = ["full"] }
+```
+
+## Related Errors
+
+- [Cargo Publish Error]({{< relref "/languages/rust/rust-cargo-publish-error" >}}) — publishing failures
+- [Cargo Workspace Error]({{< relref "/languages/rust/rust-cargo-workspace-error" >}}) — workspace issues
+- [Cargo Vendor Error]({{< relref "/languages/rust/rust-cargo-vendor-error" >}}) — vendoring issues

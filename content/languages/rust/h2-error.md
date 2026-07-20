@@ -7,75 +7,66 @@ severities: ["error"]
 weight: 5
 ---
 
-# h2 HTTP/2 Error
+# H2 Error
 
-Fix h2 HTTP/2 errors. Handle connection preface, stream management, and flow control..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+H2 errors occur when using the `h2` crate for HTTP/2 protocol handling — connection errors, stream errors, and frame parsing issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection error
+let client = h2::Client::connect("http://localhost:3000").await?;
+
+// Stream error — sending on closed stream
+let stream = client.ready().await?.send_request(request, false)?;
+
+// Invalid frame
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle connection errors**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use h2::client;
+
+let tcp = tokio::net::TcpStream::connect("localhost:3000").await?;
+let (client, h2_conn) = client::handshake(tcp).await?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Check stream state before sending**
 
 ```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
-```
-
-### Fix 3: Add timeout and retry logic
-
-```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let (response, body) = sender.send_request(request, end_of_stream)?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use h2::server;
+use tokio::net::TcpListener;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let listener = TcpListener::bind("127.0.0.1:3000").await?;
+
+    loop {
+        let (socket, _) = listener.accept().await?;
+        tokio::spawn(async move {
+            let mut h2 = server::handshake(socket).await.unwrap();
+            while let Some((req, mut send)) = h2.accept().await.unwrap() {
+                let body = send.send_response(
+                    http::Response::builder().body(()).unwrap(), false
+                ).unwrap();
+                // Handle request
+            }
+        });
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — HTTP/1.1
+- [HTTP Body Util Error]({{< relref "/languages/rust/http-body-util-error" >}}) — body handling
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network errors

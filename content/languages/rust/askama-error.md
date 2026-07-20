@@ -7,75 +7,103 @@ severities: ["error"]
 weight: 5
 ---
 
-# askama Template Error
+# Askama Error
 
-Fix askama template errors. Handle compile-time template checking, type safety, and rendering..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Askama errors occur when using the Askama template engine — template compilation errors, missing fields, and type mismatches.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use askama::Template;
+
+// Missing field in template context
+#[derive(Template)]
+#[template(source = "Hello {{ name }}")]
+struct Greeting { /* missing: name */ }
+
+// Template file not found
+#[derive(Template)]
+#[template(path = "missing.html")] // ERROR: file not found
+struct Page;
+
+// Wrong type in template expression
+#[derive(Template)]
+#[template(source = "{{ value + 1 }}")]
+struct Calc { value: String } // String + i32 fails
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Ensure all template variables are provided**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use askama::Template;
 
-### Fix 2: Add proper error handling
+#[derive(Template)]
+#[template(source = "Hello {{ name }}!")]
+struct Greeting { name: String }
 
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+fn main() {
+    let tmpl = Greeting { name: "World".into() };
+    println!("{}", tmpl.render().unwrap());
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use correct types for template expressions**
 
 ```rust
-use std::time::Duration;
+use askama::Template;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+#[derive(Template)]
+#[template(source = "Result: {{ result }}")]
+struct Calc { result: i32 }
+
+fn main() {
+    let tmpl = Calc { result: 42 + 8 };
+    println!("{}", tmpl.render().unwrap());
+}
+```
+
+3. **Set up template directory in build.rs**
+
+```rust
+// build.rs
+fn main() {
+    println!("cargo:rerun-if-changed=templates/");
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use askama::Template;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[derive(Template)]
+#[template(source = r#"
+<!DOCTYPE html>
+<html>
+<head><title>{{ title }}</title></head>
+<body>
+<h1>{{ title }}</h1>
+{% for item in items %}
+<li>{{ item }}</li>
+{% endfor %}
+</body>
+</html>
+"#)]
+struct Page { title: String, items: Vec<String> }
+
+fn main() {
+    let page = Page {
+        title: "My Page".into(),
+        items: vec!["Item 1".into(), "Item 2".into()],
+    };
+    println!("{}", page.render().unwrap());
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Handlebars Error]({{< relref "/languages/rust/handlebars-error" >}}) — handlebars templates
+- [Tera Error]({{< relref "/languages/rust/tera-error" >}}) — tera templates
+- [Maud Error]({{< relref "/languages/rust/maud-error" >}}) — maud templates

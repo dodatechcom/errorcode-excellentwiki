@@ -6,30 +6,55 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: Disk Resize Error
 
-# Linux: disk-resize-error — disk resize error
-
-Fix Linux disk-resize-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Disk resize errors occur when expanding or shrinking a partition or filesystem fails due to constraints or improper procedure.
 
 ## Common Causes
 
-- Cannot resize online
-- Filesystem error
-- Partition table issue
-- Space limitation
+- Partition cannot be resized because it is currently mounted
+- Insufficient free space after the partition to extend into
+- Filesystem does not support shrinking (XFS can only grow)
+- Volume group has no free extents for LVM extension
+- Partition type mismatch between partition table and filesystem
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-resize-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Current Layout
 
-## Common Scenarios
+```bash
+lsblk
+df -h
+sudo fdisk -l /dev/sdX
+```
 
-- Cannot resize
-- Partition table error
-- Filesystem error
+### 2. Grow Filesystem
 
-## Prevent It
+```bash
+# ext4
+sudo resize2fs /dev/sdX
 
-- Backup before resize
-- Use growpart
-- Verify space available
+# XFS (must be mounted)
+sudo xfs_growfs /mount/point
+
+# LVM with auto-resize
+sudo lvextend -r -L +10G <vg_name>/<lv_name>
+```
+
+### 3. Resize Partition with parted
+
+```bash
+sudo parted /dev/sdX resizepart 1 100%
+sudo growpart /dev/sdX 1
+```
+
+## Examples
+
+```bash
+$ sudo lvextend -r -L +10G vg01/root
+  Size of logical volume vg01/root changed from 50.00 GiB to 60.00 GiB.
+  File system ext4 at / has been resized.
+
+$ sudo xfs_growfs /data
+data blocks changed from 26214400 to 31457280
+```

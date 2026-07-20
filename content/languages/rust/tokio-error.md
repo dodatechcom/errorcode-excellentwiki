@@ -7,75 +7,92 @@ severities: ["error"]
 weight: 5
 ---
 
-# tokio Runtime Error
+# Tokio Error
 
-Fix tokio runtime errors. Handle async runtime configuration, task panics, and resource exhaustion..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Tokio errors occur when using the `tokio` runtime — spawn panics, task failures, and channel errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Spawning on a shutdown runtime
+let rt = Runtime::new()?;
+rt.shutdown_timeout(Duration::from_secs(0));
+rt.spawn(async { }); // ERROR: runtime shut down
+
+// Panicking inside spawn — join error
+let handle = tokio::spawn(async {
+    panic!("task panicked");
+});
+handle.await??; // JoinError
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle spawn errors**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use tokio::task;
 
-### Fix 2: Add proper error handling
+let handle = task::spawn(async {
+    // work
+    42
+});
 
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match handle.await {
+    Ok(val) => println!("Result: {}", val),
+    Err(e) => eprintln!("Task panicked: {}", e),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use JoinSet for structured concurrency**
 
 ```rust
-use std::time::Duration;
+use tokio::task::JoinSet;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let mut set = JoinSet::new();
+for i in 0..10 {
+    set.spawn(async move { i * 2 });
+}
+while let Some(result) = set.join_next().await {
+    println!("Got: {}", result?);
+}
+```
+
+3. **Use select for multiple futures**
+
+```rust
+use tokio::select;
+
+tokio::select! {
+    val = async_op_1() => println!("Op1: {}", val),
+    val = async_op_2() => println!("Op2: {}", val),
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use tokio::time::{sleep, Duration};
+use tokio::task;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[tokio::main]
+async fn main() {
+    let handle1 = task::spawn(async {
+        sleep(Duration::from_millis(100)).await;
+        "task 1"
+    });
+    let handle2 = task::spawn(async {
+        sleep(Duration::from_millis(50)).await;
+        "task 2"
+    });
+
+    let (r1, r2) = tokio::join!(handle1, handle2);
+    println!("{} and {}", r1.unwrap(), r2.unwrap());
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tokio Error v2]({{< relref "/languages/rust/tokio-error-v2" >}}) — tokio v2
+- [Crossbeam Error]({{< relref "/languages/rust/crossbeam-error" >}}) — concurrency
+- [MPSC Error]({{< relref "/languages/rust/rust-mpsc-error" >}}) — channels

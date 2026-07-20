@@ -10,64 +10,121 @@ comments: true
 
 # NAPI Error
 
-Fix napi-rs errors for Node.js native modules. Resolve binding generation, type conversion, and async issues.
+NAPI errors occur when using the `napi-rs` crate to build Node.js native addons — issues with type conversion, async tasks, and thread-safe function calls.
 
-## Why It Happens
-
-- Function is missing the #[napi] attribute
-- JS type mapping is unsupported by napi-rs
-- Async task is not returning a Promise correctly
-- Buffer conversion fails due to memory alignment
-
-## Common Error Messages
-
-- `error: napi failed`
-- `thread panicked at 'napi-rs operation failed'`
-- `Error: unable to complete napi-rs operation`
-- `Fatal: napi-rs configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure napi-rs is properly configured
-use napi-rs::prelude::*;
+use napi_derive::napi;
 
-fn main() {
-    // Initialize properly
-    println!("Correct napi-rs configuration");
+// Returning non-NAPI-safe types
+#[napi]
+fn bad_function() -> Vec<String> { // Vec<String> not directly NAPI-safe
+    vec!["hello".into()]
+}
+
+// Missing #[napi] attribute on exported functions
+fn exported() -> i32 { 42 } // Not visible to Node.js
+
+// Thread safety issues with non-Send types
+struct NonSend { data: *mut u8 } // !Send, cannot use in async tasks
+```
+
+## How to Fix
+
+1. **Use NAPI-compatible types**
+
+```rust
+use napi_derive::napi;
+
+#[napi]
+fn greet(name: String) -> String {
+    format!("Hello, {}!", name)
+}
+
+#[napi]
+fn get_numbers() -> Vec<i32> {
+    vec![1, 2, 3, 4, 5]
+}
+
+#[napi]
+fn parse_json(input: String) -> napi::Result<serde_json::Value> {
+    serde_json::from_str(&input).map_err(|e| napi::Error::from_reason(e.to_string()))
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Use `#[napi]` async functions for non-blocking operations**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use napi_derive::napi;
+
+#[napi]
+async fn fetch_data(url: String) -> napi::Result<String> {
+    let body = reqwest::get(&url)
+        .await
+        .map_err(|e| napi::Error::from_reason(e.to_string()))?
+        .text()
+        .await
+        .map_err(|e| napi::Error::from_reason(e.to_string()))?;
+    Ok(body)
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Use thread-safe functions for callbacks from async contexts**
 
 ```rust
-use std::error::Error;
+use napi::threadsafe_function::{ThreadsafeFunction, ErrorStrategy};
+use napi_derive::napi;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+type TsFn = ThreadsafeFunction<String, ErrorStrategy::Fatal>;
+
+#[napi]
+fn start_task(callback: TsFn) {
+    std::thread::spawn(move || {
+        callback.call("Result from thread".into(), napi::threadsafe_function::ThreadsafeFunctionCallMode::NonBlocking).ok();
+    });
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with napi-rs
-2. Integrating napi-rs into an existing codebase
-3. Upgrading napi-rs to a newer version
+```rust
+use napi_derive::napi;
+use napi::JsNumber;
 
-## Prevent It
+#[napi]
+fn fibonacci(n: u32) -> u64 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => {
+            let mut a: u64 = 0;
+            let mut b: u64 = 1;
+            for _ in 2..=n {
+                let temp = a + b;
+                a = b;
+                b = temp;
+            }
+            b
+        }
+    }
+}
 
-- Read the napi-rs documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+#[napi]
+fn process_array(data: Vec<i32>) -> Vec<i32> {
+    data.into_iter().filter(|x| x % 2 == 0).map(|x| x * 2).collect()
+}
+```
+
+```javascript
+// In JavaScript
+const addon = require('./my-addon.node');
+console.log(addon.fibonacci(10)); // 55
+console.log(addon.processArray([1, 2, 3, 4, 5])); // [4, 8]
+```
+
+## Related Errors
+
+- [PyO3 Error]({{< relref "/languages/rust/rust-pyo3-error" >}}) — Python bindings
+- [FFI Gen Error]({{< relref "/languages/rust/rust-ffigen-error" >}}) — FFI generation
+- [CBindgen Error]({{< relref "/languages/rust/rust-cbindgen-error" >}}) — C bindings

@@ -7,75 +7,82 @@ severities: ["error"]
 weight: 5
 ---
 
-# serde_json JSON Error
+# Serde JSON Error
 
-Fix serde_json errors. Handle invalid JSON, type mismatches, and serialization configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Serde JSON errors occur when using `serde_json` — invalid JSON syntax, trailing commas, and type mismatches.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Trailing comma
+let v: Value = serde_json::from_str(r#"{"a": 1,}"#)?; // ERROR
+
+// Unexpected token
+let v: Value = serde_json::from_str(r#"{"a": 1 "#)?; // ERROR
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Ensure valid JSON**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use serde_json::Value;
+
+let json = r#"{"key": "value", "number": 42}"#;
+let v: Value = serde_json::from_str(json)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle type errors**
 
 ```rust
-use anyhow::Result;
+use serde::Deserialize;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+#[derive(Deserialize)]
+struct Config {
+    name: String,
+    port: u16,
 }
+
+let json = r#"{"name": "app", "port": 3000}"#;
+let config: Config = serde_json::from_str(json)?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use Value for dynamic JSON**
 
 ```rust
-use std::time::Duration;
+use serde_json::{json, Value};
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let data = json!({
+    "name": "Alice",
+    "scores": [95, 87, 92]
+});
+
+let name = data["name"].as_str().unwrap();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use serde_json::{json, Value};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let data = json!({
+        "users": [
+            {"name": "Alice", "age": 30},
+            {"name": "Bob", "age": 25}
+        ]
+    });
+
+    let users = data["users"].as_array().unwrap();
+    for user in users {
+        println!("{}: {}", user["name"], user["age"]);
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [TOML Error]({{< relref "/languages/rust/toml-error" >}}) — TOML
+- [YAML Error]({{< relref "/languages/rust/yaml-error" >}}) — YAML
+- [Serde Error]({{< relref "/languages/rust/serde-error" >}}) — core serde

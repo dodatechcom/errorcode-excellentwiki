@@ -1,141 +1,134 @@
 ---
-title: "[Solution] Python SymPy Symbolic Computation Error — How to Fix"
-description: "Fix Python SymPy symbolic computation errors. Resolve undefined symbols, simplification failures, and evaluation errors."
+title: "[Solution] Python SymPy Error — Symbolic Computation, Solve & Simplify Failures"
+description: "Fix Python SymPy errors by resolving symbolic computation issues, solve failures, and simplification problems. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 406
 ---
 
-# Python SymPy Symbolic Computation Error
+# Python SymPy Error — Symbolic Computation, Solve & Simplify Failures
 
-A `sympy.SympifyError` or `UndefinedError` occurs when SymPy fails to parse mathematical expressions, encounters undefined symbols, or when symbolic operations produce results that cannot be simplified.
+SymPy errors occur when symbolic expressions cannot be parsed, equations have no closed-form solution, simplification requires undeclared assumptions, or substitution produces undefined results.
 
-## Why It Happens
-
-SymPy performs exact symbolic mathematics. Errors arise from using Python operators on uninitialized symbols, when expressions contain division by symbolic zero, when simplification requires assumptions not declared, or when parsing strings with invalid mathematical syntax.
-
-## Common Error Messages
-
-- `SympifyError: Sympify of expression 'could not be parsed'`
-- `UndefinedError: DiffWrtVariable required`
-- `ZeroDivisionError: symbolic division by zero`
-- `ValueError: Cannot solve expression`
-
-## How to Fix It
-
-### Fix 1: Define symbols before use
+## Common Causes
 
 ```python
 from sympy import symbols, solve
 
-# Wrong — using undefined variables
+# 1. Using undefined symbols
 # result = x**2 + 1  # NameError: x not defined
-
-# Correct — define symbols explicitly
-x, y = symbols("x y")
-expr = x**2 + 1
-print(expr)
-
-# Solve equations
-solutions = solve(x**2 - 4, x)
-print(f"Solutions: {solutions}")
 ```
 
-### Fix 2: Handle symbolic division
+```python
+# 2. Solve returns empty list for unsolvable equations
+from sympy import symbols, solve
+x = symbols("x")
+result = solve(x**2 + 1, x)  # Returns [] — no real solutions
+```
+
+```python
+# 3. SympifyError from invalid string parsing
+from sympy import sympify
+sympify("x + * y")  # SympifyError
+```
+
+```python
+# 4. Division by symbolic zero
+from sympy import symbols, simplify
+x = symbols("x")
+expr = (x**2 - 1) / (x - 1)
+expr.subs(x, 1)  # ZeroDivisionError
+```
+
+```python
+# 5. Simplify without required assumptions
+from sympy import symbols, sqrt, simplify
+x = symbols("x")
+expr = sqrt(x**2)
+simplify(expr)  # Returns Abs(x), not x — missing assumption
+```
+
+## How to Fix
+
+### Fix 1: Define all symbols before use
+
+```python
+from sympy import symbols, Eq, solve
+
+x, y = symbols("x y")
+
+# Define and solve equation
+eq = Eq(x**2 + y, 10)
+solutions = solve(eq, x)
+print(f"Solutions for x: {solutions}")
+```
+
+### Fix 2: Provide assumptions for simplification
+
+```python
+from sympy import symbols, sqrt, simplify
+
+# Declare symbol with assumptions
+x = symbols("x", positive=True)
+expr = sqrt(x**2)
+result = simplify(expr)
+print(result)  # x (not Abs(x))
+```
+
+### Fix 3: Safe string parsing with local variables
+
+```python
+from sympy import symbols, sympify
+
+x, y = symbols("x y")
+local_dict = {"x": x, "y": y}
+
+try:
+    expr = sympify("x**2 + 2*x*y + y**2", locals=local_dict)
+    print(f"Parsed: {expr}")
+except SympifyError as e:
+    print(f"Parse error: {e}")
+```
+
+### Fix 4: Simplify before substitution to avoid division by zero
 
 ```python
 from sympy import symbols, simplify, cancel
 
 x = symbols("x")
-
-# Wrong — may cause issues with symbolic zero
-# expr = (x**2 - 1) / (x - 1)
-# expr.subs(x, 1)  # ZeroDivisionError
-
-# Correct — simplify before substitution
 expr = (x**2 - 1) / (x - 1)
-simplified = simplify(expr)
-print(f"Simplified: {simplified}")
 
-# Use cancel for rational expressions
-rational = (x**2 - 1) / (x**2 - 2*x + 1)
-result = cancel(rational)
-print(f"Cancelled: {result}")
+# Simplify first — cancels (x-1) factor
+simplified = cancel(expr)
+print(f"Simplified: {simplified}")  # x + 1
 
-# Safe substitution with assumptions
-from sympy import Symbol
-x = Symbol("x", positive=True)
-expr = 1 / x
-safe_expr = expr.subs(x, 1)
+# Now safe to substitute x=1
+result = simplified.subs(x, 1)
+print(f"Result: {result}")  # 2
 ```
 
-### Fix 3: Use correct simplification
+## Examples
 
 ```python
-from sympy import symbols, trigsimplify, simplify, factor
+from sympy import symbols, solve, simplify, factorial, Rational
 
-x, y = symbols("x y")
+x, y, z = symbols("x y z")
 
-# Wrong — manual expansion
-# expr = (x + y)**2
-# expanded = expr  # not simplified
+# Solve system of equations
+eq1 = 2*x + y - 3
+eq2 = x - y + 1
+solution = solve([eq1, eq2], [x, y])
+print(f"Solution: {solution}")  # {x: 2/3, y: 5/3}
 
-# Correct — use appropriate simplification
-expr = (x + y)**2
-expanded = expr.expand()
-factored = expanded.factor()
-print(f"Expanded: {expanded}")
-print(f"Factored: {factored}")
-
-# Trigonometric simplification
-from sympy import sin, cos
-trig_expr = sin(x)**2 + cos(x)**2
-simplified = trigsimplify(trig_expr)
-print(f"Trig simplified: {simplified}")  # 1
-
-# Combine fractions
-from sympy import Rational
-frac = 1/x + 1/(x+1)
-combined = simplify(frac)
-print(f"Combined: {combined}")
+# Symbolic summation
+from sympy import Sum, oo
+s = Sum(1/n**2, (n, 1, oo))
+print(f"Sum: {s.doit()}")  # pi**2/6
 ```
-
-### Fix 4: Parse expressions correctly
-
-```python
-from sympy import sympify, symbols
-
-x, y = symbols("x y")
-
-# Wrong — parsing invalid string
-# expr = sympify("x + * y")  # SympifyError
-
-# Correct — use valid syntax
-expr = sympify("x**2 + 2*x*y + y**2")
-print(f"Parsed: {expr}")
-
-# Parse with local variables
-local_dict = {"x": x, "y": y, "pi": 3.14159}
-expr = sympify("x**2 + pi*y", locals=local_dict)
-print(f"With locals: {expr}")
-```
-
-## Common Scenarios
-
-- **Undefined symbol** — Using `x` without defining it as a SymPy symbol causes NameError.
-- **Division by symbolic zero** — `(x - 1)/(x - 1)` is undefined at x=1 but simplifies to 1.
-- **String parsing error** — Mathematical expressions in strings use Python syntax, not mathematical notation.
-
-## Prevent It
-
-- Always use `symbols("x y z")` to declare all symbolic variables before using them in expressions.
-- Use `simplify()` or `cancel()` to reduce expressions before numerical substitution.
-- Use `sympify()` with `locals` parameter for safe parsing of user-provided expressions.
 
 ## Related Errors
 
-- [SympifyError](/languages/python/sympy-error/) — expression parsing failed
 - [ZeroDivisionError](/languages/python/zerodivisionerror/) — division by zero
-- [NameError](/languages/python/nameerror/) — undefined symbol
+- [NameError](/languages/python/nameerror/) — undefined variable
+- [ValueError](/languages/python/valueerror/) — invalid argument

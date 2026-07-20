@@ -7,75 +7,89 @@ severities: ["error"]
 weight: 5
 ---
 
-# rdkafka Kafka Error
+# Rdkafka Error
 
-Fix rdkafka Kafka errors. Handle broker connectivity, consumer groups, and producer acknowledgment..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Rdkafka errors occur when using the `rdkafka` crate for Kafka — broker connection failures and serialization issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Broker unreachable
+let producer: BaseProducer<_ = BaseProducerConfig::new()
+    .set("bootstrap.servers", "wrong:9092")
+    .create()?;
+
+// Message too large for broker
+let future = producer.send(DeliveryResult::...);
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Configure producer/consumer correctly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use rdkafka::config::ClientConfig;
+use rdkafka::producer::{BaseProducer, BaseRecord};
+
+let producer: BaseProducer<_ = ClientConfig::new()
+    .set("bootstrap.servers", "localhost:9092")
+    .set("message.timeout.ms", "5000")
+    .create()?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle delivery errors**
 
 ```rust
-use anyhow::Result;
+use rdkafka::producer::{BaseProducer, BaseRecord, DeliveryResult};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+producer.send(
+    BaseRecord::to("my_topic").key("key").payload("value"),
+    |result: DeliveryResult| {
+        match result {
+            Ok(_) => println!("Message delivered"),
+            Err((e, _)) => eprintln!("Delivery failed: {}", e),
+        }
+    },
+)?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Configure consumer groups**
 
 ```rust
-use std::time::Duration;
+use rdkafka::consumer::{StreamConsumer, Consumer};
+use rdkafka::config::ClientConfig;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let consumer: StreamConsumer<_ = ClientConfig::new()
+    .set("bootstrap.servers", "localhost:9092")
+    .set("group.id", "my_group")
+    .set("auto.offset.reset", "earliest")
+    .create()?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use rdkafka::config::ClientConfig;
+use rdkafka::producer::{BaseProducer, BaseRecord};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let producer: BaseProducer<_ = ClientConfig::new()
+        .set("bootstrap.servers", "localhost:9092")
+        .create()?;
+
+    producer.send(
+        BaseRecord::to("test_topic").key("key").payload("Hello Kafka!"),
+        |result| {
+            if let Err((e, _)) = eprintln!("Error: {}", e);
+        },
+    )?;
+    producer.flush(std::time::Duration::from_secs(1));
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Kafka Error]({{< relref "/languages/rust/rust-kafka-error-rs" >}}) — Kafka errors
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — async runtime

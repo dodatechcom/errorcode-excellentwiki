@@ -9,57 +9,137 @@ weight: 5
 
 # archive/tar Invalid Header
 
-Fix Go tar archive errors. Handle invalid headers, checksum mismatches, and format issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `archive/tar` package fails when reading tar archives with invalid headers, checksum mismatches, truncated data, or unsupported formats. Tar files have a 512-byte header block for each entry, and corruption in any header field causes parse errors.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Data is not a valid tar archive
+reader := tar.NewReader(file)
+header, err := reader.Next()
+// archive/tar: invalid tar header
+
+// Cause 2: Truncated archive file
+// File transfer interrupted — file is incomplete
+header, err := reader.Next()
+// unexpected EOF in tar archive
+
+// Cause 3: Checksum mismatch
+// Header block corrupted during write or storage
+// tar header: checksum mismatch
+
+// Cause 4: Using tar.NewReader on gzip data
+// Need gzip.NewReader first, then tar.NewReader
+tar.NewReader(gzipFile) // wrong — should decompress first
+
+// Cause 5: Cross-platform path issues
+// Windows paths in tar: C:\Users\...
+// Linux tar expects: /Users/...
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Decompress gzip before reading tar
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "archive/tar"
+    "compress/gzip"
+    "fmt"
+    "io"
+    "os"
+)
 
-### Fix 2: Add proper error handling
+func readTarGz(path string) error {
+    f, err := os.Open(path)
+    if err != nil {
+        return err
+    }
+    defer f.Close()
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+    gz, err := gzip.NewReader(f)
+    if err != nil {
+        return fmt.Errorf("gzip reader: %w", err)
+    }
+    defer gz.Close()
+
+    tarReader := tar.NewReader(gz)
+    for {
+        header, err := tarReader.Next()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            return fmt.Errorf("tar reader: %w", err)
+        }
+        fmt.Printf("File: %s (%d bytes)\n", header.Name, header.Size)
+    }
+    return nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Validate tar headers before processing
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func extractFile(tarReader *tar.Reader, header *tar.Header, dest string) error {
+    // Validate header
+    if header.Name == "" {
+        return fmt.Errorf("empty header name")
     }
+    if header.Size < 0 {
+        return fmt.Errorf("invalid size: %d", header.Size)
+    }
+
+    // Prevent path traversal
+    if strings.Contains(header.Name, "..") {
+        return fmt.Errorf("invalid path: %s", header.Name)
+    }
+
+    switch header.Typeflag {
+    case tar.TypeReg:
+        return extractRegularFile(tarReader, header, dest)
+    case tar.TypeDir:
+        return os.MkdirAll(filepath.Join(dest, header.Name), 0755)
+    }
+    return nil
+}
+```
+
+### Fix 3: Write tar archives with proper headers
+
+```go
+func createTar(files []string, writer io.Writer) error {
+    tarWriter := tar.NewWriter(writer)
+    defer tarWriter.Close()
+
+    for _, filePath := range files {
+        info, err := os.Stat(filePath)
+        if err != nil {
+            return err
+        }
+
+        header := &tar.Header{
+            Name:    filePath,
+            Size:    info.Size(),
+            Mode:    int64(info.Mode()),
+            ModTime: info.ModTime(),
+        }
+
+        if err := tarWriter.WriteHeader(header); err != nil {
+            return err
+        }
+
+        file, err := os.Open(filePath)
+        if err != nil {
+            return err
+        }
+        defer file.Close()
+
+        if _, err := io.Copy(tarWriter, file); err != nil {
+            return err
+        }
+    }
+    return nil
 }
 ```
 
@@ -69,26 +149,40 @@ if err != nil {
 package main
 
 import (
-    "context"
+    "archive/tar"
     "fmt"
+    "io"
     "log"
-    "time"
+    "os"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    f, err := os.Open("archive.tar")
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    defer f.Close()
+
+    reader := tar.NewReader(f)
+    for {
+        header, err := reader.Next()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            log.Fatal(err)
+        }
+
+        fmt.Printf("Name: %s\n", header.Name)
+        fmt.Printf("Size: %d\n", header.Size)
+        fmt.Printf("Mode: %v\n", header.Mode)
+        fmt.Printf("Type: %d\n", header.Typeflag)
+    }
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [io-eof]({{< relref "/languages/go/io-eof" >}}) — unexpected end of tar stream
+- [go-compress-error]({{< relref "/languages/go/go-compress-error" >}}) — gzip decompression errors
+- [file-exists]({{< relref "/languages/go/file-exists" >}}) — file operation errors during extraction

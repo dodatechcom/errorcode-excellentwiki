@@ -9,57 +9,88 @@ weight: 5
 
 # golang.org/x/crypto/ssh Handshake Failed
 
-Fix Go SSH handshake errors. Handle key exchange, authentication, and host verification..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The SSH client library fails during the handshake phase when the host key is not verified, authentication method is wrong, the server does not support the requested key exchange algorithm, or the private key format is invalid. The SSH handshake is the first step before any commands can be executed.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Host key verification fails
+config := &ssh.ClientConfig{
+    User: "root",
+    Auth: []ssh.AuthMethod{ssh.Password("pass")},
+    HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+    // known_hosts mismatch — host key changed
+}
+
+// Cause 2: Private key not parsed correctly
+key, err := os.ReadFile("id_rsa")
+signer, err := ssh.ParsePrivateKey(key)
+// ssh: cannot decode key: asn1: structure error
+
+// Cause 3: Wrong authentication method
+config := &ssh.ClientConfig{
+    Auth: []ssh.AuthMethod{ssh.Password("pass")},
+}
+// Server only accepts publickey authentication
+
+// Cause 4: Key exchange algorithm mismatch
+// Client: diffie-hellman-group14-sha256
+// Server: only diffie-hellman-group1-sha1
+
+// Cause 5: Server disconnects before auth completes
+// Firewall or rate limiter dropping connection
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Configure host key callback properly
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "fmt"
+    "os"
 
-### Fix 2: Add proper error handling
+    "golang.org/x/crypto/ssh"
+    "golang.org/x/crypto/ssh/knownhosts"
+)
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func sshClient() (*ssh.Client, error) {
+    key, err := os.ReadFile(os.Getenv("HOME") + "/.ssh/id_rsa")
+    if err != nil {
+        return nil, fmt.Errorf("read key: %w", err)
+    }
+
+    signer, err := ssh.ParsePrivateKey(key)
+    if err != nil {
+        return nil, fmt.Errorf("parse key: %w", err)
+    }
+
+    hostKeyCallback, err := knownhosts.New(os.Getenv("HOME") + "/.ssh/known_hosts")
+    if err != nil {
+        return nil, fmt.Errorf("known_hosts: %w", err)
+    }
+
+    config := &ssh.ClientConfig{
+        User: "deploy",
+        Auth: []ssh.AuthMethod{ssh.PublicKeys(signer)},
+        HostKeyCallback: hostKeyCallback,
+        Timeout: 10 * time.Second,
+    }
+
+    return ssh.Dial("tcp", "server:22", config)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Support multiple authentication methods
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
+config := &ssh.ClientConfig{
+    User: "deploy",
+    Auth: []ssh.AuthMethod{
+        ssh.PublicKeys(signer),
+        ssh.Password(os.Getenv("SSH_PASSWORD")),
+    },
+    HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 }
 ```
 
@@ -69,26 +100,52 @@ if err != nil {
 package main
 
 import (
-    "context"
     "fmt"
     "log"
-    "time"
+    "os"
+
+    "golang.org/x/crypto/ssh"
 )
 
 func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
+    key, err := os.ReadFile(os.Getenv("HOME") + "/.ssh/id_rsa")
     if err != nil {
-        log.Fatalf("Error: %v", err)
+        log.Fatal(err)
     }
-    fmt.Println(result)
+
+    signer, err := ssh.ParsePrivateKey(key)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    config := &ssh.ClientConfig{
+        User: "root",
+        Auth: []ssh.AuthMethod{ssh.PublicKeys(signer)},
+        HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+    }
+
+    client, err := ssh.Dial("tcp", "localhost:22", config)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer client.Close()
+
+    session, err := client.NewSession()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer session.Close()
+
+    out, err := session.CombinedOutput("uname -a")
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(string(out))
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [tls-handshake]({{< relref "/languages/go/tls-handshake-error" >}}) — TLS handshake similar to SSH handshake
+- [go-x509-error]({{< relref "/languages/go/go-x509-error" >}}) — certificate verification failures
+- [net-dial]({{< relref "/languages/go/net-dial" >}}) — TCP connection to SSH port fails

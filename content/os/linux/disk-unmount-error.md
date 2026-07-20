@@ -6,30 +6,59 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 6
 ---
+# Linux: Disk Unmount Error
 
-# Linux: disk-unmount-error — disk unmount error
-
-Fix Linux disk-unmount-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+An unmount error occurs when a filesystem cannot be detached because processes or the kernel are using it.
 
 ## Common Causes
 
-- Device busy
-- Process using disk
-- Filesystem busy
-- Still mounted
+- Processes have open files on the filesystem
+- Processes have their working directory on the filesystem
+- Kernel threads or swap files using the filesystem
+- Filesystem has mount --bind creating additional references
+- NFS exports still active on the filesystem
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-unmount-error.md' mode='w' encoding='UTF-8'>
+### 1. Find Processes Using the Filesystem
 
-## Common Scenarios
+```bash
+sudo fuser -vm /mount/point
+sudo lsof | grep /mount/point
+```
 
-- Device busy
-- Cannot unmount
-- Process holding disk
+### 2. Kill Processes or Wait
 
-## Prevent It
+```bash
+sudo fuser -km /mount/point
+```
 
-- Kill processes using disk
-- Use lazy unmount
-- Check for open files
+### 3. Force Unmount
+
+```bash
+# Lazy unmount
+sudo umount -l /mount/point
+# Force unmount (NFS)
+sudo umount -f /mount/point
+```
+
+### 4. Use systemd
+
+```bash
+sudo systemctl stop <mountpoint>.mount
+```
+
+## Examples
+
+```bash
+$ sudo umount /mnt
+umount: /mnt: target is busy.
+
+$ sudo fuser -vm /mnt
+                     USER        PID ACCESS COMMAND
+/mnt:                jdoe       4567 cwd
+                     jdoe      19876 .c.. bash
+
+$ sudo umount -l /mnt
+# Filesystem detached
+```

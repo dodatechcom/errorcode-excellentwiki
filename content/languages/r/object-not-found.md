@@ -1,113 +1,89 @@
 ---
-title: "[Solution] R Error — Object 'X' Not Found Fix"
-description: "Fix R 'object not found' error when referencing undefined variables. Check variable names, scope, and ensure proper assignment."
-languages: ["r"]
-error-types: ["runtime-error"]
-severities: ["error"]
-weight: 5
+title: "[Solution] R Object Not Found Error Fix"
+description: "Fix 'object not found' in R. Learn how to resolve undefined variable errors, check variable scope, and properly load objects before use."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+language: "r"
+tags: ['r', 'statistics', 'objects', 'scope', 'variables']
+severity: "error"
 ---
 
-# Object 'X' Not Found — Fix
+# Object Not Found Error
 
-The error `Error: object 'X' not found` occurs when R cannot find an object with the given name in the current environment or any parent environments.
+## Error Message
+
+```
+Error: object 'x' not found
+```
 
 ## Common Causes
 
-```r
-# Cause 1: Typo in variable name
-my_variable <- 10
-print(my_varible)  # Error: object 'my_varible' not found
+- Variable was never created or assigned a value before it was referenced
+- Typo in the variable name -- R variable names are case-sensitive
+- Variable was defined in a different scope (e.g., inside a function) and is not accessible globally
+- Missing a required library() or source() call before using the object
+- Variable was removed from the environment with rm() but the code still references it
 
-# Cause 2: Variable defined in a different scope
-my_function <- function() {
-  local_var <- 42
+## Solutions
+
+### Solution 1: Check variable exists with ls()
+
+List all objects in the current environment and verify the variable name matches exactly, including case.
+
+```r
+# List all objects in current environment
+ls()
+
+# Check if the object exists
+exists("my_var")
+
+# Common typo: myVar vs my_var vs MyVar
+myVar <- 42
+myVar  # Works
+myvar  # Error: object 'myvar' not found
+```
+
+### Solution 2: Define the variable before use
+
+Ensure the variable is created in the right scope before it is referenced.
+
+```r
+# WRONG: Using variable before it is defined
+calculate_mean <- function(x) {
+  mean(x, trim = trim_value)  # Error: object 'trim_value' not found
 }
-print(local_var)  # Error: object 'local_var' not found
 
-# Cause 3: Missing library() call
-data <- iris  # Error if iris dataset not loaded
-
-# Cause 4: Using object before creating it
-result <- new_var + 1  # Error if new_var doesn't exist
-```
-
-## How to Fix
-
-### Fix 1: Check variable names for typos
-
-```r
-# Wrong
-x_valu <- 5
-y <- x_valu * 2  # Error: object 'x_valu' not found
-
-# Correct
-x_value <- 5
-y <- x_value * 2
-```
-
-### Fix 2: Ensure objects are in the global environment
-
-```r
-# Wrong — variable only exists inside function
-process_data <- function() {
-  temp <- c(1, 2, 3)
+# RIGHT: Define the variable or pass it as parameter
+calculate_mean <- function(x, trim_value = 0) {
+  mean(x, trim = trim_value)
 }
-print(temp)  # Error: object 'temp' not found
-
-# Correct — return or use <<- operator
-process_data <- function() {
-  temp <<- c(1, 2, 3)  # Assigns to parent environment
-}
-process_data()
-print(temp)  # Works: 1 2 3
 ```
 
-### Fix 3: Load required packages first
+### Solution 3: Load dependencies and source files
+
+Make sure all required packages and source files are loaded before referencing their objects.
 
 ```r
-# Wrong — calling function before library
-ggplot(iris, aes(x = Sepal.Length)) + geom_histogram()  # Error: object 'ggplot' not found
+# WRONG: Using dplyr functions without loading the package
+result <- filter(df, x > 5)  # Error: object 'filter' not found
 
-# Correct
-library(ggplot2)
-ggplot(iris, aes(x = Sepal.Length)) + geom_histogram()
+# RIGHT: Load the package first
+library(dplyr)
+result <- filter(df, x > 5)
+
+# RIGHT: Source dependent files first
+source("utils/helpers.R")
 ```
 
-### Fix 4: Create objects before using them
+## Prevention Tips
 
-```r
-# Wrong
-x <- y + 1  # Error: object 'y' not found
-
-# Correct
-y <- 10
-x <- y + 1  # x is now 11
-```
-
-## Examples
-
-```r
-# Example 1: Typo in variable name
-customer_name <- "Alice"
-print(custmer_name)
-# Error: object 'custmer_name' not found
-
-# Example 2: Forgetting to run previous line
-x <- 5
-# If this line is deleted: y <- x * 2
-print(y)
-# Error: object 'y' not found
-
-# Example 3: Variable in different environment
-f <- function() {
-  internal_var <- "hello"
-}
-print(internal_var)
-# Error: object 'internal_var' not found
-```
+- Use exists() to verify objects exist before referencing them in scripts
+- Keep variable names consistent and use IDE auto-complete to avoid typos
+- Place all library() and source() calls at the top of your script
+- Use tryCatch() to handle missing objects gracefully in production code
 
 ## Related Errors
 
-- [unused-argument]({{< relref "/languages/r/unused-argument" >}}) — argument not used in function
-- [error-in-if]({{< relref "/languages/r/error-in-if" >}}) — condition is missing or length zero
-- [non-vector-argument]({{< relref "/languages/r/non-vector-argument" >}}) — value cannot be used as logical
+- [r-object-not-found]({{< relref "/languages/r/r-object-not-found" >}})
+- [r-argument-error]({{< relref "/languages/r/r-argument-error" >}})
+- [error-in-eval]({{< relref "/languages/r/error-in-eval" >}})

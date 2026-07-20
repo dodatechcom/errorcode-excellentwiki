@@ -7,75 +7,73 @@ severities: ["error"]
 weight: 5
 ---
 
-# log Logger Error
+# Log Error
 
-Fix log crate logger errors. Handle log level configuration, output formatting, and initialization..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Log errors occur when using the `log` crate — uninitialized logger and level filtering issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// No logger initialized — all log calls are no-ops
+log::info!("This goes nowhere"); // No output
+
+// Wrong log level
+log::error!("This is actually a debug message"); // misleading
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Initialize a logger backend**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use env_logger;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+fn main() {
+    env_logger::init();
+    log::info!("Logger initialized!");
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use appropriate log levels**
 
 ```rust
-use std::time::Duration;
+log::trace!("Very detailed");
+log::debug!("Debug info");
+log::info!("General info");
+log::warn!("Warning");
+log::error!("Error occurred");
+```
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+3. **Set log level filter**
+
+```rust
+env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
+    .init();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use log::{trace, debug, info, warn, error};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn process_data(input: &str) {
+    debug!("Processing: {}", input);
+    if input.is_empty() {
+        warn!("Empty input received");
+        return;
+    }
+    info!("Processed {} bytes", input.len());
+}
+
+fn main() {
+    env_logger::init();
+    process_data("hello");
+    process_data("");
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Tracing Error]({{< relref "/languages/rust/tracing-error" >}}) — tracing crate
+- [Env Logger Error]({{< relref "/languages/rust/env-logger-error" >}}) — env_logger
+- [Tracing Error (Rust)]({{< relref "/languages/rust/rust-tracing-error" >}}) — Rust tracing

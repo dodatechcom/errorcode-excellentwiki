@@ -6,30 +6,51 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: SMART Attribute Threshold Exceeded
 
-# Linux: disk-smart-attribute — disk SMART attribute error
-
-Fix Linux disk-smart-attribute errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+SMART attribute threshold exceeded errors indicate a specific drive health metric has crossed its critical threshold, signaling likely failure.
 
 ## Common Causes
 
-- Attribute failed
-- Threshold exceeded
-- Value degraded
-- Self-test error
+- Wear leveling indicator exceeding threshold (on SSDs)
+- Temperature reading exceeding the drive's critical temperature
+- Read error rate degradation beyond acceptable limits
+- Reallocated sector count exceeding manufacturer threshold
+- Power-on hours approaching drive design lifetime
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-smart-attribute.md' mode='w' encoding='UTF-8'>
+### 1. Identify Failing Attribute
 
-## Common Scenarios
+```bash
+sudo smartctl -A /dev/sdX | grep -i "failed"
+sudo smartctl -l error /dev/sdX
+```
 
-- SMART attribute failed
-- Threshold exceeded
-- Self-test failed
+### 2. View All Attributes with Thresholds
 
-## Prevent It
+```bash
+sudo smartctl -a /dev/sdX | grep -A 100 "SMART Attributes"
+```
 
-- Monitor SMART regularly
-- Run self-tests
-- Replace failing disks
+### 3. Run Extended Test
+
+```bash
+sudo smartctl -t long /dev/sdX
+sudo smartctl -l selftest /dev/sdX
+```
+
+### 4. Backup Data
+
+```bash
+sudo rsync -av --progress /source/ /backup/destination/
+```
+
+## Examples
+
+```bash
+$ sudo smartctl -A /dev/sda | head -20
+ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      UPDATED  WHEN_FAILED RAW_VALUE
+  5 Reallocated_Sector_Ct   0x0033   036   036   036    Pre-fail  Always   FAILING_NOW 245
+197 Current_Pending_Sector  0x0032   100   100   000    Old_age   Always       -       150
+```

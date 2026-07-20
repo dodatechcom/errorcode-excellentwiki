@@ -6,30 +6,46 @@ severities: ["warning"]
 error-types: ["package-manager"]
 weight: 8
 ---
+# Linux: dpkg Dependency Error
 
-# Linux: dpkg-dependency-error — dpkg dependency conflict
-
-Fix Linux dpkg-dependency-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+dpkg dependency errors occur when a package requires another package to be installed or configured first.
 
 ## Common Causes
 
-- Package depends on unavailable
-- Version conflict
-- Conflicting packages
-- Unmet dependencies
+- Package dependencies not installed or broken
+- Version conflicts between packages from different repositories
+- Held packages preventing dependency resolution
+- Mixed package sources (testing/stable/unstable)
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/dpkg-dependency-error.md' mode='w' encoding='UTF-8'>
+### 1. Fix Broken Dependencies
 
-## Common Scenarios
+```bash
+sudo apt --fix-broken install
+```
 
-- Cannot install package
-- Dependency not available
-- Version conflict
+### 2. Check Package Dependencies
 
-## Prevent It
+```bash
+dpkg -s <package>
+apt-cache depends <package>
+```
 
-- Check dependencies first
-- Use apt --fix-broken
-- Remove conflicting packages
+### 3. Force Install (Last Resort)
+
+```bash
+sudo dpkg --ignore-depends=<dependency> -i <package>.deb
+```
+
+## Examples
+
+```bash
+$ sudo dpkg -i mypackage.deb
+dpkg: dependency problems prevent configuration of mypackage:
+ mypackage depends on libfoo (>= 1.0); however:
+  Package libfoo is not installed.
+
+$ sudo apt --fix-broken install
+# Resolves dependencies
+```

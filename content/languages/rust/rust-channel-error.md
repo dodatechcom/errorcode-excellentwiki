@@ -10,64 +10,119 @@ comments: true
 
 # Channel Error
 
-Fix channel communication errors. Resolve disconnected channels, send/receive failures, and async channel issues.
+Channel errors occur when using `std::sync::mpsc` or async channel types (`tokio::sync::mpsc`, `crossbeam::channel`) incorrectly — sending on a closed channel, capacity exhaustion, or type mismatches.
 
-## Why It Happens
-
-- Channel sender is dropped before receiver reads
-- Channel buffer is full and send blocks
-- Receiver is moved to another thread incorrectly
-- Async channel is polled from wrong executor
-
-## Common Error Messages
-
-- `error: channel failed`
-- `thread panicked at 'channels operation failed'`
-- `Error: unable to complete channels operation`
-- `Fatal: channels configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure channels is properly configured
-use channels::prelude::*;
+use std::sync::mpsc;
+
+// Sending on a closed channel
+let (tx, rx) = mpsc::channel();
+drop(rx); // Receiver dropped
+tx.send(42).unwrap(); // ERROR: SendError — receiver is gone
+
+// Bounded channel full — blocks or errors
+let (tx, rx) = mpsc::sync_channel(2);
+tx.send(1).unwrap();
+tx.send(2).unwrap();
+tx.try_send(3).unwrap(); // ERROR: TrySendError::Full
+
+// Wrong type sent through channel
+let (tx, rx) = mpsc::channel::<String>();
+tx.send(42).unwrap(); // ERROR: expected String, found i32
+```
+
+## How to Fix
+
+1. **Check if receiver is still alive before sending**
+
+```rust
+use std::sync::mpsc;
+
+let (tx, rx) = mpsc::channel();
+let tx_clone = tx.clone();
+
+// Check before sending
+if tx.send("hello").is_err() {
+    eprintln!("Receiver dropped, cannot send");
+}
+
+// Or use try_send for non-blocking
+match tx.try_send("data") {
+    Ok(()) => println!("Sent"),
+    Err(mpsc::TrySendError::Full(_)) => eprintln!("Channel full"),
+    Err(mpsc::TrySendError::Disconnected(_)) => eprintln!("Disconnected"),
+}
+```
+
+2. **Use unbounded channels when backpressure is not needed**
+
+```rust
+use std::sync::mpsc;
+
+let (tx, rx) = mpsc::channel();
+
+std::thread::spawn(move || {
+    for i in 0..100 {
+        tx.send(i).unwrap();
+    }
+});
+
+for received in rx {
+    println!("Got: {}", received);
+}
+```
+
+3. **Use tokio channels for async contexts**
+
+```rust
+use tokio::sync::mpsc;
+
+#[tokio::main]
+async fn main() {
+    let (tx, mut rx) = mpsc::channel(32);
+
+    let tx2 = tx.clone();
+    tokio::spawn(async move {
+        tx2.send("hello from task").await.unwrap();
+    });
+
+    while let Some(msg) = rx.recv().await {
+        println!("Received: {}", msg);
+    }
+}
+```
+
+## Examples
+
+```rust
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
 
 fn main() {
-    // Initialize properly
-    println!("Correct channels configuration");
+    let (tx, rx) = mpsc::channel();
+
+    // Producer thread
+    thread::spawn(move || {
+        let messages = vec!["hello", "world", "from", "rust"];
+        for msg in messages {
+            tx.send(msg).unwrap();
+            thread::sleep(Duration::from_millis(100));
+        }
+    });
+
+    // Consumer
+    for received in rx {
+        println!("Got: {}", received);
+    }
+    println!("Channel closed, done!");
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with channels
-2. Integrating channels into an existing codebase
-3. Upgrading channels to a newer version
-
-## Prevent It
-
-- Read the channels documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [MPSC Error]({{< relref "/languages/rust/rust-mpsc-error" >}}) — multi-producer channels
+- [Mutex Error]({{< relref "/languages/rust/rust-mutex-error" >}}) — shared state
+- [Std Thread Error]({{< relref "/languages/rust/rust-std-thread-error" >}}) — threading issues

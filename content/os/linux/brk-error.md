@@ -7,29 +7,50 @@ error-types: ["process-error"]
 weight: 8
 ---
 
-# Linux: brk-error — brk/mmap failed
+# Linux: Brk (Heap) Error
 
-Fix Linux brk-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+BRK errors occur when the program break (heap) cannot be extended due to memory limits or fragmentation.
 
 ## Common Causes
 
-- Memory allocation failed
-- Address space full
-- ASLR randomization
-- Limit exceeded
+- Process memory limit (ulimit) too low
+- System-wide vm.overcommit_memory policy blocking allocation
+- Memory fragmentation preventing large allocations
+- ASLR (Address Space Layout Randomization) conflicts
+- Container or cgroup memory limit hit
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/brk-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Process Limits
 
-## Common Scenarios
+```bash
+ulimit -a
+cat /proc/<pid>/limits | grep "max memory"
+```
 
-- Memory allocation failed
-- brk failed
-- Address space full
+### 2. Check Memory Status
 
-## Prevent It
+```bash
+cat /proc/meminfo
+free -h
+cat /proc/sys/vm/overcommit_memory
+```
 
-- Check memory limits
-- Monitor address space
-- Increase virtual memory
+### 3. Increase Limits
+
+```bash
+ulimit -m unlimited
+# In systemd service file:
+# LimitMEMLOCK=infinity
+```
+
+## Examples
+
+```bash
+$ ulimit -a | grep memory
+max memory size         (kbytes, -m)  unlimited
+$ cat /proc/sys/vm/overcommit_memory
+2
+# Strict overcommit - allocate more swap or set to 1
+$ sudo sysctl vm.overcommit_memory=1
+```

@@ -7,75 +7,78 @@ severities: ["error"]
 weight: 5
 ---
 
-# rsa Decryption Error
+# RSA Error
 
-Fix RSA decryption errors. Handle padding schemes, key size, and OAEP configuration..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+RSA errors occur when using the `rsa` crate — key generation, padding, and decryption failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Key too small
+let private_key = RsaPrivateKey::new(&mut rng, 512)?; // Too small for security
+
+// Wrong padding scheme
+let padding = PaddingScheme::new_pkcs1v15_encrypt(); // Wrong for signing
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Generate keys with sufficient size**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use rsa::{RsaPrivateKey, RsaPublicKey, pkcs8::EncodePublicKey};
+use rsa::pkcs1v15::{SigningKey, VerifyingKey};
+use sha2::{Sha256, Digest};
+
+let mut rng = rand::thread_rng();
+let private_key = RsaPrivateKey::new(&mut rng, 2048)?; // At least 2048
+let public_key = RsaPublicKey::from(&private_key);
 ```
 
-### Fix 2: Add proper error handling
+2. **Use correct padding**
 
 ```rust
-use anyhow::Result;
+use rsa::{Pkcs1v15Sign, pkcs1v15::SigningKey};
+use sha2::Sha256;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let signing_key = SigningKey::<Sha256>::new(private_key);
+let verifying_key = VerifyingKey::<Sha256>::new(public_key);
+
+let digest = Sha256::digest(b"message");
+let sig = signing_key.sign(&digest)?;
+verifying_key.verify(&digest, &sig)?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle decryption properly**
 
 ```rust
-use std::time::Duration;
+use rsa::Pkcs1v15Encrypt;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let encrypted = public_key.encrypt(&mut rng, Pkcs1v15Encrypt, b"secret")?;
+let decrypted = private_key.decrypt(Pkcs1v15Encrypt, &encrypted)?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use rsa::{RsaPrivateKey, RsaPublicKey, pkcs1v15::{SigningKey, VerifyingKey}};
+use sha2::{Sha256, Digest};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut rng = rand::thread_rng();
+    let private_key = RsaPrivateKey::new(&mut rng, 2048)?;
+    let public_key = RsaPublicKey::from(&private_key);
+
+    let signing_key = SigningKey::<Sha256>::new(private_key.clone());
+    let digest = Sha256::digest(b"Hello, RSA!");
+    let sig = signing_key.sign(&digest);
+    println!("Signature: {} bytes", sig.len());
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — crypto
+- [OpenSSL Error]({{< relref "/languages/rust/openssl-error-rs" >}}) — OpenSSL
+- [Ed25519 Dalek Error]({{< relref "/languages/rust/ed25519-dalek-error" >}}) — Ed25519

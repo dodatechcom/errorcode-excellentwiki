@@ -1,106 +1,163 @@
 ---
-title: "[Solution] PHP Union Type Declaration Error Fix"
-description: "Fix 'Declaration of X must be compatible with Y' union type errors in PHP 8.0+. Ensure correct override signatures."
-date: 2026-07-17T10:00:00+08:00
-draft: false
-language: "php"
-tags: ["php", "php80", "union-types", "lsp", "declaration-error"]
-severity: "error"
+title: "[Solution] PHP 8.0 Union Type Error — Type Declaration Doesn't Accept Union Types"
+description: "Fix PHP 8.0 Union Type Error by updating type declarations to use proper union syntax. Copy-paste solutions with code examples."
+languages: ["php"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 301
 ---
 
-# Union Type Declaration Error
+# PHP 8.0 Union Type Error — Type Declaration Doesn't Accept Union Types
 
-## Error Message
-
-```
-Declaration of ChildClass::process(mixed $input): int|string must be compatible with ParentClass::process(string $input): string|int
-```
+A Union Type Error occurs when a type declaration doesn't accept union types or the syntax is incorrect. PHP 8.0 introduced union types (e.g., `int|string`) allowing parameters, return types, and properties to accept multiple types. Before PHP 8.0, you had to use PHPDoc annotations instead.
 
 ## Common Causes
 
-- A child class method uses a union return type that is not compatible with the parent class signature
-- Overriding a method with a wider or narrower union type than the parent declaration
-- Mixing PHP 8.0 union types with older non-union type hints in an inheritance hierarchy
-- Third-party libraries compiled against a different PHP version with incompatible union types
-
-## Solutions
-
-### Solution 1: Match the parent class method signature exactly
-
-Ensure child class overrides use the same union types as the parent class declaration.
-
 ```php
 <?php
-class Repository {
-    public function find(int $id): string|int {
-        return $id > 0 ? "item-$id" : 0;
-    }
+// Cause 1: Using pre-PHP 8.0 syntax for multiple types
+function process(int string $value) { // Fatal error — invalid syntax
+    return $value;
 }
 
-class UserRepository extends Repository {
-    // WRONG: return type too narrow
-    // public function find(int $id): string { ... }
-
-    // CORRECT: same signature as parent
-    public function find(int $id): string|int {
-        return $id > 0 ? "user-$id" : 0;
-    }
-}
-?>
-```
-
-### Solution 2: Use covariant return types safely
-
-PHP 8.0 allows covariant return types — a child may return a more specific type, but not a wider one.
-
-```php
-<?php
-class Shape {
-    public function describe(): string|array {
-        return 'shape';
-    }
+// Cause 2: Union type with incompatible types (e.g., class and scalar together improperly)
+function setData(array|int|string $value) { // Valid in PHP 8.0, but usage may cause issues
+    return $value;
 }
 
-class Circle extends Shape {
-    // CORRECT: returning a narrower type (string) is allowed
-    public function describe(): string {
-        return 'circle';
-    }
-}
-?>
-```
-
-### Solution 3: Update the parent class to use union types
-
-If the parent class uses non-union types, modernize it with union types so children can override freely.
-
-```php
-<?php
-// BEFORE (PHP 7.x style):
+// Cause 3: Mismatched union type in child class
 class Base {
-    public function convert(string|int $value): string {
-        return (string) $value;
-    }
+    public int|string $id;
+}
+class Child extends Base {
+    public int|float $id; // Error — cannot change type in child
 }
 
-// AFTER (PHP 8.0+ union types):
-class Base {
-    public function convert(string|int $value): string|float {
-        return is_numeric($value) ? (float) $value : 0.0;
-    }
+// Cause 4: Returning wrong type from union-typed function
+function getId(): int|string {
+    return true; // TypeError — bool not in union
+}
+
+// Cause 5: Passing wrong type to union-typed parameter
+function store(int|string $id): void {
+    echo $id;
+}
+store([]); // TypeError — array not accepted
+?>
+```
+
+## How to Fix
+
+### Fix 1: Update function signatures to use proper union syntax
+
+```php
+<?php
+// Before: PHPDoc only (no runtime enforcement)
+/**
+ * @param int|string $id
+ */
+function process($id) {
+    return $id;
+}
+
+// After: Proper union type in PHP 8.0+
+function process(int|string $id): int|string {
+    return $id;
 }
 ?>
 ```
 
-## Prevention Tips
+### Fix 2: Use matching types in child classes
 
-- Always run your test suite after upgrading PHP to catch signature incompatibilities
-- Use PHPStan at level 6+ to detect union type mismatches at static analysis time
-- Be cautious with vendor libraries — check their PHP version requirements before upgrading
-- Document union type contracts clearly in your API documentation
+```php
+<?php
+class Base {
+    public int|string $id;
+}
+
+class Child extends Base {
+    // Correct — must include all types from parent
+    public int|string $id;
+
+    // Or remove the type declaration entirely if flexible typing is needed
+}
+?>
+```
+
+### Fix 3: Validate input before passing to union-typed functions
+
+```php
+<?php
+function store(int|string $id): void {
+    echo $id;
+}
+
+function processInput(mixed $input): void {
+    if (is_int($input) || is_string($input)) {
+        store($input);
+    } else {
+        throw new InvalidArgumentException(
+            'Expected int or string, got ' . get_debug_type($input)
+        );
+    }
+}
+
+processInput(42);       // OK
+processInput("abc");    // OK
+processInput([]);       // InvalidArgumentException
+?>
+```
+
+### Fix 4: Use proper return type checking
+
+```php
+<?php
+function getId(): int|string {
+    $value = someExternalCall();
+
+    if (is_int($value) || is_string($value)) {
+        return $value;
+    }
+
+    // Fallback to a valid type
+    return 0;
+}
+?>
+```
+
+## Examples
+
+```php
+<?php
+// Union types with classes
+class User {
+    public function __construct(
+        private int|string $identifier,
+        private string|null $nickname,
+    ) {}
+
+    public function getIdentifier(): int|string {
+        return $this->identifier;
+    }
+
+    public function getNickname(): string|null {
+        return $this->nickname ?? 'Anonymous';
+    }
+}
+
+$user1 = new User(1, null);
+$user2 = new User('abc123', 'Bob');
+
+echo $user1->getIdentifier(); // 1
+echo $user2->getNickname();   // Bob
+
+// Union types with enum (PHP 8.1+)
+// function setStatus(Status|BackupStatus $status): void { ... }
+?>
+```
 
 ## Related Errors
 
-- [PHP Intersection Type Error]({{< relref "/languages/php/php81-intersection-type" >}})
-- [PHP Typed Property Error]({{< relref "/languages/php/php80-typed-property-error" >}})
-- [PHP Parse Error]({{< relref "/languages/php/parse-error" >}})
+- [PHP 8.0 Union Type Declaration Error](/languages/php/php80-union-type-declaration/) — Union type syntax errors
+- [PHP 8.1 Intersection Type Error](/languages/php/php81-intersection-types/) — Using `&` instead of `|`
+- [PHP 8.0 Typed Property Error](/languages/php/php80-typed-property-error/) — Typed property initialization issues

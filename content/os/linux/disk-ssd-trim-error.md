@@ -6,30 +6,62 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 6
 ---
+# Linux: SSD TRIM Error
 
-# Linux: disk-ssd-trim-error — SSD TRIM error
-
-Fix Linux disk-ssd-trim-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+TRIM errors occur when the kernel cannot issue discard commands to an SSD, preventing efficient garbage collection and degrading performance.
 
 ## Common Causes
 
-- TRIM not enabled
-- TRIM not working
-- Performance degraded
-- fstrim failed
+- Filesystem mounted without discard support
+- Kernel driver bug for the specific SSD controller
+- SSD firmware does not support TRIM or has it disabled
+- ATA pass-through issues with hardware RAID controllers
+- Encrypted volumes not passing TRIM commands through (LUKS)
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-ssd-trim-error.md' mode='w' encoding='UTF-8'>
+### 1. Check TRIM Support
 
-## Common Scenarios
+```bash
+lsblk -D
+# Check DISC-GRAN and DISC-MAX columns
+```
 
-- TRIM not working
-- Performance degraded
-- SSD not optimized
+### 2. Enable Periodic TRIM
 
-## Prevent It
+```bash
+sudo systemctl enable fstrim.timer
+sudo systemctl start fstrim.timer
+sudo fstrim -av
+```
 
-- Enable fstrim timer
-- Add discard to fstab
-- Run fstrim periodically
+### 3. Enable Mount-Time Discard
+
+```bash
+# Add 'discard' to mount options in /etc/fstab
+# /dev/sda1 / ext4 defaults,discard 0 1
+```
+
+### 4. Check Queue Limits
+
+```bash
+cat /sys/block/sdX/queue/discard_granularity
+cat /sys/block/sdX/queue/discard_max_bytes
+```
+
+## Examples
+
+```bash
+$ lsblk -D
+NAME   DISC-ALN DISC-GRAN DISC-MAX DISC-ZERO
+sda           0      512B       2G         0
+sda1          0      512B       2G         0
+
+$ sudo fstrim -v /
+/: 25.1 GiB were trimmed
+
+$ sudo systemctl status fstrim.timer
+● fstrim.timer - Discard unused blocks once a week
+     Loaded: loaded
+     Active: active (waiting)
+```

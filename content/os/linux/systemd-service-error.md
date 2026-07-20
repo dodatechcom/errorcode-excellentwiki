@@ -6,30 +6,74 @@ severities: ["warning"]
 error-types: ["process-error"]
 weight: 6
 ---
+# Linux: systemd Service Error
 
-# Linux: systemd-service-error — systemd service failed
-
-Fix Linux systemd-service-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd service errors occur when a systemd unit fails to start, stop, or operate correctly.
 
 ## Common Causes
 
-- Service not starting
-- Configuration error
-- Dependency failed
-- Resource limit
+- Unit file has syntax errors or incorrect paths
+- Service fails to start because of missing dependencies
+- Resource limits restricting the service (memory, CPU, tasks)
+- Service reaches restart limit and enters failed state
+- Permission denied accessing required files
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/systemd-service-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Service Status
 
-## Common Scenarios
+```bash
+sudo systemctl status <service>
+sudo systemctl status <service> -l --no-pager
+```
 
-- Service failed
-- Service not starting
-- Dependency failed
+### 2. View Full Logs
 
-## Prevent It
+```bash
+sudo journalctl -u <service> -n 50 --no-pager
+sudo journalctl -u <service> -f  # Follow logs
+```
 
-- Check service logs
-- Verify configuration
-- Check dependencies
+### 3. Check Unit File
+
+```bash
+sudo systemctl cat <service>
+sudo systemctl show <service>
+```
+
+### 4. Reset Failed State
+
+```bash
+sudo systemctl reset-failed <service>
+sudo systemctl restart <service>
+```
+
+### 5. Edit Unit File
+
+```bash
+sudo systemctl edit <service>
+# Creates override in /etc/systemd/system/<service>.d/override.conf
+```
+
+### 6. Reload systemd
+
+```bash
+sudo systemctl daemon-reload
+```
+
+## Examples
+
+```bash
+$ sudo systemctl status myapp
+● myapp.service - My Application
+     Loaded: loaded (/etc/systemd/system/myapp.service; enabled; preset: enabled)
+     Active: failed (Result: exit-code) since Mon 2026-07-20 14:30:45 UTC; 1min ago
+   Main PID: 12345 (code=exited, status=1/FAILURE)
+
+$ sudo journalctl -u myapp -n 10
+Jul 20 14:30:45 server myapp[12345]: Error: cannot open /etc/myapp/config.json: No such file or directory
+
+$ sudo systemctl edit myapp
+# Add [Service] Environment=CONFIG_PATH=/etc/myapp/config.json
+$ sudo systemctl daemon-reload && sudo systemctl start myapp
+```

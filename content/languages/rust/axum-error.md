@@ -7,75 +7,88 @@ severities: ["error"]
 weight: 5
 ---
 
-# axum Routing Error
+# Axum Error
 
-Fix axum routing and handler errors. Handle route extraction, state management, and middleware..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Axum errors occur when using the Axum web framework — handler signature mismatches, extractor conflicts, and state sharing issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use axum::{extract::Path, routing::get, Router};
+
+// Handler returns non-IntoResponse type
+async fn get_user(Path(id): Path<u32>) -> i32 { id }
+
+// State not Clone + Send + Sync
+struct AppState { data: std::cell::RefCell<String> } // RefCell !Sync
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Return types implementing IntoResponse**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use axum::{routing::get, Router, Json, http::StatusCode};
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+async fn get_user() -> (StatusCode, Json<serde_json::Value>) {
+    (StatusCode::OK, Json(serde_json::json!({"id": 1})))
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Share state with Arc**
 
 ```rust
-use std::time::Duration;
+use axum::{extract::State, routing::get, Router};
+use std::sync::Arc;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+struct AppState { db: String }
+
+async fn handler(State(state): State<Arc<AppState>>) -> String {
+    format!("DB: {}", state.db)
+}
+```
+
+3. **Implement IntoResponse for errors**
+
+```rust
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+
+enum AppError { NotFound }
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response {
+        StatusCode::NOT_FOUND.into_response()
+    }
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use axum::{extract::{Path, State}, routing::get, Json, Router};
+use std::sync::Arc;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+struct AppState { db: String }
+
+async fn get_user(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<u64>,
+) -> Result<Json<serde_json::Value>, StatusCode> {
+    Ok(Json(serde_json::json!({"id": id, "db": state.db})))
+}
+
+#[tokio::main]
+async fn main() {
+    let state = Arc::new(AppState { db: "sqlite://db.sqlite".into() });
+    let app = Router::new().route("/users/:id", get(get_user)).with_state(state);
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — HTTP layer
+- [Tokio Runtime Error]({{< relref "/languages/rust/rust-tokio-runtime-error" >}}) — async runtime
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — server not running

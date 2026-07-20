@@ -7,52 +7,57 @@ error-types: ["boot-error"]
 weight: 10
 ---
 
-# Linux: systemd-dependency-loop — Circular dependency detected
+# Linux: systemd Dependency Loop Error
 
-Fix Linux systemd-dependency-loop errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd dependency loop errors occur when the systemd dependency loop component fails to operate correctly.
 
 ## Common Causes
 
-- Services depend on each other
-- Incorrect Requires=/Wants=
-- After= and Requires= cycles
-- Bad third-party dependencies
+- Misconfiguration in unit files or systemd configuration
+- Permission or ownership issues on required paths
+- Dependency failures from other systemd units
+- Resource limits or system constraints reached
+- SELinux or AppArmor policy blocking operations
 
 ## How to Fix
 
-### 1. Analyze Dependencies
+### 1. Check systemd Unit Status
+
 ```bash
-systemctl list-dependencies <service>.service
-systemd-analyze verify <service>.service
+sudo systemctl status systemd-dependency-loop
+sudo journalctl -u systemd-dependency-loop --no-pager -n 50
 ```
 
-### 2. Break Loop
+### 2. Verify Configuration Files
+
 ```bash
-sudo systemctl edit <service>.service
-# Change Requires= to Wants=
+ls /etc/systemd/*.conf /usr/lib/systemd/*.conf 2>/dev/null
+systemctl cat systemd-dependency-loop
 ```
 
-### 3. Use Ordering
+### 3. Check System Logs
+
 ```bash
-# Replace Requires= with Wants= and keep After=
+sudo journalctl -xe --no-pager -n 30
+sudo dmesg | tail -20
 ```
 
-### 4. Override Units
+### 4. Restart and Re-evaluate
+
 ```bash
-sudo systemctl edit <service>.service
-[Unit]
-Wants=other.service
-After=other.service
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-dependency-loop
 ```
 
-## Common Scenarios
+## Examples
 
-- Services fail after install
-- Dependency loop errors
-- Boot stalls
+```bash
+$ sudo systemctl status systemd-dependency-loop
+* systemd-dependency-loop.service - systemd Dependency Loop
+   Loaded: loaded (/usr/lib/systemd/system/systemd-dependency-loop.service; static)
+   Active: failed (Result: exit-code)
 
-## Prevent It
-
-- Prefer Wants= over Requires=
-- Use systemd-analyze verify
-- Document dependency chains
+$ sudo journalctl -u systemd-dependency-loop -n 10
+Jul 20 14:30:45 server systemd[dependency-loop][12345]: Failed to process configuration
+Jul 20 14:30:45 server systemd[1]: systemd-dependency-loop.service: Main process exited, code=exited, status=1/FAILURE
+```

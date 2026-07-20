@@ -6,30 +6,54 @@ severities: ["warning"]
 error-types: ["package-manager"]
 weight: 8
 ---
+# Linux: YUM Error
 
-# Linux: yum-error — yum error
-
-Fix Linux yum-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+YUM (Yellowdog Updater Modified) errors occur when the package manager fails to install, update, or remove packages on RHEL/CentOS 7 and older.
 
 ## Common Causes
 
-- Repository not found
-- Metadata corrupted
-- Dependency resolution failed
-- Network issue
+- YUM cache corrupted or outdated
+- Repository metadata expired or unreachable
+- GPG key verification failure
+- Package dependency issues
+- Lock file from another YUM process
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/yum-error.md' mode='w' encoding='UTF-8'>
+### 1. Clean YUM Cache
 
-## Common Scenarios
+```bash
+sudo yum clean all
+sudo rm -rf /var/cache/yum/*
+```
 
-- yum install fails
-- Repository error
-- Metadata issue
+### 2. Rebuild Metadata
 
-## Prevent It
+```bash
+sudo yum makecache
+```
 
-- Clean yum cache
-- Update metadata
-- Check repository status
+### 3. Clear Lock File
+
+```bash
+sudo rm -f /var/run/yum.pid
+```
+
+### 4. Fix GPG Keys
+
+```bash
+sudo yum update --nogpgcheck
+```
+
+## Examples
+
+```bash
+$ sudo yum install httpd
+Loaded plugins: fastestmirror
+Error: Cannot find a valid baseurl for repo: base/7/x86_64
+
+$ sudo yum clean all
+$ sudo yum makecache
+$ sudo yum install httpd
+# Now succeeds
+```

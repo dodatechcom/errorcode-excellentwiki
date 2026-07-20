@@ -10,64 +10,139 @@ comments: true
 
 # WASM Bindgen Error
 
-Fix wasm-bindgen errors. Resolve JavaScript interop, type mapping, and WebAssembly compilation issues.
+WASM bindgen errors occur when using `wasm-bindgen` to generate JavaScript bindings for Rust WebAssembly — type conversion failures, missing imports, and browser compatibility issues.
 
-## Why It Happens
-
-- Configuration error in wasm-bindgen
-- API usage does not match expected patterns
-- Missing required features or dependencies
-- Platform-specific behavior differs from expectations
-
-## Common Error Messages
-
-- `error: wasmbindgen failed`
-- `thread panicked at 'wasm-bindgen operation failed'`
-- `Error: unable to complete wasm-bindgen operation`
-- `Fatal: wasm-bindgen configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure wasm-bindgen is properly configured
-use wasm-bindgen::prelude::*;
+use wasm_bindgen::prelude::*;
 
-fn main() {
-    // Initialize properly
-    println!("Correct wasm-bindgen configuration");
+// Returning non-WASM-safe types
+#[wasm_bindgen]
+fn bad_return() -> Vec<String> { // Vec<String> needs conversion
+    vec!["hello".into()]
+}
+
+// Missing #[wasm_bindgen] attribute
+fn exported_to_js() -> i32 { 42 } // Not visible in JS
+
+// Using std types not available in WASM
+use std::net::TcpStream; // Not available in wasm32
+```
+
+## How to Fix
+
+1. **Use WASM-compatible types**
+
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn greet(name: &str) -> String {
+    format!("Hello, {}!", name)
+}
+
+#[wasm_bindgen]
+pub fn fibonacci(n: u32) -> u64 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => {
+            let mut a: u64 = 0;
+            let mut b: u64 = 1;
+            for _ in 2..=n {
+                let temp = a + b;
+                a = b;
+                b = temp;
+            }
+            b
+        }
+    }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Use `js_sys` and `web_sys` for browser APIs**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn get_window_title() -> String {
+    web_sys::window()
+        .and_then(|w| w.document())
+        .and_then(|d| d.title())
+        .unwrap_or_default()
+}
+
+#[wasm_bindgen]
+pub fn set_element_text(id: &str, text: &str) -> Result<(), JsValue> {
+    let window = web_sys::window().unwrap();
+    let document = window.document().unwrap();
+    let element = document.get_element_by_id(id).unwrap();
+    element.set_text_content(Some(text))?;
     Ok(())
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Handle console logging from WASM**
 
 ```rust
-use std::error::Error;
+use wasm_bindgen::prelude::*;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
+
+#[wasm_bindgen]
+pub fn process_data(data: &str) -> String {
+    console_log!("Processing: {}", data);
+    data.to_uppercase()
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with wasm-bindgen
-2. Integrating wasm-bindgen into an existing codebase
-3. Upgrading wasm-bindgen to a newer version
+```rust
+use wasm_bindgen::prelude::*;
 
-## Prevent It
+#[wasm_bindgen]
+pub struct Counter {
+    value: i32,
+}
 
-- Read the wasm-bindgen documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+#[wasm_bindgen]
+impl Counter {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Counter {
+        Counter { value: 0 }
+    }
+
+    pub fn increment(&mut self) {
+        self.value += 1;
+    }
+
+    pub fn get_value(&self) -> i32 {
+        self.value
+    }
+}
+```
+
+```javascript
+// In JavaScript
+const { Counter } = require('./my_wasm_pkg');
+const counter = new Counter();
+counter.increment();
+console.log(counter.get_value()); // 1
+```
+
+## Related Errors
+
+- [NAPI Error]({{< relref "/languages/rust/rust-napi-error" >}}) — Node.js bindings
+- [PyO3 Error]({{< relref "/languages/rust/rust-pyo3-error" >}}) — Python bindings
+- [FFI Gen Error]({{< relref "/languages/rust/rust-ffigen-error" >}}) — FFI generation

@@ -8,66 +8,138 @@ weight: 5
 comments: true
 ---
 
-# Rc Error
+# RC Error
 
-Fix Rc reference counting errors. Resolve non-thread-safe shared ownership and reference cycle issues.
+RC errors occur when using `Rc` or `Arc` for reference counting — circular references causing memory leaks, use-after-free, or thread-safety violations with `Rc`.
 
-## Why It Happens
-
-- Rc is sent across threads which is not allowed
-- Reference cycle causes memory leak
-- Rc count overflows
-- Rc is used where Arc is required for thread safety
-
-## Common Error Messages
-
-- `error: rc failed`
-- `thread panicked at 'Rc type operation failed'`
-- `Error: unable to complete Rc type operation`
-- `Fatal: Rc type configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure Rc type is properly configured
-use Rc_type::prelude::*;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+// Circular reference — memory leak
+struct Node {
+    value: i32,
+    next: Option<Rc<RefCell<Node>>>,
+}
+
+let a = Rc::new(RefCell::new(Node { value: 1, next: None }));
+let b = Rc::new(RefCell::new(Node { value: 2, next: Some(Rc::clone(&a)) }));
+a.borrow_mut().next = Some(Rc::clone(&b)); // Cycle: a -> b -> a
+
+// Using Rc across threads — Rc is !Send + !Sync
+use std::thread;
+let data = Rc::new(42);
+thread::spawn(move || println!("{}", data)); // ERROR: Rc cannot be sent between threads
+
+// Use-after-free: holding reference after last Rc is dropped
+```
+
+## How to Fix
+
+1. **Use `Weak<T>` to break reference cycles**
+
+```rust
+use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+struct Node {
+    value: i32,
+    parent: Weak<RefCell<Node>>,
+    children: Vec<Rc<RefCell<Node>>>,
+}
+
+let parent = Rc::new(RefCell::new(Node {
+    value: 1,
+    parent: Weak::new(),
+    children: vec![],
+}));
+
+let child = Rc::new(RefCell::new(Node {
+    value: 2,
+    parent: Rc::downgrade(&parent), // Weak reference — no cycle
+    children: vec![],
+}));
+
+parent.borrow_mut().children.push(Rc::clone(&child));
+```
+
+2. **Use `Arc` instead of `Rc` for multi-threaded scenarios**
+
+```rust
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+let shared = Arc::new(Mutex::new(vec![1, 2, 3]));
+let mut handles = vec![];
+
+for i in 0..5 {
+    let shared = Arc::clone(&shared);
+    handles.push(thread::spawn(move || {
+        shared.lock().unwrap().push(i);
+    }));
+}
+for h in handles { h.join().unwrap(); }
+println!("{:?}", *shared.lock().unwrap());
+```
+
+3. **Use `Rc::strong_count` to debug reference cycles**
+
+```rust
+use std::rc::Rc;
+
+let a = Rc::new(String::from("hello"));
+println!("Count after creation: {}", Rc::strong_count(&a)); // 1
+
+let b = Rc::clone(&a);
+println!("Count after clone: {}", Rc::strong_count(&a)); // 2
+
+drop(b);
+println!("Count after drop: {}", Rc::strong_count(&a)); // 1
+```
+
+## Examples
+
+```rust
+use std::rc::{Rc, Weak};
+use std::cell::RefCell;
+
+#[derive(Debug)]
+struct Tree {
+    value: String,
+    parent: Weak<RefCell<Tree>>,
+    children: Vec<Rc<RefCell<Tree>>>,
+}
+
+fn new_tree(value: &str) -> Rc<RefCell<Tree>> {
+    Rc::new(RefCell::new(Tree {
+        value: value.to_string(),
+        parent: Weak::new(),
+        children: vec![],
+    }))
+}
+
+fn add_child(parent: &Rc<RefCell<Tree>>, child: &Rc<RefCell<Tree>>) {
+    child.borrow_mut().parent = Rc::downgrade(parent);
+    parent.borrow_mut().children.push(Rc::clone(child));
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct Rc type configuration");
+    let root = new_tree("root");
+    let child1 = new_tree("child1");
+    let child2 = new_tree("child2");
+
+    add_child(&root, &child1);
+    add_child(&root, &child2);
+
+    println!("Root: {:?}", root.borrow());
+    println!("Root strong count: {}", Rc::strong_count(&root)); // 1 — no cycle
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with Rc type
-2. Integrating Rc type into an existing codebase
-3. Upgrading Rc type to a newer version
-
-## Prevent It
-
-- Read the Rc type documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Arc Error]({{< relref "/languages/rust/rust-arc-error" >}}) — atomic reference counting
+- [Mutex Error]({{< relref "/languages/rust/rust-mutex-error" >}}) — thread-safe mutability
+- [Cell Error]({{< relref "/languages/rust/rust-cell-error" >}}) — interior mutability

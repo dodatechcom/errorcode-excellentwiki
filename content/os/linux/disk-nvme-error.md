@@ -6,30 +6,60 @@ severities: ["critical"]
 error-types: ["disk"]
 weight: 12
 ---
+# Linux: NVMe Error
 
-# Linux: disk-nvme-error — NVMe disk error
-
-Fix Linux disk-nvme-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+NVMe errors indicate problems with Non-Volatile Memory Express SSDs. These range from command timeouts to fatal controller errors.
 
 ## Common Causes
 
-- Controller failure
-- Namespace issue
-- Temperature warning
-- Media error
+- NVMe firmware bugs or incompatibility with kernel version
+- PCIe link issues (training failures, width/speed downgrades)
+- Power management transitions causing device timeouts
+- Drive reaching endurance limits (write wear out)
+- Overheating causing thermal throttling or shutdown
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-nvme-error.md' mode='w' encoding='UTF-8'>
+### 1. Check NVMe Device
 
-## Common Scenarios
+```bash
+sudo nvme list
+sudo nvme list-subsys /dev/nvme0
+sudo nvme error-log /dev/nvme0
+```
 
-- NVMe errors
-- Controller failure
-- High temperature
+### 2. Check Kernel Messages
 
-## Prevent It
+```bash
+dmesg | grep -i nvme | tail -40
+```
 
-- Monitor NVMe health
-- Check temperature
-- Replace failing disks
+### 3. Check PCIe Link
+
+```bash
+sudo lspci -vvvs $(readlink /sys/class/nvme/nvme0/device | cut -d'/' -f4) | grep -E "Speed|Width|LnkSta"
+```
+
+### 4. Reset NVMe Controller
+
+```bash
+echo 1 | sudo tee /sys/class/nvme/nvme0/device/remove
+echo 1 | sudo tee /sys/bus/pci/rescan
+```
+
+## Examples
+
+```bash
+$ sudo nvme error-log /dev/nvme0
+Error Log Entries for device:nvme0 entries:12
+ Entry[0]
+ error_count    : 5
+ opcode         : 0x02
+ sqid           : 0
+ status_code    : 0x404 (Internal Device Error)
+
+$ dmesg | grep nvme
+[ 1234.567] nvme nvme0: I/O 123 QID 2 timeout, aborting
+[ 1234.789] nvme nvme0: Abort status: 0x0
+[ 1235.012] nvme nvme0: I/O 123 QID 2 timeout, reset controller
+```

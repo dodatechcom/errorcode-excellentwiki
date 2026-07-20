@@ -1,134 +1,133 @@
 ---
-title: "[Solution] Python Polars DataFrame Operation Error — How to Fix"
-description: "Fix Python Polars dataframe operation errors. Resolve column not found, type mismatches, and lazy evaluation issues."
+title: "[Solution] Python Polars Error — ColumnNotFound, SchemaError & ComputeError"
+description: "Fix Python Polars errors by resolving column references, schema mismatches, and expression errors. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 402
 ---
 
-# Python Polars DataFrame Operation Error
+# Python Polars Error — ColumnNotFound, SchemaError & ComputeError
 
-A `polars.exceptions.ColumnNotFoundError` or `polars.exceptions.SchemaError` occurs when you reference a column that does not exist, apply an operation incompatible with the column dtype, or misuse the lazy evaluation API.
+Polars errors arise from strict schema enforcement, column reference issues, and expression evaluation failures. Unlike pandas, Polars does not silently cast types or allow ambiguous column access.
 
-## Why It Happens
-
-Polars uses a strict schema system. Unlike pandas, it does not silently cast types or allow referencing columns by position when named access is expected. Errors arise from typos in column names, mixing lazy and eager APIs, or performing operations that conflict with the underlying data types.
-
-## Common Error Messages
-
-- `ColumnNotFoundError: "column_name" not found in DataFrame/Scheme`
-- `SchemaError: type mismatch for column "age": expected Int64, got String`
-- `ComputeError: cannot join on key of type Utf8 and Int64`
-- `InvalidOperationError: this operation is not implemented for Float32`
-
-## How to Fix It
-
-### Fix 1: Verify column existence before operations
+## Common Causes
 
 ```python
 import polars as pl
 
-df = pl.DataFrame({"name": ["Alice", "Bob"], "age": [25, 30]})
-
-# Wrong — raises ColumnNotFoundError
-result = df.select("nam")
-
-# Correct — check columns first
-if "name" in df.columns:
-    result = df.select("name")
-else:
-    print(f"Available columns: {df.columns}")
-
-# Use pl.col with string validation
-result = df.select(pl.col("name").alias("full_name"))
+# 1. Referencing a column that doesn't exist
+df = pl.DataFrame({"name": ["Alice"], "age": [30]})
+df.select("nam")  # ColumnNotFoundError
 ```
 
-### Fix 2: Handle schema type mismatches
+```python
+# 2. Type mismatch in operation
+df = pl.DataFrame({"val": ["1", "2", "3"]})
+df.select(pl.col("val").mean())  # SchemaError
+```
+
+```python
+# 3. Join on mismatched key types
+left = pl.DataFrame({"id": [1, 2]})
+right = pl.DataFrame({"id": ["1", "2"]})
+left.join(right, on="id")  # ComputeError
+```
+
+```python
+# 4. Shape mismatch in with_columns
+df = pl.DataFrame({"a": [1, 2, 3]})
+df.with_columns(pl.Series("b", [10, 20]))  # ShapeError
+```
+
+```python
+# 5. Invalid expression syntax
+df = pl.DataFrame({"x": [1, 2]})
+df.select(pl.col("x") + )  # SyntaxError in expression
+```
+
+## How to Fix
+
+### Fix 1: Validate column names before selection
 
 ```python
 import polars as pl
 
-df = pl.DataFrame({"value": ["1", "2", "3"]})
+df = pl.DataFrame({"name": ["Alice"], "age": [30]})
 
-# Wrong — cannot compute mean on String column
-# df.select(pl.col("value").mean())
-
-# Correct — cast first, then operate
-result = df.select(pl.col("value").cast(pl.Float64).mean())
+# Check columns exist before selecting
+required = ["name", "age", "missing_col"]
+available = [c for c in required if c in df.columns]
+result = df.select(available)
 print(result)
-
-# Use try/except for dynamic schemas
-try:
-    result = df.with_columns(pl.col("value").cast(pl.Int64))
-except pl.exceptions.SchemaError as e:
-    print(f"Schema mismatch: {e}")
-    result = df.with_columns(pl.col("value").cast(pl.Float64))
 ```
 
-### Fix 3: Correct lazy vs eager API usage
+### Fix 2: Cast columns before arithmetic operations
 
 ```python
 import polars as pl
 
-# Wrong — mixing lazy results with eager operations
-# lazy_frame = df.lazy().filter(pl.col("age") > 25)
-# print(lazy_frame["name"])  # Error: cannot index a LazyFrame
+df = pl.DataFrame({"val": ["10", "20", "30"]})
 
-# Correct — collect lazy results first
-df = pl.DataFrame({"name": ["Alice", "Bob"], "age": [25, 30]})
-result = (
-    df.lazy()
-    .filter(pl.col("age") > 25)
-    .select("name")
-    .collect()
-)
+# Cast string to numeric before computing
+result = df.select(pl.col("val").cast(pl.Float64).mean())
 print(result)
-
-# Use scan_csv for large files with lazy evaluation
-result = (
-    pl.scan_csv("large_file.csv")
-    .filter(pl.col("status") == "active")
-    .select(["name", "email"])
-    .collect()
-)
 ```
 
-### Fix 4: Join on compatible types
+### Fix 3: Align types before joining
 
 ```python
 import polars as pl
 
 left = pl.DataFrame({"id": [1, 2, 3], "name": ["A", "B", "C"]})
-right = pl.DataFrame({"id": ["1", "2", "3"], "value": [10, 20, 30]})
+right = pl.DataFrame({"id": ["1", "2", "3"], "score": [90, 80, 70]})
 
-# Wrong — type mismatch on join key
-# result = left.join(right, on="id")
-
-# Correct — cast to matching type first
+# Cast right join key to match left
 right = right.with_columns(pl.col("id").cast(pl.Int64))
 result = left.join(right, on="id", how="inner")
 print(result)
-
-# Alternative: use suffix to handle duplicate columns
-result = left.join(right, on="id", suffix="_right")
 ```
 
-## Common Scenarios
+### Fix 4: Ensure matching lengths in with_columns
 
-- **Column renamed upstream** — Code references a column that was renamed in a previous transformation step, causing ColumnNotFoundError at runtime.
-- **Mixed data types in CSV** — A CSV column contains both numbers and strings, causing Polars to infer String dtype when you expect numeric.
-- **Lazy frame not collected** — Operations on a LazyFrame that require materialization fail when the frame is not collected first.
+```python
+import polars as pl
 
-## Prevent It
+df = pl.DataFrame({"a": [1, 2, 3]})
 
-- Always print `df.columns` and `df.dtypes` when debugging schema issues to understand the current state of your DataFrame.
-- Use `pl.scan_csv()` with `infer_schema_length` parameter to control type inference for large files.
-- Write integration tests that validate DataFrame schemas at each transformation step using `df.schema`.
+# Wrong — length mismatch
+# df.with_columns(pl.Series("b", [10, 20]))
+
+# Correct — match DataFrame length
+df = df.with_columns(pl.Series("b", [10, 20, 30]))
+print(df)
+
+# Or use expressions that broadcast automatically
+df = df.with_columns((pl.col("a") * 10).alias("b"))
+print(df)
+```
+
+## Examples
+
+```python
+import polars as pl
+
+# Full pipeline: lazy evaluation with schema control
+result = (
+    pl.scan_csv("data.csv")
+    .filter(pl.col("status") == "active")
+    .with_columns([
+        pl.col("amount").cast(pl.Float64),
+        (pl.col("amount") * 0.1).alias("tax"),
+    ])
+    .select(["name", "amount", "tax"])
+    .collect()
+)
+print(result)
+```
 
 ## Related Errors
 
-- [TypeError](/languages/python/typeerror/) — unsupported operand type for operation
-- [ValueError](/languages/python/valueerror/) — invalid argument passed to function
 - [KeyError](/languages/python/keyerror/) — dictionary key not found
+- [ValueError](/languages/python/valueerror/) — invalid argument
+- [TypeError](/languages/python/typeerror/) — unsupported type operation

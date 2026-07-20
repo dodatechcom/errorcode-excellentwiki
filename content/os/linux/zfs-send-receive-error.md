@@ -7,29 +7,59 @@ error-types: ["filesystem-error"]
 weight: 8
 ---
 
-# Linux: zfs-send-receive-error — ZFS send/receive error
+# Linux: ZFS Send Receive Error Error
 
-Fix Linux zfs-send-receive-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+ZFS send receive error errors occur when the ZFS filesystem encounters pool, dataset, or data integrity issues.
 
 ## Common Causes
 
-- Connection lost
-- Target full
-- Stream corruption
-- Permission denied
+- Pool device failure or removal
+- Checksum mismatch from data corruption
+- Pool or dataset space exhaustion
+- Snapshot or clone conflicts
+- ZFS feature flag incompatibility
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/zfs-send-receive-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Pool Status
 
-## Common Scenarios
+```bash
+sudo zpool status -v
+sudo zpool list
+sudo zfs list -r -t filesystem,volume
+```
 
-- Send fails
-- Connection drops
-- Target full
+### 2. Check for Errors
 
-## Prevent It
+```bash
+sudo zpool status -x
+sudo zpool events -v | tail -20
+```
 
-- Use resumable sends
-- Ensure target space
-- Verify after receive
+### 3. Repair Pool
+
+```bash
+sudo zpool scrub tank
+sudo zpool clear tank
+sudo zpool replace tank <old-device> <new-device>
+```
+
+### 4. Check Dataset Properties
+
+```bash
+sudo zfs get all tank | grep -i "send-receive-error"
+```
+
+## Examples
+
+```bash
+$ sudo zpool status tank
+  pool: tank
+ state: ONLINE
+  scan: scrub repaired 0B in 00:00:00
+
+$ sudo zfs list
+NAME              USED  AVAIL  REFER  MOUNTPOINT
+tank              500G   1.5T   200G  /tank
+tank/data         300G   1.5T   300G  /tank/data
+```

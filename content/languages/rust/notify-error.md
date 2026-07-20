@@ -7,75 +7,82 @@ severities: ["error"]
 weight: 5
 ---
 
-# notify File Watcher Error
+# Notify Error
 
-Fix notify file watcher errors. Handle platform-specific issues, recursive watching, and debounce..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Notify errors occur when using the `notify` crate for filesystem watching — permission errors and platform limitations.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Permission denied on watched directory
+watcher.watch(Path::new("/root"), RecursiveMode::Recursive)?;
+
+// File system events not supported
+// Some network filesystems don't support inotify
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle watcher errors**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use notify::{Watcher, RecursiveMode, watcher};
+use std::sync::mpsc::channel;
+
+let (tx, rx) = channel();
+let mut watcher = watcher(tx, Duration::from_secs(1))?;
+watcher.watch(Path::new("."), RecursiveMode::Recursive)?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Filter events**
 
 ```rust
-use anyhow::Result;
+use notify::{Event, EventKind};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match rx.recv() {
+    Ok(Ok(event)) => match event.kind {
+        EventKind::Create(_) => println!("File created"),
+        EventKind::Modify(_) => println!("File modified"),
+        EventKind::Remove(_) => println!("File removed"),
+        _ => {}
+    },
+    Err(e) => eprintln!("Watch error: {}", e),
+    _ => {}
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use debounce**
 
 ```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let mut watcher = watcher(tx, Duration::from_millis(500))?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use notify::{Watcher, RecursiveMode, watcher};
+use std::sync::mpsc::channel;
+use std::time::Duration;
+use std::path::Path;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (tx, rx) = channel();
+    let mut watcher = watcher(tx, Duration::from_secs(1))?;
+    watcher.watch(Path::new("."), RecursiveMode::Recursive)?;
+
+    println!("Watching for changes...");
+    for res in rx {
+        match res {
+            Ok(event) => println!("Event: {:?}", event),
+            Err(e) => eprintln!("Error: {}", e),
+        }
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [FS Extra Error]({{< relref "/languages/rust/fs-extra-error" >}}) — filesystem
+- [Glob Error]({{< relref "/languages/rust/glob-error" >}}) — glob patterns
+- [WalkDir Error]({{< relref "/languages/rust/walkdir-error" >}}) — directory walking

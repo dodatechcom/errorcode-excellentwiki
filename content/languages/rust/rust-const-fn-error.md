@@ -10,64 +10,110 @@ comments: true
 
 # Const Fn Error
 
-Fix const fn errors. Resolve const function restrictions, allowed operations, and evaluation issues.
+Const fn errors occur when using `const fn` with expressions or functions not allowed in const contexts, such as heap allocation, non-const function calls, or mutable references.
 
-## Why It Happens
-
-- Expression is not allowed in const context
-- Function calls are not supported in const fn
-- Mutable references are not allowed in const fn
-- Heap allocation is not permitted in const fn
-
-## Common Error Messages
-
-- `error: constfn failed`
-- `thread panicked at 'const functions operation failed'`
-- `Error: unable to complete const functions operation`
-- `Fatal: const functions configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure const functions is properly configured
-use const_functions::prelude::*;
+// Calling non-const function inside const fn
+const fn bad() -> String {
+    String::from("hello") // ERROR: String::from is not const
+}
+
+// Using mutable references in const fn (before Rust 1.83)
+const fn push(v: &mut Vec<i32>) { // ERROR in older Rust
+    v.push(1);
+}
+
+// Using heap allocation in const fn
+const fn create_vec() -> Vec<i32> {
+    vec![1, 2, 3] // ERROR: Vec::new and macro not const
+}
+
+// Conditional const evaluation
+const fn risky(x: i32) -> i32 {
+    if x > 0 { x } else { panic!("negative") } // panic! not const in older Rust
+}
+```
+
+## How to Fix
+
+1. **Use only const-compatible operations**
+
+```rust
+const fn add(a: i32, b: i32) -> i32 { a + b }
+const fn max(a: i32, b: i32) -> i32 { if a > b { a } else { b } }
+
+const RESULT: i32 = add(10, 20);
+const MAX: i32 = max(5, 10);
+```
+
+2. **Use const generics and const traits where available**
+
+```rust
+const fn sum_array<const N: usize>(arr: [i32; N]) -> i32 {
+    let mut total = 0;
+    let mut i = 0;
+    while i < N {
+        total += arr[i];
+        i += 1;
+    }
+    total
+}
+
+const TOTAL: i32 = sum_array([1, 2, 3, 4, 5]);
+```
+
+3. **Use `const` blocks for const evaluation**
+
+```rust
+const CONFIG: &str = const {
+    // Const block (Rust 1.79+)
+    "default config"
+};
+
+// Or use lazy_static / once_cell for complex const initialization
+use std::sync::OnceLock;
+static INSTANCE: OnceLock<String> = OnceLock::new();
+
+fn get_instance() -> &'static String {
+    INSTANCE.get_or_init(|| String::from("initialized"))
+}
+```
+
+## Examples
+
+```rust
+const MAX_SIZE: usize = 1024;
+const PI: f64 = 3.14159265358979;
+
+const fn factorial(n: u64) -> u64 {
+    match n {
+        0 | 1 => 1,
+        _ => {
+            let mut result = 1;
+            let mut i = 2;
+            while i <= n {
+                result *= i;
+                i += 1;
+            }
+            result
+        }
+    }
+}
+
+const FACT_5: u64 = factorial(5);
+const FACT_10: u64 = factorial(10);
 
 fn main() {
-    // Initialize properly
-    println!("Correct const functions configuration");
+    println!("5! = {}", FACT_5);   // 120
+    println!("10! = {}", FACT_10);  // 3628800
+    println!("PI = {}", PI);
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with const functions
-2. Integrating const functions into an existing codebase
-3. Upgrading const functions to a newer version
-
-## Prevent It
-
-- Read the const functions documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Const Generics Error]({{< relref "/languages/rust/rust-const-generics-error" >}}) — const generic issues
+- [Crate Error]({{< relref "/languages/rust/rust-cfg-error" >}}) — conditional compilation
+- [Embedded Error]({{< relref "/languages/rust/rust-embedded-error" >}}) — embedded contexts

@@ -6,30 +6,55 @@ severities: ["warning"]
 error-types: ["package-manager"]
 weight: 8
 ---
+# Linux: YUM Repository Error
 
-# Linux: yum-repo-error — yum repository error
-
-Fix Linux yum-repo-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+YUM repository errors occur when YUM cannot access or validate configured software repositories.
 
 ## Common Causes
 
-- Repository not found
-- GPG key not trusted
-- Mirror down
-- Wrong URL
+- Repository URL changed or not accessible
+- Network connectivity issues reaching the repo
+- Repository metadata expired or corrupted
+- GPG key missing or expired
+- Repository configuration file has errors
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/yum-repo-error.md' mode='w' encoding='UTF-8'>
+### 1. List Repos and Check Errors
 
-## Common Scenarios
+```bash
+sudo yum repolist all
+sudo yum repolist -v
+```
 
-- Repository not found
-- GPG key error
-- Mirror down
+### 2. Check Repo Files
 
-## Prevent It
+```bash
+ls -la /etc/yum.repos.d/
+cat /etc/yum.repos.d/*.repo
+```
 
-- Verify repository URLs
-- Import GPG keys
-- Check mirror status
+### 3. Clean and Refresh
+
+```bash
+sudo yum clean all
+sudo yum makecache
+```
+
+### 4. Disable Problematic Repo
+
+```bash
+sudo yum --disablerepo=<repo> update
+```
+
+## Examples
+
+```bash
+$ sudo yum update
+Loaded plugins: fastestmirror
+Could not retrieve mirrorlist http://mirrorlist.centos.org/?release=7&arch=x86_64&repo=os&infra=stock error was
+14: curl#6 - "Could not resolve host: mirrorlist.centos.org; Unknown error"
+
+$ cat /etc/yum.repos.d/CentOS-Base.repo
+# Check baseurl/mirrorlist settings
+```

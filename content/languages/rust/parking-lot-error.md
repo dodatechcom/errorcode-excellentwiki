@@ -7,75 +7,93 @@ severities: ["error"]
 weight: 5
 ---
 
-# parking_lot Lock Error
+# Parking Lot Error
 
-Fix parking_lot lock errors. Handle mutex poisoning, deadlock detection, and read-write locks..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Parking lot errors occur when using the `parking_lot` crate — deadlocks, poisoned locks, and timing issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Deadlock: two locks acquired in opposite order
+let a = Mutex::new(1);
+let b = Mutex::new(2);
+let _a = a.lock();
+let _b = b.lock(); // May deadlock if another thread holds b then a
+
+// Poisoned lock
+let lock = Arc::new(Mutex::new(vec![]));
+let data = lock.lock().unwrap(); // Panics if lock was poisoned
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Always acquire locks in consistent order**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use parking_lot::Mutex;
+use std::sync::Arc;
+
+let a = Arc::new(Mutex::new(vec![1]));
+let b = Arc::new(Mutex::new(vec![2]));
+// Always lock a before b, in every thread
+let _a = a.lock();
+let _b = b.lock();
 ```
 
-### Fix 2: Add proper error handling
+2. **Use try_lock for non-blocking access**
 
 ```rust
-use anyhow::Result;
+use parking_lot::Mutex;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let m = Mutex::new(42);
+match m.try_lock() {
+    Some(guard) => println!("Got lock: {}", *guard),
+    None => println!("Lock is held, trying later"),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use RwLock for read-heavy workloads**
 
 ```rust
-use std::time::Duration;
+use parking_lot::RwLock;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let data = RwLock::new(vec![1, 2, 3]);
+// Multiple readers allowed
+let r1 = data.read();
+let r2 = data.read();
+// Exclusive write
+drop(r1);
+drop(r2);
+let mut w = data.write();
+w.push(4);
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use parking_lot::{Mutex, RwLock};
+use std::sync::Arc;
+use std::thread;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let c = counter.clone();
+        handles.push(thread::spawn(move || {
+            let mut num = c.lock();
+            *num += 1;
+        }));
+    }
+
+    for h in handles { h.join().unwrap(); }
+    println!("Counter: {}", *counter.lock());
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [RwLock Error]({{< relref "/languages/rust/rust-rwlock-error" >}}) — std RwLock
+- [Mutex Error]({{< relref "/languages/rust/rust-mutex-error" >}}) — std Mutex
+- [Deadlock Error]({{< relref "/languages/rust/deadlock" >}}) — deadlocks

@@ -7,75 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# chrono-tz Timezone Error
+# Chrono-TZ Error
 
-Fix chrono-tz timezone errors. Handle timezone lookup, conversion, and DST transitions..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Chrono-TZ errors occur when using the `chrono-tz` crate for timezone handling — invalid timezone names and conversion failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use chrono_tz::Tz;
+
+// Invalid timezone name
+let tz: Tz = "Invalid/Timezone".parse().unwrap(); // ERROR: unknown timezone
+
+// Off-by-one in DST transitions
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use valid IANA timezone names**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use chrono_tz::Tz;
+
+let tz: Tz = "America/New_York".parse().unwrap();
+let now = chrono::Utc::now().with_timezone(&tz);
+println!("NYC time: {}", now);
 ```
 
-### Fix 2: Add proper error handling
+2. **Handle DST transitions**
 
 ```rust
-use anyhow::Result;
+use chrono_tz::Tz;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+let tz: Tz = "US/Eastern".parse().unwrap();
+let dt = chrono::Utc.with_ymd_and_hms(2023, 3, 12, 7, 0, 0).unwrap();
+let local = dt.with_timezone(&tz);
+println!("During DST: {}", local);
+```
+
+3. **Use timezone list for validation**
+
+```rust
+use chrono_tz::{Tz, TZ_VARIANTS};
+
+fn is_valid_tz(name: &str) -> bool {
+    name.parse::<Tz>().is_ok()
 }
-```
 
-### Fix 3: Add timeout and retry logic
-
-```rust
-use std::time::Duration;
-
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+fn main() {
+    println!("America/New_York valid: {}", is_valid_tz("America/New_York"));
+    println!("Invalid valid: {}", is_valid_tz("Invalid/Zone"));
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use chrono_tz::Tz;
+use chrono::{TimeZone, Utc};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let timezones = vec!["UTC", "US/Eastern", "Europe/London", "Asia/Tokyo"];
+    let now = Utc::now();
+
+    for tz_str in timezones {
+        let tz: Tz = tz_str.parse().unwrap();
+        let local = now.with_timezone(&tz);
+        println!("{}: {}", tz_str, local.format("%Y-%m-%d %H:%M:%S %Z"));
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Chrono Error]({{< relref "/languages/rust/chrono-error" >}}) — chrono core
+- [Time Error]({{< relref "/languages/rust/time-error-rs" >}}) — time crate
+- [Std Env Error]({{< relref "/languages/rust/rust-std-env-error" >}}) — TZ env var

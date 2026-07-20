@@ -7,29 +7,56 @@ error-types: ["package-manager"]
 weight: 6
 ---
 
-# Linux: maven-error — Maven build error
+# Linux: Maven Error
 
-Fix Linux maven-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Maven errors occur when the Java build tool fails to compile, resolve dependencies, or execute build phases.
 
 ## Common Causes
 
-- Dependency not found
-- Build failed
-- Repository error
-- Plugin error
+- Dependency not found in configured repositories
+- Network connectivity issue to Maven Central
+- Plugin version incompatibility with Maven version
+- Local repository (.m2) corruption
+- Java version mismatch
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/maven-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Maven Status
 
-## Common Scenarios
+```bash
+mvn --version
+java -version
+```
 
-- Maven build fails
-- Dependency not found
-- Repository error
+### 2. Verbose Build
 
-## Prevent It
+```bash
+mvn compile -X 2>&1 | tail -30
+```
 
-- Clean and rebuild
-- Update dependencies
-- Check Maven settings
+### 3. Clean Local Repository
+
+```bash
+rm -rf ~/.m2/repository/<group>/
+mvn dependency:purge-local-repository
+```
+
+### 4. Update Dependencies
+
+```bash
+mvn dependency:resolve -U
+mvn clean install -U
+```
+
+## Examples
+
+```bash
+$ mvn clean install
+[ERROR] Failed to execute goal on project myapp: Could not resolve dependencies
+[ERROR]   The following artifacts could not be resolved:
+[ERROR]   com.example:library:jar:1.0.0
+
+$ mvn dependency:resolve -U
+Downloading from central: https://repo.maven.apache.org/maven2/...
+Downloaded from central: https://repo.maven.apache.org/maven2/... (42 KB at 123 KB/s)
+```

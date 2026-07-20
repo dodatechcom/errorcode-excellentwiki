@@ -10,64 +10,115 @@ comments: true
 
 # No Std Error
 
-Fix no_std errors. Resolve missing standard library, allocator, and platform-specific issues.
+No_std errors occur when developing for `#![no_std]` environments — missing allocator, unavailable standard library features, and incompatible crate dependencies.
 
-## Why It Happens
-
-- Standard library is referenced in no_std crate
-- Allocator is not provided for heap types
-- Platform-specific code requires std features
-- Entry point is not defined for no_std binary
-
-## Common Error Messages
-
-- `error: nostd failed`
-- `thread panicked at 'no_std operation failed'`
-- `Error: unable to complete no_std operation`
-- `Fatal: no_std configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure no_std is properly configured
-use no_std::prelude::*;
+#![no_std]
 
-fn main() {
-    // Initialize properly
-    println!("Correct no_std configuration");
+// Using std types in no_std
+use std::collections::HashMap; // ERROR: std not available
+
+// Using println! without a logging backend
+println!("Hello"); // ERROR: no stdio in no_std
+
+// Crate requires std feature
+use serde::Serialize; // May need std feature disabled
+
+// Missing global allocator
+// #[global_allocator] not defined
+```
+
+## How to Fix
+
+1. **Use no_std-compatible alternatives**
+
+```rust
+#![no_std]
+#![no_main]
+
+extern crate alloc;
+use alloc::vec::Vec;
+use alloc::string::String;
+use alloc::collections::BTreeMap; // BTreeMap works in no_std
+
+// Use defmt or log for logging in embedded
+use defmt::println;
+
+#[cortex_m_rt::entry]
+fn main() -> ! {
+    let mut map = BTreeMap::new();
+    map.insert(1, "one");
+    defmt::println!("Map has {} entries", map.len());
+    loop { cortex_m::asm::wfi(); }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Use `#![no_std]` with `extern crate alloc` for heap allocations**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+#![no_std]
+#![no_main]
+
+extern crate alloc;
+use alloc::vec::Vec;
+
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+#[cortex_m_rt::entry]
+fn main() -> ! {
+    let mut v: Vec<i32> = Vec::new();
+    v.push(1);
+    v.push(2);
+    loop { cortex_m::asm::wfi(); }
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Use `default-features = false` for std-dependent crates**
+
+```toml
+[dependencies]
+serde = { version = "1.0", default-features = false, features = ["derive"] }
+```
 
 ```rust
-use std::error::Error;
+#![no_std]
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
+struct Config { name: [u8; 32] }
+```
+
+## Examples
+
+```rust
+#![no_std]
+#![no_main]
+
+extern crate alloc;
+use alloc::vec::Vec;
+use alloc::string::String;
+
+use cortex_m_rt::entry;
+use panic_halt as _;
+
+#[entry]
+fn main() -> ! {
+    let numbers: Vec<i32> = (0..10).collect();
+    let sum: i32 = numbers.iter().sum();
+
+    // Use a logging framework for no_std output
+    defmt::println!("Sum: {}", sum);
+
+    loop { cortex_m::asm::wfi(); }
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. Setting up a new project with no_std
-2. Integrating no_std into an existing codebase
-3. Upgrading no_std to a newer version
-
-## Prevent It
-
-- Read the no_std documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Embedded Error]({{< relref "/languages/rust/rust-embedded-error" >}}) — embedded targets
+- [ESP-IDF Error]({{< relref "/languages/rust/rust-esp-idf-error" >}}) — ESP-IDF
+- [Heapless Error]({{< relref "/languages/rust/rust-heapless-error" >}}) — stack allocations

@@ -6,30 +6,67 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 8
 ---
+# Linux: NetworkManager Disconnected
 
-# Linux: networkmanager-disconnected — NetworkManager device disconnected
-
-Fix Linux networkmanager-disconnected errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+NetworkManager shows "disconnected" when the network management service cannot establish connectivity.
 
 ## Common Causes
 
-- Device not connected
-- Cable unplugged
-- Driver issue
-- Configuration missing
+- Wi-Fi disabled via hardware switch or rfkill
+- Ethernet cable unplugged
+- Airplane mode enabled
+- NetworkManager dispatcher scripts blocking connectivity
+- Interface managed by another network service
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/networkmanager-disconnected.md' mode='w' encoding='UTF-8'>
+### 1. Check RF Kill Status
 
-## Common Scenarios
+```bash
+rfkill list
+sudo rfkill unblock all
+```
 
-- Device shows disconnected
-- Cannot connect
-- No IP address
+### 2. Check Wi-Fi Radio Status
 
-## Prevent It
+```bash
+nmcli radio wifi
+nmcli radio wifi on
+```
 
-- Check cable connection
-- Restart NetworkManager
-- Verify driver
+### 3. Enable Networking
+
+```bash
+nmcli networking on
+```
+
+### 4. Rescan and Connect
+
+```bash
+nmcli device wifi rescan
+nmcli device wifi list
+nmcli device wifi connect <SSID> password <password>
+```
+
+### 5. Check Interface State
+
+```bash
+ip link set wlan0 up
+```
+
+## Examples
+
+```bash
+$ nmcli device status
+DEVICE  TYPE      STATE        CONNECTION
+eth0    ethernet  unavailable  --
+wlan0   wifi      disconnected  --
+
+$ rfkill list
+0: phy0: Wireless LAN
+        Soft blocked: yes
+$ sudo rfkill unblock wifi
+$ nmcli radio wifi
+enabled
+$ nmcli device wifi connect MyWifi password secret123
+```

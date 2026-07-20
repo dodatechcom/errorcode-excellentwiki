@@ -7,81 +7,79 @@ severities: ["error"]
 weight: 5
 ---
 
-# actix-web Handler Panic Error
+# actix-web Handler Error
 
-Fix actix-web handler panic errors. Handle panics during request processing and state management.
-
-## What This Error Means
-
-When a handler panics in actix-web, the request is terminated and the connection may be dropped. The error typically manifests as:
-
-```
- panicked at 'called `Option::unwrap()` on a `None` value'
-thread '<unnamed>' panicked at 'index out of bounds'
-```
-
-Panics in handlers are not caught by actix-web's error middleware and will result in a 500 Internal Server Error or connection reset.
+Actix-web handler errors occur when request processing fails due to incorrect handler signatures, extractor mismatches, or middleware misconfiguration.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Unwrapping None or Err values in handlers
-let value = map.get("key").unwrap();
+use actix_web::{web, App, HttpServer, HttpResponse};
 
-// Cause 2: Index out of bounds on request data
-let body = std::str::from_utf8(&body_bytes[0..1000]).unwrap();
+// Handler returns wrong type
+async fn handler() -> i32 { 42 } // i32 doesn't implement Responder
 
-// Cause 3: Blocking operations on async runtime
-let conn = blocking_connection(); // blocks the async thread
-
-// Cause 4: Panic in spawned thread propagating to handler
+// Double body extraction
+async fn bad(
+    web::Json(body): web::Json<serde_json::Value>,
+    web::Payload(payload): web::Payload,
+) -> String { format!("{:?}", body) }
 ```
 
 ## How to Fix
 
-### Fix 1: Replace unwrap() with proper error handling
+1. **Return types that implement `Responder`**
 
 ```rust
-use actix_web::{web, HttpResponse};
+use actix_web::{HttpResponse, Responder};
 
-async fn handler(data: web::Data<AppState>) -> HttpResponse {
-    let value = match data.cache.get("key") {
-        Some(v) => v,
-        None => return HttpResponse::NotFound().finish(),
-    };
-    HttpResponse::Ok().body(value)
+async fn handler() -> impl Responder {
+    HttpResponse::Ok().json(serde_json::json!({"status": "ok"}))
 }
 ```
 
-### Fix 2: Use the error handler middleware
+2. **Use `web::Data` for shared state**
 
 ```rust
-use actix_web::error;
+use actix_web::{web, App, HttpServer};
+use std::sync::Mutex;
 
-async fn handler() -> Result<String, error::Error> {
-    let data = some_fallible_operation()
-        .map_err(|e| error::ErrorInternalServerError(e))?;
-    Ok(data)
+struct AppState { count: Mutex<i32> }
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    let data = web::Data::new(AppState { count: Mutex::new(0) });
+    HttpServer::new(move || {
+        App::new().app_data(data.clone()).route("/", web::get().to(index))
+    }).bind("127.0.0.1:8080")?.run().await
+}
+
+async fn index(data: web::Data<AppState>) -> String {
+    let mut count = data.count.lock().unwrap();
+    *count += 1;
+    format!("Count: {}", *count)
 }
 ```
 
-### Fix 3: Use actix_web::rt::spawn_blocking for blocking work
+3. **Implement `ResponseError` for custom errors**
 
 ```rust
-use actix_web::web;
+use actix_web::{HttpResponse, ResponseError};
+use std::fmt;
 
-async fn handler(data: web::Data<DbPool>) -> HttpResponse {
-    let pool = data.get_ref().clone();
-    let result = web::block(move || {
-        let mut conn = pool.get().unwrap();
-        diesel::select(diesel::dsl::now)
-            .get_result::<NaiveDateTime>(&mut conn)
-    })
-    .await
-    .map_err(error::ErrorInternalServerError)?;
+#[derive(Debug)]
+enum AppError { NotFound, DbError(String) }
 
-    HttpResponse::Ok().json(result)
+impl fmt::Display for AppError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            AppError::NotFound => write!(f, "Not found"),
+            AppError::DbError(e) => write!(f, "DB: {}", e),
+        }
+    }
 }
+
+impl ResponseError for AppError {}
 ```
 
 ## Examples
@@ -91,36 +89,22 @@ use actix_web::{web, App, HttpServer, HttpResponse};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-struct CreateUser {
-    name: String,
-    email: String,
-}
+struct CreateItem { name: String }
 
-async fn create_user(
-    data: web::Data<AppState>,
-    body: web::Json<CreateUser>,
-) -> Result<HttpResponse, actix_web::Error> {
-    let user = data.db.insert_user(&body.name, &body.email)
-        .map_err(|e| actix_web::error::ErrorInternalServerError(e))?;
-    Ok(HttpResponse::Created().json(user))
+async fn create_item(web::Json(item): web::Json<CreateItem>) -> HttpResponse {
+    HttpResponse::Created().json(serde_json::json!({"id": 1, "name": item.name}))
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let app_state = web::Data::new(AppState::new());
-    HttpServer::new(move || {
-        App::new()
-            .app_data(app_state.clone())
-            .route("/users", web::post().to(create_user))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
+    HttpServer::new(|| {
+        App::new().route("/items", web::post().to(create_item))
+    }).bind("127.0.0.1:8080")?.run().await
 }
 ```
 
 ## Related Errors
 
-- [Actix Error]({{< relref "/languages/rust/actix-error" >}}) — actix-web handler error
-- [Unwrap None]({{< relref "/languages/rust/unwrap-none" >}}) — unwrap on None
-- [Thread Panic]({{< relref "/languages/rust/thread-panic" >}}) — thread panic
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — server binding fails
+- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timeout
+- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O failure

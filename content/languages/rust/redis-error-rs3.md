@@ -7,115 +7,69 @@ severities: ["error"]
 weight: 5
 ---
 
-# redis Cluster Connection Error
+# Redis Cluster Error
 
-Fix redis cluster connection errors. Handle cluster topology, slot redirection, and connection pool issues.
-
-## What This Error Means
-
-redis cluster connection errors occur when the client cannot communicate with the Redis cluster:
-
-```
-redis::ClusterError: Failed to connect to cluster node
-MOVED 3999 127.0.0.1:7001
-Connection refused
-```
+Redis cluster errors occur when using `redis` crate with cluster mode — slot redirection and topology issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Wrong initial seed nodes
-let client = ClusterClient::new(vec!["redis://wrong-host:6379"])?;
+// Slot not on this node
+// MOVED 3999 127.0.0.1:6380
 
-// Cause 2: Cluster node down or unreachable
-// Cause 3: Connection pool exhaustion under load
-// Cause 4: ACL or authentication failure
-// Cause 5: Cross-slot operations not supported
+// Cluster not initialized properly
+let cluster = ClusterClient::new(nodes)?;
 ```
 
 ## How to Fix
 
-### Fix 1: Configure cluster with multiple seed nodes
+1. **Use cluster client**
 
 ```rust
 use redis::cluster::ClusterClient;
 
-let client = ClusterClient::new(vec![
-    "redis://10.0.0.1:6379",
-    "redis://10.0.0.2:6379",
-    "redis://10.0.0.3:6379",
-])?;
-
+let nodes = vec!["redis://127.0.0.1:6379", "redis://127.0.0.1:6380"];
+let client = ClusterClient::new(nodes)?;
 let mut conn = client.get_connection()?;
 ```
 
-### Fix 2: Set timeouts and retry configuration
+2. **Handle MOVED/ASK redirections**
 
 ```rust
-use redis::cluster::ClusterClient;
-use redis::ConnectionInfo;
+use redis::Commands;
 
-let mut infos: Vec<ConnectionInfo> = nodes.iter()
-    .map(|node| node.parse().unwrap())
-    .collect();
-
-let client = ClusterClient::new(infos)?
-    .read_from_replicas();
-
-let mut conn = client.get_connection()?;
-conn.set_read_timeout(Some(std::time::Duration::from_secs(5)))?;
-conn.set_write_timeout(Some(std::time::Duration::from_secs(5)))?;
+let _: () = conn.set("key", "value")?;
+let val: String = conn.get("key")?;
 ```
 
-### Fix 3: Use Redis Cluster with async and connection pooling
+3. **Use read from replicas**
 
 ```rust
 use redis::cluster::ClusterClient;
 
-async fn connect_cluster() -> Result<(), redis::RedisError> {
-    let client = ClusterClient::new(vec![
-        "redis://node1:6379",
-        "redis://node2:6379",
-        "redis://node3:6379",
-    ])?;
-
-    let mut conn = client.get_async_connection().await?;
-
-    redis::cmd("SET")
-        .arg("key")
-        .arg("value")
-        .query_async(&mut conn)
-        .await?;
-
-    Ok(())
-}
+let mut conn = client.get_read_only_connection()?;
+let val: String = conn.get("key")?;
 ```
 
 ## Examples
 
 ```rust
-use redis::cluster::{ClusterClient, ClusterConnection};
+use redis::cluster::ClusterClient;
+use redis::Commands;
 
-fn cluster_example() -> Result<(), redis::RedisError> {
-    let client = ClusterClient::new(vec![
-        "redis://127.0.0.1:7000",
-        "redis://127.0.0.1:7001",
-        "redis://127.0.0.1:7002",
-    ])?;
-
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let nodes = vec!["redis://127.0.0.1:6379", "redis://127.0.0.1:6380"];
+    let client = ClusterClient::new(nodes)?;
     let mut conn = client.get_connection()?;
-
-    // Basic operations work transparently in cluster mode
-    redis::cmd("SET").arg("key1").arg("value1").execute(&mut conn);
-    let val: String = redis::cmd("GET").arg("key1").query(&mut conn)?;
+    let _: () = conn.set("cluster_key", "cluster_value")?;
+    let val: String = conn.get("cluster_key")?;
     println!("Value: {}", val);
-
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Redis Error]({{< relref "/languages/rust/redis-error-rs3" >}}) — redis error
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — timeout error
+- [Redis Error]({{< relref "/languages/rust/redis-error-rs" >}}) — Redis single node
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — network
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — async runtime

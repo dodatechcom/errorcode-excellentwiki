@@ -7,75 +7,94 @@ severities: ["error"]
 weight: 5
 ---
 
-# color-eyre Error Report Error
+# Color Eyre Error
 
-Fix color-eyre error report errors. Handle error section attachment, span traces, and formatting..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Color eyre errors occur when using `color-eyre` for error reporting — missing initialization, panic handler conflicts, and span trace issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use color_eyre::eyre::{Result, WrapErr};
+
+// Not installing color_eyre at program start
+fn main() -> Result<()> {
+    // color_eyre::install() not called
+    let _ = std::fs::read_to_string("missing.txt")?; // Uses default handler
+    Ok(())
+}
+
+// Conflicting panic handlers with other crates
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Install color_eyre first**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use color_eyre::eyre::{Result, WrapErr};
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
+fn main() -> Result<()> {
+    color_eyre::install()?;
+    let content = std::fs::read_to_string("config.toml")
+        .wrap_err("Failed to read config")?;
     Ok(())
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use tracing alongside color_eyre**
 
 ```rust
-use std::time::Duration;
+use color_eyre::eyre::Result;
+use tracing_subscriber::EnvFilter;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+fn main() -> Result<()> {
+    color_eyre::install()?;
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
+    Ok(())
+}
+```
+
+3. **Configure custom hooks**
+
+```rust
+use color_eyre::config::HookBuilder;
+
+fn main() -> color_eyre::Result<()> {
+    let (panic_hook, eyre_hook) = HookBuilder::default()
+        .panic_section("Consider reporting this bug")
+        .into_hooks();
+    color_eyre::eyre::set_hook(eyre_hook)?;
+    std::panic::set_hook(Box::new(panic_hook));
+    Ok(())
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use color_eyre::eyre::{Result, WrapErr, Report};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn load_config(path: &str) -> Result<serde_json::Value> {
+    let content = std::fs::read_to_string(path)
+        .wrap_err_with(|| format!("Cannot read '{}'", path))?;
+    serde_json::from_str(&content)
+        .wrap_err("Invalid JSON")
+}
+
+fn main() -> Result<()> {
+    color_eyre::install()?;
+    match load_config("config.json") {
+        Ok(cfg) => println!("Loaded: {}", cfg),
+        Err(e) => eprintln!("Error:\n{:?}", e),
+    }
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Anyhow Error]({{< relref "/languages/rust/rust-anyhow-error" >}}) — context chaining
+- [Tracing Error]({{< relref "/languages/rust/rust-tracing-error" >}}) — tracing
+- [Error Handling]({{< relref "/languages/rust/rust-error-handling-rs" >}}) — general

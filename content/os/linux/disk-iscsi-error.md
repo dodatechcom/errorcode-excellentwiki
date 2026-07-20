@@ -6,30 +6,54 @@ severities: ["warning"]
 error-types: ["disk"]
 weight: 8
 ---
+# Linux: iSCSI Error
 
-# Linux: disk-iscsi-error — iSCSI disk error
-
-Fix Linux disk-iscsi-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+iSCSI errors occur when connecting to or maintaining iSCSI storage targets over TCP/IP networks.
 
 ## Common Causes
 
-- Target not found
-- Login failed
-- Connection timeout
-- Authentication failed
+- iSCSI target portal unreachable or incorrect IP/port
+- CHAP authentication credentials incorrect or not configured
+- iSCSI initiator name not authorized on the target
+- Network issues causing session timeouts or connection drops
+- LUN not mapped or accessible to the initiator
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/disk-iscsi-error.md' mode='w' encoding='UTF-8'>
+### 1. Check iSCSI Sessions
 
-## Common Scenarios
+```bash
+sudo iscsiadm -m session
+sudo iscsiadm -m session -P 3
+```
 
-- iSCSI login failed
-- Target not found
-- Connection timeout
+### 2. Discover Targets
 
-## Prevent It
+```bash
+sudo iscsiadm -m discovery -t sendtargets -p <target_ip>
+```
 
-- Verify target configuration
-- Check network connectivity
-- Configure authentication
+### 3. Login to Target
+
+```bash
+sudo iscsiadm -m node --loginall
+```
+
+### 4. Configure CHAP
+
+```bash
+sudo iscsiadm -m node -T <iqn> -p <target_ip> --op=update -n node.session.auth.authmethod -v CHAP
+sudo iscsiadm -m node -T <iqn> -p <target_ip> --op=update -n node.session.auth.username -v <username>
+sudo iscsiadm -m node -T <iqn> -p <target_ip> --op=update -n node.session.auth.password -v <password>
+```
+
+## Examples
+
+```bash
+$ sudo iscsiadm -m discovery -t sendtargets -p 192.168.1.100
+192.168.1.100:3260,1 iqn.2024-01.com.example:storage.target01
+
+$ sudo iscsiadm -m node --loginall
+Logging in to [iface: default, target: iqn.2024-01.com.example:storage.target01, portal: 192.168.1.100,3260]
+Login successful.
+```

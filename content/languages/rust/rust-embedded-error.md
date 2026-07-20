@@ -10,64 +10,121 @@ comments: true
 
 # Embedded Error
 
-Fix embedded Rust errors. Resolve HAL, PAC, and bare-metal programming issues.
+Embedded errors occur when developing for microcontroller targets using Rust — issues with no_std environments, linker scripts, memory layout, and hardware peripheral access.
 
-## Why It Happens
-
-- HAL trait is not implemented for the target chip
-- Peripheral access is not properly initialized
-- Interrupt priority conflicts with runtime requirements
-- Clock configuration is incorrect for the target frequency
-
-## Common Error Messages
-
-- `error: embedded failed`
-- `thread panicked at 'embedded rust operation failed'`
-- `Error: unable to complete embedded rust operation`
-- `Fatal: embedded rust configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure embedded rust is properly configured
-use embedded_rust::prelude::*;
+// Using std in no_std environment
+#![no_std]
+use std::collections::HashMap; // ERROR: std not available in no_std
 
-fn main() {
-    // Initialize properly
-    println!("Correct embedded rust configuration");
+// Missing allocator for heap-dependent crates
+// #[global_allocator] not defined
+
+// Linker script issues — missing entry point
+// .cargo/config.toml not configured for target
+
+// GPIO peripheral access conflicts
+// Taking exclusive ownership of a peripheral twice
+```
+
+## How to Fix
+
+1. **Use `#![no_std]` with `extern crate alloc` for heap types**
+
+```rust
+#![no_std]
+#![no_main]
+
+use cortex_m_rt::entry;
+use panic_halt as _; // Panic handler
+
+#[entry]
+fn main() -> ! {
+    // Access hardware peripherals
+    let peripherals = stm32f1xx_hal::pac::Peripherals::take().unwrap();
+    let gpioa = peripherals.GPIOA;
+
+    loop {
+        // Main loop
+        cortex_m::asm::wfi(); // Wait for interrupt
+    }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Configure target and linker in `.cargo/config.toml`**
+
+```toml
+# .cargo/config.toml
+[build]
+target = "thumbv7em-none-eabihf"
+
+[target.thumbv7em-none-eabihf]
+linker = "arm-none-eabi-gcc"
+runner = "probe-rs run"
+rustflags = ["-C", "link-arg=-Tlink.x"]
+
+[aliases]
+objcopy = "objcopy --binary"
+```
+
+3. **Use HAL crates for safe peripheral access**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+#![no_std]
+#![no_main]
+
+use defmt_rtt as _;
+use panic_probe as _;
+use stm32f4xx_hal::{pac, prelude::*};
+
+#[entry]
+fn main() -> ! {
+    let dp = pac::Peripherals::take().unwrap();
+    let gpioa = dp.GPIOA.split();
+    let mut led = gpioa.pa5.into_push_pull_output();
+
+    loop {
+        led.set_high();
+        cortex_m::asm::delay(8_000_000);
+        led.set_low();
+        cortex_m::asm::delay(8_000_000);
+    }
 }
 ```
 
-### Fix 3: Add proper error context
+## Examples
 
 ```rust
-use std::error::Error;
+#![no_std]
+#![no_main]
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+use cortex_m_rt::entry;
+use panic_halt as _;
+
+#[entry]
+fn main() -> ! {
+    let peripherals = cortex_m::Peripherals::take().unwrap();
+    let mut syst = peripherals.SYST;
+
+    // Configure SysTick for 1ms ticks
+    syst.set_clock_source(cortex_m::peripheral::syst::SystClkSource::Core);
+    syst.set_reload(8_000_000); // 8MHz / 1000 = 8000 cycles per ms
+    syst.clear_current();
+    syst.enable_counter();
+
+    let mut count: u32 = 0;
+    loop {
+        while !syst.has_wrapped() {}
+        count += 1;
+    }
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. Setting up a new project with embedded rust
-2. Integrating embedded rust into an existing codebase
-3. Upgrading embedded rust to a newer version
-
-## Prevent It
-
-- Read the embedded rust documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [ESP-IDF Error]({{< relref "/languages/rust/rust-esp-idf-error" >}}) — ESP-IDF targets
+- [RISC-V Error]({{< relref "/languages/rust/rust-riscv-error" >}}) — RISC-V targets
+- [STM32 Error]({{< relref "/languages/rust/rust-stm32-error" >}}) — STM32 targets
+- [No Std Error]({{< relref "/languages/rust/rust-no-std-error-rs" >}}) — no_std issues

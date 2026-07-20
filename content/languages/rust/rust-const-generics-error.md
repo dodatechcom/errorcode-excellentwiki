@@ -10,87 +10,117 @@ comments: true
 
 # Const Generics Error
 
-Const generics errors arise when using generic const parameters incorrectly, typically due to unsupported const expressions, type mismatches, or incomplete const evaluation.
+Const generics errors occur when using const parameters in generic type definitions with unsupported values, invalid const expressions, or missing trait bounds.
 
-## Why It Happens
-
-- The const generic parameter is used in a context that requires a const expression but receives a runtime value
-- Array lengths do not match between function signatures and call sites
-- Const generic implementations are missing for specific values
-- The const expression involves operations not yet stabilized in const generics
-
-## Common Error Messages
-
-- `the const parameter `N` is not constrained by the impl self type`
-- `expected an array of constant length, found a slice`
-- `cannot use const generic parameter `N` in this context`
-- `type mismatch: expected [T; N], found [T; M]`
-
-## How to Fix It
-
-### Fix 1: Constrain const generics properly
+## Common Causes
 
 ```rust
-struct ArrayPair<T, const N: usize> {
-    left: [T; N],
-    right: [T; N],
+// Using non-const-evaluable types as const generics
+struct Buffer<const N: String> {} // ERROR: String not allowed
+
+// Const expression not evaluable at compile time
+fn process<const N: usize>() {
+    let arr = [0i32; N]; // OK
 }
 
-impl<T: Default + Copy, const N: usize> ArrayPair<T, N> {
+const fn compute() -> usize { 10 }
+struct Table<const ROWS: usize, const COLS: usize> {}
+type Small = Table<{ compute() }, 5>; // May fail in some contexts
+
+// Cannot use runtime values
+fn dynamic(n: usize) {
+    let _arr = [0i32; n]; // ERROR: const expected, found variable
+}
+```
+
+## How to Fix
+
+1. **Use primitive integer types as const generic parameters**
+
+```rust
+struct Matrix<const ROWS: usize, const COLS: usize> {
+    data: [[f64; COLS]; ROWS],
+}
+
+impl<const ROWS: usize, const COLS: usize> Matrix<ROWS, COLS> {
     fn new() -> Self {
-        ArrayPair {
-            left: [T::default(); N],
-            right: [T::default(); N],
-        }
+        Matrix { data: [[0.0; COLS]; ROWS] }
+    }
+}
+
+type Mat3x3 = Matrix<3, 3>;
+type Vec4 = Matrix<4, 1>;
+```
+
+2. **Use const expressions in type positions**
+
+```rust
+const fn byte_size(bits: usize) -> usize { bits / 8 }
+struct BitField<const BITS: usize> {
+    data: [u8; byte_size(BITS)],
+}
+
+// Or use where clauses
+fn process<const N: usize>() -> [u8; N] {
+    [0u8; N]
+}
+```
+
+3. **Use trait bounds for const generic operations**
+
+```rust
+trait Pixel {
+    const CHANNELS: usize;
+}
+
+struct Rgb;
+impl Pixel for Rgb { const CHANNELS: usize = 3; }
+struct Rgba;
+impl Pixel for Rgba { const CHANNELS: usize = 4; }
+
+struct Image<P: Pixel, const W: usize, const H: usize> {
+    pixels: [[[u8; P::CHANNELS]; W]; H],
+}
+```
+
+## Examples
+
+```rust
+struct Stack<T, const N: usize> {
+    data: [Option<T>; N],
+    top: usize,
+}
+
+impl<T: Default + Copy, const N: usize> Stack<T, N> {
+    fn new() -> Self {
+        Stack { data: [None; N], top: 0 }
+    }
+    fn push(&mut self, item: T) -> Result<(), &'static str> {
+        if self.top >= N { return Err("Stack full"); }
+        self.data[self.top] = Some(item);
+        self.top += 1;
+        Ok(())
+    }
+    fn pop(&mut self) -> Option<T> {
+        if self.top == 0 { return None; }
+        self.top -= 1;
+        self.data[self.top]
     }
 }
 
 fn main() {
-    let pair: ArrayPair<i32, 3> = ArrayPair::new();
-    println!("{:?}", pair.left);
-}
-```
-
-### Fix 2: Use trait bounds to constrain values
-
-```rust
-fn sum_arrays<const N: usize>(a: [i32; N], b: [i32; N]) -> [i32; N] {
-    let mut result = [0; N];
-    for i in 0..N {
-        result[i] = a[i] + b[i];
+    let mut stack: Stack<i32, 5> = Stack::new();
+    stack.push(1).unwrap();
+    stack.push(2).unwrap();
+    stack.push(3).unwrap();
+    while let Some(val) = stack.pop() {
+        println!("Popped: {}", val);
     }
-    result
-}
-
-fn main() {
-    let a = [1, 2, 3];
-    let b = [4, 5, 6];
-    println!("{:?}", sum_arrays(a, b));
 }
 ```
 
-### Fix 3: Convert between slices and arrays explicitly
+## Related Errors
 
-```rust
-fn process_array(arr: &[i32; 5]) -> [i32; 5] {
-    *arr
-}
-
-fn main() {
-    let slice: &[i32] = &[1, 2, 3, 4, 5];
-    let arr: [i32; 5] = slice.try_into().unwrap();
-    println!("{:?}", process_array(&arr));
-}
-```
-
-## Common Scenarios
-
-1. **Matrix operations** — 2D arrays with different row and column dimensions
-2. **Fixed-size buffers** — network or file I/O with compile-time sized buffers
-3. **Type-level programming** — encoding constraints at the type level with const parameters
-
-## Prevent It
-
-- Start with concrete const values before abstracting to const generics
-- Use `where` clauses to add additional constraints on const parameters
-- Test const generic functions with multiple concrete values before release
+- [Const Fn Error]({{< relref "/languages/rust/rust-const-fn-error" >}}) — const fn limitations
+- [Generics Error]({{< relref "/languages/rust/rust-generics-error-rs" >}}) — generic type issues
+- [Phantom Data Error]({{< relref "/languages/rust/rust-phantom-data-error" >}}) — phantom type markers

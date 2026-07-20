@@ -6,30 +6,61 @@ severities: ["warning"]
 error-types: ["network"]
 weight: 8
 ---
+# Linux: TCP Connection Error
 
-# Linux: tcp-connection-error — TCP connection error
-
-Fix Linux tcp-connection-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+TCP connection errors occur when the TCP handshake fails or connections are reset unexpectedly.
 
 ## Common Causes
 
-- Connection refused
-- Timeout
-- Reset
-- Too many connections
+- Firewall silently dropping SYN packets
+- Server application not listening on the port
+- TCP backlog queue full (listen(2) backlog exceeded)
+- TCP window size or scaling issues
+- Kernel parameter tcp_tw_reuse or tcp_tw_recycle misconfiguration
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/tcp-connection-error.md' mode='w' encoding='UTF-8'>
+### 1. Analyze TCP Connection State
 
-## Common Scenarios
+```bash
+# Check connection state
+ss -tanp
+# Count connections by state
+ss -tan | awk '{print $1}' | sort | uniq -c
+```
 
-- Connection refused
-- Connection timeout
-- Too many connections
+### 2. Check TCP Parameters
 
-## Prevent It
+```bash
+sysctl net.ipv4.tcp_syncookies
+sysctl net.ipv4.tcp_fin_timeout
+sysctl net.core.somaxconn
+```
 
-- Check listening ports
-- Increase connection limits
-- Monitor connections
+### 3. Increase Backlog
+
+```bash
+sudo sysctl -w net.core.somaxconn=65535
+echo "net.core.somaxconn=65535" | sudo tee -a /etc/sysctl.conf
+```
+
+### 4. Capture Traffic
+
+```bash
+sudo tcpdump -i any host <target> and port <port>
+```
+
+## Examples
+
+```bash
+$ ss -tan | head -10
+State      Recv-Q Send-Q  Local Address:Port   Peer Address:Port
+SYN-SENT   0      1       192.168.1.100:45678  10.0.0.1:80
+ESTAB      0      0       192.168.1.100:22     10.0.0.2:54321
+TIME-WAIT  0      0       192.168.1.100:80     10.0.0.3:12345
+
+$ ss -tan | awk '{print $1}' | sort | uniq -c
+     12 ESTAB
+      3 SYN-SENT
+     45 TIME-WAIT
+```

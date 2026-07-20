@@ -7,29 +7,66 @@ error-types: ["network"]
 weight: 6
 ---
 
-# Linux: bond-error — NIC bonding error
+# Linux: Bond (NIC Teaming) Error
 
-Fix Linux bond-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Bonding errors occur when network interfaces fail to aggregate into a bonded interface.
 
 ## Common Causes
 
-- Bond not created
-- Slave not added
-- Mode mismatch
-- Interface down
+- Bonding module not loaded
+- Slave interface not available or down
+- MII link monitoring failures
+- Bond mode (balance-rr, active-backup, LACP) mismatch with switch
+- MTU or speed mismatch between slaves
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/bond-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Bond Status
 
-## Common Scenarios
+```bash
+cat /proc/net/bonding/bond0
+sudo ip link show bond0
+```
 
-- Bond not working
-- Slave not added
-- Mode mismatch
+### 2. Check Bond Module
 
-## Prevent It
+```bash
+lsmod | grep bonding
+sudo modprobe bonding
+```
 
-- Check bonding mode
-- Add slaves correctly
-- Verify interface status
+### 3. Check Slave Interfaces
+
+```bash
+sudo ip link show eth0 eth1
+sudo ethtool eth0
+```
+
+### 4. Restart Bonding
+
+```bash
+sudo systemctl restart networking
+# Or ifdown/ifup
+sudo ifdown bond0 && sudo ifup bond0
+```
+
+## Examples
+
+```bash
+$ cat /proc/net/bonding/bond0
+Ethernet Channel Bonding Driver: v5.15.0
+Bonding Mode: IEEE 802.3ad Dynamic link aggregation
+MII Status: up
+MII Polling Interval (ms): 100
+Up Delay (ms): 200
+Down Delay (ms): 200
+
+Slave Interface: eth0
+MII Status: up
+Link Failure Count: 0
+
+$ sudo ip link set eth0 down
+$ sudo ip link set eth0 up
+$ cat /proc/net/bonding/bond0 | grep "MII Status"
+MII Status: up
+```

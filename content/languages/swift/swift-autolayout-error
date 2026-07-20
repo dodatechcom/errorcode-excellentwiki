@@ -1,0 +1,121 @@
+---
+title: "[Solution] Swift Auto Layout Error — Constraint Conflict"
+description: "Fix Swift Auto Layout constraint errors. Actionable solutions with Swift code examples."
+languages: ["swift"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 125
+---
+
+Auto Layout errors occur when constraint conflicts arise, ambiguous layouts are detected, or constraints are added incorrectly in code.
+
+## Common Causes
+
+```swift
+// Conflicting constraints
+view.widthAnchor.constraint(equalToConstant: 100).isActive = true
+view.widthAnchor.constraint(equalToConstant: 200).isActive = true
+
+// Missing constraints
+let subview = UIView()
+parentView.addSubview(subview)
+// No constraints added - ambiguous layout
+```
+
+## How to Fix
+
+**1. Add proper constraints**
+
+```swift
+let subview = UIView()
+parentView.addSubview(subview)
+subview.translatesAutoresizingMaskIntoConstraints = false
+
+NSLayoutConstraint.activate([
+    subview.topAnchor.constraint(equalTo: parentView.topAnchor),
+    subview.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+    subview.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
+    subview.bottomAnchor.constraint(equalTo: parentView.bottomAnchor)
+])
+```
+
+**2. Handle constraint priority**
+
+```swift
+let heightConstraint = view.heightAnchor.constraint(equalToConstant: 100)
+heightConstraint.priority = .defaultHigh
+heightConstraint.isActive = true
+```
+
+**3. Remove conflicting constraints**
+
+```swift
+for constraint in view.constraints where constraint.firstAttribute == .width {
+    constraint.isActive = false
+}
+```
+
+**4. Use layout guides**
+
+```swift
+let guide = view.safeAreaLayoutGuide
+NSLayoutConstraint.activate([
+    label.topAnchor.constraint(equalTo: guide.topAnchor),
+    label.leadingAnchor.constraint(equalTo: guide.leadingAnchor)
+])
+```
+
+**5. Debug constraint issues**
+
+```swift
+func printConstraints(_ view: UIView) {
+    for constraint in view.constraints {
+        print(constraint)
+    }
+}
+```
+
+## Examples
+
+Complete constraint setup:
+```swift
+class CustomView: UIView {
+    let titleLabel = UILabel()
+    let bodyLabel = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupViews()
+    }
+    
+    private func setupViews() {
+        addSubview(titleLabel)
+        addSubview(bodyLabel)
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        bodyLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            
+            bodyLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            bodyLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            bodyLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            bodyLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+        ])
+    }
+}
+```
+
+## Related Errors
+
+- [UITableView Error](/languages/swift/swift-tableview-error)
+- [UICollectionView Error](/languages/swift/swift-collectionview-error)
+- [Navigation Controller Error](/languages/swift/swift-navigation-controller)

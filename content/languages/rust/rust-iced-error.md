@@ -10,64 +10,160 @@ comments: true
 
 # Iced Error
 
-Fix Iced GUI framework errors. Resolve widget, message, and application state management issues.
+Iced errors occur when using the Iced GUI framework — issues with message passing, widget tree construction, and application state management.
 
-## Why It Happens
-
-- Application message enum does not cover all variants
-- Subscription returns incompatible Stream type
-- Widget tree is too deeply nested causing stack overflow
-- Theme is not properly initialized
-
-## Common Error Messages
-
-- `error: iced failed`
-- `thread panicked at 'iced framework operation failed'`
-- `Error: unable to complete iced framework operation`
-- `Fatal: iced framework configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure iced framework is properly configured
-use iced_framework::prelude::*;
+use iced::{Element, Sandbox};
+
+// Missing implementation of required Sandbox/Application methods
+struct App;
+impl Sandbox for App {
+    type Message = ();
+    fn update(&mut self, _message: ()) {} // Missing other required methods
+}
+
+// Returning wrong type from view()
+// view() must return Element<Self::Message>
+
+// Message type mismatch between update and view
+```
+
+## How to Fix
+
+1. **Implement all required trait methods**
+
+```rust
+use iced::{Element, Sandbox, widget::{button, column, text}};
+
+#[derive(Debug, Clone)]
+enum Message { Increment, Decrement }
+
+struct Counter { count: i32 }
+
+impl Sandbox for Counter {
+    type Message = Message;
+
+    fn new() -> Self { Counter { count: 0 } }
+
+    fn title(&self) -> String { "Counter".into() }
+
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::Increment => self.count += 1,
+            Message::Decrement => self.count -= 1,
+        }
+    }
+
+    fn view(&self) -> Element<Message> {
+        column![
+            button("−").on_press(Message::Decrement),
+            text(self.count),
+            button("+").on_press(Message::Increment),
+        ].into()
+    }
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct iced framework configuration");
+    Counter::run().unwrap();
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Use `application()` for async-capable apps**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use iced::{Application, Command, Element, Theme};
+
+#[derive(Debug)]
+enum AppState { Loading, Loaded(String) }
+
+#[derive(Debug, Clone)]
+enum Message { DataLoaded(String), Error(String) }
+
+impl Application for AppState {
+    type Executor = iced::executor::Default;
+    type Message = Message;
+    type Theme = Theme;
+    type Flags = ();
+
+    fn new(_flags: ()) -> (Self, Command<Message>) {
+        (AppState::Loading, Command::perform(
+            async { "Hello from async".to_string() },
+            Message::DataLoaded,
+        ))
+    }
+
+    fn title(&self) -> String { "App".into() }
+
+    fn update(&mut self, message: Message) -> Command<Message> {
+        match message {
+            Message::DataLoaded(data) => { *self = AppState::Loaded(data); }
+            Message::Error(e) => { *self = AppState::Loaded(format!("Error: {}", e)); }
+        }
+        Command::none()
+    }
+
+    fn view(&self) -> Element<Message> {
+        match self {
+            AppState::Loading => iced::widget::text("Loading...").into(),
+            AppState::Loaded(data) => iced::widget::text(data.clone()).into(),
+        }
+    }
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Handle subscription-based state updates**
 
 ```rust
-use std::error::Error;
+use iced::{Subscription, time};
+use std::time::{Duration, Instant};
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+fn tick_subscription() -> Subscription<Instant> {
+    time::every(Duration::from_secs(1)).map(|_| Instant::now())
 }
 ```
 
-## Common Scenarios
+## Examples
 
-1. Setting up a new project with iced framework
-2. Integrating iced framework into an existing codebase
-3. Upgrading iced framework to a newer version
+```rust
+use iced::{Element, Sandbox, widget::{button, column, text, text_input}};
 
-## Prevent It
+#[derive(Debug, Clone)]
+enum Message { Typed(String), Submit }
 
-- Read the iced framework documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+struct App { input: String, results: Vec<String> }
+
+impl Sandbox for App {
+    type Message = Message;
+
+    fn new() -> Self { App { input: String::new(), results: vec![] } }
+    fn title(&self) -> String { "Search App".into() }
+
+    fn update(&mut self, msg: Message) {
+        match msg {
+            Message::Typed(s) => self.input = s,
+            Message::Submit => {
+                self.results.push(format!("Searched: {}", self.input));
+                self.input.clear();
+            }
+        }
+    }
+
+    fn view(&self) -> Element<Message> {
+        column![
+            text_input("Type something...", &self.input).on_input(Message::Typed),
+            button("Submit").on_press(Message::Submit),
+            text(format!("Results: {}", self.results.len())),
+        ].into()
+    }
+}
+
+fn main() { App::run().unwrap(); }
+```
+
+## Related Errors
+
+- [Egui Error]({{< relref "/languages/rust/rust-egui-error" >}}) — egui framework issues
+- [Slint Error]({{< relref "/languages/rust/rust-slint-error" >}}) — Slint framework issues
+- [Tauri Error]({{< relref "/languages/rust/rust-tauri-error" >}}) — Tauri framework issues

@@ -1,125 +1,213 @@
 ---
-title: "[Solution] PHP JSON Validation Error Fix"
-description: "Fix 'Syntax error, malformed JSON' errors with PHP 8.3's improved json_validate() function and proper error handling."
-date: 2026-07-17T10:00:00+08:00
-draft: false
-language: "php"
-tags: ["php", "php83", "json", "validation", "runtime-error"]
-severity: "error"
+title: "[Solution] PHP 8.3 json_validate() Error — Invalid JSON Validation"
+description: "Fix PHP 8.3 json_validate() Error by checking JSON syntax, validating data structure, and using proper options. Copy-paste solutions with code examples."
+languages: ["php"]
+severities: ["error"]
+error-types: ["runtime-error"]
+weight: 313
 ---
 
-# Syntax Error, Malformed JSON
+# PHP 8.3 json_validate() Error — Invalid JSON Validation
 
-## Error Message
-
-```
-json_decode(): Syntax error, malformed JSON in /path/to/file.php:8
-```
+The json_validate() Error occurs when `json_validate()` is used incorrectly, called with invalid arguments, or when JSON that appears valid is rejected due to structural issues. PHP 8.3 introduced `json_validate()` as a dedicated function to check whether a JSON string is syntactically valid without decoding it.
 
 ## Common Causes
 
-- Passing malformed or truncated JSON strings to json_decode() or json_validate()
-- Encoding data with special characters without proper UTF-8 handling
-- Receiving incomplete JSON from APIs due to network issues or timeouts
-- Using JSON with syntax errors such as trailing commas or unquoted keys
-
-## Solutions
-
-### Solution 1: Use json_validate() before json_decode() in PHP 8.3+
-
-PHP 8.3 introduced json_validate() to check JSON syntax without decoding — use it for fast validation.
-
 ```php
 <?php
-$jsonString = '{"name": "Alice", "age": 30}';
+// Cause 1: Wrong argument type
+json_validate(123); // TypeError — expects string
 
-if (json_validate($jsonString)) {
-    $data = json_decode($jsonString, true);
-    echo $data['name']; // 'Alice'
-} else {
-    $error = json_last_error_msg();
-    error_log("Invalid JSON: $error");
+// Cause 2: Assuming json_validate() returns decoded data
+$valid = json_validate('{"name": "Alice"}');
+echo $valid->name; // Error — json_validate returns bool, not array
+
+// Cause 3: Confusing validation with parsing
+$json = '{"name": "Alice", "age": 25}';
+if (json_validate($json)) {
+    // JSON is valid, but you still need to decode it
+    $data = json_decode($json, true); // Don't forget this step
 }
+
+// Cause 4: Using json_validate() before PHP 8.3
+// json_validate('[]'); // Fatal error on PHP < 8.3
+
+// Cause 5: Not handling edge cases with depth and flags
+$json = str_repeat('{"a":', 1000) . '1' . str_repeat('}', 1000);
+json_validate($json); // May fail with depth limit
 ?>
 ```
 
-### Solution 2: Always handle json_decode errors explicitly
+## How to Fix
 
-Check json_last_error() after decoding to catch malformed JSON and handle it gracefully.
+### Fix 1: Always pass a string argument
 
 ```php
 <?php
-function safeJsonDecode(string $json, bool $assoc = true): mixed {
-    $result = json_decode($json, $assoc);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        error_log('JSON decode error: ' . json_last_error_msg());
-        return null;
+function safeJsonValidate(mixed $input): bool {
+    if (!is_string($input)) {
+        return false;
     }
-
-    return $result;
+    return json_validate($input);
 }
 
-// Usage
-$response = file_get_contents('https://api.example.com/data');
-$data = safeJsonDecode($response ?? '');
-
-if ($data === null) {
-    echo 'Failed to parse API response';
-} else {
-    print_r($data);
-}
+echo safeJsonValidate('{"key": "value"}'); // true
+echo safeJsonValidate(123);                // false
+echo safeJsonValidate(null);               // false
 ?>
 ```
 
-### Solution 3: Sanitize and validate JSON input before processing
-
-Filter and validate JSON data after decoding to ensure it matches expected structures.
+### Fix 2: Use json_validate() then json_decode() for two-step validation
 
 ```php
 <?php
-function validateAndParseUser(string $json): ?array {
+function parseJson(string $json): array {
     if (!json_validate($json)) {
-        return null;
+        throw new InvalidArgumentException(
+            'Invalid JSON: ' . json_last_error_msg()
+        );
     }
 
     $data = json_decode($json, true);
 
-    // Validate required fields
-    $required = ['name', 'email', 'age'];
-    foreach ($required as $field) {
-        if (!isset($data[$field]) || !is_string($data[$field]) && $field !== 'age') {
-            return null;
-        }
-    }
-
-    // Type checking
-    if (!is_int($data['age']) || $data['age'] < 0 || $data['age'] > 150) {
-        return null;
-    }
-
-    if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-        return null;
+    if (!is_array($data)) {
+        throw new RuntimeException('JSON did not decode to array');
     }
 
     return $data;
 }
 
-$userJson = '{"name":"Bob","email":"bob@example.com","age":25}';
-$user = validateAndParseUser($userJson);
-var_dump($user);
+// Usage
+try {
+    $data = parseJson('{"users": [{"name": "Alice"}]}');
+    echo $data['users'][0]['name']; // Alice
+} catch (InvalidArgumentException $e) {
+    echo "JSON error: " . $e->getMessage();
+}
 ?>
 ```
 
-## Prevention Tips
+### Fix 3: Use options for strict validation
 
-- Use json_validate() in PHP 8.3+ for efficient syntax checking before decoding
-- Always set JSON_THROW_ON_ERROR flag (PHP 7.3+) for exceptions instead of silent failures
-- Handle multibyte strings properly — use mb_convert_encoding() if needed before JSON encoding
-- Set a maximum depth for json_decode() to prevent stack overflow attacks on nested JSON
+```php
+<?php
+$json = '{"name": "Alice", "age": 25}';
+
+// Basic validation
+$valid = json_validate($json);
+
+// With depth limit (default is 512)
+$valid = json_validate($json, depth: 512);
+
+// Check for specific JSON types
+function validateJsonStructure(string $json, array $requiredKeys): bool {
+    if (!json_validate($json)) {
+        return false;
+    }
+
+    $data = json_decode($json, true);
+    if (!is_array($data)) {
+        return false;
+    }
+
+    foreach ($requiredKeys as $key) {
+        if (!array_key_exists($key, $data)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+$valid = validateJsonStructure($json, ['name', 'age']);
+?>
+```
+
+### Fix 4: Handle edge cases gracefully
+
+```php
+<?php
+function robustJsonCheck(string $input): array {
+    $result = [
+        'valid' => json_validate($input),
+        'error' => null,
+        'data' => null,
+    ];
+
+    if (!$result['valid']) {
+        $result['error'] = json_last_error_msg();
+        return $result;
+    }
+
+    $result['data'] = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
+    return $result;
+}
+
+// Empty string
+echo robustJsonCheck('')->valid ? 'valid' : 'invalid'; // invalid
+
+// Empty object
+echo robustJsonCheck('{}')->valid ? 'valid' : 'invalid'; // valid
+
+// Deeply nested
+$deep = json_encode(['level' => ['level' => ['level' => 1]]]);
+echo robustJsonCheck($deep)->valid ? 'valid' : 'invalid'; // valid
+?>
+```
+
+## Examples
+
+```php
+<?php
+// Practical use cases for json_validate()
+class ApiRequest {
+    public static function validateBody(string $body, array $schema): bool {
+        if (!json_validate($body)) {
+            return false;
+        }
+
+        $data = json_decode($body, true);
+        return self::matchesSchema($data, $schema);
+    }
+
+    private static function matchesSchema(array $data, array $schema): bool {
+        foreach ($schema as $key => $type) {
+            if (!array_key_exists($key, $data)) {
+                return false;
+            }
+            if (get_debug_type($data[$key]) !== $type) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+$body = '{"name": "Alice", "age": 25}';
+$schema = ['name' => 'string', 'age' => 'integer'];
+echo ApiRequest::validateBody($body, $schema) ? 'valid' : 'invalid'; // valid
+
+// Using json_validate() for config file checking
+function checkConfigFile(string $path): void {
+    $content = file_get_contents($path);
+
+    if ($content === false) {
+        throw new RuntimeException("Cannot read file: $path");
+    }
+
+    if (!json_validate($content)) {
+        throw new InvalidArgumentException(
+            "Invalid JSON in config file: " . json_last_error_msg()
+        );
+    }
+
+    echo "Config file is valid JSON\n";
+}
+?>
+```
 
 ## Related Errors
 
-- [PHP Deprecated Function Usage]({{< relref "/languages/php/php-deprecated" >}})
-- [PHP Parse Error]({{< relref "/languages/php/parse-error" >}})
-- [PHP Warning Count]({{< relref "/languages/php/warning-count" >}})
+- [PHP 8.1 array_is_list() Error](/languages/php/php81-array-is-list/) — Array validation
+- [PHP 8.0 Match Expression Error](/languages/php/php80-match-expression/) — Control flow errors
+- [PHP 8.4 Property Hook Error](/languages/php/php84-property-hooks/) — PHP 8.4 features

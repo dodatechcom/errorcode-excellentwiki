@@ -7,77 +7,53 @@ severities: ["error"]
 weight: 5
 ---
 
-# diesel Database Query Error
+# Diesel Error
 
-Fix diesel database query errors. Handle diesel QueryResult failures, schema mismatches, and type errors.
-
-## What This Error Means
-
-diesel query errors occur when a database query fails at runtime. Common messages include:
-
-```
-DatabaseError(UniqueViolation, ...)
-NotFound
-DatabaseError(ForeignKeyViolation, ...)
-Query returned no rows
-```
+Diesel errors occur when using the `diesel` ORM — connection failures, query type mismatches, and migration issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Unique constraint violation on insert
-diesel::insert_into(users::table)
-    .values(&new_user)
-    .execute(&mut conn)?;
+// Connection refused
+let mut conn = PgConnection::establish("postgres://wrong:5432/db")?;
 
-// Cause 2: Query returns no rows when expecting exactly one
-let user = users::table.find(1).first::<User>(&mut conn)?;
-
-// Cause 3: Schema mismatch after migration
-// Cause 4: Type conversion between Rust and SQL types
+// Query returning wrong type
+let name: i32 = users.select(name).first(&mut conn)?; // name is String
 ```
 
 ## How to Fix
 
-### Fix 1: Handle unique constraint violations
+1. **Establish connection properly**
 
 ```rust
-use diesel::result::Error;
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
 
-fn create_user(conn: &mut PgConnection, name: &str) -> Result<User, Error> {
-    match diesel::insert_into(users::table)
-        .values(&NewUser { name, email: "test@test.com" })
-        .get_result::<User>(conn) {
-        Ok(user) => Ok(user),
-        Err(Error::DatabaseError(
-            diesel::result::DatabaseErrorKind::UniqueViolation, _,
-        )) => {
-            users::table
-                .filter(users::name.eq(name))
-                .first::<User>(conn)
-        }
-        Err(e) => Err(e),
+let database_url = std::env::var("DATABASE_URL")
+    .expect("DATABASE_URL must be set");
+let mut conn = PgConnection::establish(&database_url)?;
+```
+
+2. **Define schema correctly**
+
+```rust
+diesel::table! {
+    users (id) {
+        id -> Int4,
+        name -> Varchar,
+        email -> Varchar,
     }
 }
 ```
 
-### Fix 2: Use optional queries for non-mandatory lookups
+3. **Handle migrations**
 
 ```rust
-fn find_user(conn: &mut PgConnection, user_id: i64) -> Option<User> {
-    users::table.find(user_id).first::<User>(conn).optional().ok()?
-}
-```
+use diesel_migrations::{embed_migrations, EmbeddedMigrations};
+const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
-### Fix 3: Run pending migrations before querying
-
-```rust
-use diesel_migrations::{embed_migrations, run_pending_migrations};
-
-embed_migrations!();
-
-fn run_migrations(conn: &PgConnection) {
-    run_pending_migrations(conn).expect("Failed to run migrations");
+fn run_migrations(conn: &mut PgConnection) {
+    MIGRATIONS.run_pending_migrations(conn).expect("Migrations failed");
 }
 ```
 
@@ -85,34 +61,31 @@ fn run_migrations(conn: &PgConnection) {
 
 ```rust
 use diesel::prelude::*;
+use diesel::pg::PgConnection;
 
 table! {
     users (id) {
         id -> Int4,
         name -> Varchar,
-        email -> Varchar,
     }
 }
 
-#[derive(Queryable, Debug)]
-struct User {
-    id: i32,
-    name: String,
-    email: String,
-}
+#[derive(Queryable, Selectable)]
+#[diesel(table_name = users)]
+struct User { id: i32, name: String }
 
-fn get_active_users(conn: &mut PgConnection) -> Result<Vec<User>, diesel::Result<()>> {
-    let results = users::table
-        .filter(users::name.ne(""))
-        .order(users::name.asc())
-        .load::<User>(conn)
-        .expect("Error loading users");
-    Ok(results)
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut conn = PgConnection::establish("postgres://localhost/test")?;
+    let all_users = users::table.load::<User>(&mut conn)?;
+    for u in &all_users {
+        println!("{}: {}", u.id, u.name);
+    }
+    Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Diesel Error]({{< relref "/languages/rust/diesel-error" >}}) — diesel error
-- [SQLx Error]({{< relref "/languages/rust/sqlx-error-v2" >}}) — sqlx connection error
-- [Sea-ORM Error]({{< relref "/languages/rust/sea-orm-error" >}}) — sea-orm error
+- [SQLx Error]({{< relref "/languages/rust/sqlx-error" >}}) — SQLx
+- [Sea ORM Error]({{< relref "/languages/rust/sea-orm-error" >}}) — SeaORM
+- [Postgres Error]({{< relref "/languages/rust/postgres-error-rs" >}}) — PostgreSQL

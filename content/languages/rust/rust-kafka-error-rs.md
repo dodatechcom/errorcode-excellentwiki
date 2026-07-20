@@ -10,64 +10,142 @@ comments: true
 
 # Kafka Error
 
-Fix Kafka errors in Rust. Resolve producer, consumer, and broker connection issues with the rdkafka crate.
+Kafka errors occur when using the `rdkafka` crate (or similar) to interact with Apache Kafka — broker connection failures, producer/consumer configuration issues, and message deserialization problems.
 
-## Why It Happens
-
-- Broker address is unreachable or misconfigured
-- Topic does not exist or requires authorization
-- Consumer group rebalance is in progress
-- Message serialization format is incorrect
-
-## Common Error Messages
-
-- `error: kafka failed`
-- `thread panicked at 'rdkafka operation failed'`
-- `Error: unable to complete rdkafka operation`
-- `Fatal: rdkafka configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure rdkafka is properly configured
-use rdkafka::prelude::*;
+use rdkafka::consumer::{Consumer, StreamConsumer};
+use rdkafka::config::ClientConfig;
 
-fn main() {
-    // Initialize properly
-    println!("Correct rdkafka configuration");
+// Wrong broker address
+let consumer: StreamConsumer = ClientConfig::new()
+    .set("bootstrap.servers", "wrong_host:9092")
+    .set("group.id", "my-group")
+    .create()?; // Connection failure
+
+// Missing required configuration
+let consumer: StreamConsumer = ClientConfig::new()
+    .set("group.id", "my-group")
+    // Missing: bootstrap.servers
+    .create()?;
+
+// Consumer not subscribed to topics
+let consumer: StreamConsumer = /* created */;
+// consumer.poll() returns None if not subscribed
+```
+
+## How to Fix
+
+1. **Verify broker configuration and connectivity**
+
+```rust
+use rdkafka::consumer::{Consumer, StreamConsumer};
+use rdkafka::config::ClientConfig;
+
+let consumer: StreamConsumer = ClientConfig::new()
+    .set("bootstrap.servers", "localhost:9092")
+    .set("group.id", "my-group")
+    .set("auto.offset.reset", "earliest")
+    .set("enable.auto.commit", "false")
+    .create()
+    .expect("Failed to create consumer");
+```
+
+2. **Handle consumer errors with proper offset management**
+
+```rust
+use rdkafka::consumer::{Consumer, StreamConsumer};
+use rdkafka::message::Message;
+use std::time::Duration;
+
+#[tokio::main]
+async fn main() -> rdkafka::error::KafkaResult<()> {
+    let consumer: StreamConsumer = ClientConfig::new()
+        .set("bootstrap.servers", "localhost:9092")
+        .set("group.id", "my-group")
+        .create()?;
+
+    consumer.subscribe(&["my-topic"])?;
+
+    loop {
+        match consumer.recv().await {
+            Ok(msg) => {
+                if let Some(Ok(payload)) = msg.payload_view::<str>() {
+                    println!("Received: {}", payload);
+                }
+                consumer.commit_message(&msg, rdkafka::consumer::CommitMode::Async)?;
+            }
+            Err(e) => eprintln!("Error: {}", e),
+        }
+    }
 }
 ```
 
-### Fix 2: Handle errors explicitly
+3. **Configure producer with proper error handling**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
+use rdkafka::producer::{FutureProducer, FutureRecord};
+use std::time::Duration;
+
+async fn send_message(topic: &str, key: &str, payload: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let producer: FutureProducer = rdkafka::config::ClientConfig::new()
+        .set("bootstrap.servers", "localhost:9092")
+        .set("message.timeout.ms", "5000")
+        .create()?;
+
+    let delivery_status = producer
+        .send(FutureRecord::to(topic).key(key).payload(payload), Duration::from_secs(5))
+        .await?;
+
+    println!("Delivered to partition {}", delivery_status.0);
     Ok(())
 }
 ```
 
-### Fix 3: Add proper error context
+## Examples
 
 ```rust
-use std::error::Error;
+use rdkafka::config::ClientConfig;
+use rdkafka::producer::{FutureProducer, FutureRecord};
+use rdkafka::consumer::{Consumer, StreamConsumer};
+use rdkafka::message::Message;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
+#[tokio::main]
+async fn main() -> rdkafka::error::KafkaResult<()> {
+    // Producer
+    let producer: FutureProducer = ClientConfig::new()
+        .set("bootstrap.servers", "localhost:9092")
+        .create()?;
+
+    for i in 0..5 {
+        let record = FutureRecord::to("test-topic")
+            .key(&format!("key-{}", i))
+            .payload(&format!("message-{}", i));
+        producer.send(record, std::time::Duration::from_secs(0)).await?;
+    }
+
+    // Consumer
+    let consumer: StreamConsumer = ClientConfig::new()
+        .set("bootstrap.servers", "localhost:9092")
+        .set("group.id", "test-group")
+        .set("auto.offset.reset", "earliest")
+        .create()?;
+
+    consumer.subscribe(&["test-topic"])?;
+    for _ in 0..5 {
+        if let Ok(msg) = consumer.recv().await {
+            if let Some(Ok(payload)) = msg.payload_view::<str>() {
+                println!("Got: {}", payload);
+            }
+        }
+    }
     Ok(())
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. Setting up a new project with rdkafka
-2. Integrating rdkafka into an existing codebase
-3. Upgrading rdkafka to a newer version
-
-## Prevent It
-
-- Read the rdkafka documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [AMQP Error]({{< relref "/languages/rust/rust-amqp-error" >}}) — RabbitMQ messaging
+- [NATS Error]({{< relref "/languages/rust/rust-nats-error" >}}) — NATS messaging
+- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — broker unreachable

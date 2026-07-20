@@ -7,75 +7,76 @@ severities: ["error"]
 weight: 5
 ---
 
-# indicatif Progress Bar Error
+# Indicatif Error
 
-Fix indicatif progress bar errors. Handle terminal rendering, multi-progress, and draw errors..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Indicatif errors occur when using the `indicatif` crate for progress bars — display conflicts and tick rate issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Progress bar in non-terminal context
+let pb = ProgressBar::new(100);
+pb.inc(1); // May not display properly
+
+// Wrong tick rate
+pb.set_tick_rate(0); // Too fast — CPU spin
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use MultiProgress for multiple bars**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use indicatif::{MultiProgress, ProgressBar};
+
+let mp = MultiProgress::new();
+let pb1 = mp.add(ProgressBar::new(100));
+let pb2 = mp.add(ProgressBar::new(100));
 ```
 
-### Fix 2: Add proper error handling
+2. **Set appropriate tick rate**
 
 ```rust
-use anyhow::Result;
+use indicatif::ProgressBar;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let pb = ProgressBar::new(100);
+pb.set_tick_rate(std::time::Duration::from_millis(100));
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use styled progress bars**
 
 ```rust
-use std::time::Duration;
+use indicatif::{ProgressBar, ProgressStyle};
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let pb = ProgressBar::new(100);
+pb.set_style(ProgressStyle::default_bar()
+    .template("[{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} ({eta})")
+    .unwrap()
+    .progress_chars("#>-"));
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use indicatif::{ProgressBar, ProgressStyle};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let pb = ProgressBar::new(100);
+    pb.set_style(ProgressStyle::default_bar()
+        .template("[{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} ({eta})")
+        .unwrap()
+        .progress_chars("#>-"));
+
+    for _ in 0..100 {
+        pb.inc(1);
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    }
+    pb.finish_with_message("done");
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Crossterm Error]({{< relref "/languages/rust/crossterm-error" >}}) — terminal handling
+- [Colored Error]({{< relref "/languages/rust/colored-error" >}}) — colors
+- [Dialoguer Error]({{< relref "/languages/rust/dialoguer-error" >}}) — prompts

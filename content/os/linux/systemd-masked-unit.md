@@ -7,50 +7,57 @@ error-types: ["config-error"]
 weight: 6
 ---
 
-# Linux: systemd-masked-unit — Service is masked
+# Linux: systemd Masked Unit Error
 
-Fix Linux systemd-masked-unit errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+systemd masked unit errors occur when the systemd masked unit component fails to operate correctly.
 
 ## Common Causes
 
-- Manually masked
-- Distribution shipped masked
-- Preventing conflicts
-- Debug leftover
+- Misconfiguration in unit files or systemd configuration
+- Permission or ownership issues on required paths
+- Dependency failures from other systemd units
+- Resource limits or system constraints reached
+- SELinux or AppArmor policy blocking operations
 
 ## How to Fix
 
-### 1. Check
+### 1. Check systemd Unit Status
+
 ```bash
-systemctl is-enabled <service>.service
-systemctl cat <service>.service
+sudo systemctl status systemd-masked-unit
+sudo journalctl -u systemd-masked-unit --no-pager -n 50
 ```
 
-### 2. Unmask
+### 2. Verify Configuration Files
+
 ```bash
-sudo systemctl unmask <service>.service
-sudo systemctl enable <service>.service
+ls /etc/systemd/*.conf /usr/lib/systemd/*.conf 2>/dev/null
+systemctl cat systemd-masked-unit
 ```
 
-### 3. Unmask and Start
+### 3. Check System Logs
+
 ```bash
-sudo systemctl unmask <service>.service
-sudo systemctl start <service>.service
+sudo journalctl -xe --no-pager -n 30
+sudo dmesg | tail -20
 ```
 
-### 4. List All
+### 4. Restart and Re-evaluate
+
 ```bash
-systemctl list-unit-files | grep masked
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-masked-unit
 ```
 
-## Common Scenarios
+## Examples
 
-- Failed to start: Unit is masked
-- Cannot enable or start
-- Interfering with install
+```bash
+$ sudo systemctl status systemd-masked-unit
+* systemd-masked-unit.service - systemd Masked Unit
+   Loaded: loaded (/usr/lib/systemd/system/systemd-masked-unit.service; static)
+   Active: failed (Result: exit-code)
 
-## Prevent It
-
-- Understand mask vs disable
-- Only mask permanently
-- Clean up when done
+$ sudo journalctl -u systemd-masked-unit -n 10
+Jul 20 14:30:45 server systemd[masked-unit][12345]: Failed to process configuration
+Jul 20 14:30:45 server systemd[1]: systemd-masked-unit.service: Main process exited, code=exited, status=1/FAILURE
+```

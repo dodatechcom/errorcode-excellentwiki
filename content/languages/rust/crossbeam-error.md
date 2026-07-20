@@ -7,75 +7,113 @@ severities: ["error"]
 weight: 5
 ---
 
-# crossbeam Channel Error
+# Crossbeam Error
 
-Fix crossbeam channel errors. Handle bounded/unbounded channels, select macro, and timeouts..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Crossbeam errors occur when using the `crossbeam` crate for concurrent programming — channel issues, scope panics, and epoch-based reclamation problems.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use crossbeam::channel;
+
+// Channel closed before receiving
+let (tx, rx) = channel::bounded(5);
+drop(rx);
+tx.send(42).unwrap(); // ERROR: SendError
+
+// Scope panic — panicking in scope thread
+crossbeam::scope(|s| {
+    s.spawn(|_| panic!("Thread panic")); // May poison scope
+}).unwrap();
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use `try_send` and `try_recv` for non-blocking operations**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use crossbeam::channel;
 
-### Fix 2: Add proper error handling
+let (tx, rx) = channel::bounded(5);
 
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match tx.try_send("hello") {
+    Ok(()) => println!("Sent"),
+    Err(channel::TrySendError::Full(_)) => eprintln!("Channel full"),
+    Err(channel::TrySendError::Disconnected(_)) => eprintln!("Disconnected"),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Handle scope panics with catch_unwind**
 
 ```rust
-use std::time::Duration;
+use crossbeam::scope;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+    scope(|s| {
+        s.spawn(|_| {
+            // Thread work
+            println!("Thread done");
+        });
+    }).unwrap();
+}));
+
+match result {
+    Ok(()) => println!("Scope completed"),
+    Err(_) => eprintln!("Scope panicked"),
+}
+```
+
+3. **Use crossbeam channels for multi-producer/multi-consumer**
+
+```rust
+use crossbeam::channel;
+use std::thread;
+
+let (tx, rx) = channel::unbounded();
+
+for i in 0..5 {
+    let tx = tx.clone();
+    thread::spawn(move || {
+        tx.send(format!("Message {}", i)).unwrap();
+    });
+}
+
+drop(tx); // Drop original
+
+for msg in rx {
+    println!("Received: {}", msg);
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use crossbeam::channel;
+use std::thread;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let (tx, rx) = channel::unbounded();
+
+    // Multiple producers
+    for i in 0..3 {
+        let tx = tx.clone();
+        thread::spawn(move || {
+            for j in 0..3 {
+                tx.send(format!("P{}:M{}", i, j)).unwrap();
+            }
+        });
+    }
+    drop(tx);
+
+    // Single consumer
+    while let Ok(msg) = rx.recv() {
+        println!("Got: {}", msg);
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Flume Error]({{< relref "/languages/rust/flume-error" >}}) — flume channels
+- [Tokio Error]({{< relref "/languages/rust/tokio-error" >}}) — async channels
+- [Scoped Threadpool Error]({{< relref "/languages/rust/scoped-threadpool-error" >}}) — scoped threads

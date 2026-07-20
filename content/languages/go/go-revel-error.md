@@ -9,56 +9,72 @@ weight: 5
 
 # Revel Controller Error
 
-Fix Revel framework controller errors. Handle request handling, template rendering, and filter chain..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The Revel web framework fails when controller methods have wrong signatures, interceptors do not call `c.Next()`, template rendering fails, or session management is misconfigured. Revel uses a convention-based MVC pattern where controller names and template paths must match.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Controller method signature wrong
+func (c App) BadIndex() {
+    // missing return revel.Result — compile error
+}
+
+// Cause 2: Interceptor not calling c.Next()
+func init() {
+    interceptors.Func(func(c *revel.Controller, fc []revel.Filter) {
+        // forgot fc[0](c, fc[1:])
+    })
+}
+
+// Cause 3: Template not found
+return c.Render("user.Name", "user.Age")
+// looks for App/Index.html but file is in wrong directory
+
+// Cause 4: Session data not persisted
+c.Session["user_id"] = "123"
+// session store not configured
+
+// Cause 5: Route parameter name mismatch
+// routes file: /users/:id  Controller: App.Show(id int)
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Follow Revel controller conventions
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+package controllers
 
-### Fix 2: Add proper error handling
+import "github.com/revel/revel"
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+type App struct {
+    *revel.Controller
+}
+
+func (c App) Index() revel.Result {
+    return c.Render()
+}
+
+func (c App) Show(id int) revel.Result {
+    user := getUser(id)
+    return c.Render(user)
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Use interceptors with proper filter chain
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func init() {
+    revel.Filters = []revel.Filter{
+        revel.PanicFilter,
+        revel.RouterFilter,
+        revel.FilterConfiguringFilter,
+        revel.ParamsFilter,
+        SessionFilter,
+        revel.InterceptorFilter,
+        revel.CompressFilter,
+        revel.BeforeAfterFilter,
+        revel.ActionInvoker,
     }
 }
 ```
@@ -66,29 +82,28 @@ if err != nil {
 ## Examples
 
 ```go
-package main
+package controllers
 
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
+import "github.com/revel/revel"
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+type Users struct {
+    *revel.Controller
+}
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
+func (c Users) List() revel.Result {
+    users := []string{"Alice", "Bob"}
+    return c.Render(users)
+}
+
+func (c Users) Create() revel.Result {
+    name := c.Params.Get("name")
+    revel.TRACE.Printf("Creating user: %s", name)
+    return c.Redirect("/users")
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [go-fiber-error]({{< relref "/languages/go/go-fiber-error" >}}) — similar web framework issues
+- [go-chi-error]({{< relref "/languages/go/go-chi-error" >}}) — route registration problems
+- [template-not-found]({{< relref "/languages/go/go-revel-error" >}}) — template rendering fails

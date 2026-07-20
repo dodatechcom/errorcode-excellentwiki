@@ -7,75 +7,86 @@ severities: ["error"]
 weight: 5
 ---
 
-# colored ANSI Error
+# Colored Error
 
-Fix colored ANSI string errors. Handle color codes, terminal compatibility, and formatting..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Colored errors occur when using the `colored` crate for terminal color output — unsupported terminal features and non-UTF8 output issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use colored::*;
+
+// Colors not supported in current terminal
+println!("{}", "Hello".red().bold()); // May show escape codes in non-supporting terminals
+
+// Custom colors with invalid values
+let custom = "text".truecolor(256, 0, 0); // 256 > 255 — may wrap
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Use `control::set_override` to disable colors**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use colored::*;
 
-### Fix 2: Add proper error handling
+// Disable colors for testing/piping
+colored::control::set_override(false);
+println!("{}", "No colors here".red());
 
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+// Or based on terminal detection
+if !colored::control::should_colorize(colored::control::Output::Stdout) {
+    colored::control::set_override(true); // Force disable
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use valid RGB values (0-255)**
 
 ```rust
-use std::time::Duration;
+use colored::*;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let text = "Custom color".truecolor(200, 100, 50);
+println!("{}", text);
+```
+
+3. **Use named styles for consistency**
+
+```rust
+use colored::*;
+
+fn success(msg: &str) { println!("{}", msg.green().bold()); }
+fn error(msg: &str) { println!("{}", msg.red().bold()); }
+fn warning(msg: &str) { println!("{}", msg.yellow()); }
+fn info(msg: &str) { println!("{}", msg.blue()); }
+
+fn main() {
+    success("Operation completed");
+    error("Something went wrong");
+    warning("Be careful");
+    info("For your reference");
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use colored::*;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    println!("{}", "=== Colored Output ===".cyan().bold());
+    println!("{}: {}", "Error".red().bold(), "file not found");
+    println!("{}: {}", "Warning".yellow(), "deprecated function");
+    println!("{}: {}", "Info".green(), "operation completed");
+
+    // Custom colors
+    println!("{}", "Rainbow!".truecolor(255, 0, 0));
+    println!("{}", "Rainbow!".truecolor(255, 127, 0));
+    println!("{}", "Rainbow!".truecolor(255, 255, 0));
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Crossterm Error]({{< relref "/languages/rust/crossterm-error" >}}) — terminal handling
+- [Termion Error]({{< relref "/languages/rust/termion-error" >}}) — terminal I/O
+- [Indicatif Error]({{< relref "/languages/rust/indicatif-error" >}}) — progress bars

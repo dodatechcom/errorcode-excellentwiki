@@ -7,75 +7,72 @@ severities: ["error"]
 weight: 5
 ---
 
-# redis Connection Error
+# Redis Error (redis-rs)
 
-Fix Redis client connection errors. Handle server connectivity, authentication, and command timeouts..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Redis errors occur when using the `redis` crate — connection, command execution, and type conversion errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection refused
+let client = redis::Client::open("redis://wrong:6379")?;
+let mut conn = client.get_connection()?;
+
+// Wrong data type
+let val: String = conn.get("counter")?; // key holds a list
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Connect with proper configuration**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use redis::Commands;
+
+let client = redis::Client::open("redis://127.0.0.1:6379")?;
+let mut conn = client.get_connection()?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Use typed commands**
 
 ```rust
-use anyhow::Result;
+use redis::Commands;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let _: () = conn.set("key", "value")?;
+let value: String = conn.get("key")?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use async with connection pool**
 
 ```rust
-use std::time::Duration;
+use redis::aio::MultiplexedConnection;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let client = redis::Client::open("redis://127.0.0.1:6379")?;
+let conn = client.get_multiplexed_async_connection().await?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use redis::Commands;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+fn main() -> redis::RedisResult<()> {
+    let client = redis::Client::open("redis://127.0.0.1:6379")?;
+    let mut conn = client.get_connection()?;
+
+    let _: () = conn.set("language", "rust")?;
+    let lang: String = conn.get("language")?;
+    println!("Language: {}", lang);
+
+    let _: () = conn.hset("user:1", "name", "Alice")?;
+    let name: String = conn.hget("user:1", "name")?;
+    println!("User: {}", name);
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [MongoDB Error]({{< relref "/languages/rust/mongodb-error-rs" >}}) — MongoDB
+- [Postgres Error]({{< relref "/languages/rust/postgres-error-rs" >}}) — PostgreSQL
+- [SQLx Error]({{< relref "/languages/rust/sqlx-error" >}}) — SQLx

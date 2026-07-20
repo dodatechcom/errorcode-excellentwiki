@@ -6,30 +6,69 @@ severities: ["warning"]
 error-types: ["process-error"]
 weight: 8
 ---
+# Linux: Process Killed by Signal
 
-# Linux: signal-killed — process killed by signal
-
-Fix Linux signal-killed errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A process killed by signal means the kernel sent a signal (SIGKILL, SIGTERM, SIGHUP, etc.) to terminate a process.
 
 ## Common Causes
 
-- Out of memory
-- Resource limit exceeded
-- User killed process
-- System limit hit
+- OOM (Out-of-Memory) killer terminated the process (SIGKILL)
+- System administrator or monitoring system sent SIGTERM/SIGKILL
+- Process reached resource limits (cgroup memory limit)
+- Shell job control (Ctrl+C sends SIGINT)
+- Parent process termination sending SIGHUP to child
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/signal-killed.md' mode='w' encoding='UTF-8'>
+### 1. Check Which Signal Killed the Process
 
-## Common Scenarios
+```bash
+# Check exit status
+./myprogram
+echo $?  # 137 = SIGKILL, 143 = SIGTERM, 130 = SIGINT
+```
 
-- Process killed unexpectedly
-- OOM killer active
-- Resource limits
+### 2. Check for OOM Killer
 
-## Prevent It
+```bash
+dmesg | grep -i "killed process\|oom"
+journalctl -k | grep -i oom
+```
 
-- Increase memory limits
-- Monitor resource usage
-- Check OOM logs
+### 3. Check System Logs
+
+```bash
+journalctl -xe -n 50
+sudo tail -100 /var/log/syslog
+```
+
+### 4. Check Cgroup Memory Limits
+
+```bash
+# Check cgroup memory limit
+cat /sys/fs/cgroup/memory/memory.limit_in_bytes
+cat /sys/fs/cgroup/system.slice/<service>.service/memory.current
+```
+
+### 5. Increase Memory or Adjust Limits
+
+```bash
+# For systemd service
+sudo systemctl edit <service>
+# Add:
+# [Service]
+# MemoryMax=2G
+```
+
+## Examples
+
+```bash
+$ ./myapp
+Killed
+
+$ dmesg | grep -i "killed process"
+[12345.678] Killed process 12345 (myapp) total-vm:1234567kB, anon-rss:987654kB, file-rss:0kB
+
+$ echo $?
+137  # Process was killed by SIGKILL (OOM)
+```

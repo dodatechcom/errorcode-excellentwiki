@@ -9,86 +9,78 @@ weight: 5
 
 # solo.io Gateway Error
 
-Fix solo.io Gloo gateway errors. Handle route configuration, upstream services, and filter chains..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The solo.io Gloo or Istio-based gateway fails during configuration when route tables are invalid, upstream services are unreachable, TLS termination is misconfigured, or virtual services conflict. Gloo uses Envoy under the hood, so errors often come from Envoy proxy configuration.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Upstream service not found in discovery
+// Gloo cannot find the target Kubernetes service
+
+// Cause 2: Route table references non-existent function
+// Function Discovery Service (FDS) did not discover the function
+
+// Cause 3: TLS secret missing or wrong format
+// Kubernetes secret does not contain tls.crt/tls.key
+
+// Cause 4: Virtual service conflicts with existing routes
+// Two virtual services claim same domain/path combination
+
+// Cause 5: Envoy filter configuration error
+// Custom Lua or WASM filter produces invalid config
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Verify upstream discovery
 
-```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
+```yaml
+# Check Gloo discovery
+kubectl get upstreams -n gloo-system
 ```
 
-### Fix 2: Add proper error handling
+### Fix 2: Configure proper TLS
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
-}
-```
-
-### Fix 3: Add retry and timeout logic
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
-
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
-    }
-}
+```yaml
+apiVersion: networking.gloo.solo.io/v1
+kind: VirtualService
+metadata:
+  name: my-service
+spec:
+  virtualHost:
+    domains:
+    - myapp.example.com
+    routes:
+    - matchers:
+      - prefix: /
+      routeAction:
+        single:
+          upstream:
+            name: my-service
 ```
 
 ## Examples
 
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "log"
-    "time"
-)
-
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
-    }
-    fmt.Println(result)
-}
+```yaml
+apiVersion: networking.gloo.solo.io/v1
+kind: VirtualService
+metadata:
+  name: httpbin
+spec:
+  virtualHost:
+    domains:
+    - httpbin.example.com
+    routes:
+    - matchers:
+      - prefix: /status
+      routeAction:
+        single:
+          upstream:
+            name: httpbin
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [http-status-404]({{< relref "/languages/go/http-status-404" >}}) — gateway returns 404
+- [tls-handshake]({{< relref "/languages/go/tls-handshake-error" >}}) — TLS termination fails
+- [grpc-unavailable]({{< relref "/languages/go/grpc-unavailable" >}}) — upstream unavailable

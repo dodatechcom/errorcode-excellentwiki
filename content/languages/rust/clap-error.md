@@ -7,75 +7,133 @@ severities: ["error"]
 weight: 5
 ---
 
-# clap Argument Parsing Error
+# Clap Error
 
-Fix clap argument parsing errors. Handle argument validation, subcommand routing, and help generation..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Clap errors occur when using the `clap` crate for command-line argument parsing — missing required arguments, type mismatches, and subcommand conflicts.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use clap::Parser;
+
+// Missing required argument
+#[derive(Parser)]
+struct Args {
+    #[arg(short, long)]
+    name: String, // Required — no default
+}
+
+// Conflicting argument names
+#[derive(Parser)]
+struct Args {
+    #[arg(short)]
+    verbose: bool,
+    #[arg(short)] // ERROR: conflicts with existing -v
+    very_verbose: bool,
+}
+
+// Wrong type for argument
+#[derive(Parser)]
+struct Args {
+    #[arg(short)]
+    count: u32, // Passes: --count abc => parse error
+}
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Provide defaults for optional arguments**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use clap::Parser;
 
-### Fix 2: Add proper error handling
+#[derive(Parser)]
+struct Args {
+    #[arg(short, long, default_value = "world")]
+    name: String,
+}
 
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+fn main() {
+    let args = Args::parse();
+    println!("Hello, {}!", args.name);
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use long and short flags correctly**
 
 ```rust
-use std::time::Duration;
+use clap::Parser;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+#[derive(Parser)]
+struct Args {
+    #[arg(short = 'v', long = "verbose")]
+    verbose: bool,
+    #[arg(short = 'V', long = "very-verbose")]
+    very_verbose: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+    if args.very_verbose { println!("Very verbose mode"); }
+    else if args.verbose { println!("Verbose mode"); }
+}
+```
+
+3. **Use subcommands for complex CLI**
+
+```rust
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    Add { name: String, path: String },
+    Remove { name: String },
+    List,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    match cli.command {
+        Commands::Add { name, path } => println!("Adding {} at {}", name, path),
+        Commands::Remove { name } => println!("Removing {}", name),
+        Commands::List => println!("Listing"),
+    }
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use clap::Parser;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+#[derive(Parser)]
+#[command(name = "myapp", about = "A demo application")]
+struct Args {
+    #[arg(short, long)]
+    name: String,
+    #[arg(short, long, default_value_t = 1)]
+    count: u32,
+    #[arg(short = 'd', long)]
+    debug: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+    for _ in 0..args.count {
+        if args.debug { println!("[DEBUG]"); }
+        println!("Hello, {}!", args.name);
+    }
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Structopt Error]({{< relref "/languages/rust/structopt-error" >}}) — structopt (predecessor)
+- [Regex Error]({{< relref "/languages/rust/regex-error" >}}) — pattern matching
+- [TOML Error]({{< relref "/languages/rust/toml-error" >}}) — config parsing

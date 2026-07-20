@@ -9,57 +9,96 @@ weight: 5
 
 # encoding/xml Unmarshal Error
 
-Fix Go XML unmarshal errors. Handle malformed XML, missing fields, and type conversion issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `encoding/xml` package fails to unmarshal XML when element names don't match struct tags, attributes are missing, XML namespaces are wrong, or the XML structure has unexpected nesting. XML unmarshaling in Go is strict about tag names and case sensitivity.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: XML element name does not match struct tag
+type User struct {
+    Name string `xml:"name"`
+}
+// <Name>Alice</Name> — wants <name>, not <Name>
+// encoding: cannot unmarshal <Name> into Go struct field
+
+// Cause 2: Attribute not declared in struct
+type User struct {
+    Name string `xml:"name"`
+}
+// <user id="1"><name>Alice</name></user>
+// id is ignored — not declared in struct
+
+// Cause 3: Namespace mismatch
+// <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+// <Envelope xmlns="http://www.w3.org/2005/Atom"> — different namespace
+
+// Cause 4: XML has mixed content (text + elements)
+// <p>Hello <b>world</b></p>
+// Go XML decoder does not handle mixed content well
+
+// Cause 5: CDATA sections not handled
+// <data><![CDATA[raw content]]></data>
+// may lose CDATA wrapper
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Use correct XML struct tags
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "encoding/xml"
+    "fmt"
+    "strings"
+)
 
-### Fix 2: Add proper error handling
+type User struct {
+    XMLName xml.Name `xml:"user"`
+    Name    string   `xml:"name"`
+    Email   string   `xml:"email"`
+    Age     int      `xml:"age"`
+    Admin   bool     `xml:"admin,attr"` // attribute
+}
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+func parseUser(xmlData string) (*User, error) {
+    var u User
+    if err := xml.Unmarshal([]byte(xmlData), &u); err != nil {
+        return nil, fmt.Errorf("unmarshal xml: %w", err)
+    }
+    return &u, nil
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Handle XML with decoder for streaming
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+func decodeXML(r io.Reader) ([]User, error) {
+    decoder := xml.NewDecoder(r)
+    var users []User
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+    for {
+        var u User
+        if err := decoder.DecodeElement(&u, nil); err == io.EOF {
+            break
+        } else if err != nil {
+            return nil, err
+        }
+        users = append(users, u)
     }
+    return users, nil
+}
+```
+
+### Fix 3: Handle namespaces with xml.Name
+
+```go
+type SoapEnvelope struct {
+    XMLName xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+    Body    SoapBody `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
+}
+
+type SoapBody struct {
+    Response string `xml:"GetUserResponse"`
 }
 ```
 
@@ -69,26 +108,40 @@ if err != nil {
 package main
 
 import (
-    "context"
+    "encoding/xml"
     "fmt"
     "log"
-    "time"
 )
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+type User struct {
+    XMLName xml.Name `xml:"user"`
+    Name    string   `xml:"name"`
+    Email   string   `xml:"email"`
+    Active  bool     `xml:"active"`
+}
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+func main() {
+    xmlData := `
+<user>
+    <name>Alice</name>
+    <email>alice@example.com</email>
+    <active>true</active>
+</user>`
+
+    var u User
+    if err := xml.Unmarshal([]byte(xmlData), &u); err != nil {
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    fmt.Printf("Name: %s, Email: %s, Active: %v\n", u.Name, u.Email, u.Active)
+
+    // Marshal back
+    output, _ := xml.MarshalIndent(u, "", "  ")
+    fmt.Println(string(output))
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [json-unmarshal]({{< relref "/languages/go/json-unmarshal" >}}) — JSON unmarshal has similar tag-matching issues
+- [go-yaml-error]({{< relref "/languages/go/go-yaml-error" >}}) — YAML parsing errors
+- [encoding-binary]({{< relref "/languages/go/go-binary-error" >}}) — binary encoding issues

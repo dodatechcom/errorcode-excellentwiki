@@ -6,30 +6,65 @@ severities: ["info"]
 error-types: ["network"]
 weight: 4
 ---
+# Linux: Cable Unplugged (No Link)
 
-# Linux: cable-unplugged — network cable unplugged
-
-Fix Linux cable-unplugged errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+A "cable unplugged" network error indicates the physical network connection is down, with no carrier signal detected.
 
 ## Common Causes
 
-- Physical connection lost
-- Cable damaged
-- Port failure
-- NIC issue
+- Ethernet cable disconnected or not fully seated
+- Switch port powered off or disabled
+- Damaged Ethernet cable (cut, crushed, chewed by rodents)
+- Network interface disabled or in bad state
+- Port security or VLAN mismatch on switch
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/cable-unplugged.md' mode='w' encoding='UTF-8'>
+### 1. Check Interface State
 
-## Common Scenarios
+```bash
+ip link show
+cat /sys/class/net/eth0/carrier
+cat /sys/class/net/eth0/operstate
+```
 
-- Link is down
-- No connection
-- Cable issue
+### 2. Check Link Status
 
-## Prevent It
+```bash
+sudo ethtool eth0
+sudo mii-tool eth0
+```
 
-- Check physical connection
-- Test with different cable
-- Verify NIC LED
+### 3. Attempt to Bring Up Interface
+
+```bash
+sudo ip link set eth0 up
+sudo dhclient eth0
+```
+
+### 4. Check Physical Connection
+
+Verify cable is securely connected at both ends. Try a known-good cable.
+
+### 5. Check Switch Port
+
+Verify the switch port is enabled and not error-disabled.
+
+## Examples
+
+```bash
+$ ip link show eth0
+2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN mode DEFAULT group default qlen 1000
+
+$ cat /sys/class/net/eth0/carrier
+0
+
+$ sudo ethtool eth0
+Settings for eth0:
+        Supported ports: [ TP ]
+        Supported link modes:   10baseT/Half 10baseT/Full 
+                                100baseT/Half 100baseT/Full 
+                                1000baseT/Full 
+        Advertised link modes:  10baseT/Half 10baseT/Full 
+        Link detected: no
+```

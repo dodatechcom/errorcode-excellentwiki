@@ -10,64 +10,114 @@ comments: true
 
 # OnceCell Error
 
-Fix OnceCell and OnceLock initialization errors. Resolve double initialization, thread safety, and lazy static issues.
+OnceCell errors occur when using `OnceCell` or `OnceLock` — calling `get_or_init` or `get_or_try_init` in a way that causes deadlock, or using `set` after initialization.
 
-## Why It Happens
-
-- OnceCell::get is called before initialization
-- OnceLock::set is called more than once
-- Lazy initialization panics causing permanent None
-- OnceCell is used in a const context without OnceLock
-
-## Common Error Messages
-
-- `error: oncecell failed`
-- `thread panicked at 'OnceCell type operation failed'`
-- `Error: unable to complete OnceCell type operation`
-- `Fatal: OnceCell type configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure OnceCell type is properly configured
-use OnceCell_type::prelude::*;
+use std::sync::OnceLock;
+
+static CELL: OnceLock<String> = OnceLock::new();
+
+// Trying to set twice — returns Err
+CELL.set("first".into()).unwrap();
+CELL.set("second".into()).unwrap(); // ERROR: AlreadyInitialized
+
+// Calling get() before init
+let val = CELL.get(); // Returns None
+
+// Deadlock in multi-threaded init
+static A: OnceLock<String> = OnceLock::new();
+static B: OnceLock<String> = OnceLock::new();
+
+// Thread 1: A.get_or_init(|| B.get().unwrap().clone()) — waits for B
+// Thread 2: B.get_or_init(|| A.get().unwrap().clone()) — waits for A
+// DEADLOCK
+```
+
+## How to Fix
+
+1. **Use `get_or_init` for lazy initialization**
+
+```rust
+use std::sync::OnceLock;
+
+static CONFIG: OnceLock<String> = OnceLock::new();
+
+fn get_config() -> &'static String {
+    CONFIG.get_or_init(|| {
+        std::env::var("APP_CONFIG").unwrap_or_else(|_| "default".into())
+    })
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct OnceCell type configuration");
+    println!("Config: {}", get_config());
+    println!("Config: {}", get_config()); // Same value, no re-init
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Use `get_or_try_init` for fallible initialization**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+use std::sync::OnceLock;
+
+static DB_URL: OnceLock<String> = OnceLock::new();
+
+fn get_db_url() -> Result<&'static String, String> {
+    DB_URL.get_or_try_init(|| -> Result<String, String> {
+        std::env::var("DATABASE_URL").map_err(|_| "DATABASE_URL not set".into())
+    })
+}
+
+fn main() {
+    match get_db_url() {
+        Ok(url) => println!("Connected to: {}", url),
+        Err(e) => eprintln!("Error: {}", e),
+    }
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Use `const` initialization where possible**
 
 ```rust
-use std::error::Error;
+use std::sync::OnceLock;
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+static APP_NAME: OnceLock<String> = OnceLock::new();
+
+// Initialize at compile time if possible
+const fn init_name() -> String {
+    String::new() // Cannot use dynamic values in const fn (yet)
+}
+
+// Or use lazy_static for complex initialization
+```
+
+## Examples
+
+```rust
+use std::sync::OnceLock;
+use std::collections::HashMap;
+
+static CACHE: OnceLock<HashMap<String, String>> = OnceLock::new();
+
+fn get_cache() -> &'static HashMap<String, String> {
+    CACHE.get_or_init(|| {
+        let mut map = HashMap::new();
+        map.insert("api_key".into(), "secret123".into());
+        map.insert("timeout".into(), "30".into());
+        map
+    })
+}
+
+fn main() {
+    let cache = get_cache();
+    println!("API Key: {}", cache.get("api_key").unwrap());
+    println!("Timeout: {}", cache.get("timeout").unwrap());
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. Setting up a new project with OnceCell type
-2. Integrating OnceCell type into an existing codebase
-3. Upgrading OnceCell type to a newer version
-
-## Prevent It
-
-- Read the OnceCell type documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Mutex Error]({{< relref "/languages/rust/rust-mutex-error" >}}) — thread-safe initialization
+- [RwLock Error]({{< relref "/languages/rust/rust-rwlock-error" >}}) — concurrent access
+- [Arc Error]({{< relref "/languages/rust/rust-arc-error" >}}) — shared ownership

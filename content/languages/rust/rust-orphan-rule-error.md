@@ -10,64 +10,106 @@ comments: true
 
 # Orphan Rule Error
 
-Fix orphan rule errors. Resolve trait implementation restrictions for foreign types and traits.
+Orphan rule errors occur when trying to implement a trait for a type where neither the trait nor the type is defined in the current crate — violating Rust's coherence rules.
 
-## Why It Happens
-
-- Trait implementation is for a foreign trait on a foreign type
-- Blanket implementation conflicts with existing impls
-- Newtype wrapper is needed to work around orphan rules
-- Coherence check fails due to overlap
-
-## Common Error Messages
-
-- `error: orphanrule failed`
-- `thread panicked at 'orphan rules operation failed'`
-- `Error: unable to complete orphan rules operation`
-- `Fatal: orphan rules configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure orphan rules is properly configured
-use orphan_rules::prelude::*;
+use std::fmt::Display;
+
+// Cannot implement Display for Vec<i32> (both foreign)
+impl Display for Vec<i32> { // ERROR: orphan rule
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result { write!(f, "vec") }
+}
+
+// Cannot implement From<String> for your type in some cases
+// Cannot implement a foreign trait for a foreign type
+impl From<String> for Vec<u8> { // ERROR: both String and Vec are foreign
+    fn from(s: String) -> Self { s.into_bytes() }
+}
+```
+
+## How to Fix
+
+1. **Use the newtype pattern**
+
+```rust
+use std::fmt;
+
+struct MyVec(Vec<i32>);
+
+impl fmt::Display for MyVec {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let strs: Vec<String> = self.0.iter().map(|x| x.to_string()).collect();
+        write!(f, "[{}]", strs.join(", "))
+    }
+}
 
 fn main() {
-    // Initialize properly
-    println!("Correct orphan rules configuration");
+    let v = MyVec(vec![1, 2, 3]);
+    println!("{}", v);
 }
 ```
 
-### Fix 2: Handle errors explicitly
+2. **Implement your own traits for foreign types using extension traits**
 
 ```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
+trait VecExt {
+    fn sum_all(&self) -> i32;
+}
+
+impl VecExt for Vec<i32> {
+    fn sum_all(&self) -> i32 {
+        self.iter().sum()
+    }
+}
+
+fn main() {
+    let v = vec![1, 2, 3];
+    println!("Sum: {}", v.sum_all());
 }
 ```
 
-### Fix 3: Add proper error context
+3. **Use blanket implementations carefully**
 
 ```rust
-use std::error::Error;
+trait Convert {
+    type Output;
+    fn convert(&self) -> Self::Output;
+}
 
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
+impl Convert for i32 { type Output = String; fn convert(&self) -> String { self.to_string() } }
+impl Convert for f64 { type Output = String; fn convert(&self) -> String { format!("{:.2}", self) } }
+impl Convert for bool { type Output = String; fn convert(&self) -> String { self.to_string() } }
+```
+
+## Examples
+
+```rust
+use std::fmt;
+
+// Newtype pattern
+struct Celsius(f64);
+struct Fahrenheit(f64);
+
+impl fmt::Display for Celsius {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { write!(f, "{:.1}°C", self.0) }
+}
+
+impl From<Celsius> for Fahrenheit {
+    fn from(c: Celsius) -> Self { Fahrenheit(c.0 * 9.0 / 5.0 + 32.0) }
+}
+
+fn main() {
+    let boiling = Celsius(100.0);
+    println!("Boiling point: {}", boiling);
+    let f: Fahrenheit = boiling.into();
+    println!("In Fahrenheit: {:.1}°F", f.0);
 }
 ```
 
-## Common Scenarios
+## Related Errors
 
-1. Setting up a new project with orphan rules
-2. Integrating orphan rules into an existing codebase
-3. Upgrading orphan rules to a newer version
-
-## Prevent It
-
-- Read the orphan rules documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Blanket Impl Error]({{< relref "/languages/rust/rust-blanket-impl-error" >}}) — blanket implementations
+- [Derive Error]({{< relref "/languages/rust/rust-derive-error" >}}) — derive macros
+- [Trait Object Error]({{< relref "/languages/rust/rust-trait-object-error" >}}) — trait objects

@@ -1,144 +1,106 @@
 ---
-title: "[Solution] Python BeautifulSoup HTML Parsing Error — How to Fix"
-description: "Fix Python BeautifulSoup HTML parsing errors. Resolve tag navigation failures, encoding issues, and selector problems."
+title: "[Solution] Python BeautifulSoup Error — Parsing and Navigation Failures"
+description: "Fix Python BeautifulSoup errors like FeatureNotFound, parser errors, tag navigation, and encoding issues. Copy-paste solutions with code examples."
 languages: ["python"]
-error-types: ["runtime-error"]
 severities: ["error"]
-comments: true
-weight: 5
+error-types: ["runtime"]
+weight: 421
 ---
 
-# Python BeautifulSoup HTML Parsing Error
+# Python BeautifulSoup Error — Parsing and Navigation Failures
 
-A `bs4.element.Tag` returns `None` or `AttributeError` occurs when BeautifulSoup fails to locate elements using CSS selectors or find methods, encounters malformed HTML, or when encoding issues corrupt the parsed content.
+BeautifulSoup errors occur when the library cannot find a parser, encounters malformed HTML, or fails during tag navigation and encoding conversion. These are common in web scraping workflows.
 
-## Why It Happens
-
-BeautifulSoup parses HTML into a navigable tree. Errors arise when selectors do not match any elements, when HTML contains encoding declarations that conflict with the actual encoding, when tags are nested unexpectedly, or when the parser cannot handle malformed markup.
-
-## Common Error Messages
-
-- `AttributeError: 'NoneType' object has no attribute 'text'`
-- `TypeError: 'NoneType' object is not iterable`
-- `FeatureNotFound: Couldn't find a tree builder with the features`
-- `UnicodeDecodeError: 'utf-8' codec can't decode byte`
-
-## How to Fix It
-
-### Fix 1: Check for None before accessing attributes
+## Common Causes
 
 ```python
+# FeatureNotFound: No parser found for the given markup
 from bs4 import BeautifulSoup
+soup = BeautifulSoup("<html></html>", "html5lib")
 
-html = '<div class="product"><h2>Widget</h2><span class="price">$10</span></div>'
+# AttributeError when navigating tags
+from bs4 import BeautifulSoup
+soup = BeautifulSoup("<div><p>Hello</p></div>", "html.parser")
+result = soup.find("div").find("span").text  # span doesn't exist
+
+# UnicodeEncodeError during output
+from bs4 import BeautifulSoup
+soup = BeautifulSoup("<p>café</p>", "html.parser")
+encoded = soup.encode("ascii")  # can't encode 'é'
+
+#_PARSER_PRESENT but version mismatch
+from bs4 import BeautifulSoup
+soup = BeautifulSoup("<html></html>", "lxml-xml")
+
+# TypeError on invalid markup input
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(12345, "html.parser")
+```
+
+## How to Fix
+
+### Fix 1: Install the Correct Parser
+Ensure you have the parser library installed alongside BeautifulSoup.
+```bash
+pip install beautifulsoup4 lxml
+```
+```python
+from bs4 import BeautifulSoup
+soup = BeautifulSoup("<html></html>", "lxml")
+```
+
+### Fix 2: Handle None Results from Tag Navigation
+Always check if a tag exists before accessing its attributes.
+```python
+from bs4 import BeautifulSoup
+soup = BeautifulSoup("<div><p>Hello</p></div>", "html.parser")
+div = soup.find("div")
+if div:
+    p = div.find("p")
+    if p:
+        print(p.text)
+```
+
+### Fix 3: Use Correct Encoding for Output
+Specify an encoding that supports the characters in your document.
+```python
+from bs4 import BeautifulSoup
+soup = BeautifulSoup("<p>café</p>", "html.parser")
+encoded = soup.encode("utf-8")
+```
+
+### Fix 4: Pass a String to BeautifulSoup
+Ensure the input to BeautifulSoup is a string, not an integer or other type.
+```python
+from bs4 import BeautifulSoup
+html_content = str(12345)
+soup = BeautifulSoup(html_content, "html.parser")
+```
+
+### Fix 5: Use `html.parser` as Fallback
+If lxml or other parsers aren't installed, use the built-in parser.
+```python
+from bs4 import BeautifulSoup
+soup = BeautifulSoup("<html></html>", "html.parser")
+```
+
+## Examples
+
+```python
+# Extracting all links safely
+from bs4 import BeautifulSoup
+html = '<a href="https://example.com">Link</a><a href="https://test.com">Test</a>'
 soup = BeautifulSoup(html, "html.parser")
+links = [a["href"] for a in soup.find_all("a") if a.get("href")]
 
-# Wrong — accessing .text on None
-# title = soup.find("h1").text  # AttributeError
-
-# Correct — check for None first
-title_tag = soup.find("h1")
-if title_tag:
-    title = title_tag.text
-else:
-    title = "No title found"
-
-price = soup.select_one(".price")
-if price:
-    print(price.text)
-```
-
-### Fix 2: Handle encoding issues
-
-```python
-from bs4 import BeautifulSoup
-import requests
-
-# Wrong — not specifying encoding
-# response = requests.get("https://example.com")
-# soup = BeautifulSoup(response.text)
-
-# Correct — use response encoding
-response = requests.get("https://example.com")
-response.encoding = response.apparent_encoding
-soup = BeautifulSoup(response.content, "html.parser")
-
-# Or detect encoding manually
-from chardet import detect
-encoding = detect(response.content)["encoding"]
-soup = BeautifulSoup(response.content, "html.parser", from_encoding=encoding)
-```
-
-### Fix 3: Use correct parser
-
-```python
-from bs4 import BeautifulSoup
-
-# Wrong — using html.parser for malformed HTML
-# soup = BeautifulSoup(bad_html, "html.parser")
-
-# Correct — use lxml for better tolerance
-try:
-    soup = BeautifulSoup(bad_html, "lxml")
-except Exception:
-    soup = BeautifulSoup(bad_html, "html5lib")
-
-# Install parsers
-# pip install lxml html5lib
-
-html = "<p>Paragraph 1</p><p>Paragraph 2</p>"
-soup = BeautifulSoup(html, "lxml")
-paragraphs = soup.find_all("p")
-for p in paragraphs:
-    print(p.text)
-```
-
-### Fix 4: Navigate complex HTML structures
-
-```python
-from bs4 import BeautifulSoup
-
-html = """
-<div class="container">
-  <div class="header"><h1>Title</h1></div>
-  <div class="content">
-    <div class="item" data-id="1"><span class="name">A</span></div>
-    <div class="item" data-id="2"><span class="name">B</span></div>
-  </div>
-</div>
-"""
+# Parsing tables
+html = '<table><tr><td>Cell 1</td><td>Cell 2</td></tr></table>'
 soup = BeautifulSoup(html, "html.parser")
-
-# Correct — use specific selectors
-items = soup.select("div.item")
-for item in items:
-    name = item.select_one(".name")
-    item_id = item.get("data-id")
-    if name:
-        print(f"Item {item_id}: {name.text}")
-
-# Navigate parent/child
-content = soup.select_one(".content")
-if content:
-    for child in content.children:
-        if hasattr(child, "get"):
-            print(child.get("class"))
+rows = [[td.text for td in tr.find_all("td")] for tr in soup.find_all("tr")]
 ```
-
-## Common Scenarios
-
-- **NoneType error** — `find()` or `select_one()` returns None when no element matches, causing AttributeError on `.text`.
-- **Encoding mismatch** — HTML declares UTF-8 but actual content uses Latin-1, causing UnicodeDecodeError.
-- **Wrong parser** — `html.parser` is less tolerant of malformed HTML than `lxml` or `html5lib`.
-
-## Prevent It
-
-- Always check if the result of `find()` or `select_one()` is None before accessing attributes.
-- Use `lxml` parser for better performance and error tolerance in production.
-- Use `response.content` instead of `response.text` when parsing to avoid encoding issues.
 
 ## Related Errors
 
-- [AttributeError](/languages/python/attributeerror/) — accessing attribute on None
-- [UnicodeDecodeError](/languages/python/unicodedecodeerror/) — encoding mismatch
-- [TypeError](/languages/python/typeerror/) — NoneType is not iterable
+- [Python requests Error](/languages/python/python-requests-error/)
+- [Python httpx Error](/languages/python/python-httpx-error/)
+- [Python Scrapy Error](/languages/python/python-scrapy-error/)

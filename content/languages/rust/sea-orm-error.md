@@ -7,75 +7,73 @@ severities: ["error"]
 weight: 5
 ---
 
-# sea-orm Entity Error
+# Sea ORM Error
 
-Fix SeaORM entity errors. Handle database operations, model queries, and migration issues..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Sea ORM errors occur when using the `sea-orm` crate — database connection, migration, and query failures.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Connection failure
+let db = Database::connect("postgres://wrong:5432/db").await?;
+
+// Missing table
+let users = User::find().all(&db).await?; // table doesn't exist
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Connect to database**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use sea_orm::{Database, DatabaseConnection};
+
+let db = Database::connect("postgres://user:pass@localhost:5432/mydb").await?;
 ```
 
-### Fix 2: Add proper error handling
+2. **Run migrations**
 
 ```rust
-use anyhow::Result;
+use sea_orm_migration::prelude::*;
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+Migrator::up(&db, None).await?;
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Use query builder**
 
 ```rust
-use std::time::Duration;
+use sea_orm::{EntityTrait, QueryFilter};
+use sea_orm::entity::prelude::*;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let users = User::find()
+    .filter(user::Column::Name.contains("alice"))
+    .all(&db)
+    .await?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use sea_orm::{Database, EntityTrait, ActiveModelTrait, Set};
+use sea_orm::entity::prelude::*;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
+#[sea_orm(table_name = "users")]
+struct Model {
+    #[sea_orm(primary_key)]
+    id: i32,
+    name: String,
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let db = Database::connect("sqlite::memory:").await?;
     Ok(())
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Sea ORM Error v2]({{< relref "/languages/rust/sea-orm-error-v2" >}}) — SeaORM v2
+- [SQLx Error]({{< relref "/languages/rust/sqlx-error" >}}) — SQLx
+- [Diesel Error]({{< relref "/languages/rust/diesel-error" >}}) — Diesel

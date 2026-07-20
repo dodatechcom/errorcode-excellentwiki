@@ -7,75 +7,70 @@ severities: ["error"]
 weight: 5
 ---
 
-# regex Compilation Error
+# Regex Error
 
-Fix regex compilation errors. Handle invalid patterns, performance issues, and PCRE features..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Regex errors occur when using the `regex` crate — malformed patterns and performance issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Invalid regex syntax
+let re = Regex::new(r"[invalid")?; // Unclosed bracket
+
+// Catastrophic backtracking
+let re = Regex::new(r"(a+)+b")?;
+re.captures("aaaaaaaaaaaaaaaaaaac"); // Hangs
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Validate regex patterns**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use regex::Regex;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+match Regex::new(r"\d{3}-\d{4}") {
+    Ok(re) => println!("Pattern compiled"),
+    Err(e) => eprintln!("Invalid pattern: {}", e),
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use atomic groups to prevent backtracking**
 
 ```rust
-use std::time::Duration;
+use regex::bytes::Regex;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let re = Regex::new(r"(?>a+)b")?;
+```
+
+3. **Use simpler patterns**
+
+```rust
+// Instead of (a+)+b
+let re = Regex::new(r"a+b")?;
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use regex::Regex;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let re = Regex::new(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})").unwrap();
+    let text = "The date is 2024-01-15, tomorrow is 2024-01-16.";
+
+    for cap in re.captures_iter(text) {
+        println!("Date: {}-{}-{}",
+            &cap["year"], &cap["month"], &cap["day"]);
+    }
+
+    let has_email = Regex::new(r"\w+@\w+\.\w+").unwrap();
+    println!("Has email: {}", has_email.is_match(text));
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Regex Error v2]({{< relref "/languages/rust/regex-error-v2" >}}) — regex v2
+- [String Error]({{< relref "/languages/rust/rust-string-error-rs" >}}) — string ops
+- [Iterator Error]({{< relref "/languages/rust/rust-iter-error" >}}) — iteration

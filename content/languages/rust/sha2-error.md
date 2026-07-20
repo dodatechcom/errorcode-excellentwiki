@@ -7,75 +7,76 @@ severities: ["error"]
 weight: 5
 ---
 
-# sha2 Hash Error
+# SHA-2 Error
 
-Fix sha2 hash errors. Handle algorithm selection, input processing, and output comparison..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+SHA-2 errors occur when using the `sha2` crate — incorrect digest computation and output length issues.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Not finalizing the hasher
+let hasher = Sha256::new();
+hasher.update(b"message");
+// Forgot to call hasher.finalize()
+
+// Wrong output length
+let hash: [u8; 16] = hasher.finalize().into(); // SHA256 produces 32 bytes
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Compute hash correctly**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
+use sha2::{Sha256, Digest};
+
+let mut hasher = Sha256::new();
+hasher.update(b"Hello, World!");
+let result = hasher.finalize();
+println!("{:x}", result);
 ```
 
-### Fix 2: Add proper error handling
+2. **Use the digest trait properly**
 
 ```rust
-use anyhow::Result;
+use sha2::{Sha256, Digest};
 
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
-}
+let hash = Sha256::digest(b"message");
+assert_eq!(hash.len(), 32); // SHA-256 = 32 bytes
 ```
 
-### Fix 3: Add timeout and retry logic
+3. **Handle variable output with variable_reset**
 
 ```rust
-use std::time::Duration;
+use sha2::{Sha256, Digest};
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+let mut hasher = Sha256::new();
+hasher.update(b"first");
+let hash1 = hasher.finalize_reset(); // Reset for reuse
+hasher.update(b"second");
+let hash2 = hasher.finalize();
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use sha2::{Sha256, Digest};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+fn main() {
+    let data = b"Hello, SHA-2!";
+
+    let hash = Sha256::digest(data);
+    println!("SHA-256: {:x}", hash);
+
+    let mut hasher = Sha256::new();
+    hasher.update(b"chunk1");
+    hasher.update(b"chunk2");
+    println!("Chunked: {:x}", hasher.finalize());
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [HMAC Error]({{< relref "/languages/rust/hmac-error" >}}) — HMAC
+- [Ring Error]({{< relref "/languages/rust/ring-error" >}}) — ring crypto
+- [Blake3 Error]({{< relref "/languages/rust/blake3-error" >}}) — BLAKE3

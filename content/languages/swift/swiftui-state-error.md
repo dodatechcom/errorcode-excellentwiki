@@ -1,114 +1,107 @@
 ---
-title: "[Solution] Swift SwiftUI @State Error Fix"
-description: "Fix Swift SwiftUI @State errors. Learn why SwiftUI state management fails and how to use @State properly."
-languages: ["swift"]
-severities: ["error"]
-error-types: ["runtime-error"]
-weight: 5
+title: "[Solution] SwiftUI.StateObject: Missing @StateObject initialization"
+description: "Fix SwiftUI StateObject missing initialization errors. Learn why @StateObject must be initialized with a struct conforming to ObservableObject and how to resolve it."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+language: "swift"
+tags: ["swift", "swiftui", "stateobject", "observable-object"]
+severity: "error"
 ---
 
-## What This Error Means
+# SwiftUI.StateObject: Missing @StateObject initialization
 
-A SwiftUI `@State` error occurs when state management in SwiftUI fails. `@State` is a property wrapper that provides a source of truth for value types, and errors can arise from incorrect usage, threading issues, or view updates.
+## Error Message
+
+```
+StateObject' initializer 'init(wrappedValue:_:)' requires that 'ViewModel' conform to 'ObservableObject'
+```
 
 ## Common Causes
 
-- Using `@State` with reference types
-- Modifying `@State` from background thread
-- `@State` not triggering view updates
-- Missing `@State` for local view state
+- Using @StateObject with a type that does not conform to ObservableObject
+- Forgetting to assign a concrete type when @StateObject is used with a protocol
+- Declaring @StateObject without providing an initial value in the view body
 
-## How to Fix
+## Solutions
 
-```swift
-// WRONG: Using @State with class
-@State var user = User()  // Reference type, won't update properly
+### Solution 1: Ensure the wrapped value conforms to ObservableObject
 
-// CORRECT: Use @StateObject or @ObservedObject for classes
-@StateObject var user = User()
-
-// Or use @State for value types
-@State var count = 0
-```
+Mark the class backing your @StateObject with the ObservableObject protocol and publish changes using @Published.
 
 ```swift
-// WRONG: Modifying @State from background thread
-@State var items: [String] = []
-func loadData() {
-    DispatchQueue.global().async {
-        self.items = fetchItems()  // Crash: UI update from background
+class UserViewModel: ObservableObject {
+    @Published var username: String = ""
+    @Published var isLoggedIn: Bool = false
+
+    func login(username: String) {
+        self.username = username
+        self.isLoggedIn = true
     }
 }
 
-// CORRECT: Update on main thread
-@State var items: [String] = []
-func loadData() {
-    DispatchQueue.global().async {
-        let newItems = fetchItems()
-        DispatchQueue.main.async {
-            self.items = newItems
-        }
-    }
-}
-```
-
-```swift
-// WRONG: @State not triggering updates
-@State var count = 0
-Button("Increment") {
-    count += 1  // Works, but:
-    // If count is a computed property, won't work
-}
-
-// CORRECT: Use @State for mutable local state
-@State private var count = 0
-var body: some View {
-    Button("Increment") {
-        count += 1
-    }
-}
-```
-
-## Examples
-
-```swift
-// Example 1: Basic @State
-struct Counter: View {
-    @State private var count = 0
+struct ProfileView: View {
+    @StateObject private var viewModel = UserViewModel()
 
     var body: some View {
         VStack {
-            Text("Count: \(count)")
-            Button("Increment") {
-                count += 1
+            Text("Welcome, \(viewModel.username)")
+            Button("Log In") {
+                viewModel.login(username: "swift_dev")
             }
         }
     }
 }
+```
 
-// Example 2: @State with array
-struct TodoList: View {
-    @State private var todos: [String] = []
+### Solution 2: Initialize @StateObject only once using @StateObject
+
+Use @StateObject so that SwiftUI owns the lifecycle. Do not create the object inside a @Binding or pass a pre-existing reference.
+
+```swift
+struct SettingsView: View {
+    @StateObject private var settings = AppSettings()
 
     var body: some View {
-        List(todos, id: \.self) { todo in
-            Text(todo)
+        Form {
+            Toggle("Dark Mode", isOn: $settings.isDarkMode)
+            Toggle("Notifications", isOn: $settings.notificationsEnabled)
         }
-    }
-}
-
-// Example 3: @State with binding
-struct SearchView: View {
-    @State private var searchText = ""
-
-    var body: some View {
-        TextField("Search", text: $searchText)
     }
 }
 ```
 
+### Solution 3: Use @ObservedObject for externally owned objects
+
+If the view does not own the object, use @ObservedObject instead. @StateObject is only for objects the view creates itself.
+
+```swift
+// Parent view owns the ViewModel
+struct ParentView: View {
+    @StateObject private var viewModel = SharedViewModel()
+
+    var body: some View {
+        ChildView(viewModel: viewModel)
+    }
+}
+
+struct ChildView: View {
+    @ObservedObject var viewModel: SharedViewModel
+
+    var body: some View {
+        Text("Data: \(viewModel.data)")
+    }
+}
+```
+
+## Prevention Tips
+
+- Always make @StateObject wrapped types conform to ObservableObject
+- Use @Published inside ObservableObject classes to trigger view updates
+- Prefer @StateObject over @ObservedObject when the view creates the object
+- Initialize @StateObject at declaration time to avoid unnecessary re-creation
+
 ## Related Errors
 
-- [SwiftUI navigation error](swiftui-navigation-error) — navigation issues
-- [SwiftUI list error](swiftui-list-error) — list rendering issues
-- [Actor isolation error](actor-isolation-error) — concurrency error
+- [SwiftUI navigation error]({{< relref "/languages/swift/swiftui-navigation-error" >}})
+- [SwiftUI list error]({{< relref "/languages/swift/swiftui-list-error" >}})
+- [Combine error]({{< relref "/languages/swift/combine-error" >}})

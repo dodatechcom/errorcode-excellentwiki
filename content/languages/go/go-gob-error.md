@@ -9,57 +9,100 @@ weight: 5
 
 # encoding/gob Decode Error
 
-Fix Go gob decode errors. Handle encoding/decoding issues, type registration, and stream errors..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+The `encoding/gob` package fails to decode data when the encoder and decoder types are mismatched, the stream is corrupted, exported fields are missing, or the `GobEncode`/`GobDecode` methods are implemented incorrectly. Gob is Go's native binary serialization format.
 
 ## Common Causes
 
 ```go
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+// Cause 1: Type mismatch between encoder and decoder
+type V1 struct { Name string }
+type V2 struct { Name string; Age int }
+// Encode V1, decode into V2 — age field gets zero value
+
+// Cause 2: Unexported fields not encoded
+type user struct {  // lowercase 'u' — unexported
+    Name string
+}
+// gob: type user has no exported fields
+
+// Cause 3: Stream corruption
+var buf bytes.Buffer
+gob.NewEncoder(&buf).Encode(data)
+// if buf is partially written or corrupted, decode fails
+
+// Cause 4: Interface type not registered
+type Animal interface { Speak() string }
+type Dog struct { Name string }
+// gob: type Animal is not registered
+
+// Cause 5: Nil pointer dereference
+var u *User
+gob.NewEncoder(&buf).Encode(u) // nil pointer — may panic
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+### Fix 1: Register types for interface encoding
 
 ```go
-// Check configuration values and ensure required setup
-// Verify the service/library is properly configured
-```
+import (
+    "bytes"
+    "encoding/gob"
+)
 
-### Fix 2: Add proper error handling
+type Animal interface {
+    Speak() string
+}
 
-```go
-result, err := doSomething()
-if err != nil {
-    log.Printf("Error: %v", err)
-    return err
+type Dog struct{ Name string }
+type Cat struct{ Name string }
+
+func (d Dog) Speak() string { return "Woof" }
+func (c Cat) Speak() string { return "Meow" }
+
+func init() {
+    gob.Register(Dog{})
+    gob.Register(Cat{})
 }
 ```
 
-### Fix 3: Add retry and timeout logic
+### Fix 2: Ensure exported fields and proper encoding
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-defer cancel()
+type User struct {
+    Name  string `gob:"name"`
+    Email string `gob:"email"`
+    Age   int    `gob:"age"`
+}
 
-// Use context for timeouts on operations
-result, err := doWork(ctx)
-if err != nil {
-    if ctx.Err() == context.DeadlineExceeded {
-        log.Println("Operation timed out")
+func encodeUser(u User) ([]byte, error) {
+    var buf bytes.Buffer
+    if err := gob.NewEncoder(&buf).Encode(u); err != nil {
+        return nil, err
     }
+    return buf.Bytes(), nil
+}
+
+func decodeUser(data []byte) (User, error) {
+    var u User
+    if err := gob.NewDecoder(bytes.NewReader(data)).Decode(&u); err != nil {
+        return User{}, err
+    }
+    return u, nil
+}
+```
+
+### Fix 3: Use stream encoding for large data
+
+```go
+func encodeStream(w io.Writer, items []User) error {
+    enc := gob.NewEncoder(w)
+    for _, item := range items {
+        if err := enc.Encode(item); err != nil {
+            return err
+        }
+    }
+    return nil
 }
 ```
 
@@ -69,26 +112,39 @@ if err != nil {
 package main
 
 import (
-    "context"
+    "bytes"
+    "encoding/gob"
     "fmt"
     "log"
-    "time"
 )
 
-func main() {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+type User struct {
+    Name  string
+    Email string
+    Age   int
+}
 
-    result, err := doWork(ctx)
-    if err != nil {
-        log.Fatalf("Error: %v", err)
+func main() {
+    original := User{Name: "Alice", Email: "alice@example.com", Age: 30}
+
+    // Encode
+    var buf bytes.Buffer
+    if err := gob.NewEncoder(&buf).Encode(original); err != nil {
+        log.Fatal(err)
     }
-    fmt.Println(result)
+    fmt.Printf("Encoded %d bytes\n", buf.Len())
+
+    // Decode
+    var decoded User
+    if err := gob.NewDecoder(&buf).Decode(&decoded); err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Decoded: %+v\n", decoded)
 }
 ```
 
 ## Related Errors
 
-- [context-deadline]({{< relref "/languages/go/context-deadline" >}}) — context deadline exceeded
-- [net-dial]({{< relref "/languages/go/net-dial" >}}) — connection refused
-- [io-eof]({{< relref "/languages/go/io-eof" >}}) — I/O error
+- [encoding-binary]({{< relref "/languages/go/go-binary-error" >}}) — binary encoding with endianness issues
+- [json-unmarshal]({{< relref "/languages/go/json-unmarshal" >}}) — JSON encoding alternative to gob
+- [go-protobuf-error]({{< relref "/languages/go/go-protobuf-error" >}}) — protobuf encoding for cross-language data

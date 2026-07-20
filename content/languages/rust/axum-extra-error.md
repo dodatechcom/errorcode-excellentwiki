@@ -7,75 +7,101 @@ severities: ["error"]
 weight: 5
 ---
 
-# axum-extra Typed Header Error
+# Axum Extra Error
 
-Fix axum-extra typed header errors. Handle header extraction, parsing, and response headers..
-
-## What This Error Means
-
-Common error scenarios include:
-
-- Connection or network failures
-- Invalid configuration or options
-- Resource not found or unavailable
-- Permission or access denied
+Axum extra errors occur when using `axum-extra` crate features — typed header issues, cookie extraction failures, and form/query parsing errors.
 
 ## Common Causes
 
 ```rust
-// Cause 1: Incorrect configuration or missing setup
-// Cause 2: Network or connection issues
-// Cause 3: Invalid input or parameters
-// Cause 4: Missing dependencies or resources
+use axum_extra::typed_header::{TypedHeader, headers};
+
+// Missing required header
+async fn handler(TypedHeader(auth): TypedHeader<headers::Authorization<String>>) -> String {
+    format!("Auth: {}", auth.0) // Fails if Authorization header missing
+}
+
+// Cookie extraction failure
+use axum_extra::extract::CookieJar;
+async fn handler(jar: CookieJar) -> String {
+    let session = jar.get("session").unwrap(); // No session cookie
+    format!("Session: {}", session.value())
+}
 ```
 
 ## How to Fix
 
-### Fix 1: Verify configuration and setup
+1. **Handle missing headers gracefully**
 
 ```rust
-// Check configuration values and ensure required setup
-// Verify the crate/library is properly configured
-```
+use axum_extra::typed_header::{TypedHeader, headers};
+use axum::http::StatusCode;
 
-### Fix 2: Add proper error handling
-
-```rust
-use anyhow::Result;
-
-fn do_something() -> Result<()> {
-    // Use proper error handling with Result and ?
-    Ok(())
+async fn handler(
+    TypedHeader(auth): Result<TypedHeader<headers::Authorization<String>>, axum_extra::typed_header::TypedHeaderRejection>,
+) -> Result<String, StatusCode> {
+    match auth {
+        Ok(TypedHeader(auth)) => Ok(format!("Auth: {}", auth.0)),
+        Err(_) => Err(StatusCode::UNAUTHORIZED),
+    }
 }
 ```
 
-### Fix 3: Add timeout and retry logic
+2. **Use CookieJar with proper defaults**
 
 ```rust
-use std::time::Duration;
+use axum_extra::extract::CookieJar;
 
-// Add timeout for network operations
-let result = tokio::time::timeout(
-    Duration::from_secs(30),
-    do_operation(),
-).await;
+async fn handler(jar: CookieJar) -> String {
+    let session = jar.get("session")
+        .map(|c| c.value().to_string())
+        .unwrap_or_else(|| "no session".into());
+    format!("Session: {}", session)
+}
+```
+
+3. **Use proper query extraction**
+
+```rust
+use axum::extract::Query;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct Params { page: Option<u32>, limit: Option<u32> }
+
+async fn handler(Query(params): Query<Params>) -> String {
+    format!("Page: {}, Limit: {}", params.page.unwrap_or(1), params.limit.unwrap_or(20))
+}
 ```
 
 ## Examples
 
 ```rust
-use std::error::Error;
+use axum_extra::extract::{CookieJar, Cookie};
+use axum::{routing::get, Router, http::StatusCode};
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Operation that may fail
-    let result = do_work()?;
-    println!("{:?}", result);
-    Ok(())
+async fn login(jar: CookieJar) -> CookieJar {
+    jar.add(Cookie::new("session", "abc123"))
+}
+
+async fn dashboard(jar: CookieJar) -> Result<String, StatusCode> {
+    jar.get("session")
+        .map(|c| format!("Welcome! Session: {}", c.value()))
+        .ok_or(StatusCode::UNAUTHORIZED)
+}
+
+#[tokio::main]
+async fn main() {
+    let app = Router::new()
+        .route("/login", get(login))
+        .route("/dashboard", get(dashboard));
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 ```
 
 ## Related Errors
 
-- [Connection Refused]({{< relref "/languages/rust/connection-refused" >}}) — connection refused
-- [Timed Out]({{< relref "/languages/rust/timed-out" >}}) — request timed out
-- [IO Error]({{< relref "/languages/rust/io-error" >}}) — I/O error
+- [Axum Error]({{< relref "/languages/rust/rust-axum-error" >}}) — Axum core
+- [Hyper Error]({{< relref "/languages/rust/hyper-error" >}}) — HTTP layer
+- [Serde Error]({{< relref "/languages/rust/rust-serde-error-rs" >}}) — deserialization

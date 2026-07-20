@@ -10,64 +10,105 @@ comments: true
 
 # Feature Gate Error
 
-Fix feature gate errors. Resolve unstable feature usage, feature flags, and compiler version issues.
+Feature gate errors occur when using nightly-only features without enabling the corresponding feature gate, or when features are incorrectly declared in `Cargo.toml`.
 
-## Why It Happens
-
-- Feature is not listed in Cargo.toml dependencies
-- Unstable feature requires nightly compiler
-- Feature name conflicts with a standard feature
-- Feature is activated transitively through another dependency
-
-## Common Error Messages
-
-- `error: featuregate failed`
-- `thread panicked at 'feature gates operation failed'`
-- `Error: unable to complete feature gates operation`
-- `Fatal: feature gates configuration is invalid`
-
-## How to Fix It
-
-### Fix 1: Verify configuration and dependencies
+## Common Causes
 
 ```rust
-// Ensure feature gates is properly configured
-use feature_gates::prelude::*;
+// Using nightly feature without enabling it
+#![feature(once_cell)] // ERROR: requires nightly toolchain
 
-fn main() {
-    // Initialize properly
-    println!("Correct feature gates configuration");
+// Feature not declared in Cargo.toml
+#[cfg(feature = "advanced")]
+fn advanced() {} // Fails if "advanced" not in [features]
+
+// Feature name mismatch between Cargo.toml and code
+// Cargo.toml: my-feature = []
+#[cfg(feature = "my_feature")] // Wrong name: should be "my-feature"
+fn my_feature() {}
+
+// Feature dependency cycle
+[features]
+a = ["b"]
+b = ["a"]  // Circular dependency
+```
+
+## How to Fix
+
+1. **Declare features properly in Cargo.toml**
+
+```toml
+[features]
+default = ["basic"]
+basic = []
+advanced = ["dep:serde"]
+unstable = ["tokio/unstable"]
+
+[dependencies]
+serde = { version = "1.0", optional = true }
+tokio = { version = "1", features = ["rt"] }
+```
+
+2. **Use `cfg` correctly with the exact feature name**
+
+```rust
+#[cfg(feature = "basic")]
+fn basic_feature() { println!("Basic mode"); }
+
+#[cfg(feature = "advanced")]
+fn advanced_feature() { println!("Advanced mode"); }
+
+#[cfg(not(feature = "advanced"))]
+fn fallback() { println!("Using fallback"); }
+```
+
+3. **Use nightly toolchain only when needed**
+
+```rust
+// Switch to nightly for unstable features
+// $ rustup override set nightly
+// $ rustup override unset  # Revert to stable
+
+// Conditional compilation for nightly features
+#![cfg_attr(feature = "nightly", feature(specialization))]
+```
+
+## Examples
+
+```bash
+# Build with specific features
+$ cargo build --features "advanced"
+$ cargo build --no-default-features
+$ cargo build --all-features
+
+# Test with specific features
+$ cargo test --features "advanced"
+```
+
+```toml
+# Cargo.toml
+[features]
+default = ["json"]
+json = ["dep:serde_json"]
+xml = ["dep:quick-xml"]
+full = ["json", "xml"]
+```
+
+```rust
+#[cfg(feature = "json")]
+pub fn parse_json(input: &str) -> serde_json::Value {
+    serde_json::from_str(input).unwrap()
+}
+
+#[cfg(feature = "xml")]
+pub fn parse_xml(input: &str) -> quick_xml::events::BytesStart {
+    let mut reader = quick_xml::Reader::from_str(input);
+    reader.read_event().unwrap().unwrap()
 }
 ```
 
-### Fix 2: Handle errors explicitly
+## Related Errors
 
-```rust
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Use proper error handling
-    Ok(())
-}
-```
-
-### Fix 3: Add proper error context
-
-```rust
-use std::error::Error;
-
-fn do_thing() -> Result<(), Box<dyn Error>> {
-    // Add context to errors
-    Ok(())
-}
-```
-
-## Common Scenarios
-
-1. Setting up a new project with feature gates
-2. Integrating feature gates into an existing codebase
-3. Upgrading feature gates to a newer version
-
-## Prevent It
-
-- Read the feature gates documentation before using advanced features
-- Use explicit error handling instead of unwrap()
-- Add integration tests for critical operations
+- [Cfg Error]({{< relref "/languages/rust/rust-cfg-error" >}}) — conditional compilation
+- [Cargo Workspace Error]({{< relref "/languages/rust/rust-cargo-workspace-error" >}}) — workspace features
+- [Cargo Publish Error]({{< relref "/languages/rust/rust-cargo-publish-error" >}}) — publishing features

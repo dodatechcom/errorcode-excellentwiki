@@ -7,29 +7,56 @@ error-types: ["process-error"]
 weight: 6
 ---
 
-# Linux: device-busy — device or resource busy
+# Linux: Device Busy Error
 
-Fix Linux device-busy errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+The device busy error occurs when trying to unmount, format, or modify a disk that is currently in use.
 
 ## Common Causes
 
-- Mount point busy
-- Process using device
-- Filesystem mounted
-- Swap active
+- Filesystem mounted and in use by processes
+- Swap enabled on the device
+- LVM volume active
+- MD RAID array member in use
+- Filesystem check running on the device
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/device-busy.md' mode='w' encoding='UTF-8'>
+### 1. Identify Processes Using the Device
 
-## Common Scenarios
+```bash
+sudo lsof /dev/sda1
+sudo fuser -v /mount/point
+```
 
-- Device busy
-- Cannot unmount
-- Process using device
+### 2. Check Mount Status
 
-## Prevent It
+```bash
+mount | grep sda1
+df -h | grep sda1
+```
 
-- Kill using processes
-- Use lazy unmount
-- Check open files
+### 3. Force Unmount
+
+```bash
+sudo umount -l /mount/point
+sudo umount -f /mount/point
+```
+
+### 4. Kill Using Processes
+
+```bash
+sudo fuser -km /mount/point
+```
+
+## Examples
+
+```bash
+$ sudo umount /mnt/data
+umount: /mnt/data: target is busy.
+$ sudo lsof /mnt/data
+COMMAND  PID USER   FD   TYPE DEVICE SIZE NODE NAME
+bash    12345 root  cwd    DIR  8,1   4096    2 /mnt/data
+$ kill 12345
+$ sudo umount /mnt/data
+# Now succeeds
+```

@@ -7,29 +7,50 @@ error-types: ["process-error"]
 weight: 8
 ---
 
-# Linux: namespace-error — Linux namespace error
+# Linux: Namespace Error
 
-Fix Linux namespace-error errors. This guide covers common causes, step-by-step fixes, real-world scenarios, and prevention tips.
+Namespace errors occur when Linux kernel namespace operations fail for containers or process isolation.
 
 ## Common Causes
 
-- Namespace creation failed
-- Permission denied
-- Resource limit
-- Namespace type not supported
+- Kernel not configured with required namespace types
+- Insufficient capabilities (CAP_SYS_ADMIN) for namespace creation
+- User namespace restrictions (kernel.unprivileged_userns_clone=0)
+- Nested container namespace issue
+- PID namespace exhaustion
 
 ## How to Fix
 
-<_io.TextIOWrapper name='/home/admin1/projects/ErrorCode.excellentwiki.com/content/os/linux/namespace-error.md' mode='w' encoding='UTF-8'>
+### 1. Check Namespace Support
 
-## Common Scenarios
+```bash
+ls /proc/self/ns/
+cat /proc/self/uid_map
+unshare --help
+```
 
-- Namespace operation failed
-- Permission denied
-- Resource limit
+### 2. Enable User Namespaces
 
-## Prevent It
+```bash
+sudo sysctl kernel.unprivileged_userns_clone=1
+# Add to /etc/sysctl.d/
+```
 
-- Check namespace support
-- Verify permissions
-- Increase limits if needed
+### 3. Check Capabilities
+
+```bash
+capsh --print
+getpcaps <pid>
+```
+
+## Examples
+
+```bash
+$ ls /proc/self/ns/
+cgroup  ipc  mnt  net  pid  pid_for_children  time  user  uts
+
+$ sudo sysctl kernel.unprivileged_userns_clone
+kernel.unprivileged_userns_clone = 0
+$ sudo sysctl kernel.unprivileged_userns_clone=1
+# Now unprivileged users can create namespaces
+```

@@ -1,80 +1,85 @@
 ---
-title: "[Solution] Docker Inspect Error"
-description: "Fix Docker inspect errors. Resolve container, image, and network inspect failures."
-tools: ["docker"]
-error-types: ["runtime-error"]
-severities: ["error"]
+title: "[Solution] Docker Inspect Error — No such object"
+description: "Fix Docker inspect 'No such object' error. Find and inspect containers, images, and volumes by name or ID."
+date: 2026-07-17T10:00:00+08:00
+draft: false
+tool: "docker"
+tags: ["docker", "containers", "inspect", "debugging", "docker-ps"]
+severity: "error"
 weight: 5
 ---
 
-## What This Error Means
+# ERROR: No such object
 
-A Docker inspect error occurs when `docker inspect` cannot retrieve metadata for a container, image, volume, or network. This happens when the specified object does not exist, the name or ID is invalid, or the Docker daemon is unreachable.
+## Error Message
+
+```
+Error: No such object: mycontainer
+
+Error response from daemon: No such container: abc123
+Error: No such image: sha256:deadbeef
+Error: No such volume: mydata
+```
+
+This error occurs when `docker inspect` is given a name, ID, or reference that Docker does not recognize. It applies to containers, images, volumes, and networks. The object may have been removed or the identifier may be incorrect.
 
 ## Common Causes
 
-- Container, image, or network does not exist
-- Name or ID is misspelled or truncated too short
-- Multiple objects match the provided name
-- Docker daemon is not running
-- Permission denied accessing Docker socket
+- The container, image, or volume was removed or pruned
+- A partial ID was used that is ambiguous or does not match any object
+- The object exists but under a different name or project prefix
+- Case sensitivity in object names caused a lookup failure
+- The Docker daemon was restarted and the object list was refreshed
 
-## How to Fix
+## Solutions
 
-### List All Containers
+### Solution 1: List All Objects of the Type
 
-```bash
-docker ps -a
-```
-
-### List All Images
+Before inspecting, list all objects to find the correct identifier. This avoids guesswork and reveals naming differences.
 
 ```bash
-docker images -a
+docker ps -a          # List containers
+docker images -a      # List images
+docker volume ls      # List volumes
+docker network ls     # List networks
 ```
 
-### Inspect a Container
+### Solution 2: Use Partial ID or Full Name
+
+Docker accepts unique prefixes of container IDs. Use enough characters to uniquely identify the target, or switch to a container name.
 
 ```bash
-docker inspect <container-id-or-name>
+docker inspect abc123def456
+docker inspect mycontainer
 ```
 
-### Filter Inspect Output
+### Solution 3: Use the Format Flag for Specific Fields
+
+Instead of getting the full JSON dump, use `--format` to extract exactly what you need. This also confirms the object exists when it returns output.
 
 ```bash
-docker inspect --format='{{.NetworkSettings.IPAddress}}' <container>
-docker inspect --format='{{.State.Status}}' <container>
+docker inspect mycontainer --format '{{.State.Status}}'
+docker inspect mycontainer --format '{{.NetworkSettings.IPAddress}}'
+docker inspect myimage --format '{{.Config.Env}}'
 ```
 
-### Check Docker Daemon
+### Solution 4: Recreate the Object if Removed
+
+If the inspect target was deleted, recreate it. For containers, this means running a new instance with the same parameters.
 
 ```bash
-sudo systemctl status docker
-docker info
+docker run -d --name mycontainer myimage
+docker inspect mycontainer
 ```
 
-## Examples
+## Prevention Tips
 
-```bash
-# Example 1: Container not found
-docker inspect my-app
-# Error: No such container: my-app
-# Fix: docker ps -a to find the correct name
-
-# Example 2: Use format to extract data
-docker inspect --format='{{.NetworkSettings.Networks.bridge.IPAddress}}' web
-# 172.17.0.2
-
-# Example 3: Inspect image
-docker inspect nginx:latest
-# Returns full image metadata as JSON
-
-# Example 4: Inspect network
-docker network inspect bridge
-```
+- Use container names with `--name` instead of relying on auto-generated IDs
+- Document object names and IDs in deployment scripts
+- Use `docker compose` instead of raw `docker` commands for consistent object naming
+- Add error handling in scripts that check object existence before inspecting
 
 ## Related Errors
 
-- [Docker Volume Error]({{< relref "/tools/docker/docker-volume-error-v2" >}}) — volume mount permission denied
-- [Docker Network Error]({{< relref "/tools/docker/docker-network-error-v2" >}}) — network bridge creation failed
-- [Docker Compose Error]({{< relref "/tools/docker/docker-compose-error-v2" >}}) — docker compose up failed
+- [Docker Container Error]({{< relref "/tools/docker/container-is-not-running" >}}) — container not running
+- [Docker Volume Error]({{< relref "/tools/docker/volume-not-found" >}}) — volume lookup failure
