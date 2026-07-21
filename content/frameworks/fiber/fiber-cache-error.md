@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Cache Error — How to Fix"
+title: "[Solution] Fiber Cache Error -- How to Fix"
 description: "Fix Fiber caching errors. Resolve Redis, in-memory, and HTTP cache issues."
 frameworks: ["fiber"]
 error-types: ["cache-error"]

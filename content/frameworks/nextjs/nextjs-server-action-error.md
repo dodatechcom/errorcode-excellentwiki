@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Server Action Invocation Error — How to Fix"
+title: "[Solution] Next.js Server Action Invocation Error -- How to Fix"
 description: "Fix Next.js server action errors. Resolve server action function, form action, and mutation issues in Next.js."
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
@@ -167,6 +167,6 @@ Use `revalidatePath()` or `revalidateTag()` to refresh cached data after mutatio
 
 1. **Always use `'use server'` at the top** of files containing server actions.
 
-2. **Return only plain objects** from server actions — no Date, Map, Set, or functions.
+2. **Return only plain objects** from server actions -- no Date, Map, Set, or functions.
 
 3. **Use `useFormStatus`** to show loading states during form submissions.

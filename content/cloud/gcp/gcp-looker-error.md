@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Looker Error — instance connection explore look errors"
+title: "[Solution] GCP Looker Error -- instance connection explore look errors"
 description: "Fix GCP Looker errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

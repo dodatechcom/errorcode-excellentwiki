@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP API Gateway Error — API config gateway errors"
+title: "[Solution] GCP API Gateway Error -- API config gateway errors"
 description: "Fix GCP API Gateway errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

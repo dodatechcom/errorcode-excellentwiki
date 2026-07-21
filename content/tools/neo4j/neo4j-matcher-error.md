@@ -1,6 +1,6 @@
 ---
-title: "[Solution] Neo4j Pattern Matcher Error — How to Fix"
-description: "Fix Neo4j pattern matching errors including incorrect MATCH syntax, variable-length path issues, and pattern performance problems"
+title: "[Solution] Neo4j Matcher Error"
+description: "Fix Neo4j pattern matcher errors when graph pattern matching produces incorrect results"
 tools: ["neo4j"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -8,114 +8,52 @@ weight: 5
 comments: true
 ---
 
-# Neo4j Pattern Matcher Error
+# Neo4j Matcher Error
 
-Pattern matcher errors in Neo4j occur when Cypher MATCH patterns are syntactically incorrect, too broad, or cause performance issues with large graphs.
+Matcher errors occur when the pattern matching engine encounters ambiguous or invalid patterns.
 
-## Why It Happens
+## Common Causes
 
-- The MATCH pattern uses incorrect arrow direction
-- Variable-length paths are unbounded causing infinite traversal
-- The pattern tries to match too many paths
-- The pattern uses incorrect relationship types
-- The pattern references undefined variables
-- OPTIONAL MATCH is used where MATCH should be used
+- Same variable used for node and relationship
+- Multiple MATCH clauses creating unintended Cartesian product
+- Pattern matching on non-indexed properties causing timeout
+- Variable-length pattern without upper bound
 
 ## Common Error Messages
 
 ```
-Neo.ClientError.Statement.SyntaxError: Invalid relationship pattern
-```
-
-```
-Neo.ClientError.Statement.SyntaxError: Variable length relationship cannot be used in WHERE
-```
-
-```
-Neo.TransientError.Resource.Exhausted: There is not enough memory
-```
-
-```
-Neo.ClientError.Statement.ExecutionFailed: Pattern too complex
+Neo.ClientError.Statement.SyntaxError: Variable already declared
 ```
 
 ## How to Fix It
 
-### 1. Fix MATCH Pattern Syntax
+### 1. Use Distinct Variable Names
 
 ```cypher
-// BAD: incorrect arrow direction
-MATCH (a)-[:KNOWS]->(b)  // relationship from b to a
-
-// GOOD: correct direction
-MATCH (a)-[:KNOWS]->(b)  // a knows b
-
-// BAD: missing relationship type
-MATCH (a)-->(b)
-
-// GOOD: explicit relationship type
-MATCH (a)-[:KNOWS]->(b)
+// BAD: 'r' used twice
+MATCH (a)-[r]->(b)-[r]->(c)
+// GOOD: unique names
+MATCH (a)-[r1]->(b)-[r2]->(c)
 ```
 
-### 2. Fix Variable-Length Paths
+### 2. Add Index for Matched Properties
 
 ```cypher
-// BAD: unbounded path (dangerous on large graphs)
-MATCH (a:Person)-[:KNOWS*]->(b:Person)
-RETURN a, b;
-
-// GOOD: bounded path with limits
-MATCH (a:Person)-[:KNOWS*1..5]->(b:Person)
-RETURN a, b LIMIT 100;
-
-// GOOD: use shortest path
-MATCH path = shortestPath((a:Person {name: 'John'})-[:KNOWS*]-(b:Person {name: 'Jane'}))
-RETURN path;
+CREATE INDEX user_email IF NOT EXISTS FOR (u:User) ON (u.email);
 ```
 
-### 3. Fix Pattern Performance
+### 3. Use WHERE Clause
 
 ```cypher
-// BAD: full graph scan
-MATCH (a)-[r]-(b)
-RETURN count(r);
-
-// GOOD: use specific labels and properties
-MATCH (a:Person)-[r:KNOWS]->(b:Person)
-WHERE a.age > 30
-RETURN count(r);
-
-// Add indexes for frequently matched properties
-CREATE INDEX FOR (n:Person) ON (n.age);
+MATCH (n:User)-[r:KNOWS]->(m:User)
+WHERE n.name = 'Alice'
+RETURN m.name;
 ```
 
-### 4. Fix OPTIONAL MATCH Issues
+## Examples
 
 ```cypher
-// BAD: OPTIONAL MATCH when MATCH is required
-MATCH (a:Person)
-OPTIONAL MATCH (a)-[:KNOWS]->(b:Person)
-RETURN a, b;  // b is always NULL if no relationship
-
-// GOOD: use MATCH when relationship is required
-MATCH (a:Person)-[:KNOWS]->(b:Person)
-RETURN a, b;
+MATCH (a)-[r1:KNOWS]->(b)-[r2:KNOWS]->(c)
+WHERE a <> c
+RETURN a.name, b.name, c.name;
 ```
-
-## Common Scenarios
-
-- **Variable-length path causes OOM**: Always set upper bound on path length.
-- **Pattern match is too slow**: Add labels to narrow the search space and use indexes.
-- **Incorrect arrow direction**: Review the relationship direction in the schema documentation.
-
-## Prevent It
-
-- Always use specific labels in MATCH patterns
-- Set upper bounds on variable-length paths
-- Use EXPLAIN to verify pattern matching performance
-
-## Related Pages
-
-- [Neo4j Query Error](/tools/neo4j/neo4j-query-error)
-- [Neo4j Index Error](/tools/neo4j/neo4j-index-error)
-- [Neo4j Cypher Syntax Error](/tools/neo4j/neo4j-cypher-syntax-error)

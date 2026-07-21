@@ -1,0 +1,4178 @@
+#!/usr/bin/env python3
+"""Generate pages for Cloudflare, Vercel, Netlify, Heroku, DockerHub, Docker Compose."""
+import os
+
+BASE = '/home/admin1/projects/ErrorCode.excellentwiki.com/content/tools'
+
+def existing_slugs(tool_dir):
+    path = os.path.join(BASE, tool_dir)
+    return {f.replace('.md', '') for f in os.listdir(path) if f.endswith('.md')}
+
+def make_page(tool, slug, title, desc, body):
+    lines = [
+        '---',
+        f'title: "[Solution] {title}"',
+        f'description: "{desc}"',
+        f'tools: ["{tool}"]',
+        'error-types: ["tool-error"]',
+        'severities: ["error"]',
+        '---',
+        '',
+        body,
+        '',
+    ]
+    return '\n'.join(lines)
+
+# ============================================================
+# Page definitions: (slug, title, description, common_causes, fix_commands)
+# ============================================================
+
+def gen_body(title, causes, fix_section):
+    lines = [
+        f'{title} can prevent your application from working correctly.',
+        '',
+        '## Common Causes',
+        '',
+    ]
+    for c in causes:
+        lines.append(f'- {c}')
+    lines.append('')
+    lines.append('## How to Fix')
+    lines.append('')
+    lines.append(fix_section)
+    lines.append('')
+    return '\n'.join(lines)
+
+# ============================================================
+# CLOUDFLARE
+# ============================================================
+CF_DATA = [
+    ("cloudflare-dns-record-not-found", "Cloudflare DNS Record Not Found",
+     "Fix Cloudflare DNS record not found errors. Resolve missing DNS records in Cloudflare.",
+     ["DNS record was deleted or never created", "Record is proxied but origin server is not configured",
+      "DNSSEC interfering with record resolution", "Record type does not match expected service"],
+     "### Verify DNS Record\n\n```bash\ndig your-domain.com A +short\ndig your-domain.com CNAME +short\n```\n\n### Check Cloudflare DNS Settings\n\n1. Log in to Cloudflare dashboard\n2. Select your domain\n3. Go to DNS > Records\n4. Verify the record exists and is correct\n\n### Create Missing Record\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"type\":\"A\",\"name\":\"@\",\"content\":\"192.0.2.1\",\"ttl\":1,\"proxied\":true}'\n```"),
+
+    ("cloudflare-dns-propagation", "Cloudflare DNS Propagation Delay",
+     "Fix Cloudflare DNS propagation delays. Resolve slow DNS update times.",
+     ["ISP DNS caches holding stale records", "Cloudflare edge nodes not yet updated",
+      "Regional propagation differences", "DNSSEC validation delays"],
+     "### Check Propagation\n\n```bash\ndig @1.1.1.1 your-domain.com +short\ndig @8.8.8.8 your-domain.com +short\n```\n\n### Purge Cache\n\n1. Go to Caching > Configuration\n2. Click Purge Cache\n\nStandard propagation takes 24-48 hours. Cloudflare proxied records propagate within 5 minutes."),
+
+    ("cloudflare-zone-not-found", "Cloudflare Zone Not Found",
+     "Fix Cloudflare zone not found errors. Resolve domain not recognized in Cloudflare account.",
+     ["Domain not added to Cloudflare", "Domain is in a different Cloudflare account",
+      "API token lacks permission for the zone", "Zone was recently removed or transferred"],
+     "### List Zones\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones\" \\\n  -H \"Authorization: Bearer {api_token}\"\n```\n\n### Add Domain\n\n1. Log in to Cloudflare dashboard\n2. Click Add a Site\n3. Enter your domain name\n4. Select a plan\n5. Update nameservers at your registrar"),
+
+    ("cloudflare-zone-paused", "Cloudflare Zone Paused",
+     "Fix Cloudflare zone paused errors. Resolve issues when domain is paused in Cloudflare.",
+     ["Zone was manually paused in the dashboard", "Billing issues caused automatic pause",
+      "Administrative action by account owner", "Zone exceeded plan limits"],
+     "### Unpause the Zone\n\n1. Go to Overview\n2. Scroll to Advanced Actions\n3. Click Resume Cloudflare Services\n\n### Check Billing\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/user/billing/profile\" \\\n  -H \"Authorization: Bearer {api_token}\"\n```"),
+
+    ("cloudflare-nameserver-mismatch", "Cloudflare Nameserver Mismatch",
+     "Fix Cloudflare nameserver mismatch errors. Resolve domain pointing to wrong nameservers.",
+     ["Nameservers not updated at registrar", "Old nameservers still cached",
+      "Registrar requires manual update", "Nameserver change not yet propagated"],
+     "### Check Current Nameservers\n\n```bash\ndig your-domain.com NS +short\n```\n\n### Update at Registrar\n\nLog in to your registrar and replace existing nameservers with Cloudflare-assigned ones.\n\n### Verify Update\n\n```bash\ndig @1.1.1.1 your-domain.com NS +short\ndig @8.8.8.8 your-domain.com NS +short\n```"),
+
+    ("cloudflare-ssl-cert-not-active", "Cloudflare SSL Certificate Not Active",
+     "Fix Cloudflare SSL certificate not active errors. Resolve certificate activation issues.",
+     ["Universal SSL is disabled", "DNS records are not proxied",
+      "Certificate validation is pending", "Custom certificate uploaded incorrectly"],
+     "### Enable Universal SSL\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/ssl/tls/identity\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":\"universal\"}'\n```\n\n### Check SSL Status\n\n1. Go to SSL/TLS > Overview\n2. Verify encryption mode is correct"),
+
+    ("cloudflare-edge-cert-error", "Cloudflare Edge Certificate Error",
+     "Fix Cloudflare edge certificate errors. Resolve SSL issues at edge servers.",
+     ["Universal SSL still provisioning", "Custom SSL certificate expired",
+      "Certificate does not cover hostname", "Certificate chain is incomplete"],
+     "### Check Certificate\n\n```bash\nopenssl s_client -connect your-domain.com:443 -servername your-domain.com </dev/null 2>/dev/null | openssl x509 -noout -dates\n```\n\n### Reissue Certificate\n\n1. Go to SSL/TLS > Edge Certificates\n2. Click on the certificate\n3. Select Reissue"),
+
+    ("cloudflare-universal-ssl", "Cloudflare Universal SSL Error",
+     "Fix Cloudflare Universal SSL errors. Resolve automatic certificate provisioning issues.",
+     ["Universal SSL is disabled in settings", "DNS records are not proxied",
+      "Domain not fully activated on Cloudflare", "Nameserver change not propagated"],
+     "### Enable Universal SSL\n\n1. Go to SSL/TLS > Edge Certificates\n2. Toggle Universal SSL to Enabled\n\n### Verify\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/ssl/tls/identity\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result.enabled'\n```"),
+
+    ("cloudflare-dedicated-cert", "Cloudflare Dedicated Certificate Error",
+     "Fix Cloudflare dedicated certificate errors. Resolve custom SSL certificate issues.",
+     ["Certificate has expired", "Private key does not match certificate",
+      "Certificate does not cover hostname", "Hostname is not part of your zone"],
+     "### Upload Certificate\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/custom_certificates\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -F \"certificate=@/path/to/cert.pem\" \\\n  -F \"private_key=@/path/to/key.pem\"\n```\n\n### Verify Key Matches\n\n```bash\nopenssl x509 -noout -modulus -in cert.pem | md5sum\nopenssl rsa -noout -modulus -in key.pem | md5sum\n```"),
+
+    ("cloudflare-custom-cert", "Cloudflare Custom Certificate Error",
+     "Fix Cloudflare custom certificate upload errors. Resolve certificate format and validation issues.",
+     ["Certificate format is not PEM", "Certificate chain is incomplete",
+      "Private key is encrypted with passphrase", "Certificate does not match domain"],
+     "### Verify Format\n\n```bash\nopenssl x509 -in certificate.pem -text -noout\n```\n\n### Full Chain\n\n```bash\ncat your-cert.pem intermediate.pem > fullchain.pem\n```\n\n### Remove Passphrase\n\n```bash\nopenssl rsa -in encrypted-key.pem -out decrypted-key.pem\n```"),
+
+    ("cloudflare-cert-validation", "Cloudflare Certificate Validation Error",
+     "Fix Cloudflare certificate validation errors. Resolve SSL certificate validation failures.",
+     ["Certificate is self-signed", "Certificate authority is not trusted",
+      "Certificate chain is incomplete", "Certificate has been revoked"],
+     "### Verify Trust Chain\n\n```bash\nopenssl verify -CAfile ca-bundle.pem your-cert.pem\n```\n\n### Complete Chain\n\n```bash\ncat your-cert.pem intermediate.pem > fullchain.pem\n```"),
+
+    ("cloudflare-certificate-pack", "Cloudflare Certificate Pack Error",
+     "Fix Cloudflare certificate pack errors. Resolve Advanced Certificate Manager issues.",
+     ["Certificate pack validation failed", "Too many hostnames for a single pack",
+      "Duplicate certificate requests", "Certificate authority rate limits"],
+     "### List Packs\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/ssl/certificate_packs\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Request New Pack\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/ssl/certificate_packs\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"hosts\":[\"*.example.com\",\"example.com\"],\"type\":\"advanced\"}'\n```"),
+
+    ("cloudflare-tls-13-setting", "Cloudflare TLS 1.3 Setting Error",
+     "Fix Cloudflare TLS 1.3 configuration errors. Resolve TLS 1.3 enablement issues.",
+     ["TLS 1.3 is disabled in settings", "Origin server does not support TLS 1.3",
+      "Browser compatibility issues", "Plan does not support TLS 1.3"],
+     "### Enable TLS 1.3\n\n1. Go to SSL/TLS > Edge Certificates\n2. Scroll to TLS 1.3\n3. Toggle to On\n\n### Verify\n\n```bash\ncurl --tlsv1.3 -I https://your-domain.com\n```"),
+
+    ("cloudflare-minimum-tls", "Cloudflare Minimum TLS Version Error",
+     "Fix Cloudflare minimum TLS version errors. Resolve TLS version enforcement issues.",
+     ["Minimum TLS set too high for client", "Legacy clients cannot connect",
+      "API integrations use outdated TLS", "Setting changed accidentally"],
+     "### Check Current Setting\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/min_tls_version\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Update\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/min_tls_version\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":\"1.2\"}'\n```"),
+
+    ("cloudflare-opportunistic-encryption", "Cloudflare Opportunistic Encryption Error",
+     "Fix Cloudflare opportunistic encryption errors. Resolve automatic HTTPS issues.",
+     ["SSL/TLS mode is set to Off", "Origin server does not support HTTPS",
+      "Mixed content prevents encryption", "HSTS settings interfere"],
+     "### Enable Always Use HTTPS\n\n1. Go to SSL/TLS > Edge Certificates\n2. Enable Always Use HTTPS\n\n### Set Full Strict\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/ssl\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":\"strict\"}'\n```"),
+
+    ("cloudflare-always-use-https", "Cloudflare Always Use HTTPS Error",
+     "Fix Cloudflare always use HTTPS errors. Resolve redirect loops and HTTPS enforcement.",
+     ["Origin also redirects HTTP to HTTPS causing loop", "SSL mode set to Flexible with origin redirect",
+      "Page rules create conflicting redirects", "Mixed content warnings"],
+     "### Fix Redirect Loops\n\n```bash\ncurl -v http://your-domain.com 2>&1 | grep \"< HTTP\"\n```\n\n### Set Full Strict\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/ssl\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":\"strict\"}'\n```"),
+
+    ("cloudflare-hsts-error", "Cloudflare HSTS Error",
+     "Fix Cloudflare HSTS errors. Resolve HTTP Strict Transport Security configuration issues.",
+     ["Max-age set too low or too high", "includeSubDomains applied incorrectly",
+      "Preload submission causes issues", "HSTS header conflicts with origin"],
+     "### Configure HSTS\n\n1. Go to SSL/TLS > Edge Certificates\n2. Click Enable HSTS\n3. Set max-age to at least 31536000\n\n### Verify\n\n```bash\ncurl -I https://your-domain.com | grep -i strict-transport\n```"),
+
+    ("cloudflare-page-rule-limit", "Cloudflare Page Rule Limit Reached",
+     "Fix Cloudflare page rule limit errors. Resolve maximum rule limit issues.",
+     ["Free plan has only 3 page rules", "Rules created for testing not removed",
+      "Similar rules could be consolidated", "Upgrade needed for more rules"],
+     "### Check Current Rules\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/pagerules\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result | length'\n```\n\n### Delete Unused\n\n```bash\ncurl -X DELETE \"https://api.cloudflare.com/client/v4/zones/{zone_id}/pagerules/{rule_id}\" \\\n  -H \"Authorization: Bearer {api_token}\"\n```\n\n### Upgrade Plan\n\nPro (20 rules), Business (50 rules), Enterprise (unlimited)."),
+
+    ("cloudflare-page-rule-priority", "Cloudflare Page Rule Priority Error",
+     "Fix Cloudflare page rule priority errors. Resolve conflicts with multiple matching rules.",
+     ["Multiple rules match same URL", "Rules added without considering priority",
+      "Wildcard patterns overlap", "Rule order changed accidentally"],
+     "### List by Priority\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/pagerules?order=priority\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result[] | {id,priority}'\n```\n\n### Update Priority\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/pagerules/{rule_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"priority\":1}'\n```"),
+
+    ("cloudflare-url-pattern", "Cloudflare URL Pattern Error",
+     "Fix Cloudflare URL pattern errors. Resolve page rule URL matching issues.",
+     ["Pattern syntax is incorrect", "Wildcards used incorrectly",
+      "Protocol specified when it should not be", "Pattern does not match intended URLs"],
+     "### Pattern Syntax\n\n- `*example.com/*` matches everything\n- `example.com/images/*` matches specific path\n- `*.example.com/*` matches all subdomains\n\n### Test Pattern\n\n```bash\ncurl -I \"http://your-domain.com/test-path\"\n```"),
+
+    ("cloudflare-forwarding-url", "Cloudflare Forwarding URL Error",
+     "Fix Cloudflare forwarding URL errors. Resolve 301/302 redirect issues in page rules.",
+     ["Redirect creates a loop", "Target URL is invalid",
+      "Forwarding URL conflicts with other rules", "Status code is incorrect"],
+     "### Create Forwarding Rule\n\n1. Go to Rules > Page Rules\n2. Click Create Page Rule\n3. Enter URL pattern\n4. Select Forwarding URL\n5. Choose 301 or 302\n6. Enter destination URL\n\n### Check for Loops\n\n```bash\ncurl -v http://your-domain.com 2>&1 | grep -E \"< HTTP|Location:\"\n```"),
+
+    ("cloudflare-browser-cache-ttl", "Cloudflare Browser Cache TTL Error",
+     "Fix Cloudflare browser cache TTL errors. Resolve browser-side caching issues.",
+     ["TTL set too short causing repeated requests", "TTL set too long showing stale content",
+      "Cache-Control headers conflict", "No-cache directives override TTL"],
+     "### Check Current Setting\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/browser_cache_ttl\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Update\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/browser_cache_ttl\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":86400}'\n```"),
+
+    ("cloudflare-edge-cache-ttl", "Cloudflare Edge Cache TTL Error",
+     "Fix Cloudflare edge cache TTL errors. Resolve edge caching duration issues.",
+     ["Edge TTL too short causing origin pulls", "Edge TTL too long serving stale content",
+      "Cache-Control headers override edge TTL", "Origin sets no-cache headers"],
+     "### Check Cache Headers\n\n```bash\ncurl -I https://your-domain.com | grep -i \"cache-control\\|cf-cache-status\\|expires\"\n```\n\n### Override Origin Headers\n\nUse page rules or Cloudflare Workers to override."),
+
+    ("cloudflare-cache-level", "Cloudflare Cache Level Error",
+     "Fix Cloudflare cache level errors. Resolve caching aggressiveness issues.",
+     ["Cache level set to Bypass", "Dynamic content not being cached",
+      "Query string handling issues", "Cache key configuration problems"],
+     "### Check Cache Level\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/cache_level\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Set Cache Level\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/cache_level\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":\"aggressive\"}'\n```"),
+
+    ("cloudflare-cache-everything", "Cloudflare Cache Everything Error",
+     "Fix Cloudflare cache everything errors. Resolve caching of dynamic content issues.",
+     ["Personalized content being cached", "API responses cached incorrectly",
+      "Session data exposed to other users", "Login pages cached"],
+     "### Set Cache Everything\n\n1. Go to Rules > Page Rules\n2. Create rule for domain\n3. Set Cache Level to Cache Everything\n\n### Bypass for Dynamic Content\n\nCreate separate rules for dynamic paths to bypass cache."),
+
+    ("cloudflare-bypass-cache", "Cloudflare Bypass Cache Error",
+     "Fix Cloudflare bypass cache errors. Resolve unexpected cache bypass issues.",
+     ["Cache-Control: no-cache header set", "Page rule set to Bypass cache",
+      "Cookie present in request", "Origin server sets bypass headers"],
+     "### Check Headers\n\n```bash\ncurl -I https://your-domain.com | grep -i \"cache-control\\|pragma\"\n```\n\n### Remove No-Cache from Origin\n\n```nginx\nproxy_hide_header Cache-Control;\nadd_header Cache-Control \"public, max-age=3600\";\n```"),
+
+    ("cloudflare-cache-key", "Cloudflare Cache Key Error",
+     "Fix Cloudflare cache key errors. Resolve cache key configuration issues.",
+     ["Query strings affecting cache unnecessarily", "Headers included in cache key",
+      "Cookies included in cache key", "Cache key too specific reducing hit rate"],
+     "### Configure Cache Key\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/cache_key\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":{\"ignore_query_strings\":true}}'\n```\n\n### Use Workers\n\nUse Cloudflare Workers for custom cache key logic."),
+
+    ("cloudflare-purge-cache", "Cloudflare Purge Cache Error",
+     "Fix Cloudflare purge cache errors. Resolve cache purge failures.",
+     ["Purge API rate limit exceeded", "Invalid URL format in single-file purge",
+      "Zone is paused", "API token lacks cache purge permissions"],
+     "### Purge Everything\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"purge_everything\":true}'\n```\n\n### Purge Single File\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"files\":[\"https://your-domain.com/image.png\"]}'\n```"),
+
+    ("cloudflare-purge-single-file", "Cloudflare Purge Single File Error",
+     "Fix Cloudflare purge single file errors. Resolve individual file cache purge issues.",
+     ["URL does not match cached URL exactly", "Query string mismatch",
+      "Protocol mismatch (http vs https)", "URL encoding issues"],
+     "### Purge URL\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"files\":[\"https://your-domain.com/path/to/file.css\"]}'\n```\n\n### Verify\n\n```bash\ncurl -I https://your-domain.com/path/to/file.css | grep -i \"cf-cache-status\"\n```"),
+
+    ("cloudflare-purge-everything", "Cloudflare Purge Everything Error",
+     "Fix Cloudflare purge everything errors. Resolve mass cache purge failures.",
+     ["API token lacks permissions", "Zone is paused",
+      "API rate limit exceeded", "Account limits reached"],
+     "### Purge All\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"purge_everything\":true}'\n```\n\n### Via Dashboard\n\n1. Go to Caching > Configuration\n2. Click Purge Everything"),
+
+    ("cloudflare-waf-rule-triggered", "Cloudflare WAF Rule Triggered",
+     "Fix Cloudflare WAF rule triggered errors. Resolve false positives from WAF rules.",
+     ["Rule too aggressive for your application", "Legitimate requests match attack signatures",
+      "Custom rule needs tuning", "OWASP rule triggered by form submission"],
+     "### Identify Rule\n\nCheck response headers for cf-ray and firewall info.\n\n### Create Exception\n\n1. Go to Security > WAF\n2. Find the triggered rule\n3. Add exception for your IP or path\n\n### Disable Rule\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules/{rule_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"paused\":true}'\n```"),
+
+    ("cloudflare-security-level", "Cloudflare Security Level Error",
+     "Fix Cloudflare security level errors. Resolve threat assessment blocking issues.",
+     ["Security level set too high", "Legitimate IPs getting challenged",
+      "VPN or proxy traffic challenged", "Threat score threshold too low"],
+     "### Check Level\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/security_level\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Adjust\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/security_level\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":\"medium\"}'\n```\n\n### Whitelist IPs\n\nAdd trusted IPs to IP Access Rules."),
+
+    ("cloudflare-challenge-passage", "Cloudflare Challenge Passage Error",
+     "Fix Cloudflare challenge passage errors. Resolve browser challenge cookie issues.",
+     ["Passage time too short causing repeated challenges", "Browser clearing cookies frequently",
+      "Incognito mode re-triggering challenges", "Passage time too long allowing threats"],
+     "### Check Duration\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/challenge_ttl\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Update\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/settings/challenge_ttl\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"value\":1800}'\n```"),
+
+    ("cloudflare-browser-integrity-check", "Cloudflare Browser Integrity Check Error",
+     "Fix Cloudflare Browser Integrity Check errors. Resolve BIC blocking legitimate visitors.",
+     ["Missing common browser headers", "Bot traffic flagged as malicious",
+      "API clients without browser headers", "Custom headers triggering checks"],
+     "### Add Whitelist\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '[{\"filter\":{\"expression\":\"ip.src eq 1.2.3.4\"},\"action\":\"allow\",\"description\":\"Whitelist API client\"}]'\n```\n\n### Fix Client Headers\n\nEnsure API clients send appropriate User-Agent headers."),
+
+    ("cloudflare-bot-fight-mode", "Cloudflare Bot Fight Mode Error",
+     "Fix Cloudflare bot fight mode errors. Resolve bot detection blocking legitimate traffic.",
+     ["Search engine crawlers challenged", "API integrations blocked",
+      "Monitoring tools flagged as bots", "Legitimate scrapers blocked"],
+     "### Configure\n\n1. Go to Security > Bots\n2. Adjust Bot Fight Mode settings\n\n### Create Exceptions\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '[{\"filter\":{\"expression\":\"http.user_agent contains \\\"Googlebot\\\"\"},\"action\":\"allow\",\"description\":\"Allow Googlebot\"}]'\n```"),
+
+    ("cloudflare-rate-limiting", "Cloudflare Rate Limiting Error",
+     "Fix Cloudflare rate limiting errors. Resolve request rate limit issues.",
+     ["Rate limit threshold too low", "Legitimate traffic patterns exceed limit",
+      "API calls not accounted for", "Rate limiting rule too broad"],
+     "### Check Rules\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/rate_limits\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Create Custom Rate Limit\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/rate_limits\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"match\":{\"request\":{\"uri\":{\"path\":{\"contains\":\"/api/\"}}},\"count\":100},\"action\":{\"mode\":\"simulate\",\"timeout\":600}}'\n```"),
+
+    ("cloudflare-rate-limit-action", "Cloudflare Rate Limit Action Error",
+     "Fix Cloudflare rate limit action errors. Configure rate limit response behavior.",
+     ["Action set to challenge instead of block", "Simulation mode not showing blocks",
+      "Response status code incorrect", "Timeout period too short or long"],
+     "### Configure Action\n\nActions: simulate, challenge, js_challenge, ban\n\n```bash\ncurl -X PUT \"https://api.cloudflare.com/client/v4/zones/{zone_id}/rate_limits/{rule_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"action\":{\"mode\":\"ban\",\"timeout\":300}}'\n```"),
+
+    ("cloudflare-rate-limit-duration", "Cloudflare Rate Limit Duration Error",
+     "Fix Cloudflare rate limit duration errors. Configure blocking duration after limit exceeded.",
+     ["Duration too short allowing rapid retries", "Duration too long blocking legitimate users",
+      "Duration not configured properly", "Timeout resets not working as expected"],
+     "### Set Duration\n\n```bash\ncurl -X PUT \"https://api.cloudflare.com/client/v4/zones/{zone_id}/rate_limits/{rule_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"action\":{\"mode\":\"ban\",\"timeout\":60}}'\n```\n\n### Recommended\n\n- API abuse: 60-300s\n- Login attempts: 900s\n- Scraping: 3600s"),
+
+    ("cloudflare-ip-access-rule", "Cloudflare IP Access Rule Error",
+     "Fix Cloudflare IP access rule errors. Resolve IP whitelisting and blocking issues.",
+     ["Rule limit exceeded (free plan: 25 rules)", "IP range format incorrect",
+      "Rule conflicts with other security settings", "CIDR notation errors"],
+     "### Add Rule\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/access_rules/rules\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"mode\":\"whitelist\",\"configuration\":{\"target\":\"ip\",\"value\":\"192.0.2.1\"},\"notes\":\"Trusted IP\"}'\n```\n\n### List Rules\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/access_rules/rules?per_page=100\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```"),
+
+    ("cloudflare-country-block", "Cloudflare Country Block Error",
+     "Fix Cloudflare country block errors. Resolve geo-based traffic blocking issues.",
+     ["Block list includes unintended countries", "VPN traffic appears from blocked country",
+      "Legitimate international users blocked", "IP geolocation inaccuracy"],
+     "### Configure\n\n1. Go to Security > WAF > Tools\n2. Add countries to Block list\n\n### Firewall Rule\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '[{\"filter\":{\"expression\":\"ip.geoip.country in {\\\"XX\\\"}\"},\"action\":\"block\"}]'\n```"),
+
+    ("cloudflare-firewall-rule", "Cloudflare Firewall Rule Error",
+     "Fix Cloudflare firewall rule errors. Resolve custom firewall rule issues.",
+     ["Rule expression syntax error", "Rule action misconfigured",
+      "Rules too broad matching unintended requests", "Rule limit exceeded"],
+     "### Validate Expression\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules/validate\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"expression\":\"http.request.uri.path contains \\\"/api/\\\"\",\"action\":\"block\"}'\n```\n\n### Pause Rule\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules/{rule_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"paused\":true}'\n```"),
+
+    ("cloudflare-waf-managed-rules", "Cloudflare WAF Managed Rules Error",
+     "Fix Cloudflare WAF managed rules errors. Resolve pre-configured rule set issues.",
+     ["Rule set not enabled", "Rules causing false positives",
+      "Rule version outdated", "Rules too aggressive for your application"],
+     "### Enable Rules\n\n1. Go to Security > WAF\n2. Find managed rule set\n3. Toggle to On\n\n### Check Version\n\nEnsure latest version of managed rule sets."),
+
+    ("cloudflare-owasp", "Cloudflare OWASP Rule Error",
+     "Fix Cloudflare OWASP rule errors. Resolve OWASP Core Rule Set false positives.",
+     ["OWASP rules too strict", "Form submissions triggering SQL injection rules",
+      "URL parameters triggering XSS rules", "API requests matching attack patterns"],
+     "### Configure Sensitivity\n\n1. Go to Security > WAF\n2. Find OWASP Managed Rules\n3. Adjust sensitivity level\n\n### Create Exceptions\n\nFor rules causing false positives, create skip rules."),
+
+    ("cloudflare-scored", "Cloudflare Scored Request Error",
+     "Fix Cloudflare scored request errors. Resolve threat scoring issues.",
+     ["Request pattern matches known attacks", "IP address has poor reputation",
+      "Bot detection assigns high score", "Legitimate traffic misidentified"],
+     "### Whitelist Trusted IPs\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/access_rules/rules\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"mode\":\"whitelist\",\"configuration\":{\"target\":\"ip\",\"value\":\"1.2.3.4\"},\"notes\":\"Trusted IP\"}'\n```\n\n### Adjust Security Level"),
+
+    ("cloudflare-threat-score", "Cloudflare Threat Score Error",
+     "Fix Cloudflare threat score errors. Resolve IP reputation scoring issues.",
+     ["IP associated with malicious activity", "Shared IP from cloud provider flagged",
+      "VPN exit nodes have high scores", "Score threshold set too low"],
+     "### Whitelist IPs\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/access_rules/rules\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"mode\":\"whitelist\",\"configuration\":{\"target\":\"ip\",\"value\":\"1.2.3.4\"},\"notes\":\"Trusted cloud IP\"}'\n```\n\n### Adjust Challenge Threshold"),
+
+    ("cloudflare-js-challenge", "Cloudflare JavaScript Challenge Error",
+     "Fix Cloudflare JavaScript challenge errors. Resolve JS challenge completion issues.",
+     ["Client has JavaScript disabled", "Bot cannot execute JavaScript",
+      "Challenge page not loading", "Challenge taking too long to complete"],
+     "### Create Bypass for API\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '[{\"filter\":{\"expression\":\"http.request.uri.path contains \\\"/api/\\\"\"},\"action\":\"skip\",\"action_parameters\":{\"ruleset\":\"main\"}}]'\n```"),
+
+    ("cloudflare-captcha", "Cloudflare CAPTCHA Error",
+     "Fix Cloudflare CAPTCHA errors. Resolve CAPTCHA challenge display and completion issues.",
+     ["CAPTCHA not displaying properly", "CAPTCHA completion not registering",
+      "Accessibility issues", "Bot cannot solve CAPTCHA"],
+     "### Use Turnstile Instead\n\nCloudflare Turnstile provides better UX than CAPTCHA.\n\n### Test Challenge\n\n```bash\ncurl -I https://your-domain.com\n```"),
+
+    ("cloudflare-turnstile-error", "Cloudflare Turnstile Error",
+     "Fix Cloudflare Turnstile errors. Resolve Turnstile verification widget issues.",
+     ["Site key or secret key incorrect", "Domain mismatch in configuration",
+      "JavaScript not loaded on page", "Token validation failing on backend"],
+     "### Verify Keys\n\n```bash\ncurl -X POST \"https://challenges.cloudflare.com/turnstile/v0/siteverify\" \\\n  -d \"secret={secret_key}&response={turnstile_token}\"\n```\n\n### Load Script\n\n```html\n<script src=\"https://challenges.cloudflare.com/turnstile/v0/api.js\" async defer></script>\n```"),
+
+    ("cloudflare-turnstile-widget", "Cloudflare Turnstile Widget Error",
+     "Fix Cloudflare Turnstile widget errors. Resolve widget rendering issues.",
+     ["Widget container missing from page", "CSS conflicts hiding widget",
+      "Widget script not loaded", "Multiple widgets conflicting"],
+     "### Add Widget\n\n```html\n<div class=\"cf-turnstile\" data-sitekey=\"{site_key}\"></div>\n```\n\n### Initialize\n\n```javascript\nturnstile.render('.cf-turnstile', {\n  sitekey: '{site_key}',\n  callback: function(token) {\n    document.getElementById('turnstile-token').value = token;\n  }\n});\n```"),
+
+    ("cloudflare-turnstile-site-key", "Cloudflare Turnstile Site Key Error",
+     "Fix Cloudflare Turnstile site key errors. Resolve invalid or missing site keys.",
+     ["Site key copied incorrectly", "Site key does not match domain",
+      "Site key from wrong environment", "Site key was rotated"],
+     "### Verify Key\n\n1. Go to Cloudflare dashboard\n2. Navigate to Turnstile\n3. Copy correct site key"),
+
+    ("cloudflare-turnstile-secret", "Cloudflare Turnstile Secret Key Error",
+     "Fix Cloudflare Turnstile secret key errors. Resolve server-side token verification failures.",
+     ["Secret key exposed in client-side code", "Secret key incorrect or malformed",
+      "Token verification endpoint misconfigured", "Secret key rotated without updating server"],
+     "### Verify\n\n```bash\ncurl -X POST \"https://challenges.cloudflare.com/turnstile/v0/siteverify\" \\\n  -d \"secret={secret_key}&response={turnstile_token}\"\n```\n\n### Store Securely\n\nNever expose secret key in client-side code."),
+
+    ("cloudflare-turnstile-domain", "Cloudflare Turnstile Domain Error",
+     "Fix Cloudflare Turnstile domain errors. Resolve domain validation issues.",
+     ["Domain not added to Turnstile settings", "Subdomain mismatch",
+      "Development domain differs from production", "Wildcard domain not configured"],
+     "### Add Domain\n\n1. Go to Cloudflare dashboard\n2. Navigate to Turnstile\n3. Edit widget\n4. Add correct domain"),
+
+    ("cloudflare-turnstile-fallback", "Cloudflare Turnstile Fallback Error",
+     "Fix Cloudflare Turnstile fallback errors. Resolve Turnstile loading failures.",
+     ["Cloudflare CDN unreachable", "JavaScript blocked by extension",
+      "Network restrictions", "Turnstile script timeout"],
+     "### Implement Fallback\n\n```html\n<div class=\"cf-turnstile\" data-sitekey=\"{site_key}\"></div>\n<noscript>\n  <input type=\"hidden\" name=\"cf-turnstile-response\" value=\"noscript\">\n</noscript>\n```"),
+
+    ("cloudflare-workers-error", "Cloudflare Workers Error",
+     "Fix Cloudflare Workers errors. Resolve Worker script deployment and execution issues.",
+     ["Script exceeds size or CPU time limits", "JavaScript syntax errors",
+      "API not available in Workers runtime", "KV namespace not bound"],
+     "### Test Locally\n\n```bash\nnpx wrangler dev\n```\n\n### Check Logs\n\n```bash\nnpx wrangler tail\n```\n\n### Deploy\n\n```bash\nnpx wrangler deploy\n```"),
+
+    ("cloudflare-worker-script", "Cloudflare Worker Script Error",
+     "Fix Cloudflare Worker script errors. Resolve Worker code compilation issues.",
+     ["Syntax error in JavaScript code", "Unsupported API used",
+      "Script exceeds 1MB size limit", "Script exceeds CPU time limit"],
+     "### Validate\n\n```bash\nnpx wrangler dev --test-scheduled\n```\n\n### Check Size\n\n```bash\nnpx wrangler deploy --dry-run\n```"),
+
+    ("cloudflare-worker-route", "Cloudflare Worker Route Error",
+     "Fix Cloudflare Worker route errors. Resolve Worker route configuration issues.",
+     ["Route pattern incorrect", "Route conflicts with other Workers",
+      "Route not associated with zone", "Pattern does not match intended URLs"],
+     "### List Routes\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/workers/routes\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```\n\n### Add Route\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/workers/routes\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"pattern\":\"example.com/api/*\",\"script\":\"my-worker\"}'\n```"),
+
+    ("cloudflare-worker-bindings", "Cloudflare Worker Bindings Error",
+     "Fix Cloudflare Worker bindings errors. Resolve resource binding issues.",
+     ["Binding name does not match code reference", "Resource not created",
+      "Binding not configured in wrangler.toml", "Resource ID incorrect"],
+     "### Configure Bindings\n\n```toml\nkv_namespaces = [\n  { binding = \"MY_KV\", id = \"kv_namespace_id\" }\n]\n\nr2_buckets = [\n  { binding = \"MY_BUCKET\", bucket_name = \"my-bucket\" }\n]\n\nd1_databases = [\n  { binding = \"MY_DB\", database_name = \"my-db\", database_id = \"db_id\" }\n]\n```"),
+
+    ("cloudflare-kv-namespace", "Cloudflare KV Namespace Error",
+     "Fix Cloudflare KV namespace errors. Resolve Workers KV storage issues.",
+     ["Namespace not created", "Binding name mismatch",
+      "Namespace ID incorrect", "KV limits exceeded"],
+     "### Create Namespace\n\n```bash\nnpx wrangler kv namespace create \"MY_KV\"\n```\n\n### List Namespaces\n\n```bash\nnpx wrangler kv namespace list\n```"),
+
+    ("cloudflare-kv-get", "Cloudflare KV Get Error",
+     "Fix Cloudflare KV get errors. Resolve reading values from Workers KV.",
+     ["Key does not exist", "Namespace ID incorrect",
+      "Permission denied", "Cache not available"],
+     "### Get Value\n\n```javascript\nconst value = await env.MY_KV.get(\"my-key\");\nconst json = await env.MY_KV.get(\"my-key\", { type: \"json\" });\n```"),
+
+    ("cloudflare-kv-put", "Cloudflare KV Put Error",
+     "Fix Cloudflare KV put errors. Resolve writing values to Workers KV.",
+     ["Key exceeds 512 byte limit", "Value exceeds 25 MB limit",
+      "Namespace read-only", "Permission denied"],
+     "### Put Value\n\n```javascript\nawait env.MY_KV.put(\"my-key\", \"my-value\");\nawait env.MY_KV.put(\"my-key\", \"my-value\", { expirationTtl: 3600 });\n```"),
+
+    ("cloudflare-kv-delete", "Cloudflare KV Delete Error",
+     "Fix Cloudflare KV delete errors. Resolve removing values from Workers KV.",
+     ["Key does not exist", "Permission denied",
+      "Namespace not writable", "Rate limit exceeded"],
+     "### Delete\n\n```javascript\nawait env.MY_KV.delete(\"my-key\");\n```"),
+
+    ("cloudflare-kv-list", "Cloudflare KV List Error",
+     "Fix Cloudflare KV list errors. Resolve listing keys in Workers KV.",
+     ["Too many keys to return at once", "Cursor expired",
+      "Prefix matches no keys", "Rate limit exceeded"],
+     "### List Keys\n\n```javascript\nconst keys = await env.MY_KV.list({ prefix: \"user:\" });\n```"),
+
+    ("cloudflare-r2-bucket", "Cloudflare R2 Bucket Error",
+     "Fix Cloudflare R2 bucket errors. Resolve R2 object storage bucket issues.",
+     ["Bucket name already taken", "Bucket name contains invalid characters",
+      "API token lacks permissions", "Bucket limit exceeded"],
+     "### Create Bucket\n\n```bash\nnpx wrangler r2 bucket create my-bucket\n```\n\n### List Buckets\n\n```bash\nnpx wrangler r2 bucket list\n```"),
+
+    ("cloudflare-r2-object", "Cloudflare R2 Object Error",
+     "Fix Cloudflare R2 object errors. Resolve uploading or downloading R2 objects.",
+     ["Object exceeds size limit", "Bucket does not exist",
+      "Permission denied", "Content-Type not set"],
+     "### Upload\n\n```bash\nnpx wrangler r2 object put my-bucket/my-file.txt --file=./local-file.txt\n```\n\n### Download\n\n```bash\nnpx wrangler r2 object get my-bucket/my-file.txt --file=./downloaded.txt\n```"),
+
+    ("cloudflare-r2-public-url", "Cloudflare R2 Public URL Error",
+     "Fix Cloudflare R2 public URL errors. Resolve public access issues.",
+     ["Public access not enabled", "Custom domain not configured",
+      "CORS policy blocks access", "Bucket not configured for public access"],
+     "### Enable Public Access\n\n1. Go to R2 in dashboard\n2. Select bucket\n3. Go to Settings\n4. Enable Public Access\n\n### Add Custom Domain\n\n```bash\nnpx wrangler r2 bucket domain add my-bucket --domain assets.example.com\n```"),
+
+    ("cloudflare-d1-database", "Cloudflare D1 Database Error",
+     "Fix Cloudflare D1 database errors. Resolve D1 serverless SQL database issues.",
+     ["Database not created", "Binding not configured",
+      "Query exceeds limits", "Database size limit exceeded"],
+     "### Create Database\n\n```bash\nnpx wrangler d1 create my-database\n```\n\n### Configure Binding\n\n```toml\nd1_databases = [\n  { binding = \"MY_DB\", database_name = \"my-database\", database_id = \"{db_id}\" }\n]\n```"),
+
+    ("cloudflare-d1-query", "Cloudflare D1 Query Error",
+     "Fix Cloudflare D1 query errors. Resolve SQL query issues.",
+     ["SQL syntax error", "Table does not exist",
+      "Query exceeds execution time", "Statement count limit exceeded"],
+     "### Run Query\n\n```bash\nnpx wrangler d1 execute my-database --command \"SELECT * FROM users\"\n```\n\n### Batch Queries\n\n```javascript\nconst result = await env.MY_DB.batch([\n  env.MY_DB.prepare(\"SELECT * FROM users WHERE id = ?\").bind(userId)\n]);\n```"),
+
+    ("cloudflare-d1-binding", "Cloudflare D1 Binding Error",
+     "Fix Cloudflare D1 binding errors. Resolve Worker-to-D1 connection issues.",
+     ["Binding name mismatch", "Database ID incorrect",
+      "Binding not defined in wrangler.toml", "Database was deleted"],
+     "### Configure Binding\n\n```toml\nd1_databases = [\n  { binding = \"MY_DB\", database_name = \"my-db\", database_id = \"{actual_id}\" }\n]\n```\n\n### Verify in Worker\n\n```javascript\nexport default {\n  async fetch(request, env) {\n    const result = await env.MY_DB.prepare(\"SELECT 1\").first();\n    return new Response(JSON.stringify(result));\n  }\n};\n```"),
+
+    ("cloudflare-durable-object", "Cloudflare Durable Object Error",
+     "Fix Cloudflare Durable Object errors. Resolve Durable Object issues.",
+     ["Class not defined in Worker script", "Namespace not configured",
+      "Object exceeds storage limits", "Alarm not configured"],
+     "### Define Class\n\n```javascript\nexport class MyDurableObject {\n  constructor(state, env) {\n    this.state = state;\n    this.env = env;\n  }\n  async fetch(request) {\n    return new Response(\"Hello from Durable Object\");\n  }\n}\n```\n\n### Configure\n\n```toml\n[[durable_objects.bindings]]\nname = \"MY_DO\"\nclass_name = \"MyDurableObject\"\n```"),
+
+    ("cloudflare-alarm-handler", "Cloudflare Durable Object Alarm Error",
+     "Fix Cloudflare Durable Object alarm errors. Resolve alarm scheduling issues.",
+     ["Alarm not implemented in class", "Alarm already scheduled",
+      "Clock drift", "Storage exceeded"],
+     "### Implement Alarm\n\n```javascript\nexport class MyDurableObject {\n  async alarm() {\n    await this.processScheduledTask();\n    await this.state.storage.setAlarm(Date.now() + 60000);\n  }\n}\n```"),
+
+    ("cloudflare-websocket-handler", "Cloudflare WebSocket Handler Error",
+     "Fix Cloudflare WebSocket handler errors. Resolve WebSocket connection issues.",
+     ["Upgrade header not handled", "WebSocket protocol not supported",
+      "Connection limit exceeded", "Worker does not handle upgrade"],
+     "### Handle Upgrade\n\n```javascript\nexport default {\n  async fetch(request, env) {\n    if (request.headers.get(\"Upgrade\") === \"websocket\") {\n      const pair = new WebSocketPair();\n      const [client, server] = Object.values(pair);\n      return new Response(null, { status: 101, webSocket: client });\n    }\n    return new Response(\"Not a WebSocket request\", { status: 400 });\n  }\n};\n```"),
+
+    ("cloudflare-worker-env", "Cloudflare Worker Environment Error",
+     "Fix Cloudflare Worker environment variable errors. Resolve secrets and variables issues.",
+     ["Environment variable not set", "Secret not configured",
+      "Variable name mismatch", "Environment differs between preview and production"],
+     "### Set Secret\n\n```bash\nnpx wrangler secret put MY_SECRET\n```\n\n### Set Variable in wrangler.toml\n\n```toml\n[vars]\nMY_VAR = \"value\"\n```\n\n### Access\n\n```javascript\nexport default {\n  async fetch(request, env) {\n    return new Response(env.MY_SECRET ? \"set\" : \"not set\");\n  }\n};\n```"),
+
+    ("cloudflare-module-syntax", "Cloudflare Worker Module Syntax Error",
+     "Fix Cloudflare Worker module syntax errors. Resolve ES module format issues.",
+     ["Mixing Service Worker and Module syntax", "Import statements in Service Worker format",
+      "Missing type module in wrangler.toml", "CommonJS require not supported"],
+     "### Use Module Syntax\n\n```javascript\nexport default {\n  async fetch(request, env, ctx) {\n    return new Response(\"Hello World\");\n  }\n};\n```\n\n### Configure\n\n```toml\nmain = \"src/index.js\"\ntype = \"javascript-module\"\n```"),
+
+    ("cloudflare-service-binding", "Cloudflare Service Binding Error",
+     "Fix Cloudflare service binding errors. Resolve Worker-to-Worker communication issues.",
+     ["Service not deployed", "Binding name mismatch",
+      "Service name incorrect in wrangler.toml", "Circular dependencies"],
+     "### Configure\n\n```toml\n[[services]]\nbinding = \"MY_SERVICE\"\nservice = \"my-other-worker\"\n```\n\n### Use Binding\n\n```javascript\nexport default {\n  async fetch(request, env) {\n    return await env.MY_SERVICE.fetch(request);\n  }\n};\n```"),
+
+    ("cloudflare-queue-producer", "Cloudflare Queue Producer Error",
+     "Fix Cloudflare queue producer errors. Resolve sending messages to Queues.",
+     ["Queue not created", "Message exceeds size limit",
+      "Queue name incorrect", "Permission denied"],
+     "### Create Queue\n\n```bash\nnpx wrangler queues create my-queue\n```\n\n### Send Message\n\n```javascript\nawait env.MY_QUEUE.send({ message: \"hello\" });\n```"),
+
+    ("cloudflare-queue-consumer", "Cloudflare Queue Consumer Error",
+     "Fix Cloudflare queue consumer errors. Resolve processing messages from Queues.",
+     ["Consumer Worker not deployed", "Queue binding not configured",
+      "Processing error causes retries", "Max retries exceeded"],
+     "### Configure Consumer\n\n```toml\n[[queues.consumers]]\nqueue = \"my-queue\"\nmax_retries = 3\n```\n\n### Implement\n\n```javascript\nexport default {\n  async queue(batch, env) {\n    for (const message of batch.messages) {\n      console.log(message.body);\n    }\n  }\n};\n```"),
+
+    ("cloudflare-cron-trigger", "Cloudflare Cron Trigger Error",
+     "Fix Cloudflare cron trigger errors. Resolve scheduled Worker execution issues.",
+     ["Cron syntax incorrect", "Worker not deployed with triggers",
+      "Schedule not active", "Cron limit exceeded"],
+     "### Configure Triggers\n\n```toml\n[triggers]\ncrons = [\"0 0 * * *\", \"0 12 * * *\"]\n```\n\n### Handle Events\n\n```javascript\nexport default {\n  async scheduled(event, env, ctx) {\n    console.log(`Scheduled at ${event.scheduledTime}`);\n  }\n};\n```"),
+
+    ("cloudflare-scheduled-worker", "Cloudflare Scheduled Worker Error",
+     "Fix Cloudflare scheduled worker errors. Resolve periodic Worker execution issues.",
+     ["Worker not deployed with cron triggers", "Cron syntax invalid",
+      "Worker crashes during execution", "Schedule overlapping"],
+     "### Deploy with Cron\n\n```bash\nnpx wrangler deploy\n```\n\n### Check Triggers\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/accounts/{account_id}/workers/scripts/{script_name}/schedules\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```"),
+
+    ("cloudflare-wrangler-error", "Cloudflare Wrangler Error",
+     "Fix Cloudflare wrangler CLI errors. Resolve Wrangler deployment tool issues.",
+     ["Wrangler not installed", "Authentication expired",
+      "Configuration file error", "Node.js version incompatible"],
+     "### Install\n\n```bash\nnpm install -g wrangler\n```\n\n### Authenticate\n\n```bash\nnpx wrangler login\n```\n\n### Check Config\n\n```bash\nnpx wrangler deploy --dry-run\n```"),
+
+    ("cloudflare-wrangler-deploy", "Cloudflare Wrangler Deploy Error",
+     "Fix Cloudflare wrangler deploy errors. Resolve Worker deployment issues.",
+     ["Script exceeds size limits", "Configuration error",
+      "Authentication expired", "Network issues during upload"],
+     "### Deploy\n\n```bash\nnpx wrangler deploy\n```\n\n### Preview\n\n```bash\nnpx wrangler deploy --preview\n```"),
+
+    ("cloudflare-wrangler-init", "Cloudflare Wrangler Init Error",
+     "Fix Cloudflare wrangler init errors. Resolve new Worker project initialization issues.",
+     ["Directory already contains files", "Template download failed",
+      "Node.js version incompatible", "Permission denied"],
+     "### Initialize\n\n```bash\nnpx wrangler init my-worker\n```\n\n### Initialize in Current Directory\n\n```bash\nnpx wrangler init\n```"),
+
+    ("cloudflare-wrangler-secret", "Cloudflare Wrangler Secret Error",
+     "Fix Cloudflare wrangler secret errors. Resolve Worker secret management issues.",
+     ["Secret not set", "Secret name incorrect",
+      "Secret value too large", "Secret not accessible in Worker"],
+     "### Put Secret\n\n```bash\nnpx wrangler secret put MY_SECRET\n```\n\n### List\n\n```bash\nnpx wrangler secret list\n```\n\n### Delete\n\n```bash\nnpx wrangler secret delete MY_SECRET\n```"),
+
+    ("cloudflare-wrangler-routes", "Cloudflare Wrangler Routes Error",
+     "Fix Cloudflare wrangler routes errors. Resolve Worker route configuration issues.",
+     ["Route pattern invalid", "Zone not configured",
+      "Route conflicts", "Pattern syntax error"],
+     "### Configure in wrangler.toml\n\n```toml\nroutes = [\n  { pattern = \"example.com/api/*\", zone_name = \"example.com\" }\n]\n```\n\n### Publish\n\n```bash\nnpx wrangler route publish\n```"),
+
+    ("cloudflare-wrangler-config", "Cloudflare Wrangler Configuration Error",
+     "Fix Cloudflare wrangler configuration errors. Resolve wrangler.toml issues.",
+     ["TOML syntax error", "Missing required fields",
+      "Invalid binding configuration", "Deprecated settings"],
+     "### Validate\n\n```bash\nnpx wrangler deploy --dry-run\n```\n\n### Required Fields\n\n```toml\nname = \"my-worker\"\nmain = \"src/index.js\"\ncompatibility_date = \"2024-01-01\"\n```"),
+
+    ("cloudflare-pages-project", "Cloudflare Pages Project Error",
+     "Fix Cloudflare Pages project errors. Resolve deployment and configuration issues.",
+     ["Project not connected to repository", "Build command incorrect",
+      "Output directory wrong", "Project name taken"],
+     "### Create Project\n\n```bash\nnpx wrangler pages project create my-project\n```\n\n### Deploy\n\n```bash\nnpx wrangler pages deploy dist/\n```"),
+
+    ("cloudflare-pages-function", "Cloudflare Pages Function Error",
+     "Fix Cloudflare Pages function errors. Resolve serverless function issues.",
+     ["Function file not in correct location", "Function export syntax incorrect",
+      "Binding not configured", "Function exceeds limits"],
+     "### Create Function\n\n```javascript\n// functions/api/hello.js\nexport async function onRequestGet(context) {\n  return new Response(JSON.stringify({ hello: \"world\" }));\n}\n```\n\n### Test\n\n```bash\nnpx wrangler pages dev dist/\n```"),
+
+    ("cloudflare-pages-redirect", "Cloudflare Pages Redirect Error",
+     "Fix Cloudflare Pages redirect errors. Resolve _redirects file issues.",
+     ["_redirects syntax error", "Redirect creates a loop",
+      "Status code incorrect", "Wildcard usage incorrect"],
+     "### Create _redirects\n\n```\n/old-page /new-page 301\n/api/* /api/:splat 200\n```\n\n### Test\n\n```bash\ncurl -I https://your-domain.com/old-page\n```"),
+
+    ("cloudflare-pages-build", "Cloudflare Pages Build Error",
+     "Fix Cloudflare Pages build errors. Resolve build process issues.",
+     ["Build command fails", "Dependencies not installed",
+      "Build exceeds time limit", "Build image outdated"],
+     "### Check Settings\n\n1. Go to Pages project settings\n2. Verify build command\n3. Verify output directory\n\n### Build Locally\n\n```bash\nnpm run build\n```"),
+
+    ("cloudflare-pages-deploy", "Cloudflare Pages Deploy Error",
+     "Fix Cloudflare Pages deploy errors. Resolve deployment issues.",
+     ["Build failed", "Deployment limit reached",
+      "Project not configured", "API token lacks permissions"],
+     "### Deploy\n\n```bash\nnpx wrangler pages deploy dist/\n```\n\n### With Project Name\n\n```bash\nnpx wrangler pages deploy dist/ --project-name=my-project\n```"),
+
+    ("cloudflare-argo-tunnel-error", "Cloudflare Argo Tunnel Error",
+     "Fix Cloudflare Argo Tunnel errors. Resolve tunnel connection issues.",
+     ["Tunnel not running", "Configuration file error",
+      "Authentication expired", "Origin server unreachable"],
+     "### Run Tunnel\n\n```bash\ncloudflared tunnel run my-tunnel\n```\n\n### Check Status\n\n```bash\ncloudflared tunnel info my-tunnel\n```\n\n### Authenticate\n\n```bash\ncloudflared tunnel login\n```"),
+
+    ("cloudflare-tunnel-not-running", "Cloudflare Tunnel Not Running Error",
+     "Fix Cloudflare tunnel not running errors. Resolve cloudflared process stoppage.",
+     ["Process crashed", "System resource exhaustion",
+      "Configuration error", "Service not started"],
+     "### Start\n\n```bash\ncloudflared tunnel run my-tunnel\n```\n\n### Run as Service\n\n```bash\ncloudflared service install\nsystemctl start cloudflared\n```\n\n### Check Logs\n\n```bash\njournalctl -u cloudflared -f\n```"),
+
+    ("cloudflare-tunnel-auth", "Cloudflare Tunnel Authentication Error",
+     "Fix Cloudflare tunnel authentication errors. Resolve credential issues.",
+     ["Certificate expired", "Not logged in",
+      "Certificate deleted", "Account permissions changed"],
+     "### Re-authenticate\n\n```bash\ncloudflared tunnel login\n```\n\n### Check Certificate\n\n```bash\nls ~/.cloudflared/\n```"),
+
+    ("cloudflare-tunnel-dns", "Cloudflare Tunnel DNS Error",
+     "Fix Cloudflare tunnel DNS errors. Resolve DNS routing issues.",
+     ["DNS route not created", "Domain not configured",
+      "DNS propagation delay", "Route conflicts with existing records"],
+     "### Route DNS\n\n```bash\ncloudflared tunnel route dns my-tunnel *.example.com\n```\n\n### Check DNS\n\n```bash\ndig *.example.com CNAME +short\n```"),
+
+    ("cloudflare-load-balancing", "Cloudflare Load Balancing Error",
+     "Fix Cloudflare load balancing errors. Resolve traffic distribution issues.",
+     ["No load balancer configured", "Origin pool is empty",
+      "Health checks failing", "Steering policy misconfigured"],
+     "### Create Load Balancer\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"name\":\"lb.example.com\",\"fallback_pool\":\"{pool_id}\",\"default_pools\":[\"{pool_id}\"]}'\n```"),
+
+    ("cloudflare-pool-unhealthy", "Cloudflare Origin Pool Unhealthy Error",
+     "Fix Cloudflare origin pool unhealthy errors. Resolve origin server health check failures.",
+     ["All origin servers are down", "Health check configuration wrong",
+      "Firewall blocking health checks", "Origin returns error status"],
+     "### Check Origin\n\n```bash\ncurl -I https://origin.example.com\n```\n\n### Update Pool\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/origin_pools/{pool_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"origins\":[{\"name\":\"origin1\",\"address\":\"192.0.2.1\",\"enabled\":true}]}'\n```"),
+
+    ("cloudflare-monitor-fail", "Cloudflare Health Monitor Fail Error",
+     "Fix Cloudflare health monitor fail errors. Resolve origin server health check issues.",
+     ["Monitor configuration incorrect", "Origin returns error status",
+      "Health check path does not exist", "Timeout too short"],
+     "### Create Monitor\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/monitors\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"type\":\"https\",\"path\":\"/health\",\"interval\":60,\"retries\":2,\"timeout\":5}'\n```"),
+
+    ("cloudflare-origin-pool", "Cloudflare Origin Pool Error",
+     "Fix Cloudflare origin pool errors. Resolve origin server pool configuration issues.",
+     ["No origins in pool", "Origin address incorrect",
+      "Origin weight misconfigured", "Health check not assigned"],
+     "### Create Pool\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/origin_pools\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"name\":\"my-pool\",\"origins\":[{\"name\":\"origin1\",\"address\":\"192.0.2.1\",\"enabled\":true}]}'\n```"),
+
+    ("cloudflare-steering-policy", "Cloudflare Steering Policy Error",
+     "Fix Cloudflare steering policy errors. Resolve traffic routing issues.",
+     ["Policy not configured", "Fallback pool missing",
+      "Default pools empty", "Policy conflicts with geo steering"],
+     "### Configure Policy\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/{lb_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"steering_policy\":\"random\"}'\n```\n\n### Available Policies\n\nrandom, least_connections, round_robin, hash, geo"),
+
+    ("cloudflare-geo-steering", "Cloudflare Geo Steering Error",
+     "Fix Cloudflare geo steering errors. Resolve geographic-based routing issues.",
+     ["Region not configured", "Country code incorrect",
+      "No pool assigned to region", "Fallback pool missing"],
+     "### Configure Geo Steering\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/{lb_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"steering_policy\":\"geo\",\"region_pools\":[{\"region\":\"NA\",\"pool_ids\":[\"{pool_id}\"]}]}'\n```"),
+
+    ("cloudflare-random-steering", "Cloudflare Random Steering Error",
+     "Fix Cloudflare random steering errors. Resolve random traffic distribution issues.",
+     ["Only one pool configured", "Pool weights incorrect",
+      "Fallback pool not set", "Health checks failing"],
+     "### Configure\n\n```bash\ncurl -X PATCH \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/{lb_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"steering_policy\":\"random\",\"default_pools\":[\"{pool_id1}\",\"{pool_id2}\"],\"fallback_pool\":\"{pool_id1}\"}'\n```"),
+
+    ("cloudflare-health-check", "Cloudflare Health Check Error",
+     "Fix Cloudflare health check errors. Resolve origin server monitoring issues.",
+     ["Health check path does not exist", "Timeout too short",
+      "Interval too frequent", "Expected status code wrong"],
+     "### Create Check\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/monitors\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"type\":\"https\",\"path\":\"/health\",\"expected_codes\":\"200\",\"interval\":60}'\n```\n\n### Check Results\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/load_balancers/origin_pools/{pool_id}\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result.origins[] | {name,healthy}'\n```"),
+
+    ("cloudflare-zero-trust", "Cloudflare Zero Trust Error",
+     "Fix Cloudflare Zero Trust errors. Resolve Access and Gateway issues.",
+     ["Access policy not configured", "Gateway rules blocking traffic",
+      "WARP client not installed", "Team name incorrect"],
+     "### Install WARP\n\n```bash\n# macOS\nbrew install --cask cloudflare-warp\n# Linux\ncurl -fsSL https://pkg.cloudflareclient.com/install.sh | sudo bash\n```\n\n### Check Status\n\n```bash\nwarp-cli status\n```"),
+
+    ("cloudflare-access-policy", "Cloudflare Access Policy Error",
+     "Fix Cloudflare Access policy errors. Resolve Zero Trust access policy issues.",
+     ["Policy not assigned to application", "Identity provider not configured",
+      "Policy rules too broad", "Exclude rules too restrictive"],
+     "### Create Policy\n\n1. Go to Zero Trust > Access > Policies\n2. Click Add a policy\n3. Configure rules\n\n### Check\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/accounts/{account_id}/access/policies\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```"),
+
+    ("cloudflare-access-application", "Cloudflare Access Application Error",
+     "Fix Cloudflare Access application errors. Resolve application configuration issues.",
+     ["Application domain not verified", "Session duration misconfigured",
+      "Application type incorrect", "CORS settings wrong"],
+     "### Create Application\n\n1. Go to Zero Trust > Access > Applications\n2. Click Add an application\n3. Configure domain and policies"),
+
+    ("cloudflare-access-group", "Cloudflare Access Group Error",
+     "Fix Cloudflare Access group errors. Resolve user and group management issues.",
+     ["Group not created", "Users not added to group",
+      "Group name conflicts", "Identity provider mismatch"],
+     "### Create Group\n\n1. Go to Zero Trust > Access > Groups\n2. Click Add a group\n3. Add users or email domains"),
+
+    ("cloudflare-access-service-token", "Cloudflare Access Service Token Error",
+     "Fix Cloudflare Access service token errors. Resolve machine-to-machine authentication issues.",
+     ["Token expired", "Client ID or secret incorrect",
+      "Token not attached to policy", "Service token not created"],
+     "### Create Token\n\n1. Go to Zero Trust > Access > Service Tokens\n2. Click Create Service Token\n\n### Use Token\n\n```bash\ncurl -H \"CF-Access-Client-Id: {client_id}\" \\\n  -H \"CF-Access-Client-Secret: {client_secret}\" \\\n  https://your-app.example.com\n```"),
+
+    ("cloudflare-warp-client", "Cloudflare WARP Client Error",
+     "Fix Cloudflare WARP client errors. Resolve WARP VPN client issues.",
+     ["Client not registered", "Registration expired",
+      "Tunnel configuration wrong", "DNS settings incorrect"],
+     "### Register\n\n```bash\nwarp-cli registration new\n```\n\n### Connect\n\n```bash\nwarp-cli connect\n```\n\n### Status\n\n```bash\nwarp-cli status\n```"),
+
+    ("cloudflare-gateway-policy", "Cloudflare Gateway Policy Error",
+     "Fix Cloudflare Gateway policy errors. Resolve network and DNS policy issues.",
+     ["Policy not enabled", "Rules too broad",
+      "Identity not configured", "Policy order conflicts"],
+     "### Create Policy\n\n1. Go to Zero Trust > Gateway > Policies\n2. Select policy type (DNS, HTTP, Network)\n3. Configure rules"),
+
+    ("cloudflare-gateway-dns", "Cloudflare Gateway DNS Error",
+     "Fix Cloudflare Gateway DNS errors. Resolve DNS filtering issues.",
+     ["DNS policy blocking legitimate domains", "Split tunnel not configured",
+      "DNS resolver not reachable", "Policy categories too broad"],
+     "### Configure DNS Policy\n\n1. Go to Zero Trust > Gateway > DNS policies\n2. Create policy for allowed domains\n\n### Check DNS\n\n```bash\ndig example.com @1.1.1.1\n```"),
+
+    ("cloudflare-gateway-http", "Cloudflare Gateway HTTP Error",
+     "Fix Cloudflare Gateway HTTP errors. Resolve HTTP traffic filtering issues.",
+     ["Certificate not installed", "HTTPS inspection blocked",
+      "Content categories blocked", "Application filtering too aggressive"],
+     "### Install Certificate\n\nDownload certificate from Zero Trust dashboard and install in system trust store.\n\n### Configure Policy\n\n1. Go to Zero Trust > Gateway > HTTP policies\n2. Create inspection rules"),
+
+    ("cloudflare-browser-isolation", "Cloudflare Browser Isolation Error",
+     "Fix Cloudflare Browser Isolation errors. Resolve remote browser isolation issues.",
+     ["Isolation policy not configured", "Browser client not installed",
+      "Network latency issues", "Application incompatible"],
+     "### Enable Isolation\n\n1. Go to Zero Trust > Gateway > Policies\n2. Create HTTP policy\n3. Set action to Isolate"),
+
+    ("cloudflare-api-token", "Cloudflare API Token Error",
+     "Fix Cloudflare API token errors. Resolve API authentication and permission issues.",
+     ["Token expired", "Permissions insufficient",
+      "Token not created correctly", "Account restrictions"],
+     "### Create Token\n\n1. Go to My Profile > API Tokens\n2. Click Create Token\n\n### Verify\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/user/tokens/verify\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result'\n```"),
+
+    ("cloudflare-api-key", "Cloudflare API Key Error",
+     "Fix Cloudflare API key errors. Resolve Global API key authentication issues.",
+     ["Key rotated or deleted", "Account password changed",
+      "IP whitelist blocking access", "Key leaked and disabled"],
+     "### Generate New Key\n\n1. Go to My Profile > API Tokens\n2. Click View Global API Key\n\n### Test\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/user\" \\\n  -H \"X-Auth-Email: your@email.com\" \\\n  -H \"X-Auth-Key: {global_api_key}\"\n```\n\n### Migrate to Tokens\n\nAPI tokens are preferred over Global API keys."),
+
+    ("cloudflare-zone-analytics", "Cloudflare Zone Analytics Error",
+     "Fix Cloudflare zone analytics errors. Resolve traffic and request analytics issues.",
+     ["Analytics not loading", "Data range too large",
+      "API rate limit exceeded", "Zone not activated"],
+     "### Query Analytics\n\n```bash\ncurl -X GET \"https://api.cloudflare.com/client/v4/zones/{zone_id}/analytics/dashboard?since=-1440&per_page=1000\" \\\n  -H \"Authorization: Bearer {api_token}\" | jq '.result.totals'\n```"),
+
+    ("cloudflare-graphql-analytics", "Cloudflare GraphQL Analytics Error",
+     "Fix Cloudflare GraphQL analytics errors. Resolve analytics data querying issues.",
+     ["Query syntax error", "Invalid time range",
+      "Permission denied", "Schema changes"],
+     "### Query\n\n```bash\ncurl -X POST \"https://api.cloudflare.com/client/v4/graphql\" \\\n  -H \"Authorization: Bearer {api_token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"query\":\"{ viewer { zones(filter:{name:\\\"example.com\\\"}) { httpRequests1dGroups(limit:10) { date sum { requests } } } } }\"}'\n```"),
+
+    ("cloudflare-web-analytics", "Cloudflare Web Analytics Error",
+     "Fix Cloudflare Web Analytics errors. Resolve website traffic tracking issues.",
+     ["Tracking script not installed", "Script blocked by browser",
+      "Domain not configured", "Data not appearing"],
+     "### Install Script\n\n```html\n<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{\"token\": \"your_token\"}'></script>\n```"),
+
+    ("cloudflare-speed-test", "Cloudflare Speed Test Error",
+     "Fix Cloudflare speed test errors. Resolve website performance testing issues.",
+     ["Site not accessible", "Firewall blocking test",
+      "Slow origin response", "Large page size"],
+     "### Run Test\n\n1. Go to Speed > Overview\n2. Click Run Test\n3. Review results"),
+
+    ("cloudflare-image-optimization", "Cloudflare Image Optimization Error",
+     "Fix Cloudflare image optimization errors. Resolve Cloudflare Images and Polish issues.",
+     ["Images not proxied", "Polish setting too aggressive",
+      "Image format not supported", "Origin image not accessible"],
+     "### Enable Polish\n\n1. Go to Speed > Optimization\n2. Enable Polish\n\n### Use Image Resizing\n\n```bash\ncurl -I \"https://your-domain.com/cdn-cgi/image/width=300,height=200/image.jpg\"\n```"),
+
+    ("cloudflare-polish-error", "Cloudflare Polish Error",
+     "Fix Cloudflare Polish errors. Resolve automatic image optimization issues.",
+     ["Polish disabled", "Origin image too large",
+      "Lossy compression artifacts", "Image served from cache"],
+     "### Enable Polish\n\n1. Go to Speed > Optimization\n2. Enable Polish\n\n### Check Headers\n\n```bash\ncurl -I https://your-domain.com/image.jpg | grep -i \"cf-polished\"\n```"),
+
+    ("cloudflare-mirage-error", "Cloudflare Mirage Error",
+     "Fix Cloudflare Mirage errors. Resolve mobile image optimization issues.",
+     ["Mirage disabled", "Images not proxied",
+      "Mobile detection issues", "Image format incompatibility"],
+     "### Enable Mirage\n\n1. Go to Speed > Optimization\n2. Enable Mirage"),
+
+    ("cloudflare-rocket-loader-error", "Cloudflare Rocket Loader Error",
+     "Fix Cloudflare Rocket Loader errors. Resolve JavaScript optimization issues.",
+     ["Scripts not loading correctly", "Third-party scripts broken",
+      "Inline scripts affected", "Compatibility issues"],
+     "### Enable\n\n1. Go to Speed > Optimization\n2. Enable Rocket Loader\n\n### Exclude Scripts\n\n```html\n<script data-cfasync=\"false\" src=\"critical-script.js\"></script>\n```"),
+
+    ("cloudflare-auto-minify", "Cloudflare Auto Minify Error",
+     "Fix Cloudflare auto minify errors. Resolve CSS, JavaScript, and HTML minification issues.",
+     ["Minification breaks code", "Syntax error after minification",
+      "Minify setting too aggressive", "Files not served through Cloudflare"],
+     "### Enable\n\n1. Go to Speed > Optimization\n2. Enable Auto Minify for CSS, JavaScript, HTML"),
+
+    ("cloudflare-brotli-compression", "Cloudflare Brotli Compression Error",
+     "Fix Cloudflare Brotli compression errors. Resolve Brotli encoding issues.",
+     ["Brotli not enabled", "Origin sets incompatible encoding",
+      "Browser does not support Brotli", "Content-Type not text-based"],
+     "### Enable\n\n1. Go to Speed > Optimization\n2. Enable Brotli\n\n### Verify\n\n```bash\ncurl -H \"Accept-Encoding: br\" -I https://your-domain.com | grep -i \"content-encoding\"\n```"),
+
+    ("cloudflare-ip-geolocation", "Cloudflare IP Geolocation Error",
+     "Fix Cloudflare IP geolocation errors. Resolve location-based feature issues.",
+     ["Geolocation disabled", "Country header not set",
+      "Location-based rules not working", "IP database outdated"],
+     "### Enable\n\n1. Go to Network > Settings\n2. Enable IP Geolocation\n\n### Check Headers\n\n```bash\ncurl -I https://your-domain.com | grep -i \"cf-ipcountry\"\n```"),
+]
+
+# ============================================================
+# VERCEL
+# ============================================================
+VERCEL_DATA = [
+    ("vercel-deployment-failed", "Vercel Deployment Failed",
+     "Fix Vercel deployment failed errors. Resolve deployment failures.",
+     ["Build command failed", "Output directory does not exist", "Dependencies missing",
+      "Configuration error in vercel.json", "Memory or time limit exceeded"],
+     "### Check Logs\n\n1. Go to Vercel dashboard\n2. Select project\n3. Click failed deployment\n4. Review build logs\n\n### Redeploy\n\n```bash\nnpx vercel --prod\n```"),
+
+    ("vercel-build-command-not-found", "Vercel Build Command Not Found",
+     "Fix Vercel build command not found errors. Resolve missing build scripts.",
+     ["Build script not in package.json", "Incorrect command in vercel.json",
+      "Package manager mismatch", "Dependencies not installed"],
+     "### Check package.json\n\n```json\n{\"scripts\": {\"build\": \"next build\"}}\n```\n\n### Verify\n\n```bash\nnpm run build\n```\n\n### Update vercel.json\n\n```json\n{\"buildCommand\": \"npm run build\"}\n```"),
+
+    ("vercel-output-directory", "Vercel Output Directory Error",
+     "Fix Vercel output directory errors. Resolve build output location issues.",
+     ["Output directory does not exist after build", "Wrong directory specified",
+      "Build output in unexpected location", "Framework default output differs"],
+     "### Check Output\n\n```bash\nls -la dist/\nls -la build/\nls -la .next/\n```\n\n### Configure\n\n```json\n{\"outputDirectory\": \"dist\"}\n```\n\n### Framework Defaults\n\n- Next.js: `.next`\n- CRA: `build`\n- Vite: `dist`\n- Nuxt: `.output`"),
+
+    ("vercel-serverless-function", "Vercel Serverless Function Error",
+     "Fix Vercel serverless function errors. Resolve API route issues.",
+     ["Function crashes at runtime", "Import errors", "Environment variable missing",
+      "Function exceeds size limit"],
+     "### Check Logs\n\n```bash\nnpx vercel logs\n```\n\n### Test Locally\n\n```bash\nnpx vercel dev\n```"),
+
+    ("vercel-function-size-limit", "Vercel Function Size Limit Error",
+     "Fix Vercel function size limit errors. Resolve function bundle size issues.",
+     ["Too many dependencies bundled", "Large static assets included",
+      "Source maps included", "Monorepo includes unnecessary files"],
+     "### Check Size\n\n```bash\nnpx vercel inspect --logs\n```\n\n### Reduce Bundle\n\n```json\n{\"functions\": {\"api/*.js\": {\"includeFiles\": \"shared/**\"}}}\n```"),
+
+    ("vercel-function-duration", "Vercel Function Duration Error",
+     "Fix Vercel function duration errors. Resolve function execution time issues.",
+     ["Function performs too many operations", "Database queries too slow",
+      "External API calls timing out", "No caching implemented"],
+     "### Increase Duration\n\n```json\n{\"functions\": {\"api/**/*.js\": {\"maxDuration\": 30}}}\n```\n\n### Optimize\n\n- Cache database queries\n- Use streaming responses\n- Implement timeouts"),
+
+    ("vercel-function-memory", "Vercel Function Memory Error",
+     "Fix Vercel function memory errors. Resolve memory limit issues.",
+     ["Large data processing in memory", "Memory leak in code",
+      "Multiple concurrent requests", "Buffer not released"],
+     "### Increase Memory\n\n```json\n{\"functions\": {\"api/**/*.js\": {\"memory\": 3009}}}\n```\n\n### Optimize\n\n- Process data in streams\n- Avoid loading large datasets\n- Use pagination"),
+
+    ("vercel-cold-boot", "Vercel Cold Boot Error",
+     "Fix Vercel cold boot errors. Resolve function startup latency.",
+     ["Function not frequently invoked", "Large initialization code",
+      "Many dependencies loaded", "Region too far from user"],
+     "### Enable Keep-Alive\n\n```json\n{\"functions\": {\"api/**/*.js\": {\"keepAliveTimeout\": 60}}}\n```\n\n### Reduce Cold Boot\n\n- Minimize function code\n- Use Edge Functions\n- Deploy to multiple regions"),
+
+    ("vercel-lambda-error", "Vercel Lambda Error",
+     "Fix Vercel Lambda errors. Resolve AWS Lambda function issues.",
+     ["Lambda function timeout", "Lambda function crashed",
+      "IAM permissions issue", "Lambda layer not available"],
+     "### Check Logs\n\n```bash\nnpx vercel logs --follow\n```\n\n### Increase Timeout\n\n```json\n{\"functions\": {\"api/**/*.js\": {\"maxDuration\": 60}}}\n```"),
+
+    ("vercel-edge-function", "Vercel Edge Function Error",
+     "Fix Vercel edge function errors. Resolve Edge Runtime issues.",
+     ["Edge runtime limitations", "Node.js API not available",
+      "Function exceeds size limit", "Streaming not configured"],
+     "### Create Edge Function\n\n```javascript\nexport const config = { runtime: 'edge' };\nexport default async function handler(req) {\n  return new Response('Hello from Edge');\n}\n```"),
+
+    ("vercel-edge-runtime", "Vercel Edge Runtime Error",
+     "Fix Vercel Edge Runtime errors. Resolve Edge Runtime environment issues.",
+     ["Using Node.js APIs", "CommonJS modules",
+      "Large bundle size", "Unsupported features"],
+     "### Use Web APIs\n\n```javascript\nexport default async function handler(request) {\n  const url = new URL(request.url);\n  return new Response(url.pathname);\n}\n```\n\n### Avoid Node.js APIs\n\nReplace `fs`, `path`, `child_process` with edge-compatible alternatives."),
+
+    ("vercel-edge-middleware", "Vercel Edge Middleware Error",
+     "Fix Vercel edge middleware errors. Resolve middleware running at edge.",
+     ["Middleware file location incorrect", "Middleware does not call next()",
+      "Response returned without next()", "Middleware exceeds size limit"],
+     "### Create Middleware\n\n```javascript\nexport function middleware(request) {\n  const { pathname } = request.nextUrl;\n  if (pathname.startsWith('/admin')) {\n    return NextResponse.redirect(new URL('/login', request.url));\n  }\n  return NextResponse.next();\n}\n\nexport const config = { matcher: ['/admin/:path*'] };\n```"),
+
+    ("vercel-ssr-error", "Vercel SSR Error",
+     "Fix Vercel server-side rendering errors. Resolve SSR page issues.",
+     ["getServerSideProps throws error", "Database connection fails",
+      "Environment variable missing", "Function timeout"],
+     "### Check getServerSideProps\n\n```javascript\nexport async function getServerSideProps(context) {\n  try {\n    const data = await fetchData();\n    return { props: { data } };\n  } catch (error) {\n    return { notFound: true };\n  }\n}\n```"),
+
+    ("vercel-isr-error", "Vercel ISR Error",
+     "Fix Vercel ISR errors. Resolve Incremental Static Regeneration issues.",
+     ["revalidate not set", "regenerate fails",
+      "Cache not updating", "Stale content served"],
+     "### Configure ISR\n\n```javascript\nexport async function getStaticProps() {\n  const data = await fetchData();\n  return { props: { data }, revalidate: 60 };\n}\n```"),
+
+    ("vercel-static-generation", "Vercel Static Generation Error",
+     "Fix Vercel static generation errors. Resolve build-time page generation issues.",
+     ["getStaticProps returns error", "getStaticPaths missing paths",
+      "Build time exceeded", "External API unavailable during build"],
+     "### Check getStaticProps\n\n```javascript\nexport async function getStaticProps() {\n  const data = await fetchData();\n  return { props: { data }, revalidate: 60 };\n}\n```"),
+
+    ("vercel-get-static-props-error", "Vercel getStaticProps Error",
+     "Fix Vercel getStaticProps errors. Resolve static props fetching issues.",
+     ["Function throws error", "Data source unavailable",
+      "Return value incorrect", "Props too large"],
+     "### Handle Errors\n\n```javascript\nexport async function getStaticProps() {\n  try {\n    const data = await fetchData();\n    return { props: { data } };\n  } catch (error) {\n    return { notFound: true };\n  }\n}\n```"),
+
+    ("vercel-get-server-side-props-error", "Vercel getServerSideProps Error",
+     "Fix Vercel getServerSideProps errors. Resolve server-side data fetching issues.",
+     ["Function timeout", "Database connection error",
+      "Context object missing", "Headers not passed correctly"],
+     "### Handle Context\n\n```javascript\nexport async function getServerSideProps(context) {\n  const { params, req, res } = context;\n  return { props: { id: params.id } };\n}\n```"),
+
+    ("vercel-get-static-paths-error", "Vercel getStaticPaths Error",
+     "Fix Vercel getStaticPaths errors. Resolve dynamic route pre-rendering issues.",
+     ["Missing paths array", "Paths not matching routes",
+      "Fallback not configured", "Too many paths generated"],
+     "### Configure\n\n```javascript\nexport async function getStaticPaths() {\n  const posts = await getAllPosts();\n  return {\n    paths: posts.map(post => ({ params: { id: post.id } })),\n    fallback: 'blocking'\n  };\n}\n```"),
+
+    ("vercel-revalidate-error", "Vercel Revalidate Error",
+     "Fix Vercel revalidate errors. Resolve ISR revalidation settings issues.",
+     ["Revalidate value too short", "Revalidate value too long",
+      "Revalidation not triggering", "Cache not updating"],
+     "### Set Revalidate\n\n```javascript\nexport async function getStaticProps() {\n  return { props: { data }, revalidate: 60 };\n}\n```\n\n### On-Demand Revalidation\n\n```javascript\nexport default async function handler(req, res) {\n  await res.revalidate('/page');\n  return res.json({ revalidated: true });\n}\n```"),
+
+    ("vercel-fallback-blocking", "Vercel Fallback Blocking Error",
+     "Fix Vercel fallback blocking errors. Resolve blocking ISR fallback issues.",
+     ["Page generation takes too long", "Fallback blocks user requests",
+      "Timeout during generation", "Infinite loops in getStaticProps"],
+     "### Configure\n\n```javascript\nexport async function getStaticPaths() {\n  return { paths: [], fallback: 'blocking' };\n}\n```"),
+
+    ("vercel-fallback-true", "Vercel Fallback True Error",
+     "Fix Vercel fallback true errors. Resolve static generation fallback issues.",
+     ["Loading state not handled", "Page never finishes generating",
+      "Client-side data fetching fails", "Flash of loading content"],
+     "### Handle Loading\n\n```javascript\nimport { useRouter } from 'next/router';\nexport default function Page({ data }) {\n  const router = useRouter();\n  if (router.isFallback) return <div>Loading...</div>;\n  return <div>{data.title}</div>;\n}\n```"),
+
+    ("vercel-fallback-false", "Vercel Fallback False Error",
+     "Fix Vercel fallback false errors. Resolve 404 issues for non-generated routes.",
+     ["Missing paths in getStaticPaths", "Dynamic content not pre-rendered",
+      "Route not in build output"],
+     "### Generate All Paths\n\n```javascript\nexport async function getStaticPaths() {\n  const posts = await getAllPosts();\n  return {\n    paths: posts.map(post => ({ params: { id: post.id } })),\n    fallback: false\n  };\n}\n```"),
+
+    ("vercel-preview-deployment", "Vercel Preview Deployment Error",
+     "Fix Vercel preview deployment errors. Resolve branch preview issues.",
+     ["Branch not connected", "Preview URL not accessible",
+      "Environment variables missing", "Deployment limits reached"],
+     "### Check Deployment\n\n1. Go to Vercel dashboard\n2. Select project\n3. View deployments\n\n### Access Preview URL\n\nPattern: `project-name-branch-hash.vercel.app`"),
+
+    ("vercel-production-deployment", "Vercel Production Deployment Error",
+     "Fix Vercel production deployment errors. Resolve production deployment issues.",
+     ["Build failed", "Configuration error",
+      "Environment variable missing", "Domain not configured"],
+     "### Deploy\n\n```bash\nnpx vercel --prod\n```\n\n### Check Status\n\n```bash\nnpx vercel ls\n```"),
+
+    ("vercel-deployment-protection", "Vercel Deployment Protection Error",
+     "Fix Vercel deployment protection errors. Resolve preview authentication issues.",
+     ["Protection enabled for production", "Access token required",
+      "SSO configuration issue", "Protection bypass not working"],
+     "### Configure\n\n1. Go to Project Settings\n2. Find Deployment Protection\n3. Configure settings"),
+
+    ("vercel-deployment-domain", "Vercel Deployment Domain Error",
+     "Fix Vercel deployment domain errors. Resolve deployment-specific URL issues.",
+     ["Domain not generated", "DNS not configured",
+      "SSL certificate pending", "Domain limit reached"],
+     "### Check URL\n\n```bash\nnpx vercel inspect\n```\n\n### Add Domain\n\n```bash\nnpx vercel domains add example.com\n```"),
+
+    ("vercel-vercel-json", "Vercel vercel.json Configuration Error",
+     "Fix Vercel vercel.json errors. Resolve configuration file issues.",
+     ["JSON syntax error", "Invalid configuration key",
+      "Conflicting settings", "Deprecated options"],
+     "### Validate\n\n```bash\ncat vercel.json | python -m json.tool\n```\n\n### Common Config\n\n```json\n{\"buildCommand\": \"npm run build\", \"outputDirectory\": \"dist\"}\n```"),
+
+    ("vercel-config-validation", "Vercel Config Validation Error",
+     "Fix Vercel configuration validation errors. Resolve invalid settings.",
+     ["Invalid JSON format", "Unknown configuration keys",
+      "Type mismatch", "Conflicting options"],
+     "### Validate JSON\n\n```bash\ncat vercel.json | python -m json.tool\n```\n\n### Check\n\n```bash\nnpx vercel config ls\n```"),
+
+    ("vercel-rewrites-error", "Vercel Rewrites Error",
+     "Fix Vercel rewrites errors. Resolve URL rewriting issues.",
+     ["Rewrite loop detected", "Source path does not exist",
+      "Destination path invalid", "Regex pattern error"],
+     "### Configure\n\n```json\n{\"rewrites\": [{\"source\": \"/blog/:slug\", \"destination\": \"/blog/[slug]\"}]}\n```\n\n### Test\n\n```bash\ncurl -I https://your-domain.com/blog/my-post\n```"),
+
+    ("vercel-redirects-error", "Vercel Redirects Error",
+     "Fix Vercel redirects errors. Resolve redirect configuration issues.",
+     ["Redirect loop", "Status code incorrect",
+      "Source and destination conflict", "Regex pattern error"],
+     "### Configure\n\n```json\n{\"redirects\": [{\"source\": \"/old-page\", \"destination\": \"/new-page\", \"permanent\": true}]}\n```\n\n### Status Codes\n\n301: Permanent, 302: Temporary, 307/308: Preserves method"),
+
+    ("vercel-headers-error", "Vercel Headers Error",
+     "Fix Vercel headers errors. Resolve custom response header issues.",
+     ["Header name invalid", "Value contains special characters",
+      "Path pattern incorrect", "Conflicting headers"],
+     "### Configure\n\n```json\n{\"headers\": [{\"source\": \"/(.*)\", \"headers\": [{\"key\": \"X-Frame-Options\", \"value\": \"DENY\"}]}]}\n```\n\n### Test\n\n```bash\ncurl -I https://your-domain.com\n```"),
+
+    ("vercel-trailing-slash", "Vercel Trailing Slash Error",
+     "Fix Vercel trailing slash errors. Resolve trailing slash configuration issues.",
+     ["Inconsistent trailing slashes", "SEO issues from duplicate content",
+      "Links broken due to trailing slash", "Configuration mismatch"],
+     "### Configure\n\n```json\n{\"trailingSlash\": true}\n```\n\n### Use Clean URLs\n\n```json\n{\"cleanUrls\": true}\n```"),
+
+    ("vercel-clean-urls", "Vercel Clean URLs Error",
+     "Fix Vercel clean URLs errors. Resolve .html extension removal issues.",
+     [".html extension still showing", "Links broken by clean URLs",
+      "Configuration conflict", "Static files not found"],
+     "### Enable\n\n```json\n{\"cleanUrls\": true}\n```\n\n### Verify\n\n```bash\ncurl -I https://your-domain.com/about\n```"),
+
+    ("vercel-framework-preset", "Vercel Framework Preset Error",
+     "Fix Vercel framework preset errors. Resolve framework detection issues.",
+     ["Framework not detected", "Wrong preset selected",
+      "Preset overrides custom settings", "New framework version incompatible"],
+     "### Specify Framework\n\n```json\n{\"framework\": \"nextjs\"}\n```\n\n### Available Presets\n\nnextjs, create-react-app, vite, nuxt, gatsby, remix"),
+
+    ("vercel-env-variable", "Vercel Environment Variable Error",
+     "Fix Vercel environment variable errors. Resolve env var configuration issues.",
+     ["Variable not set", "Variable name incorrect",
+      "Variable not available in build", "Variable type mismatch"],
+     "### Set Variable\n\n```bash\nnpx vercel env add MY_VAR\n```\n\n### Check\n\n```bash\nnpx vercel env ls\n```\n\n### Use in Code\n\n```javascript\nconst value = process.env.MY_VAR;\n```"),
+
+    ("vercel-system-env", "Vercel System Environment Variable Error",
+     "Fix Vercel system environment variable errors. Resolve built-in variable issues.",
+     ["Variable name incorrect", "Variable not available in context",
+      "Variable deprecated", "Variable not exposed to client"],
+     "### Available Variables\n\n- `VERCEL` - Boolean\n- `VERCEL_ENV` - Environment name\n- `VERCEL_URL` - Deployment URL\n- `VERCEL_REGION` - Deployment region\n- `VERCEL_GIT_COMMIT_SHA` - Commit SHA\n\n### Access\n\n```javascript\nif (process.env.VERCEL) console.log('Running on Vercel');\n```"),
+
+    ("vercel-project-env", "Vercel Project Environment Error",
+     "Fix Vercel project environment errors. Resolve project-level env var issues.",
+     ["Variable not saved", "Variable scope incorrect",
+      "Variable encrypted when it should be plain", "Variable override not working"],
+     "### Add Variable\n\n1. Go to Project Settings > Environment Variables\n2. Click Add\n3. Enter name, value, and scope\n\n### Set via CLI\n\n```bash\nnpx vercel env add MY_VAR production\n```"),
+
+    ("vercel-preview-env", "Vercel Preview Environment Error",
+     "Fix Vercel preview environment errors. Resolve preview-specific env var issues.",
+     ["Variable not set for preview", "Preview env differs from production",
+      "Variable not passed to preview builds", "Branch-specific env not configured"],
+     "### Set Preview Variable\n\n```bash\nnpx vercel env add MY_VAR preview\n```\n\n### Configure Branch-Specific\n\n1. Go to Project Settings > Environment Variables\n2. Add variable with branch filter"),
+
+    ("vercel-production-env", "Vercel Production Environment Error",
+     "Fix Vercel production environment errors. Resolve production env var issues.",
+     ["Variable not set for production", "Variable encrypted incorrectly",
+      "Variable not available during build", "Variable value incorrect"],
+     "### Set Production Variable\n\n```bash\nnpx vercel env add MY_VAR production\n```\n\n### Encrypt\n\n```bash\nnpx vercel env add SECRET_KEY production --encrypt\n```"),
+
+    ("vercel-plaintext-env", "Vercel Plaintext Environment Error",
+     "Fix Vercel plaintext environment errors. Resolve non-encrypted env var issues.",
+     ["Sensitive data stored as plaintext", "Variable visible in logs",
+      "Variable not encrypted", "Security risk"],
+     "### Use Encrypted Variables\n\n```bash\nnpx vercel env add SECRET_KEY production --encrypt\n```"),
+
+    ("vercel-encrypted-env", "Vercel Encrypted Environment Error",
+     "Fix Vercel encrypted environment errors. Resolve encrypted env var issues.",
+     ["Decryption failed", "Variable not accessible during build",
+      "Key rotation issue", "Variable corrupted"],
+     "### Set Encrypted Variable\n\n```bash\nnpx vercel env add SECRET_KEY production --encrypt\n```\n\n### Re-add if Failed\n\nRemove and re-add the variable."),
+
+    ("vercel-reference-env", "Vercel Reference Environment Error",
+     "Fix Vercel reference environment errors. Resolve env var reference issues.",
+     ["Reference target does not exist", "Circular reference",
+      "Reference syntax incorrect", "Target variable deleted"],
+     "### Create Reference\n\n```bash\nnpx vercel env add MY_VAR production --reference TARGET_VAR\n```"),
+
+    ("vercel-analytics-error", "Vercel Analytics Error",
+     "Fix Vercel Analytics errors. Resolve Vercel Analytics tracking issues.",
+     ["Analytics not enabled", "Script not loaded",
+      "Ad blockers blocking requests", "Privacy settings interfering"],
+     "### Enable\n\n1. Go to Project Settings > Analytics\n2. Enable Vercel Analytics\n\n### Add Script\n\n```javascript\nimport { Analytics } from '@vercel/analytics/react';\nfunction App() { return <><Analytics /></>; }\n```"),
+
+    ("vercel-speed-insights", "Vercel Speed Insights Error",
+     "Fix Vercel Speed Insights errors. Resolve performance monitoring issues.",
+     ["Not enabled for project", "Script not included",
+      "Browser compatibility issues", "Data not appearing"],
+     "### Enable\n\n1. Go to Project Settings > Analytics\n2. Enable Speed Insights\n\n### Add Script\n\n```javascript\nimport { SpeedInsights } from '@vercel/speed-insights/react';\nfunction App() { return <><SpeedInsights /></>; }\n```"),
+
+    ("vercel-web-vitals", "Vercel Web Vitals Error",
+     "Fix Vercel web vitals errors. Resolve Core Web Vitals measurement issues.",
+     ["CLS too high", "LCP too slow",
+      "FID too high", "INP too slow"],
+     "### Measure\n\n```javascript\nimport { onCLS, onFID, onLCP } from 'web-vitals';\nonCLS(console.log);\nonFID(console.log);\nonLCP(console.log);\n```\n\n### Improve CLS\n\n- Set explicit image dimensions\n- Avoid dynamically injected content"),
+
+    ("vercel-audit-error", "Vercel Audit Error",
+     "Fix Vercel audit errors. Resolve deployment audit log issues.",
+     ["Audit log not accessible", "Log retention expired",
+      "Permission denied", "Log query too broad"],
+     "### Access Logs\n\n1. Go to Team Settings > Audit Log\n2. Filter by date and action"),
+
+    ("vercel-crapp-error", "Vercel CRaP Error",
+     "Fix Vercel CRaP (Cannot Run at Production) errors. Resolve production compatibility issues.",
+     ["Feature not supported in production", "Environment-specific code",
+      "Build output incompatible", "Dependency not production-ready"],
+     "### Check Production Compatibility\n\nReview build output for non-production features.\n\n### Test Production Build\n\n```bash\nnpx vercel build --prod\nnpx vercel preview --prod\n```"),
+
+    ("vercel-prerender-error", "Vercel Prerender Error",
+     "Fix Vercel prerender errors. Resolve pre-rendering issues during deployment.",
+     ["Prerender function fails", "Data fetching timeout",
+      "Dynamic route not configured", "Build memory limit exceeded"],
+     "### Check Prerender Config\n\nEnsure all dynamic routes have getStaticPaths."),
+
+    ("vercel-blocking-function", "Vercel Blocking Function Error",
+     "Fix Vercel blocking function errors. Resolve blocking function issues.",
+     ["Function blocks request processing", "Function exceeds timeout",
+      "External dependency slow", "Function not returning"],
+     "### Optimize Function\n\nReduce blocking operations and add timeouts."),
+
+    ("vercel-streaming-ssr", "Vercel Streaming SSR Error",
+     "Fix Vercel streaming SSR errors. Resolve streaming server-side rendering issues.",
+     ["Stream not properly configured", "React version incompatibility",
+      "Chunked transfer encoding issues", "Connection interrupted"],
+     "### Configure Streaming\n\n```javascript\nexport default async function Page() {\n  const data = await fetchData();\n  return <div>{data}</div>;\n}\n```"),
+
+    ("vercel-app-directory", "Vercel App Directory Error",
+     "Fix Vercel app directory errors. Resolve Next.js App Router issues.",
+     ["App directory not configured", "Layout not returning JSX",
+      "Server component error", "Client component mismatch"],
+     "### Create App\n\n```javascript\n// app/layout.js\nexport default function RootLayout({ children }) {\n  return <html><body>{children}</body></html>;\n}\n```"),
+
+    ("vercel-pages-directory", "Vercel Pages Directory Error",
+     "Fix Vercel pages directory errors. Resolve Next.js Pages Router issues.",
+     ["Pages directory missing", "Page component not exported",
+      "getInitialProps error", "Dynamic route syntax error"],
+     "### Create Page\n\n```javascript\n// pages/index.js\nexport default function Home() {\n  return <div>Welcome</div>;\n}\n```"),
+
+    ("vercel-middleware-matcher", "Vercel Middleware Matcher Error",
+     "Fix Vercel middleware matcher errors. Resolve middleware matching issues.",
+     ["Matcher pattern incorrect", "Middleware runs on all routes",
+      "Matcher not matching expected routes", "Regex syntax error"],
+     "### Configure Matcher\n\n```javascript\nexport const config = {\n  matcher: ['/admin/:path*', '/api/:path*']\n};\n```"),
+
+    ("vercel-middleware-config", "Vercel Middleware Config Error",
+     "Fix Vercel middleware config errors. Resolve middleware configuration issues.",
+     ["Config not exported", "Runtime setting incorrect",
+      "Matcher and runtime conflict", "Middleware file location wrong"],
+     "### Export Config\n\n```javascript\nexport const config = {\n  matcher: ['/admin/:path*'],\n  runtime: 'edge'\n};\n```"),
+
+    ("vercel-edge-config-error", "Vercel Edge Config Error",
+     "Fix Vercel Edge Config errors. Resolve Edge Config read/write issues.",
+     ["Connection string invalid", "Edge Config not created",
+      "Token expired", "Item not found"],
+     "### Read Item\n\n```javascript\nimport { get } from '@vercel/edge-config';\nconst value = await get('my-key');\n```\n\n### Check Connection\n\nVerify EDGE_CONFIG environment variable."),
+
+    ("vercel-edge-config-read", "Vercel Edge Config Read Error",
+     "Fix Vercel Edge Config read errors. Resolve reading items from Edge Config.",
+     ["Key does not exist", "Connection timeout",
+      "Token invalid", "Edge Config deleted"],
+     "### Read\n\n```javascript\nimport { get, getAll } from '@vercel/edge-config';\nconst value = await get('my-key');\nconst all = await getAll();\n```"),
+
+    ("vercel-kv-store", "Vercel KV Store Error",
+     "Fix Vercel KV store errors. Resolve Vercel KV issues.",
+     ["KV store not created", "Connection string invalid",
+      "Key does not exist", "Rate limit exceeded"],
+     "### Get Value\n\n```javascript\nimport { kv } from '@vercel/kv';\nconst value = await kv.get('my-key');\n```\n\n### Set Value\n\n```javascript\nawait kv.set('my-key', 'value');\n```"),
+
+    ("vercel-kv", "Vercel KV Error",
+     "Fix Vercel KV errors. Resolve key-value storage issues.",
+     ["KV namespace not configured", "Connection failed",
+      "Key not found", "Value too large"],
+     "### Configure KV\n\n1. Go to Vercel dashboard\n2. Create KV store\n3. Link to project"),
+
+    ("vercel-postgres-error", "Vercel Postgres Error",
+     "Fix Vercel Postgres errors. Resolve database connection issues.",
+     ["Connection string invalid", "Database not provisioned",
+      "Connection pool exhausted", "SSL required"],
+     "### Check Connection\n\n```javascript\nimport { sql } from '@vercel/postgres';\nconst result = await sql`SELECT * FROM users`;\n```"),
+
+    ("vercel-blob-error", "Vercel Blob Error",
+     "Fix Vercel Blob errors. Resolve blob storage issues.",
+     ["Blob store not created", "Upload failed",
+      "File too large", "Token invalid"],
+     "### Upload\n\n```javascript\nimport { put } from '@vercel/blob';\nconst blob = await put('file.txt', 'content', { access: 'public' });\n```\n\n### List\n\n```javascript\nimport { list } from '@vercel/blob';\nconst blobs = await list();\n```"),
+
+    ("vercel-blob-upload", "Vercel Blob Upload Error",
+     "Fix Vercel Blob upload errors. Resolve file upload issues.",
+     ["File exceeds size limit", "Token invalid",
+      "Network error during upload", "Path invalid"],
+     "### Upload File\n\n```javascript\nimport { put } from '@vercel/blob';\nconst blob = await put('file.png', fileStream, {\n  access: 'public',\n  contentType: 'image/png'\n});\n```"),
+
+    ("vercel-storage-error", "Vercel Storage Error",
+     "Fix Vercel storage errors. Resolve general storage service issues.",
+     ["Storage quota exceeded", "Service unavailable",
+      "Connection timeout", "Permission denied"],
+     "### Check Storage Usage\n\n1. Go to Vercel dashboard\n2. Check storage usage\n\n### Upgrade Plan\n\nIf quota exceeded, upgrade storage plan."),
+
+    ("vercel-integration-error", "Vercel Integration Error",
+     "Fix Vercel integration errors. Resolve third-party service integration issues.",
+     ["Integration not configured", "API key invalid",
+      "Webhook not receiving events", "Service unavailable"],
+     "### Configure Integration\n\n1. Go to Project Settings > Integrations\n2. Add integration\n3. Configure credentials"),
+
+    ("vercel-third-party-integration", "Vercel Third-Party Integration Error",
+     "Fix Vercel third-party integration errors. Resolve external service connection issues.",
+     ["Service not connected", "Credentials expired",
+      "API version mismatch", "Service rate limited"],
+     "### Reconnect Integration\n\n1. Go to Project Settings > Integrations\n2. Click on integration\n3. Reconnect or update credentials"),
+
+    ("vercel-marketplace-addon", "Vercel Marketplace Add-on Error",
+     "Fix Vercel Marketplace add-on errors. Resolve marketplace service provisioning issues.",
+     ["Add-on not provisioned", "Plan limit reached",
+      "Add-on configuration invalid", "Service unavailable"],
+     "### Provision Add-on\n\n1. Go to Project Settings > Storage\n2. Add marketplace add-on"),
+
+    ("vercel-team-invite", "Vercel Team Invite Error",
+     "Fix Vercel team invite errors. Resolve team member invitation issues.",
+     ["Invite link expired", "Email address invalid",
+      "Team member limit reached", "Invitation already accepted"],
+     "### Send Invite\n\n1. Go to Team Settings > Members\n2. Click Invite\n3. Enter email address"),
+
+    ("vercel-team-role", "Vercel Team Role Error",
+     "Fix Vercel team role errors. Resolve team permission issues.",
+     ["Role not assigned correctly", "Insufficient permissions",
+      "Role does not exist", "Role change requires admin"],
+     "### Assign Role\n\n1. Go to Team Settings > Members\n2. Click on member\n3. Change role"),
+
+    ("vercel-project-member", "Vercel Project Member Error",
+     "Fix Vercel project member errors. Resolve project access issues.",
+     ["Member not added to project", "Access level insufficient",
+      "Project transfer pending", "Member role incorrect"],
+     "### Add Member\n\n1. Go to Project Settings > Members\n2. Click Add\n3. Select member and role"),
+
+    ("vercel-project-transfer", "Vercel Project Transfer Error",
+     "Fix Vercel project transfer errors. Resolve project ownership transfer issues.",
+     ["Transfer not allowed", "Target team not found",
+      "Billing conflict", "Transfer already pending"],
+     "### Transfer Project\n\n1. Go to Project Settings > General\n2. Click Transfer\n3. Select target team"),
+
+    ("vercel-billing-plan", "Vercel Billing Plan Error",
+     "Fix Vercel billing plan errors. Resolve subscription and plan issues.",
+     ["Payment method expired", "Plan upgrade failed",
+      "Invoice overdue", "Account suspended"],
+     "### Update Payment\n\n1. Go to Team Settings > Billing\n2. Update payment method\n\n### Check Invoice\n\n```bash\nnpx vercel billing ls\n```"),
+
+    ("vercel-spending-limit", "Vercel Spending Limit Error",
+     "Fix Vercel spending limit errors. Resolve spending cap issues.",
+     ["Spending limit reached", "Limit too low",
+      "Usage unexpectedly high", "Limit not configured"],
+     "### Set Spending Limit\n\n1. Go to Team Settings > Billing\n2. Set spending limit"),
+
+    ("vercel-usage-exceeded", "Vercel Usage Exceeded Error",
+     "Fix Vercel usage exceeded errors. Resolve resource usage limit issues.",
+     ["Bandwidth limit exceeded", "Serverless execution limit exceeded",
+      "Edge request limit exceeded", "Build minutes exhausted"],
+     "### Check Usage\n\n1. Go to Team Settings > Usage\n2. Review current usage\n\n### Upgrade Plan\n\nIf consistently exceeding limits, upgrade plan."),
+
+    ("vercel-build-minutes", "Vercel Build Minutes Error",
+     "Fix Vercel build minutes errors. Resolve build time quota issues.",
+     ["Build minutes exhausted", "Build too slow",
+      "Too many concurrent builds", "Build cache not working"],
+     "### Optimize Builds\n\n- Enable build caching\n- Reduce build dependencies\n- Use incremental builds"),
+
+    ("vercel-serverless-execution", "Vercel Serverless Execution Error",
+     "Fix Vercel serverless execution errors. Resolve function invocation issues.",
+     ["Execution limit exceeded", "Function timeout",
+      "Cold start too slow", "Function crashed"],
+     "### Check Usage\n\n1. Go to Team Settings > Usage\n2. Review serverless execution\n\n### Optimize\n\nReduce function execution time and frequency."),
+
+    ("vercel-edge-requests", "Vercel Edge Requests Error",
+     "Fix Vercel edge requests errors. Resolve edge function invocation issues.",
+     ["Edge request limit exceeded", "Function too slow",
+      "Edge location unavailable", "Function size exceeded"],
+     "### Check Usage\n\n1. Go to Team Settings > Usage\n2. Review edge requests"),
+
+    ("vercel-bandwidth-limit", "Vercel Bandwidth Limit Error",
+     "Fix Vercel bandwidth limit errors. Resolve data transfer limit issues.",
+     ["Bandwidth limit exceeded", "Large file downloads",
+      "High traffic volume", "CDN not configured"],
+     "### Check Usage\n\n1. Go to Team Settings > Usage\n2. Review bandwidth\n\n### Optimize\n\n- Enable CDN caching\n- Compress responses\n- Use image optimization"),
+
+    ("vercel-ddos-mitigation", "Vercel DDoS Mitigation Error",
+     "Fix Vercel DDoS mitigation errors. Resolve distributed denial of service protection issues.",
+     ["DDoS attack detected", "Legitimate traffic blocked",
+      "Rate limiting too aggressive", "IP blocked incorrectly"],
+     "### Check Status\n\n1. Go to Project Settings > Security\n2. Review DDoS protection settings"),
+
+    ("vercel-waf-error", "Vercel WAF Error",
+     "Fix Vercel WAF errors. Resolve Web Application Firewall issues.",
+     ["WAF blocking legitimate traffic", "Rule too aggressive",
+      "Custom rule syntax error", "WAF not enabled"],
+     "### Configure WAF\n\n1. Go to Project Settings > Security\n2. Configure WAF rules"),
+
+    ("vercel-security-headers", "Vercel Security Headers Error",
+     "Fix Vercel security headers errors. Resolve security header configuration issues.",
+     ["Header conflicts", "CSP blocking resources",
+      "X-Frame-Options blocking embedding", "HSTS issues"],
+     "### Configure Headers\n\n```json\n{\"headers\": [{\"source\": \"/(.*)\", \"headers\": [{\"key\": \"X-Content-Type-Options\", \"value\": \"nosniff\"}]}]}\n```"),
+
+    ("vercel-csp-policy", "Vercel CSP Policy Error",
+     "Fix Vercel CSP policy errors. Resolve Content Security Policy issues.",
+     ["CSP blocking scripts", "CSP blocking styles",
+      "Inline scripts blocked", "External resources blocked"],
+     "### Configure CSP\n\n```json\n{\"headers\": [{\"source\": \"/(.*)\", \"headers\": [{\"key\": \"Content-Security-Policy\", \"value\": \"default-src 'self'\"}]}]}\n```"),
+
+    ("vercel-cross-origin", "Vercel Cross-Origin Error",
+     "Fix Vercel cross-origin errors. Resolve cross-origin resource sharing issues.",
+     ["CORS headers missing", "Origin not allowed",
+      "Preflight request failed", "Credentials not included"],
+     "### Add CORS Headers\n\n```javascript\nexport default async function handler(req, res) {\n  res.setHeader('Access-Control-Allow-Origin', '*');\n  res.setHeader('Access-Control-Allow-Methods', 'GET,POST');\n  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');\n}\n```"),
+
+    ("vercel-frame-ancestors", "Vercel Frame-Ancestors Error",
+     "Fix Vercel frame-ancestors errors. Resolve embedding restriction issues.",
+     ["Frame-ancestors blocking embedding", "Domain not in allowlist",
+      "CSP directive incorrect", "Multiple domains not supported"],
+     "### Configure Frame-Ancestors\n\n```json\n{\"headers\": [{\"source\": \"/(.*)\", \"headers\": [{\"key\": \"Content-Security-Policy\", \"value\": \"frame-ancestors 'self' https://trusted.com\"}]}]}\n```"),
+
+    ("vercel-domain-not-found", "Vercel Domain Not Found Error",
+     "Fix Vercel domain not found errors. Resolve domain configuration issues.",
+     ["Domain not added to project", "DNS not configured",
+      "Domain spelling incorrect", "Domain not verified"],
+     "### Add Domain\n\n```bash\nnpx vercel domains add example.com\n```\n\n### Verify DNS\n\n```bash\ndig example.com CNAME +short\n```"),
+
+    ("vercel-custom-domain", "Vercel Custom Domain Error",
+     "Fix Vercel custom domain errors. Resolve custom domain setup issues.",
+     ["Domain already in use", "DNS configuration wrong",
+      "SSL certificate pending", "Domain limit reached"],
+     "### Add Domain\n\n1. Go to Project Settings > Domains\n2. Click Add\n3. Enter domain name\n\n### Configure DNS\n\nAdd CNAME or A record pointing to Vercel."),
+
+    ("vercel-domain-verification", "Vercel Domain Verification Error",
+     "Fix Vercel domain verification errors. Resolve domain ownership verification issues.",
+     ["DNS record not found", "TXT record missing",
+      "Verification timed out", "Domain already verified by another account"],
+     "### Verify Domain\n\n1. Go to Project Settings > Domains\n2. Click Verify\n3. Add DNS record"),
+
+    ("vercel-dns-propagation", "Vercel DNS Propagation Error",
+     "Fix Vercel DNS propagation errors. Resolve DNS update delay issues.",
+     ["DNS not propagated", "ISP caching old records",
+      "TTL too high", "Nameserver not updated"],
+     "### Check Propagation\n\n```bash\ndig @1.1.1.1 your-domain.com +short\ndig @8.8.8.8 your-domain.com +short\n```\n\n### Wait\n\nStandard propagation: 24-48 hours."),
+
+    ("vercel-nameserver-update", "Vercel Nameserver Update Error",
+     "Fix Vercel nameserver update errors. Resolve nameserver change issues.",
+     ["Nameservers not updated at registrar", "Old nameservers cached",
+      "Registrar requires manual update"],
+     "### Update at Registrar\n\nReplace existing nameservers with Vercel-assigned ones.\n\n### Verify\n\n```bash\ndig your-domain.com NS +short\n```"),
+
+    ("vercel-apex-domain", "Vercel Apex Domain Error",
+     "Fix Vercel apex domain errors. Resolve root domain configuration issues.",
+     ["Apex domain not configured", "A record missing",
+      "DNS configuration wrong"],
+     "### Configure Apex Domain\n\n1. Go to Project Settings > Domains\n2. Add apex domain\n3. Add A record: `76.76.21.21`"),
+
+    ("vercel-subdomain", "Vercel Subdomain Error",
+     "Fix Vercel subdomain errors. Resolve subdomain configuration issues.",
+     ["Subdomain not configured", "CNAME record missing",
+      "Subdomain already in use"],
+     "### Add Subdomain\n\n```bash\nnpx vercel domains add app.example.com\n```\n\n### Configure DNS\n\nAdd CNAME record pointing to `cname.vercel-dns.com`."),
+
+    ("vercel-wildcard-domain", "Vercel Wildcard Domain Error",
+     "Fix Vercel wildcard domain errors. Resolve wildcard domain configuration issues.",
+     ["Wildcard not configured", "SSL certificate not issued",
+      "DNS record missing"],
+     "### Add Wildcard Domain\n\n1. Go to Project Settings > Domains\n2. Add `*.example.com`\n\n### Configure DNS\n\nAdd CNAME record: `*.example.com` -> `cname.vercel-dns.com`"),
+
+    ("vercel-ssl-provisioning", "Vercel SSL Provisioning Error",
+     "Fix Vercel SSL provisioning errors. Resolve certificate provisioning issues.",
+     ["SSL certificate pending", "Domain not verified",
+      "DNS not propagated", "Certificate authority error"],
+     "### Check Status\n\n1. Go to Project Settings > Domains\n2. Check SSL status\n\n### Wait\n\nSSL provisioning can take up to 24 hours."),
+
+    ("vercel-cdn-cache", "Vercel CDN Cache Error",
+     "Fix Vercel CDN cache errors. Resolve edge caching issues.",
+     ["CDN cache not updating", "Stale content served",
+      "Cache headers not set", "Cache purge not working"],
+     "### Purge Cache\n\n```bash\nnpx vercel --prod\n```\n\n### Check Headers\n\n```bash\ncurl -I https://your-domain.com | grep -i \"cache-control\"\n```"),
+
+    ("vercel-cache-header", "Vercel Cache Header Error",
+     "Fix Vercel cache header errors. Resolve cache control header issues.",
+     ["Cache-Control header missing", "Header value incorrect",
+      "CDN not caching", "Browser not caching"],
+     "### Set Cache Header\n\n```javascript\nres.setHeader('Cache-Control', 's-maxage=31536000, stale-while-revalidate');\n```"),
+
+    ("vercel-stale-cache", "Vercel Stale Cache Error",
+     "Fix Vercel stale cache errors. Resolve stale content issues.",
+     ["Stale content being served", "Revalidation not triggered",
+      "Cache-Control max-age too long"],
+     "### Configure Revalidation\n\n```javascript\nres.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');\n```"),
+
+    ("vercel-purge-cache", "Vercel Purge Cache Error",
+     "Fix Vercel purge cache errors. Resolve cache purge issues.",
+     ["Cache purge not working", "Purge request failed",
+      "Purge takes too long"],
+     "### Purge via CLI\n\n```bash\nnpx vercel --prod\n```\n\n### Purge via API\n\n```bash\ncurl -X DELETE \"https://api.vercel.com/v1/deployments/{id}/cache\"\n```"),
+
+    ("vercel-deploy-hook", "Vercel Deploy Hook Error",
+     "Fix Vercel deploy hook errors. Resolve automatic deployment trigger issues.",
+     ["Deploy hook not configured", "Webhook URL incorrect",
+      "Hook not triggering deployments"],
+     "### Create Deploy Hook\n\n1. Go to Project Settings > Git\n2. Click Deploy Hooks\n3. Enter name and branch"),
+
+    ("vercel-git-integration", "Vercel Git Integration Error",
+     "Fix Vercel git integration errors. Resolve git repository connection issues.",
+     ["Repository not connected", "Permission denied",
+      "Branch not configured", "Webhook not set"],
+     "### Connect Repository\n\n1. Go to Project Settings > Git\n2. Click Import\n3. Select repository"),
+
+    ("vercel-github-install", "Vercel GitHub Install Error",
+     "Fix Vercel GitHub install errors. Resolve GitHub integration issues.",
+     ["GitHub App not installed", "Permission denied",
+      "Repository access revoked"],
+     "### Install GitHub App\n\n1. Go to Vercel Integrations\n2. Find GitHub\n3. Click Install\n\n### Grant Access\n\nSelect repositories to grant access."),
+
+    ("vercel-gitlab-install", "Vercel GitLab Install Error",
+     "Fix Vercel GitLab install errors. Resolve GitLab integration issues.",
+     ["GitLab not connected", "Permission denied",
+      "Access token expired"],
+     "### Connect GitLab\n\n1. Go to Vercel Integrations\n2. Find GitLab\n3. Click Connect\n\n### Authorize\n\nGrant access to your GitLab account."),
+
+    ("vercel-bitbucket-install", "Vercel Bitbucket Install Error",
+     "Fix Vercel Bitbucket install errors. Resolve Bitbucket integration issues.",
+     ["Bitbucket not connected", "Permission denied",
+      "Workspace access revoked"],
+     "### Connect Bitbucket\n\n1. Go to Vercel Integrations\n2. Find Bitbucket\n3. Click Connect"),
+
+    ("vercel-branch-auto-deploy", "Vercel Branch Auto-Deploy Error",
+     "Fix Vercel branch auto-deploy errors. Resolve automatic deployment on push issues.",
+     ["Auto-deploy not configured", "Branch not matched",
+      "Deployment blocked", "Git integration broken"],
+     "### Configure Auto-Deploy\n\n1. Go to Project Settings > Git\n2. Set production branch\n3. Enable auto-deploy"),
+
+    ("vercel-ignore-command", "Vercel Ignore Command Error",
+     "Fix Vercel ignore command errors. Resolve build skip configuration issues.",
+     ["Ignore command not working", "Syntax error",
+      "Deployments not skipped when expected"],
+     "### Configure Ignore\n\n```json\n{\"ignoreCommand\": \"git diff --quiet HEAD~1 -- src/\"}\n```\n\n### Test\n\n```bash\ngit diff --quiet HEAD~1 -- src/\n```"),
+
+    ("vercel-monorepo-setup", "Vercel Monorepo Setup Error",
+     "Fix Vercel monorepo setup errors. Resolve monorepo configuration issues.",
+     ["Root directory incorrect", "Build command wrong",
+      "Dependencies not installed", "Workspace not configured"],
+     "### Configure Root Directory\n\n1. Go to Project Settings > General\n2. Set Root Directory\n\n### Configure Build\n\n```json\n{\"buildCommand\": \"cd apps/web && npm run build\", \"outputDirectory\": \"apps/web/.next\"}\n```"),
+
+    ("vercel-root-directory", "Vercel Root Directory Error",
+     "Fix Vercel root directory errors. Resolve project root directory configuration issues.",
+     ["Directory does not exist", "Wrong directory specified",
+      "Package.json not found in directory"],
+     "### Set Root Directory\n\n1. Go to Project Settings > General\n2. Set Root Directory\n\n### Verify\n\n```bash\nls -la your-directory/\n```"),
+]
+
+# ============================================================
+# NETLIFY
+# ============================================================
+NETLIFY_DATA = [
+    ("netlify-deploy-failed", "Netlify Deploy Failed",
+     "Fix Netlify deploy failed errors. Resolve deployment failures.",
+     ["Build command failed", "Publish directory missing", "Configuration error",
+      "Resource limit exceeded", "Build timeout"],
+     "### Check Logs\n\n1. Go to Netlify dashboard\n2. Select site\n3. Click failed deploy\n4. Review build logs"),
+
+    ("netlify-build-failed", "Netlify Build Failed",
+     "Fix Netlify build failed errors. Resolve build process failures.",
+     ["Build command error", "Dependencies missing", "Node version mismatch",
+      "Out of memory", "Build script not found"],
+     "### Check Logs\n\n1. Go to Deploys tab\n2. Click on failed deploy\n3. Review build output\n\n### Test Build Locally\n\n```bash\nnpm run build\n```"),
+
+    ("netlify-build-image", "Netlify Build Image Error",
+     "Fix Netlify build image errors. Resolve build environment issues.",
+     ["Build image outdated", "Missing system dependencies", "Docker image not available",
+      "Image version deprecated"],
+     "### Check Build Image\n\n1. Go to Site Settings > Build & deploy\n2. Select build image\n\n### Use Specific Version\n\n```toml\n[build]\nimage = \"nodejs18\"\n```"),
+
+    ("netlify-build-environment", "Netlify Build Environment Error",
+     "Fix Netlify build environment errors. Resolve build environment configuration issues.",
+     ["Environment variable missing", "Node version not set", "Build tool missing",
+      "PATH not configured"],
+     "### Set Environment Variables\n\n1. Go to Site Settings > Build & deploy > Environment\n2. Add variables\n\n### Check Node Version\n\n```toml\n[build]\nenvironment = { NODE_VERSION = \"18\" }\n```"),
+
+    ("netlify-node-version", "Netlify Node Version Error",
+     "Fix Netlify Node version errors. Resolve Node.js version mismatch issues.",
+     ["Node version not specified", "Incompatible Node version",
+      "Version not available in build image", "Package requires different version"],
+     "### Set Node Version\n\n```toml\n[build]\nenvironment = { NODE_VERSION = \"18\" }\n```\n\n### Or package.json\n\n```json\n{\"engines\": {\"node\": \">=18.0.0\"}}\n```"),
+
+    ("netlify-ruby-version", "Netlify Ruby Version Error",
+     "Fix Netlify Ruby version errors. Resolve Ruby version mismatch issues.",
+     ["Ruby version not specified", "Incompatible Ruby version",
+      "Gemfile missing", "Ruby gems not installed"],
+     "### Set Ruby Version\n\n```toml\n[build]\nenvironment = { RUBY_VERSION = \"3.1\" }\n```"),
+
+    ("netlify-go-version", "Netlify Go Version Error",
+     "Fix Netlify Go version errors. Resolve Go version mismatch issues.",
+     ["Go version not specified", "Incompatible Go version",
+      "Go module not initialized"],
+     "### Set Go Version\n\n```toml\n[build]\nenvironment = { GO_VERSION = \"1.21\" }\n```"),
+
+    ("netlify-python-version", "Netlify Python Version Error",
+     "Fix Netlify Python version errors. Resolve Python version mismatch issues.",
+     ["Python version not specified", "Incompatible Python version",
+      "requirements.txt missing"],
+     "### Set Python Version\n\n```toml\n[build]\nenvironment = { PYTHON_VERSION = \"3.11\" }\n```"),
+
+    ("netlify-ci-build", "Netlify CI Build Error",
+     "Fix Netlify CI build errors. Resolve continuous integration build issues.",
+     ["CI environment not configured", "Test command failed",
+      "Build not triggered", "Webhook not configured"],
+     "### Configure CI\n\n1. Go to Site Settings > Build & deploy\n2. Configure CI settings"),
+
+    ("netlify-build-command", "Netlify Build Command Error",
+     "Fix Netlify build command errors. Resolve build script configuration issues.",
+     ["Build command not found", "Command syntax error",
+      "Package.json script missing", "Command not executable"],
+     "### Set Build Command\n\n```toml\n[build]\ncommand = \"npm run build\"\n```\n\n### Verify Script Exists\n\n```bash\ncat package.json | grep scripts\n```"),
+
+    ("netlify-publish-directory", "Netlify Publish Directory Error",
+     "Fix Netlify publish directory errors. Resolve build output directory issues.",
+     ["Directory does not exist", "Wrong directory specified",
+      "Build output in unexpected location"],
+     "### Set Publish Directory\n\n```toml\n[build]\npublish = \"dist\"\n```\n\n### Check Output\n\n```bash\nls -la dist/\n```"),
+
+    ("netlify-functions-directory", "Netlify Functions Directory Error",
+     "Fix Netlify functions directory errors. Resolve serverless function configuration issues.",
+     ["Functions directory missing", "Function file format incorrect",
+      "Function exceeds size limit"],
+     "### Set Functions Directory\n\n```toml\n[functions]\ndirectory = \"netlify/functions\"\n```\n\n### Create Function\n\n```javascript\n// netlify/functions/hello.js\nexports.handler = async () => {\n  return { statusCode: 200, body: JSON.stringify({ hello: \"world\" }) };\n};\n```"),
+
+    ("netlify-toml-parse", "Netlify Configuration Parse Error",
+     "Fix Netlify toml parse errors. Resolve netlify.toml configuration issues.",
+     ["TOML syntax error", "Invalid configuration key",
+      "Missing required fields", "Encoding issues"],
+     "### Validate TOML\n\n```bash\n# Check syntax\ncat netlify.toml\n```\n\n### Common Configuration\n\n```toml\n[build]\ncommand = \"npm run build\"\npublish = \"dist\"\n```"),
+
+    ("netlify-redirects-error", "Netlify Redirects Error",
+     "Fix Netlify redirects errors. Resolve redirect configuration issues.",
+     ["Redirect loop", "Status code incorrect", "Pattern syntax error",
+      "Redirect conflicts with other rules"],
+     "### Configure Redirects\n\n```toml\n[[redirects]]\nfrom = \"/old-page\"\nto = \"/new-page\"\nstatus = 301\n```\n\n### Or _redirects file\n\n```\n/old-page /new-page 301\n```"),
+
+    ("netlify-headers-error", "Netlify Headers Error",
+     "Fix Netlify headers errors. Resolve custom header configuration issues.",
+     ["Header name invalid", "Value contains special characters",
+      "Path pattern incorrect", "Conflicting headers"],
+     "### Configure Headers\n\n```toml\n[[headers]]\nfor = \"/*\"\n[headers.values]\nX-Frame-Options = \"DENY\"\n```"),
+
+    ("netlify-status-code", "Netlify Status Code Error",
+     "Fix Netlify status code errors. Resolve HTTP status code configuration issues.",
+     ["Status code missing in redirect", "Incorrect status code",
+      "Default status code wrong"],
+     "### Set Status Code\n\n```toml\n[[redirects]]\nfrom = \"/old\"\nto = \"/new\"\nstatus = 301\n```"),
+
+    ("netlify-force-ssl", "Netlify Force SSL Error",
+     "Fix Netlify force SSL errors. Resolve HTTPS enforcement issues.",
+     ["SSL not enforced", "Redirect loop",
+      "Mixed content warnings", "Certificate not provisioned"],
+     "### Force SSL\n\n```toml\n[[redirects]]\nfrom = \"http://example.com/*\"\nto = \"https://example.com/:splat\"\nstatus = 301\nforce = true\n```"),
+
+    ("netlify-https-redirect", "Netlify HTTPS Redirect Error",
+     "Fix Netlify HTTPS redirect errors. Resolve HTTP to HTTPS redirect issues.",
+     ["Redirect not working", "Loop detected",
+      "Mixed content", "Certificate pending"],
+     "### Configure Redirect\n\n```toml\n[[redirects]]\nfrom = \"http://example.com/*\"\nto = \"https://example.com/:splat\"\nstatus = 301\n```"),
+
+    ("netlify-dns", "Netlify DNS Error",
+     "Fix Netlify DNS errors. Resolve DNS configuration issues.",
+     ["DNS not configured", "Nameservers not updated",
+      "Record missing", "DNS propagation delay"],
+     "### Configure DNS\n\n1. Go to Domain Settings\n2. Add custom domain\n3. Configure DNS records"),
+
+    ("netlify-custom-domain", "Netlify Custom Domain Error",
+     "Fix Netlify custom domain errors. Resolve custom domain configuration issues.",
+     ["Domain already in use", "DNS not configured",
+      "SSL certificate pending", "Domain limit reached"],
+     "### Add Domain\n\n1. Go to Domain Settings\n2. Click Add custom domain\n3. Enter domain name"),
+
+    ("netlify-domain-alias", "Netlify Domain Alias Error",
+     "Fix Netlify domain alias errors. Resolve domain alias configuration issues.",
+     ["Alias not configured", "DNS not pointing to Netlify",
+      "SSL not provisioned for alias"],
+     "### Add Domain Alias\n\n1. Go to Domain Settings\n2. Click Add alias\n3. Enter domain"),
+
+    ("netlify-ssl-certificate", "Netlify SSL Certificate Error",
+     "Fix Netlify SSL certificate errors. Resolve SSL certificate provisioning issues.",
+     ["Certificate not provisioned", "DNS not configured",
+      "Certificate expired", "Certificate authority error"],
+     "### Provision Certificate\n\n1. Go to Domain Settings\n2. Click HTTPS\n3. Verify DNS configuration"),
+
+    ("netlify-lets-encrypt", "Netlify Let's Encrypt Error",
+     "Fix Netlify Let's Encrypt errors. Resolve free SSL certificate issues.",
+     ["Certificate not issued", "DNS not pointing to Netlify",
+      "Rate limit exceeded", "Validation failed"],
+     "### Check Status\n\n1. Go to Domain Settings > HTTPS\n2. Check certificate status\n\n### Verify DNS\n\n```bash\ndig example.com A +short\n```"),
+
+    ("netlify-cert-auto-renew", "Netlify Certificate Auto-Renew Error",
+     "Fix Netlify certificate auto-renew errors. Resolve automatic renewal issues.",
+     ["Auto-renewal failed", "DNS changed after issuance",
+      "Certificate authority unreachable", "Validation failed"],
+     "### Check Status\n\n1. Go to Domain Settings > HTTPS\n2. Check renewal status\n\n### Force Renewal\n\nContact Netlify support if auto-renewal fails."),
+
+    ("netlify-cert-provision", "Netlify Certificate Provision Error",
+     "Fix Netlify certificate provision errors. Resolve initial certificate setup issues.",
+     ["DNS not configured", "Domain not verified",
+      "Certificate authority error", "Rate limit exceeded"],
+     "### Verify DNS\n\n```bash\ndig example.com A +short\ndig example.com CNAME +short\n```\n\n### Check Domain Status\n\n1. Go to Domain Settings\n2. Verify domain is added"),
+
+    ("netlify-dmarc-policy", "Netlify DMARC Policy Error",
+     "Fix Netlify DMARC policy errors. Resolve email authentication issues.",
+     ["DMARC record missing", "Policy too strict",
+      "Report email invalid", "Record syntax error"],
+     "### Add DMARC Record\n\n```\n_dmarc.example.com TXT \"v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com\"\n```"),
+
+    ("netlify-spf-record", "Netlify SPF Record Error",
+     "Fix Netlify SPF record errors. Resolve Sender Policy Framework issues.",
+     ["SPF record missing", "Too many DNS lookups",
+      "Netlify IP not included", "Record syntax error"],
+     "### Add SPF Record\n\n```\nexample.com TXT \"v=spf1 include:netlify.com ~all\"\n```"),
+
+    ("netlify-dkim", "Netlify DKIM Error",
+     "Fix Netlify DKIM errors. Resolve DomainKeys Identified Mail issues.",
+     ["DKIM record missing", "Record format incorrect",
+      "Key not generated", "DNS record too long"],
+     "### Configure DKIM\n\n1. Go to Domain Settings > Email\n2. Enable DKIM\n3. Add DNS record"),
+
+    ("netlify-sender-policy", "Netlify Sender Policy Error",
+     "Fix Netlify sender policy errors. Resolve email sending configuration issues.",
+     ["Sender domain not configured", "SPF check failed",
+      "DKIM not enabled", "DMARC policy blocking"],
+     "### Configure Email\n\n1. Go to Domain Settings > Email\n2. Configure sender policy"),
+
+    ("netlify-forms", "Netlify Forms Error",
+     "Fix Netlify Forms errors. Resolve form submission and processing issues.",
+     ["Form not detected", "Form action missing",
+      "Form name not set", "Netlify badge required"],
+     "### Configure Form\n\n```html\n<form name=\"contact\" method=\"POST\" data-netlify=\"true\">\n  <input type=\"hidden\" name=\"form-name\" value=\"contact\">\n  <input type=\"text\" name=\"name\">\n  <input type=\"email\" name=\"email\">\n  <button type=\"submit\">Send</button>\n</form>\n```"),
+
+    ("netlify-form-submission", "Netlify Form Submission Error",
+     "Fix Netlify form submission errors. Resolve form data processing issues.",
+     ["Submission not received", "Form name mismatch",
+      "CAPTCHA required", "Form exceeds size limit"],
+     "### Check Form\n\n1. Go to Forms tab\n2. Verify form is detected\n3. Check submissions"),
+
+    ("netlify-form-notification", "Netlify Form Notification Error",
+     "Fix Netlify form notification errors. Resolve email notification issues.",
+     ["Notification not sent", "Email address invalid",
+      "Notification service unavailable"],
+     "### Configure Notification\n\n1. Go to Forms > Notifications\n2. Add notification\n3. Configure email recipient"),
+
+    ("netlify-form-spam", "Netlify Form Spam Filter Error",
+     "Fix Netlify form spam filter errors. Resolve spam detection issues.",
+     ["Legitimate submissions marked as spam", "Spam not filtered",
+      "Filter too aggressive"],
+     "### Configure Spam Filter\n\n1. Go to Forms > Spam filter\n2. Adjust sensitivity"),
+
+    ("netlify-recaptcha", "Netlify reCAPTCHA Error",
+     "Fix Netlify reCAPTCHA errors. Resolve CAPTCHA verification issues.",
+     ["reCAPTCHA not configured", "Site key invalid",
+      "Verification failing", "reCAPTCHA not showing"],
+     "### Enable reCAPTCHA\n\n1. Go to Forms > Spam filter\n2. Enable reCAPTCHA\n3. Add site key"),
+
+    ("netlify-form-validation", "Netlify Form Validation Error",
+     "Fix Netlify form validation errors. Resolve form field validation issues.",
+     ["Required field missing", "Email format invalid",
+      "Field type mismatch", "Validation not triggered"],
+     "### Add Validation\n\n```html\n<input type=\"email\" name=\"email\" required>\n```"),
+
+    ("netlify-form-upload", "Netlify Form File Upload Error",
+     "Fix Netlify form file upload errors. Resolve file upload issues.",
+     ["File too large", "File type not allowed",
+      "Upload limit exceeded", "Storage full"],
+     "### Configure Upload\n\n```html\n<input type=\"file\" name=\"attachment\" multiple>\n```\n\n### Check Limits\n\n- Max file size: 6 MB\n- Max total size: 25 MB"),
+
+    ("netlify-functions-error", "Netlify Functions Error",
+     "Fix Netlify Functions errors. Resolve serverless function issues.",
+     ["Function crashes", "Import error", "Timeout exceeded",
+      "Function not found", "Memory limit exceeded"],
+     "### Check Logs\n\n```bash\nnetlify logs --function hello\n```\n\n### Test Locally\n\n```bash\nnetlify dev\n```"),
+
+    ("netlify-serverless-function", "Netlify Serverless Function Error",
+     "Fix Netlify serverless function errors. Resolve function deployment issues.",
+     ["Function not deployed", "Build error in function",
+      "Function exceeds size limit", "Runtime not supported"],
+     "### Create Function\n\n```javascript\n// netlify/functions/hello.js\nexports.handler = async (event, context) => {\n  return { statusCode: 200, body: \"Hello\" };\n};\n```\n\n### Deploy\n\n```bash\nnetlify deploy --functions netlify/functions\n```"),
+
+    ("netlify-function-timeout", "Netlify Function Timeout Error",
+     "Fix Netlify function timeout errors. Resolve function execution time issues.",
+     ["Function exceeds 10 second limit", "External API slow",
+      "Database query timeout", "No caching"],
+     "### Optimize Function\n\n- Cache external API calls\n- Use background functions for long tasks\n- Reduce database queries"),
+
+    ("netlify-function-memory", "Netlify Function Memory Error",
+     "Fix Netlify function memory errors. Resolve memory limit issues.",
+     ["Function exceeds memory limit", "Large data processing",
+      "Memory leak", "Buffer not released"],
+     "### Optimize Memory\n\n- Process data in streams\n- Avoid loading large datasets\n- Use pagination"),
+
+    ("netlify-sync-function", "Netlify Synchronous Function Error",
+     "Fix Netlify synchronous function errors. Resolve standard function issues.",
+     ["Function timeout", "Response not returned",
+      "Error not caught", "Response format invalid"],
+     "### Return Response\n\n```javascript\nexports.handler = async () => {\n  return {\n    statusCode: 200,\n    body: JSON.stringify({ message: \"OK\" })\n  };\n};\n```"),
+
+    ("netlify-async-function", "Netlify Asynchronous Function Error",
+     "Fix Netlify asynchronous function errors. Resolve background function issues.",
+     ["Background function not configured", "Function timed out",
+      "Response not sent", "Function not invoked"],
+     "### Create Background Function\n\n```javascript\n// netlify/functions/process.js\nexports.handler = async (event) => {\n  // Long running task\n  return { statusCode: 202, body: \"Processing\" };\n};\n```"),
+
+    ("netlify-background-function", "Netlify Background Function Error",
+     "Fix Netlify background function errors. Resolve background processing issues.",
+     ["Function not returning 202", "Function exceeds 15 minute limit",
+      "No retry mechanism", "Function not logged"],
+     "### Return 202\n\n```javascript\nexports.handler = async () => {\n  return { statusCode: 202, body: \"Accepted\" };\n};\n```"),
+
+    ("netlify-event-trigger", "Netlify Event Trigger Error",
+     "Fix Netlify event trigger errors. Resolve function invocation trigger issues.",
+     ["Trigger not configured", "Event not received",
+      "Trigger rate limited"],
+     "### Configure Trigger\n\nSet up form submission or deploy event triggers."),
+
+    ("netlify-deploy-notification", "Netlify Deploy Notification Error",
+     "Fix Netlify deploy notification errors. Resolve deployment status notification issues.",
+     ["Notification not sent", "Webhook URL incorrect",
+      "Notification service unavailable"],
+     "### Configure Notification\n\n1. Go to Site Settings > Build & deploy > Deploy notifications\n2. Add notification"),
+
+    ("netlify-deploy-succeeded", "Netlify Deploy Succeeded Notification Error",
+     "Fix Netlify deploy succeeded notification errors. Resolve success notification issues.",
+     ["Notification not triggered", "Email not received",
+      "Slack notification failed"],
+     "### Configure Success Notification\n\n1. Go to Deploy notifications\n2. Add deploy succeeded notification"),
+
+    ("netlify-deploy-failed-hook", "Netlify Deploy Failed Hook Error",
+     "Fix Netlify deploy failed hook errors. Resolve failure notification issues.",
+     ["Hook not triggered", "Webhook not configured",
+      "Notification not received"],
+     "### Configure Failure Hook\n\n1. Go to Deploy notifications\n2. Add deploy failed notification"),
+
+    ("netlify-slack-notification", "Netlify Slack Notification Error",
+     "Fix Netlify Slack notification errors. Resolve Slack integration issues.",
+     ["Slack not connected", "Channel not specified",
+      "Webhook URL invalid", "Permission denied"],
+     "### Connect Slack\n\n1. Go to Integrations\n2. Add Slack\n3. Authorize"),
+
+    ("netlify-email-notification", "Netlify Email Notification Error",
+     "Fix Netlify email notification errors. Resolve email notification issues.",
+     ["Email not received", "Address invalid",
+      "Notification not configured"],
+     "### Configure Email\n\n1. Go to Deploy notifications\n2. Add email notification\n3. Enter recipient"),
+
+    ("netlify-identity-error", "Netlify Identity Error",
+     "Fix Netlify Identity errors. Resolve user authentication issues.",
+     ["Identity not enabled", "Signup not working",
+      "Login failing", "JWT token invalid"],
+     "### Enable Identity\n\n1. Go to Site Settings > Identity\n2. Click Enable Identity\n\n### Configure Providers\n\n1. Go to Identity > External providers\n2. Enable providers"),
+
+    ("netlify-identity-user", "Netlify Identity User Error",
+     "Fix Netlify Identity user errors. Resolve user management issues.",
+     ["User not found", "User already exists",
+      "Email not verified", "User locked out"],
+     "### Check Users\n\n1. Go to Identity > Users\n2. View user list"),
+
+    ("netlify-signup-error", "Netlify Signup Error",
+     "Fix Netlify signup errors. Resolve user registration issues.",
+     ["Signup not enabled", "Email confirmation required",
+      "Invite only mode", "Rate limit exceeded"],
+     "### Enable Signup\n\n1. Go to Identity > Settings\n2. Enable Email or external providers"),
+
+    ("netlify-login-error", "Netlify Login Error",
+     "Fix Netlify login errors. Resolve user authentication issues.",
+     ["Invalid credentials", "Account locked",
+      "External provider error", "Session expired"],
+     "### Reset Password\n\n1. Go to Identity > Users\n2. Find user\n3. Reset password"),
+
+    ("netlify-jwt-token", "Netlify JWT Token Error",
+     "Fix Netlify JWT token errors. Resolve JSON Web Token issues.",
+     ["Token expired", "Token invalid",
+      "Token missing claims", "Token signature failed"],
+     "### Verify Token\n\n```javascript\nconst jwt = require('jsonwebtoken');\njwt.verify(token, secret);\n```"),
+
+    ("netlify-identity-token", "Netlify Identity Token Error",
+     "Fix Netlify Identity token errors. Resolve authentication token issues.",
+     ["Token not generated", "Token expired",
+      "Token not valid for endpoint", "Audience mismatch"],
+     "### Get Token\n\n```javascript\nconst { user } = context.clientContext;\nconst token = user.jwt;\n```"),
+
+    ("netlify-external-oauth", "Netlify External OAuth Error",
+     "Fix Netlify external OAuth errors. Resolve third-party login issues.",
+     ["OAuth provider not configured", "Client ID invalid",
+      "Callback URL wrong", "Provider unavailable"],
+     "### Configure OAuth\n\n1. Go to Identity > External providers\n2. Enable provider\n3. Enter Client ID and Secret"),
+
+    ("netlify-git-gateway", "Netlify Git Gateway Error",
+     "Fix Netlify Git Gateway errors. Resolve CMS backend connection issues.",
+     ["Git Gateway not configured", "Access token invalid",
+      "Repository not connected", "Gateway URL wrong"],
+     "### Configure Git Gateway\n\n1. Go to Site Settings > Identity > Git Gateway\n2. Connect to GitHub/GitLab"),
+
+    ("netlify-identity-webhook", "Netlify Identity Webhook Error",
+     "Fix Netlify Identity webhook errors. Resolve webhook notification issues.",
+     ["Webhook not configured", "URL incorrect",
+      "Payload invalid", "Webhook not triggered"],
+     "### Configure Webhook\n\n1. Go to Identity > Settings > Webhooks\n2. Add webhook URL"),
+
+    ("netlify-role-access", "Netlify Role-Based Access Error",
+     "Fix Netlify role-based access errors. Resolve user role permission issues.",
+     ["Role not assigned", "Permission denied",
+      "Role does not exist", "Role change not saved"],
+     "### Assign Role\n\n1. Go to Identity > Users\n2. Click on user\n3. Add role"),
+
+    ("netlify-cms-error", "Netlify CMS Error",
+     "Fix Netlify CMS errors. Resolve content management system issues.",
+     ["CMS not loading", "Backend not connected",
+      "Configuration error", "Authentication failed"],
+     "### Check Config\n\n```yaml\nbackend:\n  name: git-gateway\n  branch: main\n```"),
+
+    ("netlify-cms-config", "Netlify CMS Configuration Error",
+     "Fix Netlify CMS configuration errors. Resolve config.yml issues.",
+     ["Config file missing", "YAML syntax error",
+      "Invalid collection", "Backend misconfigured"],
+     "### Create Config\n\n```yaml\n# static/admin/config.yml\nbackend:\n  name: git-gateway\n  branch: main\ncollections:\n  - name: posts\n    folder: content/posts\n    fields:\n      - { name: title, widget: string }\n```"),
+
+    ("netlify-collections-error", "Netlify CMS Collections Error",
+     "Fix Netlify CMS collections errors. Resolve collection configuration issues.",
+     ["Collection not found", "Field missing",
+      "Folder does not exist", "Slug pattern invalid"],
+     "### Configure Collection\n\n```yaml\ncollections:\n  - name: posts\n    folder: content/posts\n    slug: \"{{year}}-{{month}}-{{day}}-{{slug}}\"\n    fields:\n      - { name: title, widget: string }\n```"),
+
+    ("netlify-widget-error", "Netlify CMS Widget Error",
+     "Fix Netlify CMS widget errors. Resolve editor widget issues.",
+     ["Widget not found", "Widget configuration invalid",
+      "Widget not rendering", "Widget value not saved"],
+     "### Add Widget\n\n```yaml\n- { name: date, widget: datetime, format: YYYY-MM-DD }\n```"),
+
+    ("netlify-media-folder", "Netlify CMS Media Folder Error",
+     "Fix Netlify CMS media folder errors. Resolve media storage issues.",
+     ["Media folder not found", "Folder not configured",
+      "Upload failed", "Media not displaying"],
+     "### Configure Media\n\n```yaml\nmedia_folder: static/images\npublic_folder: /images\n```"),
+
+    ("netlify-git-gateway-error", "Netlify Git Gateway Error",
+     "Fix Netlify Git Gateway errors. Resolve CMS backend connection issues.",
+     ["Gateway not connected", "Token invalid",
+      "Repository access denied", "Branch not found"],
+     "### Reconnect Gateway\n\n1. Go to Site Settings > Identity > Git Gateway\n2. Reconnect"),
+
+    ("netlify-edge-function", "Netlify Edge Function Error",
+     "Fix Netlify edge function errors. Resolve edge computing issues.",
+     ["Edge function not deployed", "Runtime error",
+      "Function exceeds limits", "Import error"],
+     "### Create Edge Function\n\n```javascript\n// netlify/edge-functions/hello.js\nexport default async (request) => {\n  return new Response(\"Hello from Edge\");\n};\nexport const config = { path: \"/hello\" };\n```"),
+
+    ("netlify-edge-handler", "Netlify Edge Handler Error",
+     "Fix Netlify edge handler errors. Resolve edge processing issues.",
+     ["Handler not configured", "Handler crashing",
+      "Response not returned"],
+     "### Configure Handler\n\n```javascript\nexport default async (request, context) => {\n  return new Response(\"OK\");\n};\n```"),
+
+    ("netlify-edge-middleware", "Netlify Edge Middleware Error",
+     "Fix Netlify edge middleware errors. Resolve request processing middleware issues.",
+     ["Middleware not running", "Response not modified",
+      "Middleware crashing"],
+     "### Create Middleware\n\n```javascript\nexport default async (request, context) => {\n  const url = new URL(request.url);\n  if (url.pathname.startsWith('/admin')) {\n    return new Response('Unauthorized', { status: 401 });\n  }\n};\n```"),
+
+    ("netlify-edge-configuration", "Netlify Edge Configuration Error",
+     "Fix Netlify edge configuration errors. Resolve edge function configuration issues.",
+     ["Configuration missing", "Path pattern invalid",
+      "Cache settings wrong"],
+     "### Configure Edge\n\n```javascript\nexport const config = {\n  path: \"/api/*\",\n  cache: \"manual\"\n};\n```"),
+
+    ("netlify-split-testing", "Netlify Split Testing Error",
+     "Fix Netlify split testing errors. Resolve A/B testing issues.",
+     ["Split test not active", "Traffic not split",
+      "Variants not configured", "Test not showing"],
+     "### Configure Split Test\n\n1. Go to Split Testing\n2. Create test\n3. Configure variants"),
+
+    ("netlify-branch-split", "Netlify Branch Split Error",
+     "Fix Netlify branch split errors. Resolve branch-based testing issues.",
+     ["Branch not connected", "Split not working",
+      "Branch deploy failed"],
+     "### Configure Branch Split\n\n1. Go to Split Testing\n2. Add branch as variant"),
+
+    ("netlify-split-active", "Netlify Split Test Active Error",
+     "Fix Netlify split test active errors. Resolve active test configuration issues.",
+     ["Test already active", "Cannot modify active test",
+      "Traffic allocation wrong"],
+     "### Manage Active Test\n\n1. Go to Split Testing\n2. View active tests\n3. Pause or modify"),
+
+    ("netlify-split-modifiers", "Netlify Split Test Modifiers Error",
+     "Fix Netlify split test modifiers errors. Resolve test variant modifier issues.",
+     ["Modifier not set", "Cookie not working",
+      "Modifier overrides wrong"],
+     "### Configure Modifier\n\nSet cookie or header-based modifiers."),
+
+    ("netlify-content-branch", "Netlify Content Branch Error",
+     "Fix Netlify content branch errors. Resolve content branch configuration issues.",
+     ["Content branch not created", "Branch content different",
+      "Merge conflict"],
+     "### Create Content Branch\n\n```bash\ngit checkout -b content/feature\n```"),
+
+    ("netlify-branch-deploy", "Netlify Branch Deploy Error",
+     "Fix Netlify branch deploy errors. Resolve branch-based deployment issues.",
+     ["Branch deploy not configured", "Deploy failed",
+      "Branch not found", "Deploy limit reached"],
+     "### Configure Branch Deploy\n\n1. Go to Site Settings > Build & deploy > Branches\n2. Add branch"),
+
+    ("netlify-deploy-context", "Netlify Deploy Context Error",
+     "Fix Netlify deploy context errors. Resolve environment-specific deployment issues.",
+     ["Context not configured", "Environment variable missing",
+      "Context not matching"],
+     "### Use Deploy Context\n\n```toml\n[context.production.environment]\nNODE_ENV = \"production\"\n\n[context.deploy-preview.environment]\nNODE_ENV = \"preview\"\n```"),
+
+    ("netlify-deploy-preview", "Netlify Deploy Preview Error",
+     "Fix Netlify deploy preview errors. Resolve pull request preview issues.",
+     ["Preview not generated", "Preview URL not accessible",
+      "Preview build failed", "Preview expired"],
+     "### Check Preview\n\n1. Go to Deploys tab\n2. Find deploy preview\n3. Click URL"),
+
+    ("netlify-draft-pr", "Netlify Draft PR Error",
+     "Fix Netlify draft PR errors. Resolve draft pull request preview issues.",
+     ["Draft PR not previewed", "Preview not generated",
+      "PR not connected"],
+     "### Enable Draft Preview\n\n1. Go to Site Settings > Build & deploy\n2. Enable draft PR previews"),
+
+    ("netlify-branch-subdomain", "Netlify Branch Subdomain Error",
+     "Fix Netlify branch subdomain errors. Resolve branch-specific URL issues.",
+     ["Subdomain not configured", "DNS not set",
+      "SSL not provisioned"],
+     "### Access Branch URL\n\nPattern: `branch-name--site-name.netlify.app`"),
+
+    ("netlify-large-media", "Netlify Large Media Error",
+     "Fix Netlify Large Media errors. Resolve large file storage issues.",
+     ["Large Media not enabled", "File too large",
+      "LFS not configured", "Storage limit exceeded"],
+     "### Enable Large Media\n\n1. Go to Site Settings > Large Media\n2. Enable"),
+
+    ("netlify-git-lfs", "Netlify Git LFS Error",
+     "Fix Netlify Git LFS errors. Resolve Git Large File Storage issues.",
+     ["LFS not installed", "File not tracked",
+      "LFS pointer invalid", "Storage limit exceeded"],
+     "### Install LFS\n\n```bash\ngit lfs install\ngit lfs track \"*.psd\"\n```"),
+
+    ("netlify-media-transformation", "Netlify Media Transformation Error",
+     "Fix Netlify media transformation errors. Resolve image CDN issues.",
+     ["Transformation not working", "Image not found",
+      "Format not supported", "Parameters invalid"],
+     "### Transform Image\n\n```\nhttps://site.com/.netlify/images?url=/image.jpg&w=300&h=200\n```"),
+
+    ("netlify-image-cdn", "Netlify Image CDN Error",
+     "Fix Netlify image CDN errors. Resolve image optimization issues.",
+     ["Image not optimized", "CDN not caching",
+      "Image format wrong"],
+     "### Use Image CDN\n\n```html\n<img src=\"/.netlify/images?url=/photo.jpg&w=800\" />\n```"),
+
+    ("netlify-transform-url", "Netlify Transform URL Error",
+     "Fix Netlify transform URL errors. Resolve image transformation URL issues.",
+     ["URL format incorrect", "Parameters missing",
+      "Source image not found"],
+     "### Format\n\n```\n/.netlify/images?url={source}&w={width}&h={height}&fit={fit}\n```"),
+
+    ("netlify-quality-param", "Netlify Quality Parameter Error",
+     "Fix Netlify quality parameter errors. Resolve image quality settings issues.",
+     ["Quality value invalid", "Quality too low",
+      "Quality parameter not applied"],
+     "### Set Quality\n\n```\n/.netlify/images?url=/image.jpg&quality=80\n```"),
+
+    ("netlify-format-param", "Netlify Format Parameter Error",
+     "Fix Netlify format parameter errors. Resolve image format conversion issues.",
+     ["Format not supported", "Format parameter invalid",
+      "Conversion failed"],
+     "### Set Format\n\n```\n/.netlify/images?url=/image.jpg&fm=webp\n```\n\n### Supported Formats\n\njpg, png, webp, avif, gif"),
+
+    ("netlify-fit-param", "Netlify Fit Parameter Error",
+     "Fix Netlify fit parameter errors. Resolve image resize behavior issues.",
+     ["Fit value invalid", "Image distorted",
+      "Fit not applied"],
+     "### Set Fit\n\n```\n/.netlify/images?url=/image.jpg&w=300&h=300&fit=cover\n```\n\n### Options\n\ncover, contain, fill, inside, outside"),
+
+    ("netlify-position-param", "Netlify Position Parameter Error",
+     "Fix Netlify position parameter errors. Resolve image crop position issues.",
+     ["Position value invalid", "Position not applied",
+      "Crop area wrong"],
+     "### Set Position\n\n```\n/.netlify/images?url=/image.jpg&w=300&h=300&fit=cover&position=top\n```\n\n### Options\n\ntop, bottom, left, right, center"),
+
+    ("netlify-analytics-error", "Netlify Analytics Error",
+     "Fix Netlify Analytics errors. Resolve website analytics tracking issues.",
+     ["Analytics not enabled", "Data not appearing",
+      "Script not loaded", "Ad blockers interfering"],
+     "### Enable Analytics\n\n1. Go to Site Settings > Analytics\n2. Enable"),
+
+    ("netlify-page-views", "Netlify Page Views Error",
+     "Fix Netlify page views errors. Resolve page view tracking issues.",
+     ["Page views not counted", "Unique visitors wrong",
+      "Data not updating"],
+     "### Check Analytics\n\n1. Go to Analytics tab\n2. View page views"),
+
+    ("netlify-bandwidth-report", "Netlify Bandwidth Report Error",
+     "Fix Netlify bandwidth report errors. Resolve bandwidth usage tracking issues.",
+     ["Bandwidth not tracked", "Usage exceeds limit",
+      "Report not accurate"],
+     "### Check Usage\n\n1. Go to Team Settings > Billing\n2. View bandwidth usage"),
+
+    ("netlify-top-pages", "Netlify Top Pages Error",
+     "Fix Netlify top pages errors. Resolve popular page reporting issues.",
+     ["Top pages not showing", "Data not accurate",
+      "Page not listed"],
+     "### View Top Pages\n\n1. Go to Analytics\n2. View top pages"),
+
+    ("netlify-404-report", "Netlify 404 Report Error",
+     "Fix Netlify 404 report errors. Resolve 404 error tracking issues.",
+     ["404s not tracked", "Report not showing",
+      "Page not found in report"],
+     "### Check 404s\n\n1. Go to Analytics > 404s\n2. View report"),
+
+    ("netlify-referrer-report", "Netlify Referrer Report Error",
+     "Fix Netlify referrer report errors. Resolve traffic source reporting issues.",
+     ["Referrers not tracked", "Data not accurate",
+      "Source not shown"],
+     "### View Referrers\n\n1. Go to Analytics\n2. View referrer report"),
+
+    ("netlify-api-error", "Netlify API Error",
+     "Fix Netlify API errors. Resolve API request issues.",
+     ["API endpoint not found", "Authentication failed",
+      "Rate limit exceeded", "Request malformed"],
+     "### Test API\n\n```bash\ncurl -H \"Authorization: Bearer {token}\" https://api.netlify.com/api/v1/sites\n```"),
+
+    ("netlify-personal-token", "Netlify Personal Token Error",
+     "Fix Netlify personal token errors. Resolve API authentication token issues.",
+     ["Token not generated", "Token expired",
+      "Token lacks permissions", "Token revoked"],
+     "### Create Token\n\n1. Go to User Settings > Applications\n2. Create personal access token"),
+
+    ("netlify-oauth-token", "Netlify OAuth Token Error",
+     "Fix Netlify OAuth token errors. Resolve OAuth authentication issues.",
+     ["Token expired", "Token revoked",
+      "Token scope insufficient", "Token invalid"],
+     "### Refresh Token\n\nUse refresh token to get new access token."),
+
+    ("netlify-api-rate-limit", "Netlify API Rate Limit Error",
+     "Fix Netlify API rate limit errors. Resolve API throttling issues.",
+     ["Too many requests", "Rate limit exceeded",
+      "Request burst too high"],
+     "### Reduce Requests\n\n- Implement exponential backoff\n- Cache API responses\n- Batch requests"),
+
+    ("netlify-graphql-api", "Netlify GraphQL API Error",
+     "Fix Netlify GraphQL API errors. Resolve GraphQL query issues.",
+     ["Query syntax error", "Schema mismatch",
+      "Permission denied", "Rate limited"],
+     "### Query API\n\n```bash\ncurl -X POST https://api.netlify.com/api/v1/graphql \\\n  -H \"Authorization: Bearer {token}\" \\\n  -H \"Content-Type: application/json\" \\\n  --data '{\"query\":\"{ allSite { edges { node { name } } } }\"}'\n```"),
+
+    ("netlify-rest-api", "Netlify REST API Error",
+     "Fix Netlify REST API errors. Resolve REST API request issues.",
+     ["Endpoint not found", "Method not allowed",
+      "Request body invalid", "Response format wrong"],
+     "### List Sites\n\n```bash\ncurl -H \"Authorization: Bearer {token}\" https://api.netlify.com/api/v1/sites\n```"),
+
+    ("netlify-cli-error", "Netlify CLI Error",
+     "Fix Netlify CLI errors. Resolve command-line interface issues.",
+     ["CLI not installed", "Command not found",
+      "Authentication required", "Version outdated"],
+     "### Install CLI\n\n```bash\nnpm install -g netlify-cli\n```\n\n### Login\n\n```bash\nnetlify login\n```"),
+
+    ("netlify-deploy-cli", "Netlify Deploy CLI Error",
+     "Fix Netlify deploy CLI errors. Resolve deployment via CLI issues.",
+     ["Deploy command failed", "Site not linked",
+      "Build directory missing", "Token invalid"],
+     "### Deploy\n\n```bash\nnetlify deploy --dir=dist --prod\n```\n\n### Link Site\n\n```bash\nnetlify link\n```"),
+
+    ("netlify-init", "Netlify Init Error",
+     "Fix Netlify init errors. Resolve site initialization issues.",
+     ["Directory not empty", "Site already initialized",
+      "Git repository not found"],
+     "### Initialize\n\n```bash\nnetlify init\n```"),
+
+    ("netlify-link", "Netlify Link Error",
+     "Fix Netlify link errors. Resolve site linking issues.",
+     ["Site not found", "Already linked",
+      "Wrong site linked"],
+     "### Link Site\n\n```bash\nnetlify link\n```\n\n### Unlink\n\n```bash\nnetlify unlink\n```"),
+
+    ("netlify-open", "Netlify Open Error",
+     "Fix Netlify open errors. Resolve site URL opening issues.",
+     ["Site not linked", "Browser not opening",
+      "Site not deployed"],
+     "### Open Site\n\n```bash\nnetlify open --browser\n```"),
+
+    ("netlify-site-not-found", "Netlify Site Not Found Error",
+     "Fix Netlify site not found errors. Resolve site lookup issues.",
+     ["Site does not exist", "Site deleted",
+      "Wrong site ID", "Access denied"],
+     "### List Sites\n\n```bash\nnetlify sites:list\n```"),
+
+    ("netlify-site-transfer", "Netlify Site Transfer Error",
+     "Fix Netlify site transfer errors. Resolve site ownership transfer issues.",
+     ["Transfer not allowed", "Target team not found",
+      "Transfer already pending", "Permission denied"],
+     "### Transfer Site\n\n1. Go to Site Settings > General\n2. Click Transfer site"),
+
+    ("netlify-team-member", "Netlify Team Member Error",
+     "Fix Netlify team member errors. Resolve team membership issues.",
+     ["Member not found", "Invite expired",
+      "Role not assigned", "Member limit reached"],
+     "### Invite Member\n\n1. Go to Team Settings > Members\n2. Click Invite"),
+
+    ("netlify-team-role", "Netlify Team Role Error",
+     "Fix Netlify team role errors. Resolve team permission issues.",
+     ["Role not assigned", "Permission denied",
+      "Role does not exist"],
+     "### Assign Role\n\n1. Go to Team Settings > Members\n2. Click on member\n3. Change role"),
+
+    ("netlify-site-collaborator", "Netlify Site Collaborator Error",
+     "Fix Netlify site collaborator errors. Resolve site access issues.",
+     ["Collaborator not added", "Permission insufficient",
+      "Collaborator limit reached"],
+     "### Add Collaborator\n\n1. Go to Site Settings > Access control\n2. Add collaborator"),
+
+    ("netlify-build-plugin", "Netlify Build Plugin Error",
+     "Fix Netlify build plugin errors. Resolve plugin configuration issues.",
+     ["Plugin not found", "Plugin version incompatible",
+      "Plugin configuration invalid"],
+     "### Add Plugin\n\n```toml\n[[plugins]]\npackage = \"netlify-plugin-cache\"\n  [plugins.inputs]\n  paths = [\"node_modules/.cache\"]\n```"),
+
+    ("netlify-plugin-error", "Netlify Plugin Error",
+     "Fix Netlify plugin errors. Resolve build plugin execution issues.",
+     ["Plugin crashed", "Plugin configuration error",
+      "Plugin not compatible"],
+     "### Check Plugin Logs\n\nView build logs for plugin errors."),
+
+    ("netlify-plugin-input", "Netlify Plugin Input Error",
+     "Fix Netlify plugin input errors. Resolve plugin configuration parameter issues.",
+     ["Input parameter missing", "Input value invalid",
+      "Input type mismatch"],
+     "### Configure Input\n\n```toml\n[[plugins]]\npackage = \"netlify-plugin-image-optim\"\n  [plugins.inputs]\n  image_folder = \"assets/images\"\n```"),
+
+    ("netlify-required-plugin", "Netlify Required Plugin Error",
+     "Fix Netlify required plugin errors. Resolve mandatory plugin issues.",
+     ["Required plugin not installed", "Plugin version mismatch",
+      "Plugin failed"],
+     "### Install Required Plugin\n\n```bash\nnpm install netlify-plugin-example\n```"),
+
+    ("netlify-postprocessing", "Netlify Postprocessing Error",
+     "Fix Netlify postprocessing errors. Resolve post-build processing issues.",
+     ["Postprocessing failed", "Output not generated",
+      "Processing timeout"],
+     "### Check Postprocessing\n\n1. Go to Site Settings > Build & deploy\n2. Check postprocessing settings"),
+
+    ("netlify-prerender", "Netlify Prerender Error",
+     "Fix Netlify prerender errors. Resolve prerendering issues.",
+     ["Prerender not configured", "Prerender service unavailable",
+      "Content not prerendered"],
+     "### Configure Prerender\n\nUse netlify-plugin-prerender for SPA prerendering."),
+
+    ("netlify-spa-redirect", "Netlify SPA Redirect Error",
+     "Fix Netlify SPA redirect errors. Resolve single page application routing issues.",
+     ["SPA routes returning 404", "Redirect not working",
+      "Client-side routing broken"],
+     "### Add Redirect\n\n```toml\n[[redirects]]\nfrom = \"/*\"\nto = \"/index.html\"\nstatus = 200\n```"),
+
+    ("netlify-spa-fallback", "Netlify SPA Fallback Error",
+     "Fix Netlify SPA fallback errors. Resolve fallback page issues.",
+     ["Fallback not configured", "404 page showing instead",
+      "Fallback not working for all routes"],
+     "### Configure Fallback\n\n```toml\n[[redirects]]\nfrom = \"/*\"\nto = \"/index.html\"\nstatus = 200\n```"),
+]
+
+# ============================================================
+# HEROKU
+# ============================================================
+HEROKU_DATA = [
+    ("heroku-app-not-found", "Heroku App Not Found",
+     "Fix Heroku app not found errors. Resolve application lookup issues.",
+     ["App name misspelled", "Logged into wrong account", "App in different team",
+      "App deleted", "Git remote misconfigured"],
+     "### Check App\n\n```bash\nheroku apps\n```\n\n### Verify Remote\n\n```bash\ngit remote -v\n```"),
+
+    ("heroku-app-creation-failed", "Heroku App Creation Failed",
+     "Fix Heroku app creation failed errors. Resolve app provisioning issues.",
+     ["Name already taken", "Account limit reached", "Invalid app name",
+      "Region unavailable", "API error"],
+     "### Create App\n\n```bash\nheroku create my-app\n```\n\n### Check Name\n\n```bash\nheroku apps | grep my-app\n```"),
+
+    ("heroku-app-name-taken", "Heroku App Name Taken Error",
+     "Fix Heroku app name taken errors. Resolve app naming conflicts.",
+     ["Name already in use globally", "Name reserved", "Name contains invalid characters"],
+     "### Use Unique Name\n\n```bash\nheroku create my-unique-app-name\n```\n\n### Add Random Suffix\n\n```bash\nheroku create\n```"),
+
+    ("heroku-stack-not-supported", "Heroku Stack Not Supported Error",
+     "Fix Heroku stack not supported errors. Resolve stack compatibility issues.",
+     ["Stack deprecated", "Stack not available", "App on unsupported stack"],
+     "### Check Stack\n\n```bash\nheroku stack\n```\n\n### Upgrade Stack\n\n```bash\nheroku stack:set heroku-22\n```"),
+
+    ("heroku-stack-migration", "Heroku Stack Migration Error",
+     "Fix Heroku stack migration errors. Resolve stack upgrade issues.",
+     ["Migration failed", "Buildpack incompatible", "Config vars missing",
+      "Migration in progress"],
+     "### Migrate Stack\n\n```bash\nheroku stack:set heroku-22 --app my-app\n```"),
+
+    ("heroku-cedar-stack", "Heroku Cedar Stack Error",
+     "Fix Heroku Cedar stack errors. Resolve Cedar stack specific issues.",
+     ["Cedar stack deprecated", "Features not available", "Migration required"],
+     "### Check Stack\n\n```bash\nheroku stack --app my-app\n```\n\n### Upgrade\n\n```bash\nheroku stack:set heroku-22 --app my-app\n```"),
+
+    ("heroku-container-stack", "Heroku Container Stack Error",
+     "Fix Heroku container stack errors. Resolve Docker deployment issues.",
+     ["Docker not logged in", "Dockerfile missing", "Container push failed",
+      "Port configuration wrong"],
+     "### Login to Heroku Container\n\n```bash\nheroku container:login\n```\n\n### Push\n\n```bash\nheroku container:push web --app my-app\n```"),
+
+    ("heroku-dyno-formation", "Heroku Dyno Formation Error",
+     "Fix Heroku dyno formation errors. Resolve dyno scaling issues.",
+     ["Formation not set", "Invalid dyno type", "Scaling limit reached"],
+     "### Check Formation\n\n```bash\nheroku ps --app my-app\n```\n\n### Scale\n\n```bash\nheroku ps:scale web=1 --app my-app\n```"),
+
+    ("heroku-web-dyno", "Heroku Web Dyno Error",
+     "Fix Heroku web dyno errors. Resolve web process issues.",
+     ["Dyno not running", "Crash loop", "Boot timeout", "Memory exceeded"],
+     "### Check Status\n\n```bash\nheroku ps --app my-app\n```\n\n### Restart\n\n```bash\nheroku ps:restart web --app my-app\n```"),
+
+    ("heroku-worker-dyno", "Heroku Worker Dyno Error",
+     "Fix Heroku worker dyno errors. Resolve background process issues.",
+     ["Worker not running", "Crash loop", "No web dyno", "Resource limit"],
+     "### Check Status\n\n```bash\nheroku ps --app my-app\n```\n\n### Scale Worker\n\n```bash\nheroku ps:scale worker=1 --app my-app\n```"),
+
+    ("heroku-clock-dyno", "Heroku Clock Dyno Error",
+     "Fix Heroku clock dyno errors. Resolve scheduled task process issues.",
+     ["Clock not running", "Scheduler misconfigured", "Task not scheduled"],
+     "### Check Clock\n\n```bash\nheroku ps --app my-app\n```"),
+
+    ("heroku-one-off-dyno", "Heroku One-Off Dyno Error",
+     "Fix Heroku one-off dyno errors. Resolve ad-hoc process issues.",
+     ["One-off dyno failed", "Command not found", "Timeout"],
+     "### Run Command\n\n```bash\nheroku run bash --app my-app\n```"),
+
+    ("heroku-dyno-boot-timeout", "Heroku Dyno Boot Timeout Error",
+     "Fix Heroku dyno boot timeout errors. Resolve slow startup issues.",
+     ["Application takes too long to start", "Dependencies slow to load",
+      "Health check failing"],
+     "### Check Boot Time\n\n```bash\nheroku logs --tail --app my-app\n```\n\n### Optimize\n\n- Reduce dependencies\n- Use compiled assets\n- Optimize initialization"),
+
+    ("heroku-dyno-crash", "Heroku Dyno Crash Error",
+     "Fix Heroku dyno crash errors. Resolve dyno process crashes.",
+     ["Application error", "Out of memory", "Uncaught exception",
+      "Configuration error"],
+     "### Check Logs\n\n```bash\nheroku logs --tail --app my-app\n```\n\n### Restart\n\n```bash\nheroku ps:restart --app my-app\n```"),
+
+    ("heroku-r14-memory-quota", "Heroku R14 Memory Quota Exceeded",
+     "Fix Heroku R14 memory quota errors. Resolve memory limit issues.",
+     ["Memory quota exceeded", "Swap in use", "Process using too much memory"],
+     "### Check Memory\n\n```bash\nheroku metrics:memory --app my-app\n```\n\n### Upgrade Plan\n\n```bash\nheroku ps:resize web=2x --app my-app\n```"),
+
+    ("heroku-r15-memory-quert", "Heroku R15 Memory Quert Error",
+     "Fix Heroku R15 memory quert errors. Resolve memory monitoring issues.",
+     ["Memory monitoring error", "Metrics unavailable"],
+     "### Check Metrics\n\n```bash\nheroku metrics --app my-app\n```"),
+
+    ("heroku-r16-memory", "Heroku R16 Memory Error",
+     "Fix Heroku R16 memory errors. Resolve memory configuration issues.",
+     ["Memory configuration invalid", "Memory limit exceeded"],
+     "### Check Memory Usage\n\n```bash\nheroku metrics:memory --app my-app\n```"),
+
+    ("heroku-h10-app-crashed", "Heroku H10 App Crashed Error",
+     "Fix Heroku H10 app crashed errors. Resolve application crash issues.",
+     ["Application crashed on startup", "Process exited with non-zero status",
+      "Runtime error"],
+     "### Check Logs\n\n```bash\nheroku logs --tail --app my-app\n```\n\n### Restart\n\n```bash\nheroku ps:restart --app my-app\n```"),
+
+    ("heroku-h11-backoff", "Heroku H11 Backoff Error",
+     "Fix Heroku H11 backoff errors. Resolve connection backoff issues.",
+     ["Connection draining", "Server overloaded", "Too many connections"],
+     "### Wait and Retry\n\nH11 errors resolve automatically. Check application logs."),
+
+    ("heroku-h12-request-timeout", "Heroku H12 Request Timeout Error",
+     "Fix Heroku H12 request timeout errors. Resolve 30-second timeout issues.",
+     ["Request takes longer than 30 seconds", "Slow database query",
+      "External API timeout", "Blocking operation"],
+     "### Optimize Request\n\n- Use background jobs for long tasks\n- Add caching\n- Optimize queries"),
+
+    ("heroku-h13-connection-closed", "Heroku H13 Connection Closed Error",
+     "Fix Heroku H13 connection closed errors. Resolve premature connection close.",
+     ["Server closed connection early", "Response too large",
+      "Timeout too short"],
+     "### Check Application\n\nReview code for premature response completion."),
+
+    ("heroku-h14-no-web-dyno", "Heroku H14 No Web Dyno Error",
+     "Fix Heroku H14 no web dyno errors. Resolve missing web process issues.",
+     ["Web dyno not scaled", "Web process not defined", "All dynos crashed"],
+     "### Scale Web Dyno\n\n```bash\nheroku ps:scale web=1 --app my-app\n```\n\n### Check Procfile\n\n```\nweb: node server.js\n```"),
+
+    ("heroku-h15-idle-connection", "Heroku H15 Idle Connection Error",
+     "Fix Heroku H15 idle connection errors. Resolve idle connection timeout issues.",
+     ["Connection idle too long", "Keep-alive timeout exceeded"],
+     "### Reduce Idle Time\n\nConfigure client to close idle connections."),
+
+    ("heroku-h16-unable-to-bind", "Heroku H16 Unable to Bind Error",
+     "Fix Heroku H16 unable to bind errors. Resolve port binding issues.",
+     ["Port not configured", "Port already in use", "PORT env not set"],
+     "### Use PORT Environment\n\n```javascript\nconst port = process.env.PORT || 3000;\napp.listen(port);\n```"),
+
+    ("heroku-h17-release-not-found", "Heroku H17 Release Not Found Error",
+     "Fix Heroku H17 release not found errors. Resolve release slug issues.",
+     ["Release not found", "Slug not available", "Release failed"],
+     "### Check Releases\n\n```bash\nheroku releases --app my-app\n```"),
+
+    ("heroku-h18-server-error", "Heroku H18 Server Error",
+     "Fix Heroku H18 server errors. Resolve upstream server issues.",
+     ["Application returning 5xx errors", "Server crashed",
+      "Configuration error"],
+     "### Check Logs\n\n```bash\nheroku logs --tail --app my-app\n```"),
+
+    ("heroku-h19-backend-connection", "Heroku H19 Backend Connection Error",
+     "Fix Heroku H19 backend connection errors. Resolve backend connection issues.",
+     ["Backend not responding", "Connection refused", "Timeout"],
+     "### Check Backend\n\n```bash\nheroku logs --tail --app my-app\n```"),
+
+    ("heroku-h20-boot-timeout", "Heroku H20 Boot Timeout Error",
+     "Fix Heroku H20 boot timeout errors. Resolve application startup timeout.",
+     ["Application took too long to start", "Dependencies slow"],
+     "### Optimize Boot\n\n- Reduce startup time\n- Lazy load dependencies\n- Use compiled assets"),
+
+    ("heroku-h21-backend", "Heroku H21 Backend Error",
+     "Fix Heroku H21 backend errors. Resolve backend process issues.",
+     ["Backend not running", "Process crashed"],
+     "### Check Process\n\n```bash\nheroku ps --app my-app\n```"),
+
+    ("heroku-h22-buffer", "Heroku H22 Buffer Error",
+     "Fix Heroku H22 buffer errors. Resolve HTTP request buffer issues.",
+     ["Request body too large", "Buffer overflow"],
+     "### Reduce Request Size\n\nCompress or chunk large requests."),
+
+    ("heroku-h23-error", "Heroku H23 Error",
+     "Fix Heroku H23 errors. Resolve HTTP header issues.",
+     ["Malformed HTTP header", "Invalid request format"],
+     "### Check Request Format\n\nEnsure HTTP headers are properly formatted."),
+
+    ("heroku-h24-forbidden", "Heroku H24 Forbidden Error",
+     "Fix Heroku H24 forbidden errors. Resolve access restriction issues.",
+     ["Request forbidden", "IP blocked", "Method not allowed"],
+     "### Check Access\n\nReview firewall and access control settings."),
+
+    ("heroku-h25-http", "Heroku H25 HTTP Error",
+     "Fix Heroku H25 HTTP errors. Resolve HTTP protocol issues.",
+     ["HTTP version not supported", "Protocol error"],
+     "### Check HTTP Version\n\nUse HTTP/1.1 or HTTP/2."),
+
+    ("heroku-h26-request", "Heroku H26 Request Error",
+     "Fix Heroku H26 request errors. Resolve request parsing issues.",
+     ["Malformed request", "Request too large"],
+     "### Check Request\n\nValidate request format and size."),
+
+    ("heroku-h27-client", "Heroku H27 Client Error",
+     "Fix Heroku H27 client errors. Resolve client-side connection issues.",
+     ["Client disconnected", "Connection reset"],
+     "### Check Client\n\nEnsure client maintains connection."),
+
+    ("heroku-h28-client", "Heroku H28 Client Error",
+     "Fix Heroku H28 client errors. Resolve client timeout issues.",
+     ["Client timeout", "Slow client"],
+     "### Increase Timeout\n\nConfigure client timeout settings."),
+
+    ("heroku-h30-file", "Heroku H30 File Error",
+     "Fix Heroku H30 file errors. Resolve file serving issues.",
+     ["File not found", "Permission denied", "File too large"],
+     "### Check File\n\n```bash\nheroku run ls public/ --app my-app\n```"),
+
+    ("heroku-h31-file", "Heroku H31 File Error",
+     "Fix Heroku H31 file errors. Resolve static file issues.",
+     ["Static file not served", "Path incorrect"],
+     "### Check Static Files\n\nEnsure files are in the correct directory."),
+
+    ("heroku-h80-maintenance", "Heroku H80 Maintenance Mode Error",
+     "Fix Heroku H80 maintenance mode errors. Resolve maintenance mode issues.",
+     ["Maintenance mode enabled", "Site showing maintenance page"],
+     "### Disable Maintenance\n\n```bash\nheroku maintenance:off --app my-app\n```"),
+
+    ("heroku-h81-blank-app", "Heroku H81 Blank App Error",
+     "Fix Heroku H81 blank app errors. Resolve empty application issues.",
+     ["No application code deployed", "Slug empty", "Build failed"],
+     "### Deploy Code\n\n```bash\ngit push heroku main\n```"),
+
+    ("heroku-h82-free-dyno", "Heroku H82 Free Dyno Error",
+     "Fix Heroku H82 free dyno errors. Resolve free tier limitations.",
+     ["Free dyno sleeping", "Idle timeout", "No web traffic"],
+     "### Keep Awake\n\nUse a ping service or upgrade to paid plan."),
+
+    ("heroku-h99-unknown", "Heroku H99 Unknown Error",
+     "Fix Heroku H99 unknown errors. Resolve unspecified Heroku platform issues.",
+     ["Unknown platform error", "Service disruption"],
+     "### Check Status\n\nVisit status.heroku.com for platform status."),
+
+    ("heroku-build-failed", "Heroku Build Failed",
+     "Fix Heroku build failed errors. Resolve compilation failures.",
+     ["Buildpack detection failed", "Compilation error", "Dependency installation failed",
+      "Memory exceeded during build"],
+     "### Check Logs\n\n```bash\nheroku logs --tail --app my-app\n```\n\n### Test Build\n\n```bash\nheroku builds:create --app my-app\n```"),
+
+    ("heroku-slug-size", "Heroku Slug Size Too Large Error",
+     "Fix Heroku slug size too large errors. Resolve deployment size limit issues.",
+     ["Slug exceeds 500 MB limit", "Too many dependencies",
+      "Large binary files included"],
+     "### Check Slug Size\n\n```bash\nheroku ps --app my-app\n```\n\n### Reduce Size\n\n- Remove unused files\n- Use .slugignore\n- Exclude dev dependencies"),
+
+    ("heroku-slug-compiler", "Heroku Slug Compiler Error",
+     "Fix Heroku slug compiler errors. Resolve slug compilation issues.",
+     ["Compilation failed", "Buildpack error", "Timeout"],
+     "### Check Buildpack\n\n```bash\nheroku buildpacks --app my-app\n```"),
+
+    ("heroku-buildpack-not-found", "Heroku Buildpack Not Found Error",
+     "Fix Heroku buildpack not found errors. Resolve buildpack detection issues.",
+     ["Buildpack not installed", "Buildpack URL incorrect", "No matching buildpack"],
+     "### Set Buildpack\n\n```bash\nheroku buildpacks:set heroku/nodejs --app my-app\n```"),
+
+    ("heroku-multiple-buildpacks", "Heroku Multiple Buildpacks Error",
+     "Fix Heroku multiple buildpacks errors. Resolve buildpack ordering issues.",
+     ["Buildpacks conflicting", "Order incorrect", "Version mismatch"],
+     "### List Buildpacks\n\n```bash\nheroku buildpacks --app my-app\n```\n\n### Set Order\n\n```bash\nheroku buildpacks:add heroku/nodejs --app my-app\nheroku buildpacks:add heroku/python --app my-app\n```"),
+
+    ("heroku-buildpack-detect", "Heroku Buildpack Detect Error",
+     "Fix Heroku buildpack detect errors. Resolve automatic buildpack detection issues.",
+     ["Detection failed", "Multiple candidates", "No matching buildpack"],
+     "### Set Explicit Buildpack\n\n```bash\nheroku buildpacks:set heroku/nodejs --app my-app\n```"),
+
+    ("heroku-buildpack-compile", "Heroku Buildpack Compile Error",
+     "Fix Heroku buildpack compile errors. Resolve buildpack compilation issues.",
+     ["Compilation failed", "Missing dependencies", "Version incompatible"],
+     "### Check Compile Output\n\n```bash\nheroku logs --tail --app my-app\n```"),
+
+    ("heroku-buildpack-release", "Heroku Buildpack Release Error",
+     "Fix Heroku buildpack release errors. Resolve release phase issues.",
+     ["Release script failed", "Migrations failed", "Process not starting"],
+     "### Check Release Phase\n\n```bash\nheroku logs --tail --app my-app\n```"),
+
+    ("heroku-node-build", "Heroku Node.js Build Error",
+     "Fix Heroku Node.js build errors. Resolve Node.js compilation issues.",
+     ["npm install failed", "Node version mismatch", "Native module compilation failed"],
+     "### Set Node Version\n\n```bash\nheroku config:set NODE_VERSION=18 --app my-app\n```\n\n### Check package.json\n\n```json\n{\"engines\": {\"node\": \">=18.0.0\"}}\n```"),
+
+    ("heroku-npm-error", "Heroku npm Install Error",
+     "Fix Heroku npm install errors. Resolve npm dependency installation issues.",
+     ["Package not found", "Version conflict", "Peer dependency error",
+      "npm cache corrupted"],
+     "### Clear Cache\n\n```bash\nheroku plugins:install heroku-repo\nheroku repo:purge_cache --app my-app\n```\n\n### Check package-lock.json\n\n```bash\ngit rm -r node_modules\nnpm install\ngit add package-lock.json\ngit commit -m \"Update lock file\"\n```"),
+
+    ("heroku-python-build", "Heroku Python Build Error",
+     "Fix Heroku Python build errors. Resolve Python compilation issues.",
+     ["pip install failed", "Python version mismatch", "System dependency missing"],
+     "### Set Python Version\n\n```bash\nheroku config:set PYTHON_VERSION=3.11 --app my-app\n```"),
+
+    ("heroku-pip-error", "Heroku pip Install Error",
+     "Fix Heroku pip install errors. Resolve Python dependency installation issues.",
+     ["Package not found", "Version incompatible", "Build dependency missing"],
+     "### Check requirements.txt\n\n```\nflask==2.3.0\nrequests==2.31.0\n```"),
+
+    ("heroku-java-build", "Heroku Java Build Error",
+     "Fix Heroku Java build errors. Resolve Java compilation issues.",
+     ["Java version mismatch", "Maven/Gradle error", "Dependency missing"],
+     "### Set Java Version\n\n```bash\nheroku config:set JAVA_OPTS=\"-Xmx512m\" --app my-app\n```"),
+
+    ("heroku-maven-error", "Heroku Maven Error",
+     "Fix Heroku Maven errors. Resolve Maven build issues.",
+     ["Maven not found", "pom.xml error", "Dependency resolution failed"],
+     "### Check pom.xml\n\nVerify dependencies and build configuration."),
+
+    ("heroku-gradle-error", "Heroku Gradle Error",
+     "Fix Heroku Gradle errors. Resolve Gradle build issues.",
+     ["Gradle not found", "build.gradle error", "Task failed"],
+     "### Check build.gradle\n\nVerify dependencies and tasks."),
+
+    ("heroku-ruby-build", "Heroku Ruby Build Error",
+     "Fix Heroku Ruby build errors. Resolve Ruby compilation issues.",
+     ["Ruby version mismatch", "Gem installation failed", "Native extension failed"],
+     "### Set Ruby Version\n\n```bash\nheroku config:set RUBY_VERSION=3.1 --app my-app\n```"),
+
+    ("heroku-bundle-install", "Heroku Bundle Install Error",
+     "Fix Heroku bundle install errors. Resolve Ruby gem installation issues.",
+     ["Gem not found", "Version conflict", "Native extension failed"],
+     "### Check Gemfile\n\n```ruby\nruby '3.1.0'\ngem 'rails', '~> 7.0'\n```"),
+
+    ("heroku-go-build", "Heroku Go Build Error",
+     "Fix Heroku Go build errors. Resolve Go compilation issues.",
+     ["Go version mismatch", "Module not initialized", "Dependency missing"],
+     "### Set Go Version\n\n```bash\nheroku config:set GO_VERSION=1.21 --app my-app\n```"),
+
+    ("heroku-golang-build", "Heroku Golang Build Error",
+     "Fix Heroku Golang build errors. Resolve Go build issues.",
+     ["Build failed", "Module error", "Import path wrong"],
+     "### Check go.mod\n\n```go\nmodule github.com/user/repo\n\ngo 1.21\n```"),
+
+    ("heroku-scala-build", "Heroku Scala Build Error",
+     "Fix Heroku Scala build errors. Resolve Scala compilation issues.",
+     ["Scala version mismatch", "SBT error", "Dependency missing"],
+     "### Check build.sbt\n\nVerify Scala version and dependencies."),
+
+    ("heroku-sbt-error", "Heroku SBT Error",
+     "Fix Heroku SBT errors. Resolve Scala Build Tool issues.",
+     ["SBT not found", "Build definition error", "Plugin error"],
+     "### Check build.sbt\n\nVerify build configuration."),
+
+    ("heroku-php-build", "Heroku PHP Build Error",
+     "Fix Heroku PHP build errors. Resolve PHP compilation issues.",
+     ["Extension missing", "PHP version mismatch", "Composer error"],
+     "### Check composer.json\n\n```json\n{\"require\": {\"php\": \">=8.1\"}}\n```"),
+
+    ("heroku-composer-install", "Heroku Composer Install Error",
+     "Fix Heroku composer install errors. Resolve PHP dependency installation issues.",
+     ["Package not found", "Version conflict", "Extension missing"],
+     "### Check composer.json\n\nVerify dependencies and extensions."),
+
+    ("heroku-static-build", "Heroku Static Build Error",
+     "Fix Heroku static build errors. Resolve static site deployment issues.",
+     ["Build command missing", "Output directory wrong", "No web server"],
+     "### Configure Static Build\n\n```bash\nheroku buildpacks:set heroku/nodejs --app my-app\nheroku config:set NPM_CONFIG_PRODUCTION=false --app my-app\n```"),
+
+    ("heroku-asset-precompile", "Heroku Asset Precompile Error",
+     "Fix Heroku asset precompile errors. Resolve asset compilation issues.",
+     ["Precompile failed", "Missing dependencies", "Asset pipeline error"],
+     "### Check Precompile\n\n```bash\nheroku run rake assets:precompile --app my-app\n```"),
+
+    ("heroku-rails-asset", "Heroku Rails Asset Error",
+     "Fix Heroku Rails asset errors. Resolve Rails asset pipeline issues.",
+     ["Asset not compiled", "Sprockets error", "Webpacker error"],
+     "### Check Assets\n\n```bash\nheroku run rake assets:precompile --app my-app\n```"),
+
+    ("heroku-django-collectstatic", "Heroku Django Collectstatic Error",
+     "Fix Heroku Django collectstatic errors. Resolve static file collection issues.",
+     ["Collectstatic failed", "Static files missing", "Configuration error"],
+     "### Run Collectstatic\n\n```bash\nheroku run python manage.py collectstatic --app my-app\n```"),
+
+    ("heroku-database-not-provisioned", "Heroku Database Not Provisioned Error",
+     "Fix Heroku database not provisioned errors. Resolve database addon issues.",
+     ["Database addon not installed", "Addon not attached", "Plan insufficient"],
+     "### Add Database\n\n```bash\nheroku addons:create heroku-postgresql:essential-0 --app my-app\n```"),
+
+    ("heroku-postgres-addon", "Heroku Postgres Addon Error",
+     "Fix Heroku Postgres addon errors. Resolve PostgreSQL database issues.",
+     ["Addon not found", "Connection refused", "Database full"],
+     "### Check Addon\n\n```bash\nheroku addons --app my-app\n```\n\n### Connect\n\n```bash\nheroku pg:psql --app my-app\n```"),
+
+    ("heroku-connection-limit", "Heroku Connection Limit Error",
+     "Fix Heroku connection limit errors. Resolve database connection pool issues.",
+     ["Too many connections", "Pool exhausted", "Idle connections"],
+     "### Check Connections\n\n```bash\nheroku pg:info --app my-app\n```\n\n### Kill Idle\n\n```bash\nheroku pg:killall --app my-app\n```"),
+
+    ("heroku-credential-error", "Heroku Credential Error",
+     "Fix Heroku credential errors. Resolve database authentication issues.",
+     ["Invalid credentials", "Password changed", "Role does not exist"],
+     "### Reset Credentials\n\n```bash\nheroku pg:credentials:rotate --app my-app\n```"),
+
+    ("heroku-ssl-required", "Heroku SSL Required Error",
+     "Fix Heroku SSL required errors. Resolve database SSL connection issues.",
+     ["SSL not configured", "Connection rejected without SSL"],
+     "### Enable SSL\n\nAppend `?sslmode=require` to database URL."),
+
+    ("heroku-db-migrate-error", "Heroku Database Migrate Error",
+     "Fix Heroku database migrate errors. Resolve migration execution issues.",
+     ["Migration failed", "Schema conflict", "Permission denied"],
+     "### Run Migrations\n\n```bash\nheroku run rake db:migrate --app my-app\n```"),
+
+    ("heroku-pg-push", "Heroku pg push Error",
+     "Fix Heroku pg push errors. Resolve database push issues.",
+     ["Push failed", "Schema mismatch", "Permission denied"],
+     "### Push Database\n\n```bash\nheroku pg:push mydb DATABASE_URL --app my-app\n```"),
+
+    ("heroku-pg-pull", "Heroku pg pull Error",
+     "Fix Heroku pg pull errors. Resolve database pull issues.",
+     ["Pull failed", "Database not found", "Permission denied"],
+     "### Pull Database\n\n```bash\nheroku pg:pull DATABASE_URL mydb --app my-app\n```"),
+
+    ("heroku-datastore-error", "Heroku Datastore Error",
+     "Fix Heroku datastore errors. Resolve database service issues.",
+     ["Service unavailable", "Connection timeout", "Quota exceeded"],
+     "### Check Status\n\n```bash\nheroku pg:info --app my-app\n```"),
+
+    ("heroku-redis-addon", "Heroku Redis Addon Error",
+     "Fix Heroku Redis addon errors. Resolve Redis cache issues.",
+     ["Addon not found", "Connection refused", "Memory full"],
+     "### Add Redis\n\n```bash\nheroku addons:create heroku-redis:mini --app my-app\n```\n\n### Check Status\n\n```bash\nheroku redis:info --app my-app\n```"),
+
+    ("heroku-redis-tls", "Heroku Redis TLS Error",
+     "Fix Heroku Redis TLS errors. Resolve Redis secure connection issues.",
+     ["TLS not configured", "Certificate error", "Connection rejected"],
+     "### Enable TLS\n\nUse `rediss://` URL scheme for TLS connections."),
+
+    ("heroku-redis-config", "Heroku Redis Config Error",
+     "Fix Heroku Redis config errors. Resolve Redis configuration issues.",
+     ["Configuration invalid", "Memory limit exceeded", "Eviction policy wrong"],
+     "### Check Config\n\n```bash\nheroku redis:info --app my-app\n```"),
+
+    ("heroku-redis-url", "Heroku Redis URL Error",
+     "Fix Heroku Redis URL errors. Resolve Redis connection URL issues.",
+     ["URL not set", "URL incorrect", "URL format invalid"],
+     "### Get URL\n\n```bash\nheroku config:get REDIS_URL --app my-app\n```"),
+
+    ("heroku-addon-not-found", "Heroku Addon Not Found Error",
+     "Fix Heroku addon not found errors. Resolve addon lookup issues.",
+     ["Addon does not exist", "Addon in different region", "Addon name misspelled"],
+     "### List Addons\n\n```bash\nheroku addons --app my-app\n```"),
+
+    ("heroku-addon-provisioning", "Heroku Addon Provisioning Error",
+     "Fix Heroku addon provisioning errors. Resolve addon creation issues.",
+     ["Provisioning failed", "Plan unavailable", "Resource limit reached"],
+     "### Create Addon\n\n```bash\nheroku addons:create addon-name:plan --app my-app\n```"),
+
+    ("heroku-addon-upgrade", "Heroku Addon Upgrade Error",
+     "Fix Heroku addon upgrade errors. Resolve plan upgrade issues.",
+     ["Upgrade failed", "Plan not available", "Data migration failed"],
+     "### Upgrade\n\n```bash\nheroku addons:upgrade addon-name:new-plan --app my-app\n```"),
+
+    ("heroku-addon-downgrade", "Heroku Addon Downgrade Error",
+     "Fix Heroku addon downgrade errors. Resolve plan downgrade issues.",
+     ["Downgrade failed", "Data too large for plan", "Plan not available"],
+     "### Downgrade\n\n```bash\nheroku addons:downgrade addon-name:new-plan --app my-app\n```"),
+
+    ("heroku-addon-attachment", "Heroku Addon Attachment Error",
+     "Fix Heroku addon attachment errors. Resolve addon-to-app attachment issues.",
+     ["Addon not attached", "Attachment failed", "Addon in different team"],
+     "### Attach Addon\n\n```bash\nheroku addons:attach addon-name --app my-app\n```"),
+
+    ("heroku-addon-detach", "Heroku Addon Detach Error",
+     "Fix Heroku addon detach errors. Resolve addon removal issues.",
+     ["Addon in use", "Detach failed", "Data loss warning"],
+     "### Detach Addon\n\n```bash\nheroku addons:detach addon-name --app my-app\n```"),
+
+    ("heroku-addon-destroy", "Heroku Addon Destroy Error",
+     "Fix Heroku addon destroy errors. Resolve addon deletion issues.",
+     ["Addon in use", "Destroy failed", "Data will be lost"],
+     "### Destroy Addon\n\n```bash\nheroku addons:destroy addon-name --app my-app --confirm my-app\n```"),
+
+    ("heroku-config-var", "Heroku Config Var Error",
+     "Fix Heroku config var errors. Resolve environment variable issues.",
+     ["Config var not set", "Var name invalid", "Var value too large"],
+     "### Set Config Var\n\n```bash\nheroku config:set MY_VAR=value --app my-app\n```\n\n### List Vars\n\n```bash\nheroku config --app my-app\n```"),
+
+    ("heroku-config-set", "Heroku Config Set Error",
+     "Fix Heroku config set errors. Resolve environment variable setting issues.",
+     ["Set failed", "Var too large", "Rate limited"],
+     "### Set\n\n```bash\nheroku config:set KEY=VALUE --app my-app\n```"),
+
+    ("heroku-config-unset", "Heroku Config Unset Error",
+     "Fix Heroku config unset errors. Resolve environment variable removal issues.",
+     ["Var not found", "Unset failed"],
+     "### Unset\n\n```bash\nheroku config:unset MY_VAR --app my-app\n```"),
+
+    ("heroku-config-limit", "Heroku Config Limit Error",
+     "Fix Heroku config limit errors. Resolve config var limit issues.",
+     ["Too many config vars", "Total size exceeded"],
+     "### Check Limits\n\n```bash\nheroku config --app my-app\n```\n\n### Remove Unused\n\n```bash\nheroku config:unset UNUSED_VAR --app my-app\n```"),
+
+    ("heroku-env-var-size", "Heroku Environment Variable Size Error",
+     "Fix Heroku env var size errors. Resolve variable size limit issues.",
+     ["Variable value too large", "Total config size exceeded"],
+     "### Check Size\n\n```bash\nheroku config --app my-app\n```\n\n### Reduce Size\n\nStore large values in files or external services."),
+
+    ("heroku-release-error", "Heroku Release Error",
+     "Fix Heroku release errors. Resolve release creation and deployment issues.",
+     ["Release failed", "Slug not found", "Config error", "Migrations failed"],
+     "### Check Releases\n\n```bash\nheroku releases --app my-app\n```\n\n### Rollback\n\n```bash\nheroku rollback --app my-app\n```"),
+
+    ("heroku-release-phase", "Heroku Release Phase Error",
+     "Fix Heroku release phase errors. Resolve release script execution issues.",
+     ["Release script failed", "Script not found", "Timeout"],
+     "### Check Release Phase\n\n```bash\nheroku logs --tail --app my-app\n```"),
+
+    ("heroku-run-command", "Heroku Run Command Error",
+     "Fix Heroku run command errors. Resolve ad-hoc command execution issues.",
+     ["Command not found", "Permission denied", "Timeout"],
+     "### Run Command\n\n```bash\nheroku run bash --app my-app\n```"),
+
+    ("heroku-one-off-process", "Heroku One-Off Process Error",
+     "Fix Heroku one-off process errors. Resolve ad-hoc process issues.",
+     ["Process failed", "Command not found", "Timeout"],
+     "### Run Process\n\n```bash\nheroku run \"node script.js\" --app my-app\n```"),
+
+    ("heroku-run-timeout", "Heroku Run Timeout Error",
+     "Fix Heroku run timeout errors. Resolve command timeout issues.",
+     ["Command exceeds time limit", "Long-running task", "Connection lost"],
+     "### Increase Timeout\n\n```bash\nheroku run bash --app my-app --timeout 600\n```"),
+
+    ("heroku-logs", "Heroku Logs Error",
+     "Fix Heroku logs errors. Resolve log viewing issues.",
+     ["Logs not available", "Log drain not configured", "Retention expired"],
+     "### View Logs\n\n```bash\nheroku logs --tail --app my-app\n```\n\n### View Specific Source\n\n```bash\nheroku logs --source app --app my-app\n```"),
+
+    ("heroku-log-drain", "Heroku Log Drain Error",
+     "Fix Heroku log drain errors. Resolve log forwarding issues.",
+     ["Drain not configured", "Drain URL invalid", "Drain not receiving logs"],
+     "### Add Drain\n\n```bash\nheroku drains:add https://logs.example.com --app my-app\n```"),
+
+    ("heroku-syslog-drain", "Heroku Syslog Drain Error",
+     "Fix Heroku syslog drain errors. Resolve syslog forwarding issues.",
+     ["Syslog drain not configured", "URL invalid", "Logs not arriving"],
+     "### Add Syslog Drain\n\n```bash\nheroku drains:add syslog+tls://logs.example.com:514 --app my-app\n```"),
+
+    ("heroku-https-drain", "Heroku HTTPS Drain Error",
+     "Fix Heroku HTTPS drain errors. Resolve HTTPS log forwarding issues.",
+     ["HTTPS drain not configured", "URL invalid", "Certificate error"],
+     "### Add HTTPS Drain\n\n```bash\nheroku drains:add https://logs.example.com --app my-app\n```"),
+
+    ("heroku-papertrail", "Heroku Papertrail Error",
+     "Fix Heroku Papertrail errors. Resolve Papertrail logging issues.",
+     ["Papertrail not connected", "Logs not syncing", "Account issue"],
+     "### Add Papertrail\n\n```bash\nheroku addons:create papertrail:starter --app my-app\n```"),
+
+    ("heroku-log-retention", "Heroku Log Retention Error",
+     "Fix Heroku log retention errors. Resolve log storage issues.",
+     ["Logs expired", "Retention period exceeded", "Log drain needed"],
+     "### Check Retention\n\nFree: 1 day. Paid: 2 days. Use log drain for longer retention."),
+
+    ("heroku-metrics-error", "Heroku Metrics Error",
+     "Fix Heroku metrics errors. Resolve metrics collection issues.",
+     ["Metrics not available", "Data not accurate", "Dashboard error"],
+     "### View Metrics\n\n```bash\nheroku metrics --app my-app\n```"),
+
+    ("heroku-dashboard-metrics", "Heroku Dashboard Metrics Error",
+     "Fix Heroku dashboard metrics errors. Resolve metrics display issues.",
+     ["Metrics not loading", "Data outdated", "Chart error"],
+     "### Check Metrics\n\n1. Go to Heroku dashboard\n2. Select app\n3. Go to Metrics tab"),
+
+    ("heroku-apm-error", "Heroku APM Error",
+     "Fix Heroku APM errors. Resolve application performance monitoring issues.",
+     ["APM not configured", "Data not collected", "Agent not installed"],
+     "### Install APM\n\n```bash\nheroku addons:create newrelic:developer --app my-app\n```"),
+
+    ("heroku-scout-apm", "Heroku Scout APM Error",
+     "Fix Heroku Scout APM errors. Resolve Scout monitoring issues.",
+     ["Scout not connected", "Data not syncing", "Agent error"],
+     "### Add Scout\n\n```bash\nheroku addons:create scout:developer --app my-app\n```"),
+
+    ("heroku-new-relic", "Heroku New Relic Error",
+     "Fix Heroku New Relic errors. Resolve New Relic monitoring issues.",
+     ["New Relic not configured", "License key invalid", "Agent not running"],
+     "### Add New Relic\n\n```bash\nheroku addons:create newrelic:developer --app my-app\n```"),
+
+    ("heroku-deploy-hook", "Heroku Deploy Hook Error",
+     "Fix Heroku deploy hook errors. Resolve deployment notification issues.",
+     ["Hook not triggered", "URL incorrect", "Hook not configured"],
+     "### Add Hook\n\n```bash\nheroku addons:add deployhooks:http --app my-app\n```"),
+
+    ("heroku-http-post-hook", "Heroku HTTP Post Hook Error",
+     "Fix Heroku HTTP post hook errors. Resolve webhook notification issues.",
+     ["Hook not firing", "URL unreachable", "Payload invalid"],
+     "### Configure Hook\n\n1. Go to app settings\n2. Add deploy hook\n3. Enter URL"),
+
+    ("heroku-release-hook", "Heroku Release Hook Error",
+     "Fix Heroku release hook errors. Resolve release notification issues.",
+     ["Hook not triggered", "Script failed", "Hook not configured"],
+     "### Add Release Hook\n\n```bash\nheroku addons:create deployhooks:http --app my-app\n```"),
+
+    ("heroku-ci", "Heroku CI Error",
+     "Fix Heroku CI errors. Resolve continuous integration issues.",
+     ["CI not enabled", "Test failed", "Buildpack error", "Config error"],
+     "### Enable CI\n\n```bash\nheroku features:enable ci --app my-app\n```"),
+
+    ("heroku-test-run", "Heroku Test Run Error",
+     "Fix Heroku test run errors. Resolve test execution issues.",
+     ["Tests failing", "Test environment error", "Dependencies missing"],
+     "### Run Tests\n\n```bash\nheroku ci:run --app my-app\n```"),
+
+    ("heroku-pipeline-promotion", "Heroku Pipeline Promotion Error",
+     "Fix Heroku pipeline promotion errors. Resolve stage promotion issues.",
+     ["Promotion failed", "Slug not available", "Target app error"],
+     "### Promote\n\n```bash\nheroku pipelines:promote --app my-app-staging\n```"),
+
+    ("heroku-review-app", "Heroku Review App Error",
+     "Fix Heroku review app errors. Resolve PR preview app issues.",
+     ["Review app not created", "Build failed", "Config error"],
+     "### Enable Review Apps\n\n1. Go to Pipeline settings\n2. Enable review apps"),
+
+    ("heroku-pipeline-error", "Heroku Pipeline Error",
+     "Fix Heroku pipeline errors. Resolve pipeline configuration issues.",
+     ["Pipeline not configured", "Apps not connected", "Stage not set"],
+     "### Create Pipeline\n\n```bash\nheroku pipelines:create --app my-app\n```"),
+
+    ("heroku-review-app-creation", "Heroku Review App Creation Error",
+     "Fix Heroku review app creation errors. Resolve automatic review app issues.",
+     ["Creation failed", "Review app limit reached", "Buildpack error"],
+     "### Check Review App\n\n1. Go to Pipeline\n2. View review apps"),
+
+    ("heroku-pr-deploy", "Heroku PR Deploy Error",
+     "Fix Heroku PR deploy errors. Resolve pull request deployment issues.",
+     ["PR not connected", "Deploy failed", "Config error"],
+     "### Check PR\n\n1. Go to Pipeline\n2. View PR status"),
+
+    ("heroku-auto-deploy", "Heroku Auto Deploy Error",
+     "Fix Heroku auto deploy errors. Resolve automatic deployment issues.",
+     ["Auto deploy not configured", "Deploy failed", "Branch not matched"],
+     "### Configure Auto Deploy\n\n1. Go to Pipeline settings\n2. Enable auto deploy"),
+
+    ("heroku-pipeline-stage", "Heroku Pipeline Stage Error",
+     "Fix Heroku pipeline stage errors. Resolve pipeline stage configuration issues.",
+     ["Stage not set", "App not in pipeline", "Wrong stage"],
+     "### Set Stage\n\n```bash\nheroku pipelines:info --app my-app\n```"),
+
+    ("heroku-review", "Heroku Review Error",
+     "Fix Heroku review errors. Resolve review app management issues.",
+     ["Review not found", "Review app failed", "Review expired"],
+     "### List Reviews\n\n```bash\nheroku review apps --pipeline my-pipeline\n```"),
+
+    ("heroku-fork", "Heroku Fork Error",
+     "Fix Heroku fork errors. Resolve app cloning issues.",
+     ["Fork failed", "Source app not found", "Target name taken"],
+     "### Fork App\n\n```bash\nheroku fork --from source-app --to target-app\n```"),
+
+    ("heroku-app-cloning", "Heroku App Cloning Error",
+     "Fix Heroku app cloning errors. Resolve app duplication issues.",
+     ["Cloning failed", "Config not copied", "Addons not copied"],
+     "### Fork App\n\n```bash\nheroku fork --from source-app --to target-app\n```"),
+
+    ("heroku-space-error", "Heroku Space Error",
+     "Fix Heroku space errors. Resolve private space issues.",
+     ["Space not found", "Space not active", "Permission denied"],
+     "### List Spaces\n\n```bash\nheroku spaces\n```"),
+
+    ("heroku-private-space", "Heroku Private Space Error",
+     "Fix Heroku private space errors. Resolve private space configuration issues.",
+     ["Space not configured", "Network peering failed", "Firewall issue"],
+     "### Check Space\n\n```bash\nheroku spaces:info --space my-space\n```"),
+
+    ("heroku-shield-space", "Heroku Shield Space Error",
+     "Fix Heroku shield space errors. Resolve shield space compliance issues.",
+     ["Shield space not configured", "Compliance requirement not met"],
+     "### Check Shield Space\n\n```bash\nheroku spaces:info --space my-space\n```"),
+
+    ("heroku-space-allocate", "Heroku Space Allocation Error",
+     "Fix Heroku space allocation errors. Resolve space resource allocation issues.",
+     ["Allocation failed", "Quota exceeded", "Space full"],
+     "### Check Allocation\n\n```bash\nheroku spaces:info --space my-space\n```"),
+
+    ("heroku-space-create", "Heroku Space Create Error",
+     "Fix Heroku space create errors. Resolve space creation issues.",
+     ["Space name taken", "Region not available", "Plan required"],
+     "### Create Space\n\n```bash\nheroku spaces:create my-space --region us\n```"),
+
+    ("heroku-space-delete", "Heroku Space Delete Error",
+     "Fix Heroku space delete errors. Resolve space deletion issues.",
+     ["Space not empty", "Apps still running", "Permission denied"],
+     "### Delete Space\n\n```bash\nheroku spaces:destroy my-space\n```"),
+
+    ("heroku-trust-ip", "Heroku Trust IP Error",
+     "Fix Heroku trust IP errors. Resolve trusted IP configuration issues.",
+     ["IP not trusted", "CIDR format invalid", "Too many IPs"],
+     "### Add Trusted IP\n\n1. Go to Space Settings\n2. Add trusted IP"),
+
+    ("heroku-outbound-ip", "Heroku Outbound IP Error",
+     "Fix Heroku outbound IP errors. Resolve outbound IP configuration issues.",
+     ["Outbound IP not configured", "Firewall blocking"],
+     "### Check Outbound IP\n\n1. Go to Space Settings\n2. View outbound IPs"),
+
+    ("heroku-vpn-connection", "Heroku VPN Connection Error",
+     "Fix Heroku VPN connection errors. Resolve VPN setup issues.",
+     ["VPN not connected", "Tunnel down", "Configuration error"],
+     "### Check VPN\n\n```bash\nheroku peerings:info --space my-space\n```"),
+
+    ("heroku-vpn-tunnel", "Heroku VPN Tunnel Error",
+     "Fix Heroku VPN tunnel errors. Resolve VPN tunnel issues.",
+     ["Tunnel not established", "Configuration invalid", "Route missing"],
+     "### Check Tunnel\n\n```bash\nheroku peerings:info --space my-space\n```"),
+
+    ("heroku-peering", "Heroku Peering Error",
+     "Fix Heroku peering errors. Resolve VPC peering issues.",
+     ["Peering not established", "VPC CIDR conflict", "Permission denied"],
+     "### Check Peering\n\n```bash\nheroku peerings --space my-space\n```"),
+
+    ("heroku-aws-direct-connect", "Heroku AWS Direct Connect Error",
+     "Fix Heroku AWS Direct Connect errors. Resolve direct connect issues.",
+     ["Connection not established", "Configuration error", "Route not propagated"],
+     "### Check Direct Connect\n\n1. Go to Space Settings\n2. View direct connect status"),
+
+    ("heroku-runtime-firewall", "Heroku Runtime Firewall Error",
+     "Fix Heroku runtime firewall errors. Resolve firewall configuration issues.",
+     ["Firewall blocking traffic", "Rule invalid", "Port not open"],
+     "### Configure Firewall\n\n1. Go to Space Settings\n2. Configure runtime firewall"),
+
+    ("heroku-ecs-error", "Heroku ECS Error",
+     "Fix Heroku ECS errors. Resolve ECS integration issues.",
+     ["ECS not configured", "Task definition error", "Service not running"],
+     "### Check ECS\n\n```bash\nheroku ps --app my-app\n```"),
+]
+
+# ============================================================
+# DOCKERHUB
+# ============================================================
+DOCKERHUB_DATA = [
+    ("dockerhub-repo-not-found", "DockerHub Repository Not Found",
+     "Fix DockerHub repository not found errors. Resolve repository lookup issues.",
+     ["Repository does not exist", "Wrong repository name", "Private repo access denied",
+      "Organization namespace wrong"],
+     "### Check Repository\n\n```bash\ndocker search my-repo\n```\n\n### Verify Name\n\n```bash\ndocker pull username/repo:tag\n```"),
+
+    ("dockerhub-repo-already-exists", "DockerHub Repository Already Exists",
+     "Fix DockerHub repository already exists errors. Resolve naming conflicts.",
+     ["Repository name taken", "Name already in use", "Naming conflict"],
+     "### Use Different Name\n\nChoose a unique repository name."),
+
+    ("dockerhub-repo-private", "DockerHub Repository Private Error",
+     "Fix DockerHub private repository errors. Resolve private repo access issues.",
+     ["Private repo requires subscription", "Access denied", "Token expired"],
+     "### Upgrade Plan\n\nUpgrade to Pro or Team for private repositories."),
+
+    ("dockerhub-repo-public", "DockerHub Repository Public Error",
+     "Fix DockerHub public repository errors. Resolve public repo visibility issues.",
+     ["Cannot make private", "Public exposure risk", "Repo should be private"],
+     "### Change Visibility\n\n1. Go to Docker Hub\n2. Select repository\n3. Change visibility settings"),
+
+    ("dockerhub-image-not-found", "DockerHub Image Not Found",
+     "Fix DockerHub image not found errors. Resolve image lookup issues.",
+     ["Image does not exist", "Wrong image name", "Tag does not exist"],
+     "### Search Image\n\n```bash\ndocker search nginx\n```\n\n### Pull Image\n\n```bash\ndocker pull nginx:latest\n```"),
+
+    ("dockerhub-tag-not-found", "DockerHub Tag Not Found",
+     "Fix DockerHub tag not found errors. Resolve image tag lookup issues.",
+     ["Tag does not exist", "Typo in tag name", "Tag was removed"],
+     "### List Tags\n\n```bash\ncurl -s \"https://hub.docker.com/v2/repositories/library/nginx/tags/?page_size=10\" | jq '.results[].name'\n```"),
+
+    ("dockerhub-tag-already-exists", "DockerHub Tag Already Exists",
+     "Fix DockerHub tag already exists errors. Resolve tag immutability issues.",
+     ["Tag cannot be overwritten", "Tag immutable on paid plan", "Tag already pushed"],
+     "### Use New Tag\n\n```bash\ndocker tag my-image:latest my-image:v2\n```"),
+
+    ("dockerhub-image-pull-denied", "DockerHub Image Pull Denied",
+     "Fix DockerHub image pull denied errors. Resolve pull permission issues.",
+     ["Not authenticated", "Private repo access denied", "Rate limited"],
+     "### Login\n\n```bash\ndocker login\n```\n\n### Check Access\n\n```bash\ndocker pull username/repo:tag\n```"),
+
+    ("dockerhub-image-push-denied", "DockerHub Image Push Denied",
+     "Fix DockerHub image push denied errors. Resolve push permission issues.",
+     ["Not authenticated", "Write access denied", "Namespace mismatch"],
+     "### Login\n\n```bash\ndocker login\n```\n\n### Tag and Push\n\n```bash\ndocker tag my-image username/repo:tag\ndocker push username/repo:tag\n```"),
+
+    ("dockerhub-auth-required", "DockerHub Authentication Required",
+     "Fix DockerHub authentication required errors. Resolve login issues.",
+     ["Not logged in", "Credentials expired", "2FA required"],
+     "### Login\n\n```bash\ndocker login -u username\n```"),
+
+    ("dockerhub-login-failed", "DockerHub Login Failed",
+     "Fix DockerHub login failed errors. Resolve authentication failures.",
+     ["Wrong password", "Account locked", "2FA required"],
+     "### Login\n\n```bash\ndocker login -u username\n```\n\n### Reset Password\n\nVisit hub.docker.com to reset password."),
+
+    ("dockerhub-logout-error", "DockerHub Logout Error",
+     "Fix DockerHub logout errors. Resolve session termination issues.",
+     ["Logout failed", "Session not cleared", "Config file issue"],
+     "### Logout\n\n```bash\ndocker logout\n```"),
+
+    ("dockerhub-token-expired", "DockerHub Token Expired",
+     "Fix DockerHub token expired errors. Resolve access token expiration issues.",
+     ["Access token expired", "Refresh token needed", "Token revoked"],
+     "### Create New Token\n\n1. Go to Docker Hub\n2. Account Settings > Security\n3. Create new access token"),
+
+    ("dockerhub-personal-access-token", "DockerHub Personal Access Token Error",
+     "Fix DockerHub personal access token errors. Resolve PAT issues.",
+     ["Token not created", "Token lacks permissions", "Token expired"],
+     "### Create Token\n\n1. Go to Docker Hub > Account Settings > Security\n2. Create Access Token"),
+
+    ("dockerhub-token-not-scoped", "DockerHub Token Not Scoped Error",
+     "Fix DockerHub token not scoped errors. Resolve token permission scope issues.",
+     ["Token lacks required scope", "Read-only token", "Token needs write access"],
+     "### Create Scoped Token\n\n1. Go to Security > Access Tokens\n2. Select appropriate scopes"),
+
+    ("dockerhub-token-not-found", "DockerHub Token Not Found Error",
+     "Fix DockerHub token not found errors. Resolve token lookup issues.",
+     ["Token does not exist", "Token deleted", "Wrong token ID"],
+     "### List Tokens\n\n1. Go to Docker Hub > Account Settings > Security\n2. View tokens"),
+
+    ("dockerhub-2fa-required", "DockerHub 2FA Required Error",
+     "Fix DockerHub 2FA required errors. Resolve two-factor authentication issues.",
+     ["2FA not configured", "2FA code required", "Backup codes needed"],
+     "### Enable 2FA\n\n1. Go to Account Settings > Security\n2. Enable Two-Factor Authentication"),
+
+    ("dockerhub-2fa-code", "DockerHub 2FA Code Error",
+     "Fix DockerHub 2FA code errors. Resolve authentication code issues.",
+     ["Code expired", "Wrong code", "Code not received"],
+     "### Verify Code\n\nCheck authenticator app for current code."),
+
+    ("dockerhub-security-key", "DockerHub Security Key Error",
+     "Fix DockerHub security key errors. Resolve hardware security key issues.",
+     ["Security key not recognized", "Key not configured", "Key expired"],
+     "### Register Key\n\n1. Go to Account Settings > Security\n2. Add Security Key"),
+
+    ("dockerhub-org-not-found", "DockerHub Organization Not Found",
+     "Fix DockerHub organization not found errors. Resolve org lookup issues.",
+     ["Organization does not exist", "Wrong org name", "Not a member"],
+     "### Check Organization\n\nVisit hub.docker.com/orgs/organization-name"),
+
+    ("dockerhub-org-limit", "DockerHub Organization Limit Error",
+     "Fix DockerHub organization limit errors. Resolve org member limit issues.",
+     ["Member limit reached", "Team limit exceeded"],
+     "### Check Limit\n\n1. Go to Organization Settings\n2. View member limits"),
+
+    ("dockerhub-team-not-found", "DockerHub Team Not Found Error",
+     "Fix DockerHub team not found errors. Resolve team lookup issues.",
+     ["Team does not exist", "Wrong team name", "Team deleted"],
+     "### List Teams\n\n1. Go to Organization > Teams\n2. View team list"),
+
+    ("dockerhub-team-member", "DockerHub Team Member Error",
+     "Fix DockerHub team member errors. Resolve team membership issues.",
+     ["Member not found", "Invite expired", "Role not assigned"],
+     "### Add Member\n\n1. Go to Organization > Teams\n2. Add member"),
+
+    ("dockerhub-invited-user", "DockerHub Invited User Error",
+     "Fix DockerHub invited user errors. Resolve invitation issues.",
+     ["Invitation not sent", "Email invalid", "User already member"],
+     "### Send Invite\n\n1. Go to Organization > Members\n2. Invite user"),
+
+    ("dockerhub-pending-invite", "DockerHub Pending Invite Error",
+     "Fix DockerHub pending invite errors. Resolve pending invitation issues.",
+     ["Invite pending", "Invite expired", "Invite declined"],
+     "### Resend Invite\n\n1. Go to Organization > Members\n2. Resend invitation"),
+
+    ("dockerhub-billing-account", "DockerHub Billing Account Error",
+     "Fix DockerHub billing account errors. Resolve billing issues.",
+     ["Payment method expired", "Invoice overdue", "Account suspended"],
+     "### Update Payment\n\n1. Go to Account Settings > Billing\n2. Update payment method"),
+
+    ("dockerhub-billing-error", "DockerHub Billing Error",
+     "Fix DockerHub billing errors. Resolve billing and subscription issues.",
+     ["Subscription failed", "Payment declined", "Plan change failed"],
+     "### Check Billing\n\n1. Go to Account Settings > Billing\n2. Review subscription"),
+
+    ("dockerhub-payment-method", "DockerHub Payment Method Error",
+     "Fix DockerHub payment method errors. Resolve payment configuration issues.",
+     ["Card expired", "Card declined", "Payment method not accepted"],
+     "### Update Payment\n\n1. Go to Account Settings > Billing\n2. Update payment method"),
+
+    ("dockerhub-invoice-error", "DockerHub Invoice Error",
+     "Fix DockerHub invoice errors. Resolve billing invoice issues.",
+     ["Invoice not generated", "Invoice amount wrong", "Invoice not received"],
+     "### View Invoices\n\n1. Go to Account Settings > Billing\n2. View invoices"),
+
+    ("dockerhub-plan-upgrade", "DockerHub Plan Upgrade Error",
+     "Fix DockerHub plan upgrade errors. Resolve subscription upgrade issues.",
+     ["Upgrade failed", "Payment issue", "Plan not available"],
+     "### Upgrade Plan\n\n1. Go to Account Settings > Billing\n2. Select plan"),
+
+    ("dockerhub-plan-downgrade", "DockerHub Plan Downgrade Error",
+     "Fix DockerHub plan downgrade errors. Resolve subscription downgrade issues.",
+     ["Downgrade failed", "Feature loss", "Data exceeds plan limits"],
+     "### Downgrade Plan\n\n1. Go to Account Settings > Billing\n2. Change plan"),
+
+    ("dockerhub-team-plan", "DockerHub Team Plan Error",
+     "Fix DockerHub team plan errors. Resolve team subscription issues.",
+     ["Team plan not available", "Member limit", "Feature unavailable"],
+     "### Check Plan\n\n1. Go to Organization Settings > Billing\n2. View plan"),
+
+    ("dockerhub-pro-plan", "DockerHub Pro Plan Error",
+     "Fix DockerHub Pro plan errors. Resolve Pro subscription issues.",
+     ["Pro plan features unavailable", "Subscription issue"],
+     "### Check Plan\n\n1. Go to Account Settings > Billing\n2. View plan features"),
+
+    ("dockerhub-free-plan", "DockerHub Free Plan Error",
+     "Fix DockerHub free plan errors. Resolve free tier limitations.",
+     ["Rate limited", "Private repos unavailable", "Features restricted"],
+     "### Check Limits\n\n- 1 private repository\n- 100 pulls per 6 hours\n- 1 concurrent build"),
+
+    ("dockerhub-rate-limit", "DockerHub Rate Limit Error",
+     "Fix DockerHub rate limit errors. Resolve pull rate limiting issues.",
+     ["Too many anonymous pulls", "Rate limit exceeded", "IP blocked"],
+     "### Login to Increase Limit\n\n```bash\ndocker login\n```\n\n### Check Rate\n\n```bash\ncurl -s -I \"https://hub.docker.com/v2/repositories/library/nginx\" | grep -i ratelimit\n```"),
+
+    ("dockerhub-pull-rate-limit", "DockerHub Pull Rate Limit Error",
+     "Fix DockerHub pull rate limit errors. Resolve image pull throttling.",
+     ["Anonymous pull limit exceeded", "Authenticated pull limit hit"],
+     "### Login\n\n```bash\ndocker login\n```\n\n### Use Mirror\n\nConfigure registry mirror for caching."),
+
+    ("dockerhub-push-rate-limit", "DockerHub Push Rate Limit Error",
+     "Fix DockerHub push rate limit errors. Resolve image push throttling.",
+     ["Push rate exceeded", "Too many pushes"],
+     "### Reduce Pushes\n\n- Batch image updates\n- Use multi-stage builds"),
+
+    ("dockerhub-anonymous-rate", "DockerHub Anonymous Rate Error",
+     "Fix DockerHub anonymous rate errors. Resolve unauthenticated pull limits.",
+     ["Anonymous pull limit: 100 per 6 hours", "IP-based limiting"],
+     "### Authenticate\n\n```bash\ndocker login\n```"),
+
+    ("dockerhub-authenticated-rate", "DockerHub Authenticated Rate Error",
+     "Fix DockerHub authenticated rate errors. Resolve authenticated pull limits.",
+     ["Authenticated limit: 200 per 6 hours", "Rate exceeded"],
+     "### Check Usage\n\n```bash\ncurl -s -I \"https://hub.docker.com/v2/repositories/library/nginx\" | grep -i ratelimit\n```"),
+
+    ("dockerhub-read-rate-limit", "DockerHub Read Rate Limit Error",
+     "Fix DockerHub read rate limit errors. Resolve API read throttling.",
+     ["Too many read requests", "API rate limited"],
+     "### Cache Responses\n\nImplement client-side caching."),
+
+    ("dockerhub-write-rate-limit", "DockerHub Write Rate Limit Error",
+     "Fix DockerHub write rate limit errors. Resolve API write throttling.",
+     ["Too many write requests", "API rate limited"],
+     "### Reduce Writes\n\nBatch API operations."),
+
+    ("dockerhub-image-size-limit", "DockerHub Image Size Limit Error",
+     "Fix DockerHub image size limit errors. Resolve image size restriction issues.",
+     ["Image exceeds size limit", "Layer too large", "Total image too big"],
+     "### Reduce Image Size\n\n- Use multi-stage builds\n- Minimize layers\n- Use smaller base images"),
+
+    ("dockerhub-layer-limit", "DockerHub Layer Limit Error",
+     "Fix DockerHub layer limit errors. Resolve image layer restriction issues.",
+     ["Too many layers", "Layer exceeds size limit"],
+     "### Reduce Layers\n\n```dockerfile\nRUN apt-get update && apt-get install -y package1 package2\n```"),
+
+    ("dockerhub-tag-limit", "DockerHub Tag Limit Error",
+     "Fix DockerHub tag limit errors. Resolve tag count restriction issues.",
+     ["Too many tags", "Tag limit reached"],
+     "### Remove Old Tags\n\n```bash\ncurl -X DELETE \"https://hub.docker.com/v2/repositories/username/repo/tags/tag-name/\"\n```"),
+
+    ("dockerhub-image-count", "DockerHub Image Count Error",
+     "Fix DockerHub image count errors. Resolve image count restriction issues.",
+     ["Too many images", "Storage limit reached"],
+     "### Remove Unused Images\n\n1. Go to Docker Hub\n2. Delete unused repositories"),
+
+    ("dockerhub-storage-limit", "DockerHub Storage Limit Error",
+     "Fix DockerHub storage limit errors. Resolve storage quota issues.",
+     ["Storage quota exceeded", "Total image size too large"],
+     "### Check Storage\n\n1. Go to Docker Hub\n2. View storage usage\n\n### Delete Images\n\nRemove unused images to free space."),
+
+    ("dockerhub-storage-used", "DockerHub Storage Used Error",
+     "Fix DockerHub storage used errors. Resolve storage consumption issues.",
+     ["Storage nearly full", "Images consuming too much space"],
+     "### Free Storage\n\n- Delete unused tags\n- Remove old images\n- Optimize image sizes"),
+
+    ("dockerhub-storage-over-limit", "DockerHub Storage Over Limit Error",
+     "Fix DockerHub storage over limit errors. Resolve storage quota exceeded issues.",
+     ["Cannot push new images", "Storage quota exceeded"],
+     "### Reduce Storage\n\n```bash\n# Delete specific tag\ncurl -X DELETE \"https://hub.docker.com/v2/repositories/username/repo/tags/tag/\"\n```"),
+
+    ("dockerhub-bandwidth-limit", "DockerHub Bandwidth Limit Error",
+     "Fix DockerHub bandwidth limit errors. Resolve data transfer limit issues.",
+     ["Bandwidth exceeded", "Too many pulls", "Network throttled"],
+     "### Use Mirror\n\nConfigure local registry mirror."),
+
+    ("dockerhub-image-vulnerability", "DockerHub Image Vulnerability Error",
+     "Fix DockerHub image vulnerability errors. Resolve security scan findings.",
+     ["Vulnerabilities detected", "Critical vulnerabilities", "Outdated base image"],
+     "### Scan Image\n\n```bash\ndocker scan my-image\n```\n\n### Update Base Image\n\n```bash\ndocker pull ubuntu:latest\n```"),
+
+    ("dockerhub-scan-result", "DockerHub Scan Result Error",
+     "Fix DockerHub scan result errors. Resolve image scanning issues.",
+     ["Scan not available", "Scan failed", "Results not showing"],
+     "### Enable Scanning\n\n1. Go to Repository\n2. Enable vulnerability scanning"),
+
+    ("dockerhub-critical-vulnerability", "DockerHub Critical Vulnerability Error",
+     "Fix DockerHub critical vulnerability errors. Resolve critical security issues.",
+     ["Critical CVE detected", "Immediate action required"],
+     "### Fix Vulnerability\n\n```bash\ndocker scan --severity critical my-image\n```\n\n### Update Base Image\n\nUse latest secure base image."),
+
+    ("dockerhub-high-vulnerability", "DockerHub High Vulnerability Error",
+     "Fix DockerHub high vulnerability errors. Resolve high severity security issues.",
+     ["High severity CVE", "Security risk"],
+     "### Scan and Fix\n\n```bash\ndocker scan --severity high my-image\n```"),
+
+    ("dockerhub-medium-vulnerability", "DockerHub Medium Vulnerability Error",
+     "Fix DockerHub medium vulnerability errors. Resolve medium severity security issues.",
+     ["Medium severity CVE", "Security warning"],
+     "### Review and Fix\n\n```bash\ndocker scan --severity medium my-image\n```"),
+
+    ("dockerhub-low-vulnerability", "DockerHub Low Vulnerability Error",
+     "Fix DockerHub low vulnerability errors. Resolve low severity security issues.",
+     ["Low severity CVE", "Informational finding"],
+     "### Review\n\n```bash\ndocker scan --severity low my-image\n```"),
+
+    ("dockerhub-scan-error", "DockerHub Scan Error",
+     "Fix DockerHub scan errors. Resolve image scanning failures.",
+     ["Scan failed", "Scanner unavailable", "Image too large"],
+     "### Retry Scan\n\n```bash\ndocker scan my-image\n```"),
+
+    ("dockerhub-scan-not-available", "DockerHub Scan Not Available Error",
+     "Fix DockerHub scan not available errors. Resolve scanning feature issues.",
+     ["Scanning not enabled", "Plan does not include scanning"],
+     "### Enable Scanning\n\nUpgrade plan to enable vulnerability scanning."),
+
+    ("dockerhub-base-image", "DockerHub Base Image Error",
+     "Fix DockerHub base image errors. Resolve base image issues.",
+     ["Base image not found", "Base image deprecated", "Base image insecure"],
+     "### Use Official Images\n\n```dockerfile\nFROM ubuntu:22.04\nFROM node:18-alpine\n```"),
+
+    ("dockerhub-official-image", "DockerHub Official Image Error",
+     "Fix DockerHub official image errors. Resolve Docker Official image issues.",
+     ["Official image not available", "Image variant issue"],
+     "### Use Official Images\n\n```bash\ndocker pull nginx\n```"),
+
+    ("dockerhub-verified-publisher", "DockerHub Verified Publisher Error",
+     "Fix DockerHub verified publisher errors. Resolve verified publisher image issues.",
+     ["Publisher verification failed", "Image not verified"],
+     "### Check Publisher\n\n1. Go to Docker Hub\n2. Check publisher verification status"),
+
+    ("dockerhub-verified-image", "DockerHub Verified Image Error",
+     "Fix DockerHub verified image errors. Resolve image verification issues.",
+     ["Image not verified", "Verification failed"],
+     "### Verify Image\n\n```bash\ndocker trust inspect --pretty username/repo\n```"),
+
+    ("dockerhub-docker-official", "Docker Docker Official Error",
+     "Fix Docker Official image errors. Resolve Docker Official program issues.",
+     ["Not Docker Official", "Requirements not met"],
+     "### Apply for Docker Official\n\nVisit hub.docker.com/official-images for requirements."),
+
+    ("dockerhub-content-trust", "DockerHub Content Trust Error",
+     "Fix DockerHub content trust errors. Resolve image signing and verification issues.",
+     ["Content trust not enabled", "Signature verification failed"],
+     "### Enable Content Trust\n\n```bash\nexport DOCKER_CONTENT_TRUST=1\n```"),
+
+    ("dockerhub-signing-key", "DockerHub Signing Key Error",
+     "Fix DockerHub signing key errors. Resolve image signing key issues.",
+     ["Signing key not found", "Key expired", "Key not generated"],
+     "### Generate Key\n\n```bash\ndocker trust key generate my-key\n```"),
+
+    ("dockerhub-trust-data", "DockerHub Trust Data Error",
+     "Fix DockerHub trust data errors. Resolve image trust metadata issues.",
+     ["Trust data not found", "Trust data corrupted"],
+     "### Check Trust Data\n\n```bash\ndocker trust inspect username/repo\n```"),
+
+    ("dockerhub-delegation-key", "DockerHub Delegation Key Error",
+     "Fix DockerHub delegation key errors. Resolve delegation key management issues.",
+     ["Delegation key not found", "Key not added to repo"],
+     "### Add Delegation\n\n```bash\ndocker trust signer add --key key.pem signer username/repo\n```"),
+
+    ("dockerhub-repo-signing", "DockerHub Repository Signing Error",
+     "Fix DockerHub repository signing errors. Resolve repository signing issues.",
+     ["Repository not signed", "Signing failed"],
+     "### Sign Repository\n\n```bash\ndocker trust sign username/repo:tag\n```"),
+
+    ("dockerhub-signature-verification", "DockerHub Signature Verification Error",
+     "Fix DockerHub signature verification errors. Resolve image signature issues.",
+     ["Signature verification failed", "No signature found"],
+     "### Verify Signature\n\n```bash\ndocker trust inspect --pretty username/repo\n```"),
+
+    ("dockerhub-webhook-error", "DockerHub Webhook Error",
+     "Fix DockerHub webhook errors. Resolve webhook notification issues.",
+     ["Webhook not triggered", "URL unreachable", "Payload invalid"],
+     "### Add Webhook\n\n1. Go to Repository > Webhooks\n2. Add webhook URL"),
+
+    ("dockerhub-webhook-payload", "DockerHub Webhook Payload Error",
+     "Fix DockerHub webhook payload errors. Resolve webhook data issues.",
+     ["Payload format invalid", "Data missing", "Event type unknown"],
+     "### Check Payload\n\nView webhook delivery logs in Docker Hub."),
+
+    ("dockerhub-webhook-test", "DockerHub Webhook Test Error",
+     "Fix DockerHub webhook test errors. Resolve webhook testing issues.",
+     ["Test failed", "URL not reachable", "Response error"],
+     "### Test Webhook\n\n1. Go to Repository > Webhooks\n2. Click Test"),
+
+    ("dockerhub-repo-webhook", "DockerHub Repository Webhook Error",
+     "Fix DockerHub repository webhook errors. Resolve repo-level webhook issues.",
+     ["Webhook not configured", "Event not subscribed"],
+     "### Configure Webhook\n\n1. Go to Repository > Webhooks\n2. Add webhook"),
+
+    ("dockerhub-build-hook", "DockerHub Build Hook Error",
+     "Fix DockerHub build hook errors. Resolve automated build trigger issues.",
+     ["Build hook not triggered", "Hook URL invalid"],
+     "### Configure Build Hook\n\n1. Go to Repository > Build\n2. Configure webhooks"),
+
+    ("dockerhub-automated-build", "DockerHub Automated Build Error",
+     "Fix DockerHub automated build errors. Resolve automatic build issues.",
+     ["Build not triggered", "Build failed", "Source not connected"],
+     "### Enable Automated Build\n\n1. Go to Repository > Build\n2. Link to GitHub/GitLab"),
+
+    ("dockerhub-build-trigger", "DockerHub Build Trigger Error",
+     "Fix DockerHub build trigger errors. Resolve build initiation issues.",
+     ["Trigger not firing", "Webhook not configured", "Build limit reached"],
+     "### Trigger Build\n\n```bash\ncurl -X POST \"https://hub.docker.com/api/build/v1/source/{uuid}/trigger/{trigger_uuid}/call/\"\n```"),
+
+    ("dockerhub-build-config", "DockerHub Build Configuration Error",
+     "Fix DockerHub build configuration errors. Resolve build settings issues.",
+     ["Dockerfile path wrong", "Build context incorrect", "Build args missing"],
+     "### Configure Build\n\n1. Go to Repository > Build\n2. Configure settings"),
+
+    ("dockerhub-build-env", "DockerHub Build Environment Error",
+     "Fix DockerHub build environment errors. Resolve build environment issues.",
+     ["Environment variable missing", "Build arg not set"],
+     "### Set Build Args\n\n1. Go to Repository > Build > Build Settings\n2. Add environment variables"),
+
+    ("dockerhub-build-log", "DockerHub Build Log Error",
+     "Fix DockerHub build log errors. Resolve build output viewing issues.",
+     ["Build log not available", "Log truncated", "Build failed silently"],
+     "### View Build Log\n\n1. Go to Repository > Build\n2. Click on build to view logs"),
+
+    ("dockerhub-build-cache", "DockerHub Build Cache Error",
+     "Fix DockerHub build cache errors. Resolve build caching issues.",
+     ["Cache not available", "Cache invalidated", "Build slow without cache"],
+     "### Use Build Cache\n\n```dockerfile\nFROM node:18\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci\nCOPY . .\n```"),
+
+    ("dockerhub-build-argument", "DockerHub Build Argument Error",
+     "Fix DockerHub build argument errors. Resolve ARG instruction issues.",
+     ["ARG not declared", "ARG value not provided", "ARG scope incorrect"],
+     "### Use Build Args\n\n```dockerfile\nARG NODE_VERSION=18\nFROM node:${NODE_VERSION}\n```"),
+
+    ("dockerhub-dockerfile-parse", "DockerHub Dockerfile Parse Error",
+     "Fix DockerHub Dockerfile parse errors. Resolve Dockerfile syntax issues.",
+     ["Syntax error", "Invalid instruction", "Missing argument"],
+     "### Validate Dockerfile\n\n```bash\ndocker build --check .\n```"),
+
+    ("dockerhub-dockerfile-syntax", "DockerHub Dockerfile Syntax Error",
+     "Fix DockerHub Dockerfile syntax errors. Resolve Dockerfile formatting issues.",
+     ["Instruction not recognized", "Argument format wrong"],
+     "### Check Syntax\n\nRefer to Dockerfile reference documentation."),
+
+    ("dockerhub-build-context", "DockerHub Build Context Error",
+     "Fix DockerHub build context errors. Resolve build context issues.",
+     ["Context too large", "Context path wrong", "Files missing from context"],
+     "### Use .dockerignore\n\n```\nnode_modules\n.git\n*.md\n```"),
+
+    ("dockerhub-dockerignore", "DockerHub .dockerignore Error",
+     "Fix DockerHub .dockerignore errors. Resolve build exclusion issues.",
+     [".dockerignore not found", "Pattern syntax error", "Files not excluded"],
+     "### Create .dockerignore\n\n```\nnode_modules\n.git\n.env\n*.log\n```"),
+
+    ("dockerhub-multi-stage-build", "DockerHub Multi-Stage Build Error",
+     "Fix DockerHub multi-stage build errors. Resolve multi-stage compilation issues.",
+     ["Stage not found", "Copy from stage failed", "Stage name wrong"],
+     "### Multi-Stage Build\n\n```dockerfile\nFROM node:18 AS builder\nWORKDIR /app\nCOPY . .\nRUN npm run build\n\nFROM nginx\nCOPY --from=builder /app/dist /usr/share/nginx/html\n```"),
+
+    ("dockerhub-base-image-not-found", "DockerHub Base Image Not Found Error",
+     "Fix DockerHub base image not found errors. Resolve FROM instruction issues.",
+     ["Image does not exist", "Tag not found", "Registry not accessible"],
+     "### Check Image\n\n```bash\ndocker pull ubuntu:22.04\n```"),
+
+    ("dockerhub-from-error", "DockerHub FROM Error",
+     "Fix DockerHub FROM instruction errors. Resolve base image specification issues.",
+     ["FROM syntax error", "Image not specified", "AS name invalid"],
+     "### Correct FROM\n\n```dockerfile\nFROM node:18-alpine\n```"),
+
+    ("dockerhub-copy-error", "DockerHub COPY Error",
+     "Fix DockerHub COPY instruction errors. Resolve file copy issues.",
+     ["Source file not found", "Destination path invalid", "Permission denied"],
+     "### Correct COPY\n\n```dockerfile\nCOPY package.json ./\nCOPY --chown=node:node . .\n```"),
+
+    ("dockerhub-add-error", "DockerHub ADD Error",
+     "Fix DockerHub ADD instruction errors. Resolve file addition issues.",
+     ["Source not found", "URL invalid", "Archive extraction failed"],
+     "### Use COPY Instead\n\n```dockerfile\nCOPY file.txt ./\n```"),
+
+    ("dockerhub-run-error", "DockerHub RUN Error",
+     "Fix DockerHub RUN instruction errors. Resolve command execution issues.",
+     ["Command failed", "Package not found", "Permission denied"],
+     "### Fix RUN\n\n```dockerfile\nRUN apt-get update && apt-get install -y package\n```"),
+
+    ("dockerhub-cmd-error", "DockerHub CMD Error",
+     "Fix DockerHub CMD instruction errors. Resolve default command issues.",
+     ["CMD syntax error", "Command not found", "Multiple CMD used"],
+     "### Correct CMD\n\n```dockerfile\nCMD [\"node\", \"server.js\"]\n```"),
+
+    ("dockerhub-entrypoint-error", "DockerHub ENTRYPOINT Error",
+     "Fix DockerHub ENTRYPOINT instruction errors. Resolve entry point issues.",
+     ["ENTRYPOINT syntax error", "Script not found", "Permission denied"],
+     "### Correct ENTRYPOINT\n\n```dockerfile\nENTRYPOINT [\"./entrypoint.sh\"]\n```"),
+
+    ("dockerhub-expose-error", "DockerHub EXPOSE Error",
+     "Fix DockerHub EXPOSE instruction errors. Resolve port exposure issues.",
+     ["Port already in use", "Port format wrong"],
+     "### Correct EXPOSE\n\n```dockerfile\nEXPOSE 3000\n```"),
+
+    ("dockerhub-env-error", "DockerHub ENV Error",
+     "Fix DockerHub ENV instruction errors. Resolve environment variable issues.",
+     ["ENV syntax error", "Variable not set", "Variable override issue"],
+     "### Correct ENV\n\n```dockerfile\nENV NODE_ENV=production\nENV PATH=\"/app:$PATH\"\n```"),
+
+    ("dockerhub-arg-error", "DockerHub ARG Error",
+     "Fix DockerHub ARG instruction errors. Resolve build argument issues.",
+     ["ARG not available in runtime", "Default value wrong"],
+     "### Correct ARG\n\n```dockerfile\nARG NODE_VERSION=18\nFROM node:${NODE_VERSION}\n```"),
+
+    ("dockerhub-volume-error", "DockerHub VOLUME Error",
+     "Fix DockerHub VOLUME instruction errors. Resolve volume declaration issues.",
+     ["Volume already exists", "Volume path invalid"],
+     "### Correct VOLUME\n\n```dockerfile\nVOLUME [\"/data\"]\n```"),
+
+    ("dockerhub-workdir-error", "DockerHub WORKDIR Error",
+     "Fix DockerHub WORKDIR instruction errors. Resolve working directory issues.",
+     ["Directory not created", "Path invalid", "Permission denied"],
+     "### Correct WORKDIR\n\n```dockerfile\nWORKDIR /app\n```"),
+
+    ("dockerhub-user-error", "DockerHub USER Error",
+     "Fix DockerHub USER instruction errors. Resolve user switch issues.",
+     ["User does not exist", "Permission denied"],
+     "### Correct USER\n\n```dockerfile\nRUN adduser -D appuser\nUSER appuser\n```"),
+
+    ("dockerhub-label-error", "DockerHub LABEL Error",
+     "Fix DockerHub LABEL instruction errors. Resolve metadata label issues.",
+     ["Label syntax error", "Value too long"],
+     "### Correct LABEL\n\n```dockerfile\nLABEL maintainer=\"user@example.com\"\n```"),
+
+    ("dockerhub-healthcheck-error", "DockerHub HEALTHCHECK Error",
+     "Fix DockerHub HEALTHCHECK instruction errors. Resolve health check issues.",
+     ["Health check command failed", "Timeout too short", "Interval too long"],
+     "### Correct HEALTHCHECK\n\n```dockerfile\nHEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/ || exit 1\n```"),
+
+    ("dockerhub-shell-error", "DockerHub SHELL Error",
+     "Fix DockerHub SHELL instruction errors. Resolve shell configuration issues.",
+     ["Shell not found", "Shell syntax error"],
+     "### Correct SHELL\n\n```dockerfile\nSHELL [\"/bin/bash\", \"-c\"]\n```"),
+
+    ("dockerhub-image-manifest", "DockerHub Image Manifest Error",
+     "Fix DockerHub image manifest errors. Resolve manifest format issues.",
+     ["Manifest invalid", "Manifest not found", "Schema version wrong"],
+     "### Check Manifest\n\n```bash\ndocker manifest inspect username/repo:tag\n```"),
+
+    ("dockerhub-manifest-list", "DockerHub Manifest List Error",
+     "Fix DockerHub manifest list errors. Resolve multi-architecture manifest issues.",
+     ["Manifest list not found", "Architecture not included"],
+     "### Create Manifest List\n\n```bash\ndocker manifest create username/repo:tag username/repo:amd64 username/repo:arm64\n```"),
+
+    ("dockerhub-oci-manifest", "DockerHub OCI Manifest Error",
+     "Fix DockerHub OCI manifest errors. Resolve OCI specification issues.",
+     ["OCI manifest invalid", "Manifest format wrong"],
+     "### Use OCI Format\n\n```bash\ndocker buildx build --platform linux/amd64,linux/arm64 -t username/repo:tag --push .\n```"),
+
+    ("dockerhub-multi-arch-image", "DockerHub Multi-Arch Image Error",
+     "Fix DockerHub multi-arch image errors. Resolve multi-architecture build issues.",
+     ["Architecture not supported", "Build failed for platform"],
+     "### Build Multi-Arch\n\n```bash\ndocker buildx build --platform linux/amd64,linux/arm64 -t username/repo:tag --push .\n```"),
+
+    ("dockerhub-architecture-not-supported", "DockerHub Architecture Not Supported Error",
+     "Fix DockerHub architecture not supported errors. Resolve platform compatibility issues.",
+     ["Architecture not available", "Platform not supported"],
+     "### Check Available Platforms\n\n```bash\ndocker manifest inspect nginx | jq '.manifests[].platform'\n```"),
+
+    ("dockerhub-platform-not-found", "DockerHub Platform Not Found Error",
+     "Fix DockerHub platform not found errors. Resolve platform specification issues.",
+     ["Platform not available", "Platform string invalid"],
+     "### Use Correct Platform\n\n```bash\ndocker pull --platform linux/amd64 nginx\n```"),
+
+    ("dockerhub-os-not-supported", "DockerHub OS Not Supported Error",
+     "Fix DockerHub OS not supported errors. Resolve operating system compatibility issues.",
+     ["OS not supported", "Platform combination invalid"],
+     "### Check Supported OS\n\n```bash\ndocker manifest inspect nginx | jq '.manifests[].platform.os'\n```"),
+
+    ("dockerhub-image-index", "DockerHub Image Index Error",
+     "Fix DockerHub image index errors. Resolve image index issues.",
+     ["Image index invalid", "Index not found"],
+     "### Check Index\n\n```bash\ndocker manifest inspect username/repo:tag\n```"),
+
+    ("dockerhub-schema-version", "DockerHub Schema Version Error",
+     "Fix DockerHub schema version errors. Resolve manifest schema issues.",
+     ["Schema version not supported", "Schema mismatch"],
+     "### Update Docker\n\n```bash\ndocker --version\n```"),
+
+    ("dockerhub-manifest-unknown", "DockerHub Manifest Unknown Error",
+     "Fix DockerHub manifest unknown errors. Resolve manifest lookup issues.",
+     ["Manifest not found", "Tag does not exist"],
+     "### Check Manifest\n\n```bash\ndocker manifest inspect username/repo:tag\n```"),
+
+    ("dockerhub-manifest-invalid", "DockerHub Manifest Invalid Error",
+     "Fix DockerHub manifest invalid errors. Resolve manifest format issues.",
+     ["Manifest format invalid", "JSON syntax error"],
+     "### Rebuild Image\n\n```bash\ndocker build -t username/repo:tag .\ndocker push username/repo:tag\n```"),
+
+    ("dockerhub-blob-unknown", "DockerHub Blob Unknown Error",
+     "Fix DockerHub blob unknown errors. Resolve blob storage issues.",
+     ["Blob not found", "Layer missing", "Upload incomplete"],
+     "### Re-upload Blob\n\n```bash\ndocker push username/repo:tag\n```"),
+
+    ("dockerhub-blob-upload", "DockerHub Blob Upload Error",
+     "Fix DockerHub blob upload errors. Resolve layer upload issues.",
+     ["Upload failed", "Connection lost", "Size mismatch"],
+     "### Retry Upload\n\n```bash\ndocker push username/repo:tag\n```"),
+
+    ("dockerhub-blob-download", "DockerHub Blob Download Error",
+     "Fix DockerHub blob download errors. Resolve layer download issues.",
+     ["Download failed", "Connection lost", "Blob corrupted"],
+     "### Re-pull Image\n\n```bash\ndocker pull username/repo:tag\n```"),
+
+    ("dockerhub-mount-blob", "DockerHub Mount Blob Error",
+     "Fix DockerHub mount blob errors. Resolve cross-repo blob mounting issues.",
+     ["Mount failed", "Blob not available", "Mount not supported"],
+     "### Check Mount Support\n\nUse cross-repo mount for shared layers."),
+
+    ("dockerhub-cross-repo-mount", "DockerHub Cross-Repo Mount Error",
+     "Fix DockerHub cross-repo mount errors. Resolve layer sharing issues.",
+     ["Cross-repo mount failed", "Source blob not found"],
+     "### Use Content Trust\n\nVerify repository permissions for cross-repo mounts."),
+
+    ("dockerhub-upload-expired", "DockerHub Upload Expired Error",
+     "Fix DockerHub upload expired errors. Resolve blob upload timeout issues.",
+     ["Upload session expired", "Timeout exceeded"],
+     "### Re-initiate Upload\n\n```bash\ndocker push username/repo:tag\n```"),
+
+    ("dockerhub-chunk-upload", "DockerHub Chunk Upload Error",
+     "Fix DockerHub chunk upload errors. Resolve chunked blob upload issues.",
+     ["Chunk upload failed", "Offset mismatch", "Chunk size wrong"],
+     "### Retry Upload\n\n```bash\ndocker push username/repo:tag\n```"),
+
+    ("dockerhub-monolithic-upload", "DockerHub Monolithic Upload Error",
+     "Fix DockerHub monolithic upload errors. Resolve single-blob upload issues.",
+     ["Upload too large", "Upload failed"],
+     "### Reduce Image Size\n\nUse multi-stage builds."),
+
+    ("dockerhub-api-version", "DockerHub API Version Error",
+     "Fix DockerHub API version errors. Resolve API compatibility issues.",
+     ["API version not supported", "Endpoint deprecated"],
+     "### Check API Version\n\nUse current registry API version."),
+
+    ("dockerhub-registry-api", "DockerHub Registry API Error",
+     "Fix DockerHub registry API errors. Resolve registry API request issues.",
+     ["API endpoint not found", "Authentication required", "Rate limited"],
+     "### Check API\n\n```bash\ncurl -s https://hub.docker.com/v2/ | jq\n```"),
+
+    ("dockerhub-registry-v2", "DockerHub Registry V2 Error",
+     "Fix DockerHub registry v2 errors. Resolve registry v2 API issues.",
+     ["V2 API not available", "Endpoint wrong"],
+     "### Use V2 API\n\n```bash\ncurl -s https://hub.docker.com/v2/repositories/library/nginx/ | jq\n```"),
+
+    ("dockerhub-oci-distribution", "DockerHub OCI Distribution Error",
+     "Fix DockerHub OCI distribution errors. Resolve OCI distribution spec issues.",
+     ["OCI distribution not supported", "Spec version mismatch"],
+     "### Check OCI Compliance\n\n```bash\ndocker manifest inspect username/repo:tag\n```"),
+
+    ("dockerhub-hub-api", "DockerHub Hub API Error",
+     "Fix DockerHub Hub API errors. Resolve Docker Hub API request issues.",
+     ["API request failed", "Endpoint wrong", "Authentication required"],
+     "### Test API\n\n```bash\ncurl -s -H \"Authorization: Bearer {token}\" https://hub.docker.com/v2/repositories/username/\n```"),
+
+    ("dockerhub-namespace-error", "DockerHub Namespace Error",
+     "Fix DockerHub namespace errors. Resolve namespace and organization issues.",
+     ["Namespace not found", "Namespace reserved", "Namespace format wrong"],
+     "### Check Namespace\n\nVisit hub.docker.com/namespace-name"),
+
+    ("dockerhub-scoped-token", "DockerHub Scoped Token Error",
+     "Fix DockerHub scoped token errors. Resolve token scope restriction issues.",
+     ["Token scope insufficient", "Read-only token", "Write access needed"],
+     "### Create Scoped Token\n\n1. Go to Account Settings > Security\n2. Create token with correct scopes"),
+
+    ("dockerhub-access-control", "DockerHub Access Control Error",
+     "Fix DockerHub access control errors. Resolve permission management issues.",
+     ["Access denied", "Permission level wrong", "Role not assigned"],
+     "### Check Permissions\n\n1. Go to Repository > Collaborators\n2. Verify permissions"),
+
+    ("dockerhub-team-permission", "DockerHub Team Permission Error",
+     "Fix DockerHub team permission errors. Resolve team-based access issues.",
+     ["Permission not granted", "Team role wrong", "Team not assigned"],
+     "### Set Team Permission\n\n1. Go to Organization > Teams\n2. Set team permissions"),
+
+    ("dockerhub-collaborator", "DockerHub Collaborator Error",
+     "Fix DockerHub collaborator errors. Resolve collaborator management issues.",
+     ["Collaborator not found", "Invite expired", "Permission denied"],
+     "### Add Collaborator\n\n1. Go to Repository > Collaborators\n2. Add collaborator"),
+
+    ("dockerhub-rw-permission", "DockerHub Read/Write Permission Error",
+     "Fix DockerHub read/write permission errors. Resolve access level issues.",
+     ["Write access denied", "Read-only access", "Permission level insufficient"],
+     "### Set Permission\n\n1. Go to Repository > Collaborators\n2. Set read/write access"),
+
+    ("dockerhub-admin-role", "DockerHub Admin Role Error",
+     "Fix DockerHub admin role errors. Resolve admin permission issues.",
+     ["Admin role not assigned", "Cannot manage settings", "Permission denied"],
+     "### Assign Admin\n\n1. Go to Organization > Members\n2. Set admin role"),
+]
+
+# ============================================================
+# DOCKER COMPOSE
+# ============================================================
+DC_DATA = [
+    ("docker-compose-file-not-found", "Docker Compose File Not Found",
+     "Fix Docker Compose file not found errors. Resolve compose file lookup issues.",
+     ["compose.yml or docker-compose.yml missing", "File in wrong directory", "File renamed"],
+     "### Check Files\n\n```bash\nls -la docker-compose.yml compose.yml\n```\n\n### Specify Path\n\n```bash\ndocker compose -f /path/to/compose.yml up\n```"),
+
+    ("docker-compose-file-parse", "Docker Compose File Parse Error",
+     "Fix Docker Compose file parse errors. Resolve YAML syntax issues.",
+     ["YAML syntax error", "Indentation wrong", "Invalid key", "Special characters"],
+     "### Validate YAML\n\n```bash\ndocker compose config\n```\n\n### Check Syntax\n\n```bash\npython -c \"import yaml; yaml.safe_load(open('docker-compose.yml'))\"\n```"),
+
+    ("docker-compose-version-not-supported", "Docker Compose Version Not Supported",
+     "Fix Docker Compose version errors. Resolve version compatibility issues.",
+     ["Version field not supported", "Version deprecated", "Version format wrong"],
+     "### Remove Version Field\n\nNewer Docker Compose does not require version field.\n\n```yaml\nservices:\n  web:\n    image: nginx\n```"),
+
+    ("docker-compose-services-key-missing", "Docker Compose Services Key Missing",
+     "Fix Docker Compose services key missing errors. Resolve missing services definition.",
+     ["services key not found", "Wrong top-level key", "services not defined"],
+     "### Add Services Key\n\n```yaml\nservices:\n  web:\n    image: nginx\n```"),
+
+    ("docker-compose-service-name-invalid", "Docker Compose Service Name Invalid",
+     "Fix Docker Compose service name invalid errors. Resolve naming convention issues.",
+     ["Name contains invalid characters", "Name starts with number", "Name too long"],
+     "### Use Valid Name\n\nService names must start with a letter or underscore and contain only lowercase letters, numbers, hyphens, and underscores."),
+
+    ("docker-compose-image-not-specified", "Docker Compose Image Not Specified",
+     "Fix Docker Compose image not specified errors. Resolve missing image definition.",
+     ["No image or build specified", "Image name missing"],
+     "### Add Image\n\n```yaml\nservices:\n  web:\n    image: nginx:latest\n```"),
+
+    ("docker-compose-build-context-missing", "Docker Compose Build Context Missing",
+     "Fix Docker Compose build context missing errors. Resolve build configuration issues.",
+     ["build context not specified", "context path wrong"],
+     "### Add Build Context\n\n```yaml\nservices:\n  web:\n    build: .\n```\n\nOr with context and Dockerfile:\n\n```yaml\nservices:\n  web:\n    build:\n      context: .\n      dockerfile: Dockerfile\n```"),
+
+    ("docker-compose-dockerfile-not-found", "Docker Compose Dockerfile Not Found",
+     "Fix Docker Compose Dockerfile not found errors. Resolve Dockerfile path issues.",
+     ["Dockerfile not in context", "Dockerfile path wrong"],
+     "### Specify Dockerfile\n\n```yaml\nservices:\n  web:\n    build:\n      context: .\n      dockerfile: Dockerfile.dev\n```"),
+
+    ("docker-compose-container-name-conflict", "Docker Compose Container Name Conflict",
+     "Fix Docker Compose container name conflict errors. Resolve naming collisions.",
+     ["Container name already in use", "Name from another compose file", "Manual container conflict"],
+     "### Change Container Name\n\n```yaml\nservices:\n  web:\n    container_name: my-web\n```\n\n### Remove Conflicting Container\n\n```bash\ndocker rm -f old-container\n```"),
+
+    ("docker-compose-port-mapping", "Docker Compose Port Mapping Error",
+     "Fix Docker Compose port mapping errors. Resolve port exposure issues.",
+     ["Port format wrong", "Port already in use", "Host port conflict"],
+     "### Correct Port Mapping\n\n```yaml\nservices:\n  web:\n    ports:\n      - \"8080:80\"\n      - \"3000:3000\"\n```"),
+
+    ("docker-compose-port-already-allocated", "Docker Compose Port Already Allocated Error",
+     "Fix Docker Compose port already allocated errors. Resolve port conflict issues.",
+     ["Port in use by another container", "Port in use by host service"],
+     "### Find Port Usage\n\n```bash\nlsof -i :8080\nnetstat -tlnp | grep 8080\n```\n\n### Change Port\n\n```yaml\nports:\n  - \"8081:80\"\n```"),
+
+    ("docker-compose-port-range", "Docker Compose Port Range Error",
+     "Fix Docker Compose port range errors. Resolve port range specification issues.",
+     ["Range format invalid", "Range too large", "Port conflict in range"],
+     "### Use Correct Range\n\n```yaml\nports:\n  - \"8000-8100:8000-8100\"\n```"),
+
+    ("docker-compose-expose-port", "Docker Compose Expose Port Error",
+     "Fix Docker Compose expose port errors. Resolve port exposure configuration issues.",
+     ["Expose format wrong", "Port not accessible"],
+     "### Use Expose\n\n```yaml\nservices:\n  web:\n    expose:\n      - \"3000\"\n```"),
+
+    ("docker-compose-volume-mount", "Docker Compose Volume Mount Error",
+     "Fix Docker Compose volume mount errors. Resolve volume mounting issues.",
+     ["Source path does not exist", "Permission denied", "Mount syntax wrong"],
+     "### Correct Volume Mount\n\n```yaml\nservices:\n  web:\n    volumes:\n      - ./data:/app/data\n      - myvolume:/app/storage\n```"),
+
+    ("docker-compose-volume-not-found", "Docker Compose Volume Not Found",
+     "Fix Docker Compose volume not found errors. Resolve named volume issues.",
+     ["Volume not created", "Volume name wrong", "Volume driver issue"],
+     "### Create Volume\n\n```bash\ndocker volume create myvolume\n```\n\n### Define in Compose\n\n```yaml\nvolumes:\n  myvolume:\n```"),
+
+    ("docker-compose-bind-mount", "Docker Compose Bind Mount Error",
+     "Fix Docker Compose bind mount errors. Resolve host directory mounting issues.",
+     ["Directory does not exist", "Permission denied", "SELinux blocking"],
+     "### Correct Bind Mount\n\n```yaml\nvolumes:\n  - ./local/path:/container/path\n```\n\n### Fix Permissions\n\n```bash\nchmod -R 755 ./local/path\n```"),
+
+    ("docker-compose-volume-driver", "Docker Compose Volume Driver Error",
+     "Fix Docker Compose volume driver errors. Resolve volume driver configuration issues.",
+     ["Driver not installed", "Driver configuration wrong", "Driver not available"],
+     "### Specify Driver\n\n```yaml\nvolumes:\n  myvolume:\n    driver: local\n    driver_opts:\n      type: nfs\n      device: \":/path/to/dir\"\n```"),
+
+    ("docker-compose-bind-propagation", "Docker Compose Bind Propagation Error",
+     "Fix Docker Compose bind propagation errors. Resolve mount propagation issues.",
+     ["Propagation mode invalid", "Mount propagation not supported"],
+     "### Set Propagation\n\n```yaml\nvolumes:\n  - ./data:/app/data:rw,shared\n```"),
+
+    ("docker-compose-tmpfs-mount", "Docker Compose tmpfs Mount Error",
+     "Fix Docker Compose tmpfs mount errors. Resolve temporary filesystem issues.",
+     ["tmpfs size exceeded", "Mount syntax wrong"],
+     "### Configure tmpfs\n\n```yaml\nservices:\n  web:\n    tmpfs:\n      - /tmp:size=100M\n```"),
+
+    ("docker-compose-npipe-mount", "Docker Compose Named Pipe Mount Error",
+     "Fix Docker Compose npipe mount errors. Resolve named pipe mounting issues.",
+     ["Named pipe path invalid", "Pipe not found", "Permission denied"],
+     "### Mount Named Pipe\n\n```yaml\nvolumes:\n  - \\\\.\\pipe\\docker_engine:\\\\.\\pipe\\docker_engine\n```"),
+
+    ("docker-compose-env-file", "Docker Compose Environment File Error",
+     "Fix Docker Compose env_file errors. Resolve environment file loading issues.",
+     ["File not found", "File format wrong", "Variable syntax invalid"],
+     "### Correct env_file\n\n```yaml\nservices:\n  web:\n    env_file:\n      - .env\n      - .env.local\n```\n\n### File Format\n\n```\nMY_VAR=value\nOTHER_VAR=another value\n```"),
+
+    ("docker-compose-env-file-not-found", "Docker Compose env_file Not Found",
+     "Fix Docker Compose env_file not found errors. Resolve missing environment file issues.",
+     ["File does not exist", "Path wrong", "File deleted"],
+     "### Check File\n\n```bash\nls -la .env\n```\n\n### Create File\n\n```bash\necho \"MY_VAR=value\" > .env\n```"),
+
+    ("docker-compose-env-substitution", "Docker Compose Environment Variable Substitution Error",
+     "Fix Docker Compose env variable substitution errors. Resolve variable resolution issues.",
+     ["Variable not defined", "Substitution syntax wrong", "Default value missing"],
+     "### Use Variable\n\n```yaml\nservices:\n  web:\n    image: ${IMAGE:-nginx}\n```\n\n### Set Default\n\n```yaml\nMY_VAR: ${MY_VAR:-default_value}\n```"),
+
+    ("docker-compose-depends-on-error", "Docker Compose depends_on Error",
+     "Fix Docker Compose depends_on errors. Resolve service dependency issues.",
+     ["Service not started", "Dependency loop", "Condition not met"],
+     "### Correct depends_on\n\n```yaml\nservices:\n  web:\n    depends_on:\n      - db\n      - redis\n```"),
+
+    ("docker-compose-dependency-not-started", "Docker Compose Dependency Not Started Error",
+     "Fix Docker Compose dependency not started errors. Resolve service startup order issues.",
+     ["Dependent service failed to start", "Service crashed"],
+     "### Check Service Status\n\n```bash\ndocker compose ps\n```\n\n### Check Logs\n\n```bash\ndocker compose logs db\n```"),
+
+    ("docker-compose-dependency-health", "Docker Compose Dependency Health Error",
+     "Fix Docker Compose dependency health errors. Resolve health check dependency issues.",
+     ["Health check not passing", "Service not healthy", "Timeout waiting"],
+     "### Add Health Check\n\n```yaml\nservices:\n  db:\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n```"),
+
+    ("docker-compose-condition-service-started", "Docker Compose Condition service_started Error",
+     "Fix Docker Compose condition service_started errors. Resolve startup condition issues.",
+     ["Service not started", "Condition not met"],
+     "### Use Condition\n\n```yaml\nservices:\n  web:\n    depends_on:\n      db:\n        condition: service_started\n```"),
+
+    ("docker-compose-condition-service-healthy", "Docker Compose Condition service_healthy Error",
+     "Fix Docker Compose condition service_healthy errors. Resolve health condition issues.",
+     ["Health check not configured", "Service not healthy"],
+     "### Use Healthy Condition\n\n```yaml\nservices:\n  web:\n    depends_on:\n      db:\n        condition: service_healthy\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost\"]\n```"),
+
+    ("docker-compose-condition-service-completed", "Docker Compose Condition service_completed_successfully Error",
+     "Fix Docker Compose condition service_completed_successfully errors. Resolve completion condition issues.",
+     ["Service did not complete successfully", "Exit code non-zero"],
+     "### Check Exit Code\n\n```bash\ndocker compose ps -a\n```"),
+
+    ("docker-compose-links-deprecated", "Docker Compose links Deprecated Error",
+     "Fix Docker Compose links deprecated errors. Resolve deprecated links usage.",
+     ["links keyword deprecated", "Use depends_on instead"],
+     "### Use depends_on\n\n```yaml\nservices:\n  web:\n    depends_on:\n      - db\n```"),
+
+    ("docker-compose-network-not-found", "Docker Compose Network Not Found",
+     "Fix Docker Compose network not found errors. Resolve network lookup issues.",
+     ["Network not created", "Network name wrong", "External network issue"],
+     "### Define Network\n\n```yaml\nnetworks:\n  mynetwork:\n```\n\n### Use External Network\n\n```yaml\nnetworks:\n  mynetwork:\n    external: true\n```"),
+
+    ("docker-compose-network-driver", "Docker Compose Network Driver Error",
+     "Fix Docker Compose network driver errors. Resolve network driver configuration issues.",
+     ["Driver not available", "Driver configuration wrong"],
+     "### Specify Driver\n\n```yaml\nnetworks:\n  mynetwork:\n    driver: bridge\n```"),
+
+    ("docker-compose-bridge-network", "Docker Compose Bridge Network Error",
+     "Fix Docker Compose bridge network errors. Resolve bridge network issues.",
+     ["Bridge network not created", "DNS resolution failed"],
+     "### Use Bridge Network\n\n```yaml\nnetworks:\n  mynetwork:\n    driver: bridge\n```"),
+
+    ("docker-compose-overlay-network", "Docker Compose Overlay Network Error",
+     "Fix Docker Compose overlay network errors. Resolve overlay network issues.",
+     ["Overlay not available", "Swarm not initialized"],
+     "### Initialize Swarm\n\n```bash\ndocker swarm init\n```\n\n### Use Overlay\n\n```yaml\nnetworks:\n  mynetwork:\n    driver: overlay\n```"),
+
+    ("docker-compose-host-network", "Docker Compose Host Network Error",
+     "Fix Docker Compose host network errors. Resolve host network mode issues.",
+     ["Host network not supported", "Port mapping conflict"],
+     "### Use Host Network\n\n```yaml\nservices:\n  web:\n    network_mode: host\n```"),
+
+    ("docker-compose-none-network", "Docker Compose None Network Error",
+     "Fix Docker Compose none network errors. Resolve no network isolation issues.",
+     ["Service cannot communicate", "DNS not available"],
+     "### Use None Network\n\n```yaml\nservices:\n  web:\n    network_mode: none\n```"),
+
+    ("docker-compose-external-network", "Docker Compose External Network Error",
+     "Fix Docker Compose external network errors. Resolve external network usage issues.",
+     ["External network not found", "Network created outside compose"],
+     "### Create External Network\n\n```bash\ndocker network create mynetwork\n```\n\n### Use in Compose\n\n```yaml\nnetworks:\n  mynetwork:\n    external: true\n```"),
+
+    ("docker-compose-network-aliases", "Docker Compose Network Aliases Error",
+     "Fix Docker Compose network aliases errors. Resolve service alias configuration issues.",
+     ["Alias conflict", "Alias not resolving"],
+     "### Set Aliases\n\n```yaml\nservices:\n  web:\n    networks:\n      mynetwork:\n        aliases:\n          - webapp\n          - api\n```"),
+
+    ("docker-compose-ipam-config", "Docker Compose IPAM Config Error",
+     "Fix Docker Compose IPAM config errors. Resolve IP address management issues.",
+     ["Subnet overlap", "Gateway wrong", "IP range invalid"],
+     "### Configure IPAM\n\n```yaml\nnetworks:\n  mynetwork:\n    ipam:\n      config:\n        - subnet: 172.28.0.0/16\n          gateway: 172.28.0.1\n```"),
+
+    ("docker-compose-subnet-error", "Docker Compose Subnet Error",
+     "Fix Docker Compose subnet errors. Resolve subnet configuration issues.",
+     ["Subnet format invalid", "Subnet overlaps existing", "Subnet too small"],
+     "### Correct Subnet\n\n```yaml\nnetworks:\n  mynetwork:\n    ipam:\n      config:\n        - subnet: 172.28.0.0/24\n```"),
+
+    ("docker-compose-gateway-error", "Docker Compose Gateway Error",
+     "Fix Docker Compose gateway errors. Resolve gateway configuration issues.",
+     ["Gateway not in subnet", "Gateway unreachable"],
+     "### Set Gateway\n\n```yaml\nnetworks:\n  mynetwork:\n    ipam:\n      config:\n        - subnet: 172.28.0.0/24\n          gateway: 172.28.0.1\n```"),
+
+    ("docker-compose-dns-config", "Docker Compose DNS Config Error",
+     "Fix Docker Compose DNS config errors. Resolve DNS configuration issues.",
+     ["DNS server unreachable", "DNS search domain wrong"],
+     "### Configure DNS\n\n```yaml\nservices:\n  web:\n    dns:\n      - 8.8.8.8\n      - 8.8.4.4\n```"),
+
+    ("docker-compose-dns-search", "Docker Compose DNS Search Error",
+     "Fix Docker Compose DNS search errors. Resolve DNS search domain issues.",
+     ["Search domain not resolving", "Domain suffix wrong"],
+     "### Set DNS Search\n\n```yaml\nservices:\n  web:\n    dns_search:\n      - example.com\n```"),
+
+    ("docker-compose-domainname", "Docker Compose Domainname Error",
+     "Fix Docker Compose domainname errors. Resolve container domain name issues.",
+     ["Domainname format wrong", "DNS not resolving"],
+     "### Set Domainname\n\n```yaml\nservices:\n  web:\n    domainname: example.com\n```"),
+
+    ("docker-compose-hostname", "Docker Compose Hostname Error",
+     "Fix Docker Compose hostname errors. Resolve container hostname issues.",
+     ["Hostname format invalid", "DNS resolution issue"],
+     "### Set Hostname\n\n```yaml\nservices:\n  web:\n    hostname: web-server\n```"),
+
+    ("docker-compose-mac-address", "Docker Compose MAC Address Error",
+     "Fix Docker Compose MAC address errors. Resolve MAC address configuration issues.",
+     ["MAC address format invalid", "MAC address conflict"],
+     "### Set MAC Address\n\n```yaml\nservices:\n  web:\n    mac_address: 02:42:ac:11:00:02\n```"),
+
+    ("docker-compose-extra-hosts", "Docker Compose Extra Hosts Error",
+     "Fix Docker Compose extra_hosts errors. Resolve additional host entry issues.",
+     ["Host entry format wrong", "Host not resolving"],
+     "### Add Extra Hosts\n\n```yaml\nservices:\n  web:\n    extra_hosts:\n      - \"myhost:192.168.1.10\"\n      - \"other:10.0.0.5\"\n```"),
+
+    ("docker-compose-cap-add", "Docker Compose Capabilities Add Error",
+     "Fix Docker Compose cap_add errors. Resolve Linux capability addition issues.",
+     ["Capability not valid", "Security risk"],
+     "### Add Capability\n\n```yaml\nservices:\n  web:\n    cap_add:\n      - NET_ADMIN\n      - SYS_PTRACE\n```"),
+
+    ("docker-compose-cap-drop", "Docker Compose Capabilities Drop Error",
+     "Fix Docker Compose cap_drop errors. Resolve Linux capability removal issues.",
+     ["Capability not droppable", "Application requires capability"],
+     "### Drop Capability\n\n```yaml\nservices:\n  web:\n    cap_drop:\n      - ALL\n    cap_add:\n      - NET_BIND_SERVICE\n```"),
+
+    ("docker-compose-privileged-mode", "Docker Compose Privileged Mode Error",
+     "Fix Docker Compose privileged mode errors. Resolve privileged container issues.",
+     ["Security risk", "Not recommended for production"],
+     "### Use Specific Capabilities\n\n```yaml\nservices:\n  web:\n    cap_add:\n      - SYS_ADMIN\n```\n\nInstead of privileged: true."),
+
+    ("docker-compose-devices-error", "Docker Compose Devices Error",
+     "Fix Docker Compose devices errors. Resolve device mounting issues.",
+     ["Device not found", "Permission denied", "Device path wrong"],
+     "### Mount Device\n\n```yaml\nservices:\n  web:\n    devices:\n      - \"/dev/sda:/dev/sda\"\n```"),
+
+    ("docker-compose-device-cgroup-rules", "Docker Compose Device Cgroup Rules Error",
+     "Fix Docker Compose device_cgroup_rules errors. Resolve cgroup device rule issues.",
+     ["Rule format invalid", "Rule not supported"],
+     "### Set Cgroup Rules\n\n```yaml\nservices:\n  web:\n    device_cgroup_rules:\n      - \"c 42:* rmw\"\n```"),
+
+    ("docker-compose-security-opt", "Docker Compose Security Options Error",
+     "Fix Docker Compose security_opt errors. Resolve security option issues.",
+     ["Security option not valid", "Seccomp profile wrong"],
+     "### Set Security Options\n\n```yaml\nservices:\n  web:\n    security_opt:\n      - no-new-privileges:true\n```"),
+
+    ("docker-compose-seccomp", "Docker Compose Seccomp Error",
+     "Fix Docker Compose seccomp errors. Resolve seccomp profile issues.",
+     ["Profile not found", "Profile format invalid"],
+     "### Use Seccomp Profile\n\n```yaml\nservices:\n  web:\n    security_opt:\n      - seccomp:profile.json\n```"),
+
+    ("docker-compose-apparmor", "Docker Compose AppArmor Error",
+     "Fix Docker Compose AppArmor errors. Resolve AppArmor profile issues.",
+     ["Profile not loaded", "Profile not available"],
+     "### Set AppArmor Profile\n\n```yaml\nservices:\n  web:\n    security_opt:\n      - apparmor:my-profile\n```"),
+
+    ("docker-compose-read-only", "Docker Compose Read Only Error",
+     "Fix Docker Compose read_only errors. Resolve read-only filesystem issues.",
+     ["Application needs write access", "tmpfs required"],
+     "### Use tmpfs for Writes\n\n```yaml\nservices:\n  web:\n    read_only: true\n    tmpfs:\n      - /tmp\n      - /var/cache\n```"),
+
+    ("docker-compose-sysctls", "Docker Compose Sysctls Error",
+     "Fix Docker Compose sysctls errors. Resolve kernel parameter issues.",
+     ["Sysctl not allowed", "Sysctl format wrong", "Value invalid"],
+     "### Set Sysctls\n\n```yaml\nservices:\n  web:\n    sysctls:\n      - net.core.somaxconn=1024\n      - net.ipv4.tcp_syncookies=0\n```"),
+
+    ("docker-compose-ulimits", "Docker Compose Ulimits Error",
+     "Fix Docker Compose ulimits errors. Resolve resource limit issues.",
+     ["Ulimit value invalid", "Ulimit name wrong"],
+     "### Set Ulimits\n\n```yaml\nservices:\n  web:\n    ulimits:\n      nofile:\n        soft: 65536\n        hard: 65536\n```"),
+
+    ("docker-compose-ulimit-nofile", "Docker Compose Ulimit Nofile Error",
+     "Fix Docker Compose ulimit nofile errors. Resolve file descriptor limit issues.",
+     ["Too many open files", "Limit too low"],
+     "### Increase Nofile\n\n```yaml\nservices:\n  web:\n    ulimits:\n      nofile:\n        soft: 65536\n        hard: 65536\n```"),
+
+    ("docker-compose-mem-limit", "Docker Compose Memory Limit Error",
+     "Fix Docker Compose mem_limit errors. Resolve memory limit issues.",
+     ["Memory limit too low", "Container OOM killed"],
+     "### Set Memory Limit\n\n```yaml\nservices:\n  web:\n    deploy:\n      resources:\n        limits:\n          memory: 512M\n```"),
+
+    ("docker-compose-mem-reservation", "Docker Compose Memory Reservation Error",
+     "Fix Docker Compose mem_reservation errors. Resolve memory reservation issues.",
+     ["Reservation higher than limit", "Reservation too low"],
+     "### Set Reservation\n\n```yaml\nservices:\n  web:\n    deploy:\n      resources:\n        reservations:\n          memory: 256M\n```"),
+
+    ("docker-compose-memswap-limit", "Docker Compose Memory Swap Limit Error",
+     "Fix Docker Compose memswap_limit errors. Resolve memory swap limit issues.",
+     ["Swap limit too high", "Swap not available"],
+     "### Set Swap Limit\n\n```yaml\nservices:\n  web:\n    memswap_limit: 1g\n```"),
+
+    ("docker-compose-kernel-memory", "Docker Compose Kernel Memory Error",
+     "Fix Docker Compose kernel memory errors. Resolve kernel memory limit issues.",
+     ["Kernel memory limit invalid"],
+     "### Set Kernel Memory\n\n```yaml\nservices:\n  web:\n    kernel_memory: 50M\n```"),
+
+    ("docker-compose-cpu-shares", "Docker Compose CPU Shares Error",
+     "Fix Docker Compose cpu_shares errors. Resolve CPU share configuration issues.",
+     ["Share value invalid", "CPU not available"],
+     "### Set CPU Shares\n\n```yaml\nservices:\n  web:\n    cpu_shares: 512\n```"),
+
+    ("docker-compose-cpu-quota", "Docker Compose CPU Quota Error",
+     "Fix Docker Compose cpu_quota errors. Resolve CPU quota configuration issues.",
+     ["Quota value invalid", "Quota exceeds available CPU"],
+     "### Set CPU Quota\n\n```yaml\nservices:\n  web:\n    deploy:\n      resources:\n        limits:\n          cpus: '0.5'\n```"),
+
+    ("docker-compose-cpuset", "Docker Compose Cpuset Error",
+     "Fix Docker Compose cpuset errors. Resolve CPU set pinning issues.",
+     ["CPU set invalid", "CPU not available"],
+     "### Set CPUset\n\n```yaml\nservices:\n  web:\n    cpuset: \"0,1\"\n```"),
+
+    ("docker-compose-oom-score-adj", "Docker Compose OOM Score Adj Error",
+     "Fix Docker Compose oom_score_adj errors. Resolve OOM score adjustment issues.",
+     ["Score out of range (-1000 to 1000)"],
+     "### Set OOM Score\n\n```yaml\nservices:\n  web:\n    oom_score_adj: 500\n```"),
+
+    ("docker-compose-oom-kill-disable", "docker-compose oom_kill_disable Error",
+     "Fix Docker Compose oom_kill_disable errors. Resolve OOM killer disable issues.",
+     ["OOM killer disabled", "Memory leak risk"],
+     "### Disable OOM Kill\n\n```yaml\nservices:\n  web:\n    oom_kill_disable: true\n```"),
+
+    ("docker-compose-restart-policy", "Docker Compose Restart Policy Error",
+     "Fix Docker Compose restart policy errors. Resolve restart configuration issues.",
+     ["Policy not valid", "Restart loop", "Policy format wrong"],
+     "### Set Restart Policy\n\n```yaml\nservices:\n  web:\n    restart: unless-stopped\n```"),
+
+    ("docker-compose-no-restart", "Docker Compose No Restart Error",
+     "Fix Docker Compose no restart errors. Resolve container not restarting issues.",
+     ["Container not restarting after crash", "restart: no set"],
+     "### Enable Restart\n\n```yaml\nservices:\n  web:\n    restart: unless-stopped\n```"),
+
+    ("docker-compose-always-restart", "Docker Compose Always Restart Error",
+     "Fix Docker Compose always restart errors. Resolve restart loop issues.",
+     ["Container restarting continuously", "Application crashing"],
+     "### Fix Application\n\nCheck application logs:\n\n```bash\ndocker compose logs web\n```"),
+
+    ("docker-compose-on-failure-restart", "Docker Compose On-Failure Restart Error",
+     "Fix Docker Compose on-failure restart errors. Resolve failure-based restart issues.",
+     ["Restart count exceeded", "Application failing repeatedly"],
+     "### Set Max Retries\n\n```yaml\nservices:\n  web:\n    restart: on-failure:5\n```"),
+
+    ("docker-compose-unless-stopped-restart", "Docker Compose Unless-Stopped Restart Error",
+     "Fix Docker Compose unless-stopped restart errors. Resolve restart behavior issues.",
+     ["Container not restarting after daemon restart", "Manual stop not respected"],
+     "### Use Unless-Stopped\n\n```yaml\nservices:\n  web:\n    restart: unless-stopped\n```"),
+
+    ("docker-compose-healthcheck-test", "Docker Compose Healthcheck Test Error",
+     "Fix Docker Compose healthcheck test errors. Resolve health check command issues.",
+     ["Command failed", "Test format wrong", "Command not found"],
+     "### Define Healthcheck\n\n```yaml\nservices:\n  web:\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost\"]\n```"),
+
+    ("docker-compose-healthcheck-interval", "Docker Compose Healthcheck Interval Error",
+     "Fix Docker Compose healthcheck interval errors. Resolve check interval issues.",
+     ["Interval too short", "Interval too long"],
+     "### Set Interval\n\n```yaml\nhealthcheck:\n  interval: 30s\n```"),
+
+    ("docker-compose-healthcheck-timeout", "Docker Compose Healthcheck Timeout Error",
+     "Fix Docker Compose healthcheck timeout errors. Resolve check timeout issues.",
+     ["Timeout too short", "Health check timing out"],
+     "### Set Timeout\n\n```yaml\nhealthcheck:\n  timeout: 10s\n```"),
+
+    ("docker-compose-healthcheck-retries", "Docker Compose Healthcheck Retries Error",
+     "Fix Docker Compose healthcheck retries errors. Resolve retry count issues.",
+     ["Too few retries", "Service marked unhealthy too quickly"],
+     "### Set Retries\n\n```yaml\nhealthcheck:\n  retries: 5\n```"),
+
+    ("docker-compose-healthcheck-start-period", "Docker Compose Healthcheck Start Period Error",
+     "Fix Docker Compose healthcheck start_period errors. Resolve startup grace period issues.",
+     ["Start period too short", "Service not ready in time"],
+     "### Set Start Period\n\n```yaml\nhealthcheck:\n  start_period: 40s\n```"),
+
+    ("docker-compose-logging-driver", "Docker Compose Logging Driver Error",
+     "Fix Docker Compose logging driver errors. Resolve logging configuration issues.",
+     ["Driver not available", "Driver configuration wrong"],
+     "### Set Logging Driver\n\n```yaml\nservices:\n  web:\n    logging:\n      driver: json-file\n```"),
+
+    ("docker-compose-json-file", "Docker Compose JSON File Logging Error",
+     "Fix Docker Compose json-file logging errors. Resolve JSON file log driver issues.",
+     ["Log file too large", "Rotation not configured"],
+     "### Configure Logging\n\n```yaml\nlogging:\n  driver: json-file\n  options:\n    max-size: \"10m\"\n    max-file: \"3\"\n```"),
+
+    ("docker-compose-journald", "Docker Compose Journald Logging Error",
+     "Fix Docker Compose journald logging errors. Resolve journald log driver issues.",
+     ["Journald not available", "Log format wrong"],
+     "### Use Journald\n\n```yaml\nlogging:\n  driver: journald\n```"),
+
+    ("docker-compose-syslog", "Docker Compose Syslog Logging Error",
+     "Fix Docker Compose syslog logging errors. Resolve syslog log driver issues.",
+     ["Syslog server unreachable", "Format invalid"],
+     "### Use Syslog\n\n```yaml\nlogging:\n  driver: syslog\n  options:\n    syslog-address: \"tcp://192.168.1.10:514\"\n```"),
+
+    ("docker-compose-fluentd", "Docker Compose Fluentd Logging Error",
+     "Fix Docker Compose fluentd logging errors. Resolve fluentd log driver issues.",
+     ["Fluentd server unreachable", "Tag format wrong"],
+     "### Use Fluentd\n\n```yaml\nlogging:\n  driver: fluentd\n  options:\n    fluentd-address: localhost:24224\n```"),
+
+    ("docker-compose-gelf", "Docker Compose GELF Logging Error",
+     "Fix Docker Compose GELF logging errors. Resolve GELF log driver issues.",
+     ["GELF server unreachable", "Format invalid"],
+     "### Use GELF\n\n```yaml\nlogging:\n  driver: gelf\n  options:\n    gelf-address: \"udp://192.168.1.10:12201\"\n```"),
+
+    ("docker-compose-awslogs", "Docker Compose AWS Logs Error",
+     "Fix Docker Compose awslogs logging errors. Resolve CloudWatch log driver issues.",
+     ["AWS credentials not configured", "Log group not found"],
+     "### Use awslogs\n\n```yaml\nlogging:\n  driver: awslogs\n  options:\n    awslogs-group: my-group\n    awslogs-region: us-east-1\n    awslogs-stream-prefix: my-prefix\n```"),
+
+    ("docker-compose-splunk", "Docker Compose Splunk Logging Error",
+     "Fix Docker Compose splunk logging errors. Resolve Splunk log driver issues.",
+     ["Splunk server unreachable", "Token invalid"],
+     "### Use Splunk\n\n```yaml\nlogging:\n  driver: splunk\n  options:\n    splunk-token: \"my-token\"\n    splunk-url: \"https://splunk.example.com:8088\"\n```"),
+
+    ("docker-compose-log-opt", "Docker Compose Log Options Error",
+     "Fix Docker Compose log option errors. Resolve logging option configuration issues.",
+     ["Option not valid for driver", "Option value wrong"],
+     "### Set Log Options\n\n```yaml\nlogging:\n  driver: json-file\n  options:\n    max-size: \"10m\"\n    max-file: \"3\"\n    tag: \"{{.ImageName}}\"\n```"),
+
+    ("docker-compose-log-limit", "Docker Compose Log Limit Error",
+     "Fix Docker Compose log limit errors. Resolve log size limit issues.",
+     ["Log file too large", "Disk space running out"],
+     "### Configure Log Limits\n\n```yaml\nlogging:\n  driver: json-file\n  options:\n    max-size: \"10m\"\n    max-file: \"3\"\n```"),
+
+    ("docker-compose-max-size", "Docker Compose Max Size Error",
+     "Fix Docker Compose max-size errors. Resolve max log file size issues.",
+     ["Size format invalid", "Size too large"],
+     "### Set Max Size\n\n```yaml\nlogging:\n  options:\n    max-size: \"10m\"\n```"),
+
+    ("docker-compose-max-file", "Docker Compose Max File Error",
+     "Fix Docker Compose max-file errors. Resolve max log file count issues.",
+     ["Count format invalid", "Count too high"],
+     "### Set Max File\n\n```yaml\nlogging:\n  options:\n    max-file: \"3\"\n```"),
+
+    ("docker-compose-networks-to-attach", "Docker Compose Networks to Attach Error",
+     "Fix Docker Compose networks to attach errors. Resolve network attachment issues.",
+     ["Network not defined", "Service not connected"],
+     "### Attach Network\n\n```yaml\nservices:\n  web:\n    networks:\n      - mynetwork\n\nnetworks:\n  mynetwork:\n```"),
+
+    ("docker-compose-service-scaling", "Docker Compose Service Scaling Error",
+     "Fix Docker Compose service scaling errors. Resolve container scaling issues.",
+     ["Scale limit reached", "Port conflict on scale", "Scale not supported"],
+     "### Scale Service\n\n```bash\ndocker compose up --scale web=3\n```"),
+
+    ("docker-compose-scale-error", "Docker Compose Scale Error",
+     "Fix Docker Compose scale errors. Resolve service scaling issues.",
+     ["Cannot scale with ports", "Scale not supported for service"],
+     "### Remove Fixed Ports\n\n```yaml\nservices:\n  web:\n    expose:\n      - \"80\"\n```"),
+
+    ("docker-compose-container-resource", "Docker Compose Container Resource Error",
+     "Fix Docker Compose container resource errors. Resolve resource allocation issues.",
+     ["Resource limit exceeded", "Insufficient resources"],
+     "### Set Resources\n\n```yaml\nservices:\n  web:\n    deploy:\n      resources:\n        limits:\n          memory: 512M\n          cpus: '0.5'\n```"),
+
+    ("docker-compose-up-error", "Docker Compose Up Error",
+     "Fix docker compose up errors. Resolve container startup issues.",
+     ["Container failed to start", "Dependency not ready", "Port conflict"],
+     "### Start Services\n\n```bash\ndocker compose up -d\n```\n\n### Check Logs\n\n```bash\ndocker compose logs\n```"),
+
+    ("docker-compose-down-error", "Docker Compose Down Error",
+     "Fix docker compose down errors. Resolve container shutdown issues.",
+     ["Container not stopping", "Network not removing", "Volume in use"],
+     "### Force Down\n\n```bash\ndocker compose down --volumes --remove-orphans\n```"),
+
+    ("docker-compose-start-error", "Docker Compose Start Error",
+     "Fix docker compose start errors. Resolve starting existing containers.",
+     ["Container not created", "Container already running"],
+     "### Check Status\n\n```bash\ndocker compose ps\n```\n\n### Recreate\n\n```bash\ndocker compose up -d\n```"),
+
+    ("docker-compose-stop-error", "Docker Compose Stop Error",
+     "Fix docker compose stop errors. Resolve container stop issues.",
+     ["Container not stopping", "Timeout exceeded"],
+     "### Force Stop\n\n```bash\ndocker compose kill\n```"),
+
+    ("docker-compose-restart-error", "Docker Compose Restart Error",
+     "Fix docker compose restart errors. Resolve container restart issues.",
+     ["Container not restarting", "Restart failed"],
+     "### Restart\n\n```bash\ndocker compose restart\n```"),
+
+    ("docker-compose-pause-error", "Docker Compose Pause Error",
+     "Fix docker compose pause errors. Resolve container pause issues.",
+     ["Container not pausing", "Pause not supported"],
+     "### Pause\n\n```bash\ndocker compose pause\n```"),
+
+    ("docker-compose-unpause-error", "Docker Compose Unpause Error",
+     "Fix docker compose unpause errors. Resolve container unpause issues.",
+     ["Container not pausing", "Not paused"],
+     "### Unpause\n\n```bash\ndocker compose unpause\n```"),
+
+    ("docker-compose-ps-error", "Docker Compose Ps Error",
+     "Fix docker compose ps errors. Resolve container listing issues.",
+     ["No containers running", "Compose file not found"],
+     "### List Containers\n\n```bash\ndocker compose ps -a\n```"),
+
+    ("docker-compose-logs-error", "Docker Compose Logs Error",
+     "Fix docker compose logs errors. Resolve log viewing issues.",
+     ["Logs not available", "Service not found"],
+     "### View Logs\n\n```bash\ndocker compose logs -f\n```\n\n### Specific Service\n\n```bash\ndocker compose logs web\n```"),
+
+    ("docker-compose-exec-error", "Docker Compose Exec Error",
+     "Fix docker compose exec errors. Resolve running commands in containers.",
+     ["Container not running", "Command not found", "User not found"],
+     "### Exec Command\n\n```bash\ndocker compose exec web bash\n```\n\n### Run as User\n\n```bash\ndocker compose exec -u root web bash\n```"),
+
+    ("docker-compose-run-error", "Docker Compose Run Error",
+     "Fix docker compose run errors. Resolve running one-off commands.",
+     ["Container creation failed", "Command failed", "Dependency not ready"],
+     "### Run Command\n\n```bash\ndocker compose run web npm test\n```"),
+
+    ("docker-compose-build-error", "Docker Compose Build Error",
+     "Fix docker compose build errors. Resolve image build issues.",
+     ["Build failed", "Dockerfile error", "Context too large"],
+     "### Build\n\n```bash\ndocker compose build\n```\n\n### No Cache\n\n```bash\ndocker compose build --no-cache\n```"),
+
+    ("docker-compose-pull-error", "Docker Compose Pull Error",
+     "Fix docker compose pull errors. Resolve image pull issues.",
+     ["Image not found", "Registry auth failed", "Network error"],
+     "### Pull Images\n\n```bash\ndocker compose pull\n```"),
+
+    ("docker-compose-push-error", "Docker Compose Push Error",
+     "Fix docker compose push errors. Resolve image push issues.",
+     ["Push denied", "Tag not set", "Registry auth failed"],
+     "### Push Images\n\n```bash\ndocker compose push\n```"),
+
+    ("docker-compose-config-error", "Docker Compose Config Error",
+     "Fix docker compose config errors. Resolve configuration validation issues.",
+     ["Config file invalid", "Service definition wrong"],
+     "### Validate Config\n\n```bash\ndocker compose config\n```"),
+
+    ("docker-compose-create-error", "Docker Compose Create Error",
+     "Fix docker compose create errors. Resolve container creation issues.",
+     ["Container creation failed", "Image not available", "Name conflict"],
+     "### Create Containers\n\n```bash\ndocker compose create\n```"),
+
+    ("docker-compose-watch-error", "Docker Compose Watch Error",
+     "Fix docker compose watch errors. Resolve file watching issues.",
+     ["Watch not configured", "Sync not working"],
+     "### Use Watch\n\n```bash\ndocker compose watch\n```\n\n### Configure in compose.yml\n\n```yaml\nservices:\n  web:\n    develop:\n      watch:\n        - action: sync\n          path: ./src\n          target: /app/src\n```"),
+
+    ("docker-compose-sync-restart", "Docker Compose Sync Restart Error",
+     "Fix docker compose sync restart errors. Resolve file sync restart issues.",
+     ["Restart not triggered", "Sync not working"],
+     "### Configure Sync Restart\n\n```yaml\nservices:\n  web:\n    develop:\n      watch:\n        - action: rebuild\n          path: ./package.json\n```"),
+
+    ("docker-compose-sync-file", "Docker Compose Sync File Error",
+     "Fix docker compose sync file errors. Resolve file synchronization issues.",
+     ["File not syncing", "Path wrong", "Permission denied"],
+     "### Configure File Sync\n\n```yaml\nservices:\n  web:\n    develop:\n      watch:\n        - action: sync\n          path: ./src\n          target: /app/src\n```"),
+
+    ("docker-compose-watch-exclude", "Docker Compose Watch Exclude Error",
+     "Fix docker compose watch exclude errors. Resolve watch exclusion issues.",
+     ["Exclude pattern wrong", "Files not excluded"],
+     "### Configure Exclusion\n\n```yaml\nservices:\n  web:\n    develop:\n      watch:\n        - action: sync\n          path: ./src\n          target: /app/src\n          ignore:\n            - node_modules\n            - .git\n```"),
+
+    ("docker-compose-include-error", "Docker Compose Include Error",
+     "Fix docker compose include errors. Resolve include file issues.",
+     ["Include file not found", "Include syntax wrong"],
+     "### Use Include\n\n```yaml\ninclude:\n  - path: docker-compose.override.yml\n```"),
+
+    ("docker-compose-include-file", "docker-compose include file Error",
+     "Fix docker compose include file errors. Resolve additional compose file issues.",
+     ["File not found", "Format invalid"],
+     "### Add Include\n\n```yaml\ninclude:\n  - docker-compose.override.yml\n```"),
+
+    ("docker-compose-dot-env", "Docker Compose .env File Error",
+     "Fix Docker Compose .env file errors. Resolve environment file issues.",
+     [".env file not found", "Variable format wrong"],
+     "### Create .env\n\n```bash\nMY_VAR=value\n```\n\n### Use in Compose\n\n```yaml\nservices:\n  web:\n    image: ${IMAGE:-nginx}\n```"),
+
+    ("docker-compose-override-file", "Docker Compose Override File Error",
+     "Fix Docker Compose override file errors. Resolve override configuration issues.",
+     ["Override file not loading", "Priority wrong"],
+     "### Use Override File\n\n```bash\ndocker compose -f docker-compose.yml -f docker-compose.override.yml up\n```\n\n### Default Override\n\ndocker-compose.override.yml loads automatically."),
+
+    ("docker-compose-multiple-compose", "Docker Compose Multiple Compose Files Error",
+     "Fix Docker Compose multiple compose files errors. Resolve multi-file merge issues.",
+     ["Files conflict", "Services override incorrectly"],
+     "### Specify Multiple Files\n\n```bash\ndocker compose -f docker-compose.yml -f docker-compose.prod.yml up\n```"),
+
+    ("docker-compose-merge-compose", "Docker Compose Merge Compose Error",
+     "Fix Docker Compose merge compose errors. Resolve configuration merge issues.",
+     ["Merge conflict", "Service override wrong"],
+     "### Check Merged Config\n\n```bash\ndocker compose config\n```"),
+
+    ("docker-compose-profile-error", "Docker Compose Profile Error",
+     "Fix Docker Compose profile errors. Resolve profile selection issues.",
+     ["Profile not found", "Service not in profile"],
+     "### Use Profiles\n\n```yaml\nservices:\n  web:\n    image: nginx\n    profiles: [\"web\"]\n  debug:\n    image: busybox\n    profiles: [\"debug\"]\n```\n\n### Start with Profile\n\n```bash\ndocker compose --profile web up\n```"),
+
+    ("docker-compose-profiles-active", "Docker Compose Profiles Active Error",
+     "Fix Docker Compose profiles active errors. Resolve active profile issues.",
+     ["Profile not activated", "Wrong profile"],
+     "### Activate Profiles\n\n```bash\ndocker compose --profile debug up\n```"),
+
+    ("docker-compose-profiles-services", "Docker Compose Profiles Services Error",
+     "Fix Docker Compose profiles services errors. Resolve profile-service mapping issues.",
+     ["Service not in any profile", "Service in wrong profile"],
+     "### Check Profiles\n\n```bash\ndocker compose profiles\n```"),
+
+    ("docker-compose-platform-target", "Docker Compose Platform Target Error",
+     "Fix Docker Compose platform target errors. Resolve platform specification issues.",
+     ["Platform not supported", "Platform format wrong"],
+     "### Set Platform\n\n```yaml\nservices:\n  web:\n    image: nginx\n    platform: linux/amd64\n```"),
+]
+
+# ============================================================
+# EXECUTION
+# ============================================================
+TOOLS = [
+    ("cloudflare", "cloudflare", CF_DATA),
+    ("vercel", "vercel", VERCEL_DATA),
+    ("netlify", "netlify", NETLIFY_DATA),
+    ("heroku", "heroku", HEROKU_DATA),
+    ("dockerhub", "dockerhub", DOCKERHUB_DATA),
+    ("docker-compose", "docker-compose", DC_DATA),
+]
+
+for tool_name, tool_dir, pages in TOOLS:
+    existing = existing_slugs(tool_dir)
+    print(f"\n{'='*60}")
+    print(f"TOOL: {tool_name} (existing: {len(existing)})")
+    print(f"{'='*60}")
+    
+    count = 0
+    for slug, title, desc, causes, fix in pages:
+        if slug in existing:
+            print(f"  SKIP (exists): {slug}")
+            continue
+        body = gen_body(title, causes, fix)
+        content = make_page(tool_name, slug, title, desc, body)
+        path = os.path.join(BASE, tool_dir, f"{slug}.md")
+        with open(path, 'w') as f:
+            f.write(content)
+        count += 1
+        print(f"  CREATED: {slug}")
+    
+    total = len(existing) + count
+    print(f"\n  New created: {count}")
+    print(f"  Total pages: {total}")
+
+print("\n" + "="*60)
+print("DONE")
+print("="*60)

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Instance Template Error — template creation disk network errors"
+title: "[Solution] GCP Instance Template Error -- template creation disk network errors"
 description: "Fix GCP Instance Template errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

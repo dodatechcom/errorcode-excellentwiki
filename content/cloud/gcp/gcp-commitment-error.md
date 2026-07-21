@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Committed Use Discount Error — plan resource errors"
+title: "[Solution] GCP Committed Use Discount Error -- plan resource errors"
 description: "Fix GCP Committed Use Discount errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

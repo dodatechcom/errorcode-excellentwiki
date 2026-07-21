@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Media Translation Error — audio stream language errors"
+title: "[Solution] GCP Media Translation Error -- audio stream language errors"
 description: "Fix GCP Media Translation errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

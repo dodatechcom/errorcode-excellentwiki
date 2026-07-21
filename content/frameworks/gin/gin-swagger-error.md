@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Swagger Error — How to Fix"
+title: "[Solution] Gin Swagger Error -- How to Fix"
 description: "Fix Gin Swagger/OpenAPI errors. Resolve documentation generation, route annotation, and UI issues."
 frameworks: ["gin"]
 error-types: ["documentation-error"]

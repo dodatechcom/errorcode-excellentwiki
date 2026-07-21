@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix JWT Error — How to Fix"
+title: "[Solution] Actix JWT Error -- How to Fix"
 description: "Fix Actix JWT authentication errors. Resolve token parsing, validation, and expiration issues."
 frameworks: ["actix"]
 error-types: ["auth-error"]

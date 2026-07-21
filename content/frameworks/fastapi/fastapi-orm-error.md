@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI ORM Error — How to Fix"
+title: "[Solution] FastAPI ORM Error -- How to Fix"
 description: "Fix FastAPI ORM errors. Resolve object-relational mapping issues, session management, and model query problems."
 frameworks: ["fastapi"]
 error-types: ["database-error"]

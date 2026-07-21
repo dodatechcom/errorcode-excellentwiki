@@ -46,7 +46,7 @@ def authenticate():
     pass
 
 # views.py
-from auth import authenticte  # typo — ImportError
+from auth import authenticte  # typo -- ImportError
 ```
 
 ```text

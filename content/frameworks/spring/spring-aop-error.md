@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring AOP Proxy Error — How to Fix"
+title: "[Solution] Spring AOP Proxy Error -- How to Fix"
 description: "Fix Spring AOP proxy errors. Resolve aspect weaving, proxy creation, and AOP configuration issues in Spring."
 frameworks: ["spring"]
 error-types: ["runtime-error"]

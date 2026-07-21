@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Graceful Shutdown Error — How to Fix"
+title: "[Solution] Gin Graceful Shutdown Error -- How to Fix"
 description: "Fix Gin graceful shutdown errors. Resolve server shutdown and connection draining issues."
 frameworks: ["gin"]
 error-types: ["server-error"]

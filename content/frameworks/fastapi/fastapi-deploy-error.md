@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Deploy Error — How to Fix"
+title: "[Solution] FastAPI Deploy Error -- How to Fix"
 description: "Fix FastAPI deployment errors. Resolve production server, container, and hosting configuration issues."
 frameworks: ["fastapi"]
 error-types: ["deployment-error"]

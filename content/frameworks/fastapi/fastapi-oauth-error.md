@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI OAuth Error — How to Fix"
+title: "[Solution] FastAPI OAuth Error -- How to Fix"
 description: "Fix FastAPI OAuth errors. Resolve OAuth2 flow failures, provider integration issues, and token exchange problems."
 frameworks: ["fastapi"]
 error-types: ["authentication-error"]

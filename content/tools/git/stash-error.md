@@ -1,75 +1,102 @@
 ---
-title: "[Solution] Git Stash Pop Conflict — UU merge conflict in X"
-description: "Fix Git stash pop conflict. Resolve merge conflicts when applying stashed changes."
+title: "[Solution] Git Stash Error"
+description: "Fix Git stash errors when saving, applying, or popping stashed changes fails."
 tools: ["git"]
 error-types: ["tool-error"]
-severities: ["error"]
-weight: 5
+severities: ["warning"]
 ---
 
-# Git Stash Pop Conflict — UU merge conflict in X
+# Git Stash Error
 
-When running `git stash pop`, conflicts can occur if the stashed changes overlap with current changes in the working directory. Git cannot automatically merge both sets of changes.
+Git stash operations fail during save, apply, or pop.
+
+```
+error: cannot apply stash
+The stash entry is kept
+```
 
 ## Common Causes
 
-- Stashed changes modify the same files as current working changes
-- Working directory has uncommitted changes that conflict with stash
-- Stash contains changes from a different branch state
-- File was deleted or renamed since the stash was created
+- Stashed changes conflict with current work
+- Stash is empty
+- Stash entry was dropped
+- Merge conflict during stash pop
+- Stash created in wrong directory
 
 ## How to Fix
 
-### Check Stash Status
+### Save Stash
 
 ```bash
-git status
+# Save current changes
+git stash
+
+# Save with message
+git stash push -m "Work in progress"
+
+# Include untracked files
+git stash -u
+
+# Include ignored files
+git stash -a
 ```
 
-### Resolve Conflicts Manually
-
-Edit the conflicted files, remove conflict markers, and save.
-
-### Mark Conflicts as Resolved
+### Apply or Pop Stash
 
 ```bash
-git add <resolved-file>
+# Apply stash without removing
+git stash apply
+
+# Pop stash (apply and remove)
+git stash pop
+
+# Apply specific stash
+git stash apply stash@{2}
 ```
 
-### Drop the Stash (if pop failed)
+### Handle Stash Conflicts
 
 ```bash
-git stash drop
+# When pop creates conflicts
+git stash pop
+# If conflict occurs:
+# Resolve conflicts
+git add .
+git stash drop  # Remove the stash manually
 ```
 
-### Apply Stash Without Auto-Merge
+### List and Manage Stashes
 
 ```bash
-git stash show -p | git apply --3way
-```
+# List all stashes
+git stash list
 
-### View Stash Contents Before Applying
-
-```bash
+# Show stash content
 git stash show -p stash@{0}
+
+# Drop specific stash
+git stash drop stash@{2}
+
+# Clear all stashes
+git stash clear
+```
+
+### Create Branch from Stash
+
+```bash
+# Create branch from stash
+git stash branch new-branch stash@{0}
 ```
 
 ## Examples
 
 ```bash
-# Example 1: Stash pop causes conflict
-git stash pop
-# UU src/config.js
-# Fix: edit src/config.js, resolve conflict, then git add src/config.js
+# Save specific files only
+git stash push -m "Config changes" -- config/
 
-# Example 2: View stash before applying
-git stash show -p stash@{0} | head -50
+# Restore specific file from stash
+git checkout stash@{0} -- path/to/file
 
-# Example 3: Apply stash with 3-way merge
-git stash show -p | git apply --3way
+# Show all stash contents
+git stash list --stat
 ```
-
-## Related Errors
-
-- [Merge Conflict]({{< relref "/tools/git/merge-conflict" >}}) — conflict when merging branches
-- [Cherry-Pick Failed]({{< relref "/tools/git/cherry-pick-failed" >}}) — cherry-pick operation failed

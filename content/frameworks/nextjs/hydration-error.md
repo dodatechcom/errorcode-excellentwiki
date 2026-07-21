@@ -11,7 +11,7 @@ This error occurs when the HTML produced by the server does not match what React
 
 ## Common Causes
 
-- Using `Date.now()` or `new Date()` in component render — server and client produce different timestamps
+- Using `Date.now()` or `new Date()` in component render -- server and client produce different timestamps
 - Using `Math.random()` in render output
 - Browser-only APIs (`window`, `localStorage`) accessed during render without a guard
 - Conditional rendering based on `useEffect` state that only resolves on the client
@@ -31,7 +31,7 @@ export default function Clock() {
     setTime(new Date().toLocaleTimeString());
   }, []);
 
-  return <p>{time}</p>; // empty on server, filled on client — no mismatch
+  return <p>{time}</p>; // empty on server, filled on client -- no mismatch
 }
 ```
 

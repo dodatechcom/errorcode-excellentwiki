@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask JWT Token Error — How to Fix"
+title: "[Solution] Flask JWT Token Error -- How to Fix"
 description: "Fix Flask JWT token errors. Resolve JWT authentication, token validation, and authorization issues."
 frameworks: ["flask"]
 error-types: ["security-error"]

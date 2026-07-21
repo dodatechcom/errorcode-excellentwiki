@@ -1,6 +1,6 @@
 ---
 title: "[Solution] TimescaleDB Foreign Table Error — How to Fix"
-description: "Fix TimescaleDB foreign table errors by resolving FDW connection failures, fixing import schema issues, and handling distributed query problems"
+description: "Fix TimescaleDB foreign table errors by resolving foreign data wrapper issues, fixing distributed table access, and handling remote query failures"
 tools: ["timescaledb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,113 +10,111 @@ comments: true
 
 # TimescaleDB Foreign Table Error
 
-TimescaleDB foreign table errors occur when using PostgreSQL Foreign Data Wrappers (FDW) to access data from external sources within TimescaleDB.
+TimescaleDB foreign table errors occur when the foreign data wrapper (FDW) used for distributed hypertables fails to connect, query, or synchronize data with remote data nodes.
 
 ## Why It Happens
 
-- Foreign server connection is not established
-- FDW extension is not installed
-- Schema import fails for foreign tables
-- Foreign table data types are incompatible
-- FDW connection times out
-- Foreign table is used in hypertable creation
+- Foreign server connection parameters are incorrect
+- FDW extension is not installed or loaded
+- Remote data node is unreachable
+- Foreign table schema does not match the local schema
+- FDW connection pool is exhausted
+- SSL certificate verification fails on remote connection
 
 ## Common Error Messages
 
 ```
-ERROR: foreign server does not exist
+ERROR: foreign-data wrapper "timescaledb_fdw" not found
 ```
 
 ```
-ERROR: could not connect to foreign server
+ERROR: could not connect to server
 ```
 
 ```
-ERROR: schema import failed
+ERROR: foreign table schema mismatch
 ```
 
 ```
-ERROR: foreign table cannot be hypertable
+ERROR: FDW connection pool exhausted
 ```
 
 ## How to Fix It
 
-### 1. Configure Foreign Data Wrapper
+### 1. Check FDW Extension
 
 ```sql
--- Install FDW extension
-CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+-- Verify FDW extension is installed
+SELECT * FROM pg_extension
+WHERE extname = 'timescaledb_fdw';
 
--- Create foreign server
-CREATE SERVER foreign_db
-  FOREIGN DATA WRAPPER postgres_fdw
-  OPTIONS (host '10.0.0.2', port '5432', dbname 'remote_db');
+-- Install if missing
+CREATE EXTENSION IF NOT EXISTS timescaledb_fdw;
+```
+
+### 2. Fix Foreign Server Configuration
+
+```sql
+-- Check foreign server options
+SELECT srvname, srvoptions
+FROM pg_foreign_server;
+
+-- Create or update foreign server
+CREATE SERVER dn1
+  FOREIGN DATA WRAPPER timescaledb_fdw
+  OPTIONS (host 'node1.example.com', port '5432', dbname 'tsdb');
 
 -- Create user mapping
-CREATE USER MAPPING FOR local_user
-  SERVER foreign_db
-  OPTIONS (user 'remote_user', password 'remote_password');
+CREATE USER MAPPING FOR postgres
+  SERVER dn1
+  OPTIONS (user 'postgres', password 'secret');
 ```
 
-### 2. Import Foreign Schema
+### 3. Test Remote Connection
 
 ```sql
--- Import all tables from foreign server
+-- Test connection to data node
+SELECT * FROM pg_foreign_server WHERE srvname = 'dn1';
+
+-- Import foreign schema
 IMPORT FOREIGN SCHEMA public
   LIMIT TO (sensor_data)
-  FROM SERVER foreign_db
-  INTO local_schema;
-
--- Import with filter
-IMPORT FOREIGN SCHEMA public
-  FROM SERVER foreign_db
-  INTO local_schema
-  OPTIONS (import_default => 'false');
+  FROM SERVER dn1
+  INTO remote_schema;
 ```
 
-### 3. Query Foreign Tables
+### 4. Fix Schema Mismatch
 
 ```sql
--- Query foreign table directly
-SELECT * FROM local_schema.sensor_data
-WHERE time > NOW() - INTERVAL '1 day';
+-- Check local schema
+\d sensor_data
 
--- Use in joins
-SELECT l.time, l.temperature, r.humidity
-FROM local_schema.sensor_data l
-JOIN foreign_schema.sensor_readings r
-  ON l.time = r.time AND l.sensor_id = r.sensor_id;
-```
+-- Check remote schema via psql
+-- psql -h node1 -c "\d sensor_data"
 
-### 4. Fix Foreign Table Issues
-
-```sql
--- Check foreign server status
-SELECT * FROM pg_foreign_server;
-
--- Check user mappings
-SELECT * FROM pg_user_mappings;
-
--- Refresh foreign table schema
-IMPORT FOREIGN SCHEMA public
-  FROM SERVER foreign_db
-  INTO local_schema;
+-- Drop and recreate foreign table with correct schema
+DROP FOREIGN TABLE IF EXISTS remote_sensor_data;
+CREATE FOREIGN TABLE remote_sensor_data (
+  time TIMESTAMPTZ NOT NULL,
+  device_id INT NOT NULL,
+  value NUMERIC(10,2)
+) SERVER dn1 OPTIONS (table_name 'sensor_data');
 ```
 
 ## Common Scenarios
 
-- **Foreign server unreachable**: Check network connectivity and pg_hba.conf on remote server.
-- **Schema import fails**: Ensure FDW extension is installed on both local and remote servers.
-- **Foreign table cannot be hypertable**: Copy data to local table first, then create hypertable.
+- **FDW extension not found**: Create the timescaledb_fdw extension.
+- **Cannot connect to remote node**: Check firewall rules and connection parameters.
+- **Schema mismatch after DDL change**: Re-import the foreign schema.
 
 ## Prevent It
 
+- Verify FDW extension is installed before creating distributed hypertables
 - Test foreign server connectivity regularly
-- Use connection pooling for frequent FDW queries
-- Monitor FDW query performance
+- Keep schema in sync across all nodes
 
 ## Related Pages
 
-- [TimescaleDB Query Error](/tools/timescaledb/timescale-query-error)
+- [TimescaleDB Distributed Error](/tools/timescaledb/timescale-distributed-error)
+- [TimescaleDB Data Node Error](/tools/timescaledb/timescale-data-node-error)
 - [TimescaleDB Connection Error](/tools/timescaledb/timescale-connection-error)
-- [TimescaleDB Config Error](/tools/timescaledb/timescale-config-error)

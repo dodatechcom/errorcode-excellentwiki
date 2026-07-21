@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Scheduling or Async Error — How to Fix"
+title: "[Solution] Spring Scheduling or Async Error -- How to Fix"
 description: "Fix Spring scheduling and async errors. Resolve task scheduling failures, thread pool, and async processing issues."
 frameworks: ["spring"]
 error-types: ["runtime-error"]
@@ -211,4 +211,4 @@ When too many async tasks are submitted, the queue fills up and tasks are reject
 
 2. **Wrap scheduled tasks in try-catch** to prevent exceptions from stopping the scheduler.
 
-3. **Use `@Async` with `@Transactional` carefully** — the transaction runs in a separate thread and may not behave as expected.
+3. **Use `@Async` with `@Transactional` carefully** -- the transaction runs in a separate thread and may not behave as expected.

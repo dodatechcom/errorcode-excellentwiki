@@ -1,36 +1,45 @@
 ---
 title: "[Solution] ClickHouse Max Execution Time Error"
-description: "How to fix ClickHouse query timeout errors"
+description: "Fix ClickHouse query timeout errors when queries exceed max_execution_time limit"
 tools: ["clickhouse"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
+# ClickHouse Max Execution Time Error
+
+Max execution time errors occur when queries run longer than the configured timeout limit.
+
 ## Common Causes
 
-- Query too complex or scanning too much data
-- max_execution_time too low
-- Full table scan on large table
-- Stuck query blocking resources
+- Query scanning too many rows without filters
+- Missing primary key or index usage
+- Complex JOIN operations on large tables
+- GROUP BY on high-cardinality column
 
 ## How to Fix
 
-Increase timeout:
+Check current timeout:
 
 ```sql
-SET max_execution_time = 600;
+SELECT name, value FROM system.settings WHERE name = 'max_execution_time';
 ```
 
-Kill slow query:
+Set query timeout:
 
 ```sql
-KILL QUERY WHERE query_id = 'QUERY_ID';
+SET max_execution_time = 60;
+SELECT * FROM large_table WHERE date > today() - 30;
+```
+
+Optimize query with filters:
+
+```sql
+SELECT * FROM events WHERE event_date = today() LIMIT 1000;
 ```
 
 ## Examples
 
 ```sql
-SELECT * FROM system.processes;
-KILL QUERY WHERE query_id = 'abc-123-def';
-SET max_execution_time = 300;
+SELECT count() FROM huge_table WHERE status = 'active';
 ```

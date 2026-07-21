@@ -1,6 +1,6 @@
 ---
 title: "[Solution] CouchDB Shard Error — How to Fix"
-description: "Fix CouchDB shard errors by recovering from corrupted shards, fixing uneven distribution, and resolving shard conflicts"
+description: "Fix CouchDB shard errors by resolving shard distribution problems, fixing shard corruption, and handling shard reassignment issues in clusters"
 tools: ["couchdb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,122 +10,93 @@ comments: true
 
 # CouchDB Shard Error
 
-CouchDB shard errors occur when individual database shards become corrupted, unbalanced, or unreachable in a clustered deployment. Shards are the fundamental unit of data distribution.
+CouchDB shard errors occur when database shards are not properly distributed across cluster nodes, are corrupted, or cannot be accessed.
 
 ## Why It Happens
 
-- Shard file corruption due to disk I/O errors
-- Shard range overlaps after incorrect split
-- Node hosting the shard is down
-- Shard is not properly replicated across nodes
-- Shard range assignment is uneven
-- Compaction fails on a specific shard
+- Shard is not reachable on its assigned node
+- Shard corruption due to disk errors
+- Shard range overlaps with another shard
+- Node failure left orphaned shards
+- Shard reassignment failed during cluster rebalance
+- Shard file permissions are incorrect
 
 ## Common Error Messages
 
 ```
-{ "error": "not_found", "reason": "missing" }
+{ "error": "internal_server_error", "reason": "Shard not found" }
 ```
 
 ```
-{ "error": "internal_server_error", "reason": "shard_not_available" }
+{ "error": "not_found", "reason": "No shards found for range" }
 ```
 
 ```
-{ "error": "io_error", "reason": "corrupt shard file" }
+{ "error": "internal_server_error", "reason": "Shard is corrupted" }
 ```
 
 ```
-{ "error": "conflict", "reason": "shard range conflict" }
+{ "error": "internal_server_error", "reason": "Shard unreachable" }
 ```
 
 ## How to Fix It
 
-### 1. Check Shard Status
+### 1. Check Shard Distribution
 
 ```bash
-# List all shards for a database
-curl http://localhost:5984/mydb | jq '.shard_info'
+# Check shard map
+curl http://localhost:5984/_node/_local/_shards | jq .
 
-# Check which nodes own which shards
-curl http://localhost:5984/_shards/mydb | jq '.shards'
-
-# Example output showing shard ranges
-# {
-#   "shards": {
-#     "00000000-1fffffff": ["node1", "node2", "node3"],
-#     "20000000-3fffffff": ["node1", "node2", "node3"],
-#     ...
-#   }
-# }
+# Check specific database shards
+curl http://localhost:5984/_node/_local/_shards/mydb
 ```
 
-### 2. Repair Corrupted Shard
+### 2. Fix Unreachable Shards
 
 ```bash
-# Stop CouchDB
-sudo systemctl stop couchdb
+# Check shard ownership
+curl http://localhost:5984/_node/_local/_shards | jq '."shards/mydb"'
 
-# Check shard files integrity
-ls -la /opt/couchdb/data/shards*/
+# Ensure all nodes are running
+curl http://localhost:5984/_membership
 
-# Restore corrupted shard from backup
-cp /backup/shards/00000000-1fffffff.mydb.couch \
-   /opt/couchdb/data/shards/00000000-1fffffff.mydb.couch
-
-# Fix file permissions
-sudo chown couchdb:couchdb /opt/couchdb/data/shards/00000000-1fffffff.mydb.couch
-
-# Restart CouchDB
-sudo systemctl start couchdb
+# Restart problematic node
+sudo systemctl restart couchdb
 ```
 
-### 3. Move Shard to Different Node
+### 3. Repair Corrupted Shards
 
 ```bash
-# Move a shard from one node to another
-curl -X POST http://localhost:5984/_move_shard \
+# Check shard integrity
+ls -la /opt/couchdb/data/shards/
+
+# Recreate shard from replica
+curl -X DELETE http://localhost:5984/_dbs/mydb_shard_00000000
+```
+
+### 4. Rebalance Shards
+
+```bash
+# Trigger shard rebalance
+curl -X POST http://localhost:5984/_cluster_setup \
   -H "Content-Type: application/json" \
-  -d '{
-    "db_name": "mydb",
-    "shard": "00000000-1fffffff",
-    "from": "couchdb@node1",
-    "to": "couchdb@node4"
-  }'
-
-# Check active tasks for shard operations
-curl http://localhost:5984/_active_tasks
-```
-
-### 4. Fix Shard Distribution
-
-```bash
-# Check shard range distribution
-curl http://localhost:5984/_shards/mydb | jq '.shards | to_entries[] | {range: .key, nodes: (.value | length)}'
-
-# Ensure each shard has correct number of replicas
-# With n=3, each shard should be on 3 nodes
-
-# Rebalance by adding/removing nodes
-curl -X PUT http://localhost:5984/_nodes/couchdb@node4.example.com \
-  -H "Content-Type: application/json" \
-  -d '{}'
+  -d '{"action": "rebalance"}'
 ```
 
 ## Common Scenarios
 
-- **Shard corruption after disk failure**: Restore from backup and trigger replication to rebuild replicas.
-- **Uneven shard distribution**: Add more nodes and let the balancer redistribute.
-- **Shard not found on any node**: Restore the specific shard file from backup.
+- **Shard not found**: Check shard map and ensure all nodes are running.
+- **Shard corruption**: Restore from replica or backup.
+- **Shard unreachable**: Verify node connectivity and restart if needed.
 
 ## Prevent It
 
-- Monitor shard distribution across nodes regularly
-- Use RAID for disk redundancy on each node
-- Keep backups of shard files, not just logical backups
+- Monitor shard distribution regularly
+- Ensure sufficient replica nodes
+- Use automated shard rebalancing
 
 ## Related Pages
 
 - [CouchDB Cluster Error](/tools/couchdb/couchdb-cluster-error)
+- [CouchDB Replication Error](/tools/couchdb/couchdb-replication-error)
 - [CouchDB Node Error](/tools/couchdb/couchdb-node-error)
-- [CouchDB Disk Error](/tools/couchdb/couchdb-disk-error)

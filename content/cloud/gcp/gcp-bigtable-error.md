@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Bigtable Error — cluster table read-write throttle errors"
+title: "[Solution] GCP Bigtable Error -- cluster table read-write throttle errors"
 description: "Fix GCP Bigtable errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

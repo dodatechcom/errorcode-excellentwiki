@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Internationalization Error — How to Fix"
+title: "[Solution] Fiber Internationalization Error -- How to Fix"
 description: "Fix Fiber i18n errors. Resolve language detection, translation loading, and locale issues."
 frameworks: ["fiber"]
 error-types: ["i18n-error"]

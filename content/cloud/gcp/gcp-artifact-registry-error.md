@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Artifact Registry Error — repo docker auth cleanup errors"
+title: "[Solution] GCP Artifact Registry Error -- repo docker auth cleanup errors"
 description: "Fix GCP Artifact Registry errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

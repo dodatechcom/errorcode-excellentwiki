@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Video Intelligence Error — annotation shot label errors"
+title: "[Solution] GCP Video Intelligence Error -- annotation shot label errors"
 description: "Fix GCP Video Intelligence errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

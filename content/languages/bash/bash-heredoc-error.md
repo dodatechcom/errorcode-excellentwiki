@@ -1,123 +1,55 @@
 ---
-title: "[Solution] Bash Heredoc Delimiter Not Found Error Fix"
-description: "Fix 'heredoc: delimiter not found' in Bash. Resolve heredoc EOF marker issues and quoting problems in shell scripts."
+title: "[Solution] Bash Heredoc Error -- Incorrect Here Document Syntax"
+description: "Fix bash heredoc errors when heredoc delimiters are mismatched or incorrectly indented."
 languages: ["bash"]
 error-types: ["syntax-error"]
 severities: ["error"]
-weight: 5
 ---
 
-# Bash Heredoc Delimiter Not Found Error Fix
+# Bash Heredoc Error
 
-The `heredoc: delimiter not found` error occurs when the closing delimiter of a heredoc is missing, misspelled, or not placed at the beginning of a line.
+This error occurs when heredoc syntax is incorrect, such as mismatched delimiters or indentation issues.
 
-## What This Error Means
+## Common Causes
 
-A heredoc allows you to pass a block of text to a command. The delimiter (like `EOF`) marks where the text starts and ends. If Bash reaches the end of the file without finding the closing delimiter, it reports this error.
+- Closing delimiter not at the start of the line (no indentation)
+- Mismatched opening and closing delimiters
+- Using quoted delimiter to prevent variable expansion when expansion is wanted
+- Missing newline after closing delimiter
 
-A typical error:
+## How to Fix
 
-```
-script.sh: line 8: warning: here-document at line 1 delimited by end-of-file (wanted `EOF')
-```
-
-## Why It Happens
-
-Common causes include:
-
-- **Missing closing delimiter** — The `EOF` marker is never written.
-- **Indented closing delimiter** — The delimiter must start at column 0 unless using `<<-`.
-- **Misspelled delimiter** — Writing `FOE` instead of `EOF`.
-- **Using the wrong delimiter** — Quoted vs unquoted delimiters behave differently.
-- **Tab characters instead of spaces** — `<<-` strips tabs but not spaces.
-
-## How to Fix It
-
-### Fix 1: Always close heredoc at column 0
+### Use correct heredoc syntax
 
 ```bash
-# WRONG: Indented closing delimiter
+# WRONG: closing delimiter indented
 cat <<EOF
-Hello World
-    EOF
+hello
+    EOF  # error: not found
 
-# RIGHT: Closing delimiter at start of line
+# CORRECT: delimiter at start of line
 cat <<EOF
-Hello World
+hello
 EOF
 ```
 
-### Fix 2: Use heredoc with indented code using <<-
+### Use indented heredoc
 
 ```bash
-# RIGHT: Use <<- to strip leading tabs
-if true; then
-	cat <<-EOF
-	This line is indented with tabs
-	But the output won't have leading tabs
-	EOF
-fi
+# For scripts with indentation
+cat <<-EOF
+    This content will have leading tabs stripped
+    and will work inside indented code blocks
+EOF
 ```
 
-### Fix 3: Quote the delimiter to prevent variable expansion
+## Examples
 
 ```bash
-# WRONG: Variables get expanded
+#!/bin/bash
 cat <<EOF
-Home directory: $HOME
-EOF
-
-# RIGHT: Quote the delimiter to prevent expansion
-cat <<'EOF'
-Home directory: $HOME
-This is printed literally
+Server: $(hostname)
+Date: $(date)
+User: $USER
 EOF
 ```
-
-### Fix 4: Heredoc with commands
-
-```bash
-# RIGHT: Execute commands inside heredoc
-cat <<EOF
-Current date: $(date)
-User: $(whoami)
-Home: $HOME
-EOF
-```
-
-### Fix 5: Heredoc with cat and redirect
-
-```bash
-# RIGHT: Write heredoc to a file
-cat > config.txt <<EOF
-host=localhost
-port=3306
-database=myapp
-EOF
-```
-
-### Fix 6: Nested heredocs
-
-```bash
-# RIGHT: Use different delimiters for nesting
-cat <<OUTER
-First level
-$(cat <<INNER
-Second level
-INNER
-)
-OUTER
-```
-
-## Common Mistakes
-
-- **Indenting the closing delimiter** — Without `<<-`, the closing marker must start at column 0.
-- **Using spaces with `<<-`** — `<<-` only strips tab characters, not spaces.
-- **Forgetting that heredoc expands variables by default** — Quote the delimiter to prevent this.
-- **Using heredoc inside functions without proper quoting** — Quoted delimiters prevent expansion.
-
-## Related Pages
-
-- [Bash Bad Substitution](bad-substitution) — Variable expansion issues
-- [Bash Syntax Error](bash-syntax-error) — General syntax errors
-- [Bash Echo Option Error](bash-echo-option-error) — Echo output issues

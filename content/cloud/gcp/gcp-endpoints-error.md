@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Endpoints Error — service rollout ESP errors"
+title: "[Solution] GCP Cloud Endpoints Error -- service rollout ESP errors"
 description: "Fix GCP Cloud Endpoints errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

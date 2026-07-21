@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Test Client Error — How to Fix"
+title: "[Solution] FastAPI Test Client Error -- How to Fix"
 description: "Fix FastAPI test client errors. Resolve test failures, client configuration, and async test issues."
 frameworks: ["fastapi"]
 error-types: ["testing-error"]

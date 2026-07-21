@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Monitoring Error — metric dashboard alert channel errors"
+title: "[Solution] GCP Cloud Monitoring Error -- metric dashboard alert channel errors"
 description: "Fix GCP Cloud Monitoring errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Container-Optimized OS Error — update kernel errors"
+title: "[Solution] GCP Container-Optimized OS Error -- update kernel errors"
 description: "Fix GCP Container-Optimized OS errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

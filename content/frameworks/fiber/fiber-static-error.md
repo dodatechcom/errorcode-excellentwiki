@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Static File Error — How to Fix"
+title: "[Solution] Fiber Static File Error -- How to Fix"
 description: "Fix Fiber static file serving errors. Resolve static file not found, MIME types, and asset loading issues."
 frameworks: ["fiber"]
 error-types: ["file-error"]

@@ -1,6 +1,6 @@
 ---
-title: "[Solution] YugabyteDB YCQL Error — How to Fix"
-description: "Fix YugabyteDB YCQL errors by resolving Cassandra-compatible query failures, fixing batch operations, and handling YCQL-specific issues"
+title: "[Solution] YugabyteDB YCQL Client Error — How to Fix"
+description: "Fix YugabyteDB YCQL client errors by resolving Cassandra-compatible connection failures, fixing YCQL authentication, and handling driver issues"
 tools: ["yugabyte"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -8,114 +8,105 @@ weight: 5
 comments: true
 ---
 
-# YugabyteDB YCQL Error
+# YugabyteDB YCQL Client Error
 
-YugabyteDB YCQL errors occur when using the Cassandra-compatible YCQL interface. YCQL provides a Cassandra-like API for YugabyteDB.
+YugabyteDB YCQL client errors occur when client applications fail to connect via the YCQL (Cassandra-compatible) interface due to driver, authentication, or protocol issues.
 
 ## Why It Happens
 
-- YCQL syntax differs from CQL
-- Keyspace or table does not exist
-- Partition key is missing in WHERE clause
-- Batch statement is too large
-- Connection uses wrong port (9042)
-- Authentication fails for YCQL user
+- Client connects to wrong port (9042 is default for YCQL)
+- YCQL authentication is enabled but credentials are wrong
+- Client driver does not support YCQL features
+- Keyspace does not exist
+- SSL/TLS is required but client is not configured
+- Connection timeout is too short
 
 ## Common Error Messages
+
+```
+ERROR: Unable to connect to cluster
+```
+
+```
+ERROR: Authentication failed
+```
 
 ```
 ERROR: Keyspace does not exist
 ```
 
 ```
-ERROR: Table does not exist
-```
-
-```
-ERROR: Missing partition key in WHERE clause
-```
-
-```
-ERROR: Batch too large
+FATAL: connection refused on port 9042
 ```
 
 ## How to Fix It
 
-### 1. Connect to YCQL
+### 1. Check YCQL Connectivity
 
 ```bash
-# Connect using cqlsh
-cqlsh yb-tserver-1 9042
+# Test connection with cqlsh
+cqlsh yugabyte 9042
 
-# With authentication
-cqlsh yb-tserver-1 9042 -u yugabyte -p password
+# Check YCQL proxy status
+curl http://yugabyte:9000/varz | grep ycql
+
+# Check if YCQL proxy is running
+netstat -tlnp | grep 9042
 ```
 
-### 2. Create Keyspace and Table
+### 2. Fix Authentication
 
-```cql
--- Create keyspace
+```bash
+# Connect with credentials
+cqlsh yugabyte 9042 -u yugabyte -p password
+
+# Create keyspace
 CREATE KEYSPACE IF NOT EXISTS mykeyspace
-WITH replication = {
-  'class': 'SimpleStrategy',
-  'replication_factor': 3
-};
-
--- Create table
-CREATE TABLE mykeyspace.users (
-  user_id UUID PRIMARY KEY,
-  name TEXT,
-  email TEXT,
-  created_at TIMESTAMP
-);
-
--- Insert data
-INSERT INTO mykeyspace.users (user_id, name, email)
-VALUES (uuid(), 'Alice', 'alice@example.com');
+  WITH replication = {
+    'class': 'SimpleStrategy',
+    'replication_factor': 3
+  };
 ```
 
-### 3. Fix YCQL Queries
+### 3. Fix Client Driver Issues
 
-```cql
--- Always include partition key in WHERE clause
-SELECT * FROM mykeyspace.users WHERE user_id = uuid();
+```python
+# Python cassandra-driver connection
+from cassandra.cluster import Cluster
 
--- Use appropriate consistency level
-CONSISTENCY QUORUM;
-SELECT * FROM mykeyspace.users WHERE user_id = uuid();
+cluster = Cluster(['yugabyte'], port=9042)
+session = cluster.connect('mykeyspace')
 
--- Batch operations (same partition only)
-BEGIN BATCH
-  INSERT INTO mykeyspace.users (user_id, name) VALUES (uuid(), 'Bob');
-  INSERT INTO mykeyspace.user_counters (user_id, login_count) VALUES (uuid(), 1);
-APPLY BATCH;
+result = session.execute('SELECT * FROM sensor_data LIMIT 10')
+for row in result:
+    print(row)
 ```
 
-### 4. Configure YCQL
+### 4. Fix SSL Configuration
 
 ```bash
-# In tserver.gflags:
---ycql_port=9042
---use_client_to_server_encryption=false
+# Connect with SSL
+cqlsh yugabyte 9042 --ssl
 
-# Enable authentication
---ycql_enable_auth=true
+# Generate client certificates for YCQL
+openssl req -newkey rsa:2048 -nodes -keyout client.key \
+  -x509 -days 365 -out client.crt
 ```
 
 ## Common Scenarios
 
-- **Connection refused on 9042**: Ensure YCQL is enabled in TServer flags.
-- **Query fails without partition key**: Always include partition key in WHERE clause.
-- **Batch fails across partitions**: Batches only work on same partition.
+- **Connection refused**: Ensure YCQL proxy is running on port 9042.
+- **Authentication failed**: Check credentials and authentication configuration.
+- **Keyspace does not exist**: Create the keyspace before connecting.
 
 ## Prevent It
 
-- Use partition key in all YCQL queries
-- Keep batch statements on same partition
-- Test YCQL queries with cqlsh before application use
+- Use the correct port (9042) for YCQL connections
+- Create keyspaces before connecting clients
+- Test client connectivity in a staging environment
 
 ## Related Pages
 
-- [YugabyteDB YSQL Error](/tools/yugabyte/yugabyte-ysql-error)
 - [YugabyteDB Connection Error](/tools/yugabyte/yugabyte-connection-error)
-- [YugabyteDB Query Error](/tools/yugabyte/yugabyte-query-error)
+- [YugabyteDB Auth Error](/tools/yugabyte/yugabyte-auth-error)
+- [YugabyteDB SSL Error](/tools/yugabyte/yugabyte-ssl-error)

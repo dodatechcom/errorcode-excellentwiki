@@ -74,7 +74,7 @@ public class GatewayExceptionHandler {
 ## Examples
 
 ```text
-ResponseStatusException: 502 BAD_GATEWAY — Unable to connect to downstream service
+ResponseStatusException: 502 BAD_GATEWAY -- Unable to connect to downstream service
 ```
 
 ## Related Errors

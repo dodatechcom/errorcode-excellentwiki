@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP VPC Service Controls Error — perimeter bridge ingress errors"
+title: "[Solution] GCP VPC Service Controls Error -- perimeter bridge ingress errors"
 description: "Fix GCP VPC Service Controls errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

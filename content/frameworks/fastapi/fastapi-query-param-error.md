@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Query Parameter Error — How to Fix"
+title: "[Solution] FastAPI Query Parameter Error -- How to Fix"
 description: "Fix FastAPI query parameter errors. Resolve query string parsing, validation, and type conversion issues."
 frameworks: ["fastapi"]
 error-types: ["validation-error"]

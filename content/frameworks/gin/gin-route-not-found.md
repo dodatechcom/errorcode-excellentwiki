@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Route Not Found Error — How to Fix"
+title: "[Solution] Gin Route Not Found Error -- How to Fix"
 description: "Fix Gin 404 route not found errors. Resolve missing routes, incorrect HTTP methods, and routing configuration issues."
 frameworks: ["gin"]
 error-types: ["routing-error"]

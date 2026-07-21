@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Health Check Error — How to Fix"
+title: "[Solution] Fiber Health Check Error -- How to Fix"
 description: "Fix Fiber health check errors. Resolve readiness and liveness probe failures."
 frameworks: ["fiber"]
 error-types: ["monitoring-error"]

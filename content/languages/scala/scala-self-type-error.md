@@ -1,48 +1,69 @@
 ---
-title: "[Solution] Scala SelfTypeError - Brief Description"
-description: "Fix Scala self-type errors."
+title: "[Solution] Scala Self Type Error"
+description: "Fix Scala self-type annotation errors when defining abstract dependencies in traits."
 languages: ["scala"]
-error-types: ["runtime-error"]
+error-types: ["type-error"]
 severities: ["error"]
-weight: 1045
 ---
 
-A self-type error occurs when mixing in a trait with unmet self-type dependencies.
+Self-type errors occur when self-type annotations are incorrect or when the required type is not mixed in.
 
 ## Common Causes
 
-- Missing required trait in mix-in chain
+- Self-type pointing to non-existent type
+- Missing required mixin for self-type
 - Circular self-type dependencies
-- Self-type not satisfied by class hierarchy
+- Self-type with wrong name
 
 ## How to Fix
 
-Ensure all self-type dependencies are met:
+### 1. Use correct self-type syntax
 
 ```scala
 trait Database {
   def query(sql: String): List[Map[String, Any]]
 }
+
 trait UserRepository {
-  self: Database =>
-  def findAll(): List[Map[String, Any]] = query("SELECT * FROM users")
+  self: Database =>  // requires Database
+  def findUser(id: Int): Option[String] = {
+    query(s"SELECT * FROM users WHERE id=$id").headOption.map(_.toString)
+  }
 }
-class App extends UserRepository with Database {
-  def query(sql: String): List[Map[String, Any]] = Nil
+```
+
+### 2. Ensure required traits are mixed in
+
+```scala
+class MyRepo extends UserRepository with Database {
+  def query(sql: String): List[Map[String, Any]] = List.empty
 }
 ```
 
 ## Examples
 
 ```scala
-trait Logger { def log(msg: String): Unit }
+trait Logger {
+  def log(msg: String): Unit
+}
+
 trait Service {
   self: Logger =>
-  def execute(): Unit = { log("Executing service") }
+  def process(data: String): Unit = {
+    log(s"Processing: $data")
+  }
 }
+
+class MyService extends Service with Logger {
+  def log(msg: String): Unit = println(s"LOG: $msg")
+}
+
+val svc = new MyService()
+svc.process("test data")
 ```
 
 ## Related Errors
 
-- [Scala CompoundTypeError](/languages/scala/scala-compound-type-error)
-- [Scala TypeMismatch](/languages/scala/scala-type-mismatch)
+- [Type error](/languages/scala/scala-type-mismatch)
+- [Compilation error](/languages/scala/scala-type-inference-error)
+- [Trait parameter error](/languages/scala/scala-trait-parameter-error)

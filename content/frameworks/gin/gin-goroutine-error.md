@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Goroutine Error — How to Fix"
+title: "[Solution] Gin Goroutine Error -- How to Fix"
 description: "Fix Gin goroutine errors. Resolve concurrent request handling, data races, and context issues."
 frameworks: ["gin"]
 error-types: ["concurrency-error"]

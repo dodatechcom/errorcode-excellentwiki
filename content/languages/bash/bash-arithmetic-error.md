@@ -1,75 +1,58 @@
 ---
-title: "[Solution] Bash Arithmetic Syntax Error"
-description: "Fix 'bash: arithmetic syntax error' when performing integer arithmetic incorrectly in Bash."
+title: "[Solution] Bash Arithmetic Error -- Integer Division Issues"
+description: "Fix bash arithmetic errors when performing integer division or modulus operations."
 languages: ["bash"]
-severities: ["error"]
 error-types: ["runtime-error"]
-weight: 5
+severities: ["error"]
 ---
 
-# Bash Arithmetic Syntax Error Fix
+# Bash Arithmetic Error
 
-Arithmetic syntax errors occur when Bash cannot evaluate an arithmetic expression. Common causes include division by zero, non-integer values in integer context, or malformed expressions.
-
-## What This Error Means
-
-Bash arithmetic uses `$((expression))` for integer math. Errors occur when the expression is syntactically invalid or when operations are mathematically undefined.
+This error occurs when bash arithmetic expressions encounter division by zero or invalid operations.
 
 ## Common Causes
 
-- Division by zero in arithmetic context
-- Floating-point numbers in integer arithmetic
-- Missing operators between operands
-- Unmatched parentheses in expression
-- Using `$` inside `$((...))` (implicit)
+- Division by zero in `$(( ))` or `let` expressions
+- Using float values in integer-only arithmetic
+- Modulus operator with zero divisor
+- Uninitialized variables in arithmetic context
 
 ## How to Fix
 
-### 1. Check for division by zero
+### Check for division by zero
 
 ```bash
-# WRONG: division by zero
-echo $((10 / 0))
+# WRONG: potential division by zero
+result=$((10 / divisor))
 
-# RIGHT: check divisor
-divisor=0
+# CORRECT: check first
 if [ "$divisor" -ne 0 ]; then
-    echo $((10 / divisor))
+    result=$((10 / divisor))
+else
+    echo "Error: division by zero"
+    exit 1
 fi
 ```
 
-### 2. Use bc for floating-point math
+### Use bc for floating point
 
 ```bash
-# WRONG: floating point in integer arithmetic
-echo $((3.14 * 2))
+# WRONG: bash only does integer arithmetic
+result=$((10 / 3))  # result is 3, not 3.333
 
-# RIGHT: use bc
-echo "3.14 * 2" | bc
+# CORRECT: use bc for floats
+result=$(echo "scale=2; 10 / 3" | bc)
 ```
 
-### 3. Fix operator placement
+## Examples
 
 ```bash
-# WRONG: missing operator
-echo $((5 3))
-
-# RIGHT: with operator
-echo $((5 + 3))
+#!/bin/bash
+a=17
+b=5
+echo "Add: $((a + b))"
+echo "Sub: $((a - b))"
+echo "Mul: $((a * b))"
+echo "Div: $((a / b))"
+echo "Mod: $((a % b))"
 ```
-
-### 4. Don't use $ inside arithmetic
-
-```bash
-# WRONG: $ inside $((...))
-x=5
-echo $(($x + 3))
-
-# RIGHT: variables are implicit
-echo $((x + 3))
-```
-
-## Related Errors
-
-- [Binary Operator Expected](binary-comparison) — test expression issues
-- [Integer Expression Expected](integer-expression) — type conversion errors

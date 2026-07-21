@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin CORS Error — How to Fix"
+title: "[Solution] Gin CORS Error -- How to Fix"
 description: "Fix Gin CORS errors. Resolve cross-origin request blocked, missing headers, and preflight issues."
 frameworks: ["gin"]
 error-types: ["security-error"]

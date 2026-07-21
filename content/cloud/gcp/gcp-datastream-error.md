@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Datastream Error — source connection backfill errors"
+title: "[Solution] GCP Datastream Error -- source connection backfill errors"
 description: "Fix GCP Datastream errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

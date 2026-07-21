@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Template Error — How to Fix"
+title: "[Solution] Gin Template Error -- How to Fix"
 description: "Fix Gin template rendering errors. Resolve HTML template loading, execution, and compilation failures."
 frameworks: ["gin"]
 error-types: ["template-error"]

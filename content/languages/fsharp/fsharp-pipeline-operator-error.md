@@ -1,50 +1,54 @@
 ---
-title: "FSharp PipelineOperatorError"
-description: "Fix pipeline operator errors in F#."
-languages: [F#]
-error-types: ["Runtime", "Compile-time"]
-severities: [Warning, Error]
-weight: 1093
+title: "[Solution] F# Pipeline Operator Error -- Incorrect Composition"
+description: "Fix F# pipeline operator errors when the |> operator is misused or arguments do not align."
+languages: ["fsharp"]
+error-types: ["compile-time"]
+severities: ["error"]
 ---
 
-A pipeline operator error occurs when using the |> operator incorrectly.
+# F# Pipeline Operator Error
+
+This error occurs when the pipe operator `|>` is used incorrectly, such as piping a value into a function that expects different arguments.
 
 ## Common Causes
 
-- Wrong argument order for piped functions
-- Missing parentheses in pipeline chains
-- Type mismatches between pipeline stages
+- Piping into a function expecting multiple curried arguments incorrectly
+- Forgetting that pipe inserts as the last argument
+- Using pipe with functions that return partial applications
+- Mixing up `<|` and `|>`
 
 ## How to Fix
 
-Ensure functions accept last parameter:
+### Understand pipe argument position
 
 ```fsharp
-let result =
-    [1; 2; 3; 4; 5]
-    |> List.filter (fun x -> x > 2)
-    |> List.map (fun x -> x * 10)
+// WRONG: pipe puts list as second argument to Map
+let result = [1;2;3] |> Map.add "key"
+
+// CORRECT: pipe puts value as LAST argument
+let result = [1;2;3] |> Map.ofList
 ```
 
-Use parentheses for multi-argument functions:
+### Use parentheses for clarity
 
 ```fsharp
+// WRONG: ambiguous composition
+let result = [1;2;3] |> List.map (fun x -> x * 2) |> List.filter (fun x -> x > 2)
+
+// CORRECT: chain cleanly with clear steps
 let result =
-    data
-    |> List.fold (fun acc x -> acc + x) 0
+    [1; 2; 3]
+    |> List.map (fun x -> x * 2)
+    |> List.filter (fun x -> x > 2)
 ```
 
 ## Examples
 
 ```fsharp
-let processText =
-    "Hello World"
-    |> fun s -> s.ToLower()
+let processWords (text: string) =
+    text
     |> fun s -> s.Split(' ')
-    |> Array.map (fun s -> s.Length)
-    |> Array.sum
+    |> Array.map (fun w -> w.ToLower())
+    |> Array.filter (fun w -> w.Length > 3)
+    |> Array.sort
 ```
-
-## Related Errors
-n- [F# FunctionComposition](/languages/fsharp/fsharp-function-composition-error)
-- [F# ForwardPipe](/languages/fsharp/fsharp-forward-pipe-error)

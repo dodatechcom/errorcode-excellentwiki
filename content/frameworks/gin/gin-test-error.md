@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Test Error — How to Fix"
+title: "[Solution] Gin Test Error -- How to Fix"
 description: "Fix Gin unit test errors. Resolve test setup, HTTP request simulation, and assertion failures."
 frameworks: ["gin"]
 error-types: ["testing-error"]

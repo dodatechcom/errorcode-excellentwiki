@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask Session Handling Error — How to Fix"
+title: "[Solution] Flask Session Handling Error -- How to Fix"
 description: "Fix Flask session handling errors. Resolve session not saving, cookie issues, and session configuration problems."
 frameworks: ["flask"]
 error-types: ["runtime-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber WebSocket Error — How to Fix"
+title: "[Solution] Fiber WebSocket Error -- How to Fix"
 description: "Fix Fiber WebSocket errors. Resolve WebSocket connection, upgrade, and message handling issues."
 frameworks: ["fiber"]
 error-types: ["websocket-error"]

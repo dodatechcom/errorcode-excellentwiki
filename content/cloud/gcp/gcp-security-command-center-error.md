@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Security Command Center Error — finding source notification errors"
+title: "[Solution] GCP Security Command Center Error -- finding source notification errors"
 description: "Fix GCP Security Command Center errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

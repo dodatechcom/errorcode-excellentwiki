@@ -1,24 +1,44 @@
 ---
 title: "[Solution] ClickHouse UUID Type Error"
-description: "How to fix ClickHouse UUID type errors"
+description: "Fix ClickHouse UUID type errors when inserting or comparing UUID values"
 tools: ["clickhouse"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
+# ClickHouse UUID Type Error
+
+UUID type errors occur when ClickHouse cannot parse or handle UUID values correctly.
+
 ## Common Causes
-- UUID format wrong
-- UUID not generated
-- UUID collision
+
+- UUID string not in standard format
+- Comparing UUID with String directly
+- UUID column used in ORDER BY without index
+- Generating duplicate UUIDs
 
 ## How to Fix
 
+Parse UUID string:
+
 ```sql
-SELECT generateUUIDv4();
+SELECT toUUID('123e4567-e89b-12d3-a456-426614174000') AS id;
+```
+
+Generate UUID:
+
+```sql
+SELECT generateUUIDv4() AS new_uuid;
+```
+
+Create table with UUID:
+
+```sql
+CREATE TABLE t (id UUID DEFAULT generateUUIDv4()) ENGINE = MergeTree() ORDER BY id;
 ```
 
 ## Examples
 
 ```sql
-CREATE TABLE mytable (id UUID DEFAULT generateUUIDv4(), name String) ENGINE = MergeTree() ORDER BY id;
+SELECT id, UUIDNumToString(id) AS id_str FROM my_table LIMIT 5;
 ```

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Background Task Error — How to Fix"
+title: "[Solution] FastAPI Background Task Error -- How to Fix"
 description: "Fix FastAPI background task errors. Resolve task execution failures and cleanup issues."
 frameworks: ["fastapi"]
 error-types: ["background-error"]

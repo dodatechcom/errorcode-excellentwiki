@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Workflows Error — execution step connector errors"
+title: "[Solution] GCP Workflows Error -- execution step connector errors"
 description: "Fix GCP Workflows errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

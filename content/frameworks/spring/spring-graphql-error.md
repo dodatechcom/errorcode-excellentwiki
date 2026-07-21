@@ -61,8 +61,8 @@ public class UserController {
 ```graphql
 type User {
     id: ID!
-    name: String!   # Non-null — error propagates to parent
-    email: String    # Nullable — error returns null
+    name: String!   # Non-null -- error propagates to parent
+    email: String    # Nullable -- error returns null
 }
 ```
 

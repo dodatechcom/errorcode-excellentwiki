@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Test Error — How to Fix"
+title: "[Solution] Fiber Test Error -- How to Fix"
 description: "Fix Fiber unit test errors. Resolve test setup, HTTP request simulation, and assertion failures."
 frameworks: ["fiber"]
 error-types: ["testing-error"]

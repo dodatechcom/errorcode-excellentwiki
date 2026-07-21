@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP AI Platform Error — job model version prediction errors"
+title: "[Solution] GCP AI Platform Error -- job model version prediction errors"
 description: "Fix GCP AI Platform errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

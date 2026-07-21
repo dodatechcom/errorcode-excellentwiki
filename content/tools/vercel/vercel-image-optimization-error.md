@@ -1,41 +1,30 @@
 ---
-title: "[Solution] Vercel Image Optimization Failed Error — How to Fix"
-description: "Fix Vercel image optimization failures. Resolve missing images, unsupported formats, domain restrictions, and Next.js Image errors."
+title: "[Solution] Vercel Image Optimization Error"
+description: "Fix Vercel image optimization errors when Next.js Image component fails."
 tools: ["vercel"]
 error-types: ["tool-error"]
 severities: ["error"]
-weight: 1
-comments: true
 ---
 
-A Vercel image optimization failed error occurs when Vercel's image optimization service cannot process an image request. This commonly affects Next.js `next/image` usage and custom image optimization API calls.
+# Vercel Image Optimization Error
 
-## What This Error Means
+Vercel image optimization fails to process images.
 
-Vercel optimizes images on-demand by fetching the source image and resizing or converting it to an optimal format (WebP, AVIF). When this process fails, the image returns an error instead of the optimized version. The error can occur during image fetching, format conversion, or cache storage.
+```
+Error: Invalid src prop on next/image
+```
 
-## Why It Happens
+## Common Causes
 
-- The source image URL is unreachable or returns a 404
-- The image format is unsupported (e.g., corrupted file, exotic codec)
-- The `remotePatterns` configuration blocks the image domain
-- The image is too large (exceeds 25 MP or 100 MB)
-- Content Security Policy blocks image optimization requests
-- The image domain has rate limiting that blocks Vercel's optimization service
-- The image was deleted from the source before optimization
-- The image URL contains characters that break the optimization URL
+- Image domain not configured
+- External image URL not accessible
+- Image format not supported
+- Missing next.config.js configuration
+- Image size exceeds limits
 
-## Common Error Messages
+## How to Fix
 
-- `Invalid src prop` — The image domain is not allowed
-- `Image not found` — The source image URL returned 404
-- `Remote images must configure a default loader` — Missing `images` config
-- `OPTIMIZED_IMAGE_ERROR` — Generic image optimization failure
-- `Image is too large` — Image exceeds size limits
-
-## How to Fix It
-
-### Allow Remote Image Domains
+### Configure Image Domains
 
 ```javascript
 // next.config.js
@@ -44,140 +33,83 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.example.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.amazonaws.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io',
+        hostname: '**.example.com',
       },
     ],
-    // Or use the simpler domains list
-    // domains: ['images.example.com', 'cdn.example.com'],
+    formats: ['image/avif', 'image/webp'],
   },
 };
 ```
 
-### Fix Image Component Usage
+### Use Local Images
 
-```javascript
-// WRONG: Missing width/height for unoptimized images
+```typescript
 import Image from 'next/image';
 
-function WrongImage() {
-  return <Image src="https://images.example.com/photo.jpg" />;
-}
+// Static import
+import photo from '../public/photo.jpg';
 
-// RIGHT: Provide width and height
-function CorrectImage() {
-  return (
-    <Image
-      src="https://images.example.com/photo.jpg"
-      width={800}
-      height={600}
-      alt="Description"
-    />
-  );
-}
-
-// RIGHT: Use fill for responsive images
-function ResponsiveImage() {
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '400px' }}>
-      <Image
-        src="https://images.example.com/hero.jpg"
-        fill
-        alt="Hero image"
-        style={{ objectFit: 'cover' }}
-      />
-    </div>
-  );
+export default function Page() {
+  return <Image src={photo} alt="Photo" width={500} height={300} />;
 }
 ```
 
-### Configure Image Formats
+### Handle External Images
+
+```typescript
+// For external images, configure allowed domains
+<Image
+  src="https://cdn.example.com/photo.jpg"
+  alt="Photo"
+  width={800}
+  height={600}
+  unoptimized  // Skip optimization if needed
+/>
+```
+
+### Check Image URL
+
+```bash
+# Test image URL accessibility
+curl -I https://cdn.example.com/photo.jpg
+```
+
+### Disable Optimization
 
 ```javascript
 // next.config.js
 module.exports = {
   images: {
-    formats: ['image/avif', 'image/webp'],
-    // Set quality limits
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Minimum cache TTL (seconds)
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
-  },
-};
-```
-
-### Handle Broken Image URLs
-
-```javascript
-// Add error handling for failed image loads
-import Image from 'next/image';
-import { useState } from 'react';
-
-function SafeImage({ src, alt, ...props }) {
-  const [imgSrc, setImgSrc] = useState(src);
-  const [error, setError] = useState(false);
-
-  if (error) {
-    return <div className="image-placeholder">Image not available</div>;
+    unoptimized: true  // Disable for all images
   }
-
-  return (
-    <Image
-      {...props}
-      src={imgSrc}
-      alt={alt}
-      onError={() => setError(true)}
-      unoptimized={false}
-    />
-  );
-}
+};
 ```
 
-### Use Custom Loader for External CDNs
+## Examples
 
-```javascript
-// next.config.js — for CDNs not supported by default
-const customLoader = ({ src, width, quality }) => {
-  return `https://your-cdn.com/image?src=${encodeURIComponent(src)}&w=${width}&q=${quality || 75}`;
-};
-
-// In your component
+```typescript
+// Proper Image usage
 import Image from 'next/image';
 
-function ExternalImage() {
+export default function Gallery() {
+  const images = [
+    { src: '/photo1.jpg', alt: 'Photo 1' },
+    { src: '/photo2.jpg', alt: 'Photo 2' },
+  ];
+
   return (
-    <Image
-      loader={customLoader}
-      src="/photos/hero.jpg"
-      width={1200}
-      height={600}
-      alt="Hero"
-    />
+    <div>
+      {images.map((img) => (
+        <Image
+          key={img.src}
+          src={img.src}
+          alt={img.alt}
+          width={400}
+          height={300}
+          priority
+        />
+      ))}
+    </div>
   );
 }
 ```
-
-## Common Scenarios
-
-- **Third-party image CDN:** Images hosted on a CDN that blocks requests from unknown origins fail because Vercel's optimization service cannot fetch the source image.
-- **Dynamic image imports:** Using `require()` or dynamic `src` props without proper domain configuration causes the "Invalid src prop" error.
-- **Large raw images:** A 50-megapixel camera photo exceeds Vercel's optimization limits and fails silently.
-
-## Prevent It
-
-1. Always configure `remotePatterns` in `next.config.js` for every image domain your application uses
-2. Set reasonable `deviceSizes` and `imageSizes` to prevent Vercel from generating excessively large optimized images
-3. Implement fallback UI for image loading failures using the `onError` handler on the `Image` component
-
-## Related Pages
-
-- [Vercel Serverless Timeout]({{< relref "/tools/vercel/vercel-serverless-timeout" >}}) — Function timeout
-- [Vercel Build Timeout Error]({{< relref "/tools/vercel/vercel-build-timeout-error" >}}) — Build time exceeded

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Document AI Error — processor human review validation errors"
+title: "[Solution] GCP Document AI Error -- processor human review validation errors"
 description: "Fix GCP Document AI errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

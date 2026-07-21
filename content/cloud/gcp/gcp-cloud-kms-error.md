@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud KMS Error — key rotation version auth errors"
+title: "[Solution] GCP Cloud KMS Error -- key rotation version auth errors"
 description: "Fix GCP Cloud KMS errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

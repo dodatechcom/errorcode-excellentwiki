@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin File Upload Error — How to Fix"
+title: "[Solution] Gin File Upload Error -- How to Fix"
 description: "Fix Gin file upload errors. Resolve multipart form, file size limits, and storage issues."
 frameworks: ["gin"]
 error-types: ["file-error"]

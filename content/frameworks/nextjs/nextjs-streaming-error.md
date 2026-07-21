@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Streaming or Suspense Error — How to Fix"
+title: "[Solution] Next.js Streaming or Suspense Error -- How to Fix"
 description: "Fix Next.js streaming errors. Resolve Suspense boundaries, loading states, and streaming rendering issues."
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]

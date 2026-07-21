@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask Redirect Loop Detected Error — How to Fix"
+title: "[Solution] Flask Redirect Loop Detected Error -- How to Fix"
 description: "Fix Flask redirect loop errors. Resolve infinite redirect cycles, URL redirect issues in Flask applications."
 frameworks: ["flask"]
 error-types: ["runtime-error"]
@@ -21,7 +21,7 @@ ERR_TOO_MANY_REDIRECTS
 ```
 
 ```
-The page isn't working — redirected you too many times
+The page isn't working -- redirected you too many times
 ```
 
 ```
@@ -96,7 +96,7 @@ def old_page():
 def new_page():
     return "This is the new page"
 
-# Never do this — it creates a loop
+# Never do this -- it creates a loop
 # @app.route('/a')
 # def a():
 #     return redirect(url_for('b'))

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Health Check Error — How to Fix"
+title: "[Solution] Gin Health Check Error -- How to Fix"
 description: "Fix Gin health check errors. Resolve readiness and liveness probe failures."
 frameworks: ["gin"]
 error-types: ["monitoring-error"]

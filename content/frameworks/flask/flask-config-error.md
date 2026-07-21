@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask Configuration Loading Error — How to Fix"
+title: "[Solution] Flask Configuration Loading Error -- How to Fix"
 description: "Fix Flask configuration errors. Resolve config loading, environment variable, and settings issues in Flask."
 frameworks: ["flask"]
 error-types: ["configuration-error"]
@@ -134,4 +134,4 @@ Production environments typically don't have the `.env` file. Ensure all require
 
 2. **Validate configuration on app startup** with a function that checks all required keys are present.
 
-3. **Keep configuration classes simple** — avoid importing application code in config modules, as this creates circular dependencies.
+3. **Keep configuration classes simple** -- avoid importing application code in config modules, as this creates circular dependencies.

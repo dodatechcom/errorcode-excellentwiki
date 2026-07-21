@@ -1,30 +1,46 @@
 ---
 title: "[Solution] ClickHouse RBAC Error"
-description: "How to fix ClickHouse role-based access control configuration errors"
+description: "Fix ClickHouse role-based access control errors when permission grants fail"
 tools: ["clickhouse"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
+# ClickHouse RBAC Error
+
+RBAC errors occur when role-based access control operations encounter permission issues.
+
 ## Common Causes
 
-- Circular role dependencies
-- Role granted to wrong user
-- Attached policies conflicting
-- Settings profile override
+- User does not have required role
+- Role grant chain too deep
+- Revoked role still cached in session
+- Table-level grant conflicts with database-level
 
 ## How to Fix
 
-Check roles:
+Check user roles:
 
 ```sql
-SELECT * FROM system.roles;
-SELECT * FROM system.role_grants;
+SHOW GRANTS FOR myuser;
+```
+
+Grant role:
+
+```sql
+GRANT my_role TO myuser;
+```
+
+Check effective grants:
+
+```sql
+SELECT * FROM system.grants WHERE user = 'myuser';
 ```
 
 ## Examples
 
 ```sql
-SELECT * FROM system.roles;
-SELECT * FROM system.grants WHERE user_name = 'my_user';
+CREATE ROLE analyst;
+GRANT SELECT ON mydb.* TO analyst;
+GRANT analyst TO myuser;
 ```

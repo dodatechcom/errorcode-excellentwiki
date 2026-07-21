@@ -36,10 +36,10 @@ spring:
 2. Store only serializable objects in session:
 
 ```java
-// Bad — non-serializable object
+// Bad -- non-serializable object
 session.setAttribute("user", new User()); // User not Serializable
 
-// Good — store only the ID
+// Good -- store only the ID
 session.setAttribute("userId", user.getId());
 ```
 
@@ -62,7 +62,7 @@ public CookieSerializer cookieSerializer() {
 ```java
 // Redis session store is down
 httpSession.setAttribute("cart", cartItems);
-// SessionCreationException: Unable to create session — Redis connection refused
+// SessionCreationException: Unable to create session -- Redis connection refused
 ```
 
 ## Related Errors

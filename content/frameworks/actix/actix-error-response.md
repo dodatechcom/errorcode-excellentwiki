@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Error Response Error — How to Fix"
+title: "[Solution] Actix Error Response Error -- How to Fix"
 description: "Fix Actix error response issues. Resolve custom error types, error handling, and response formatting."
 frameworks: ["actix"]
 error-types: ["error-handler"]

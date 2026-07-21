@@ -1,76 +1,56 @@
 ---
-title: "[Solution] Bash Trap Error"
-description: "Fix bash trap errors when signal handlers are set incorrectly, trap functions fail, or trap cleanup doesn't execute."
+title: "[Solution] Bash Trap Error -- Incorrect Signal Handling"
+description: "Fix bash trap errors when signal traps are not set up correctly or cause unexpected script behavior."
 languages: ["bash"]
-severities: ["error"]
 error-types: ["runtime-error"]
-weight: 5
+severities: ["error"]
 ---
 
-# Bash Trap Error Fix
+# Bash Trap Error
 
-Trap errors occur when signal handlers are set incorrectly, the trap function produces errors, or cleanup code doesn't execute on script exit.
-
-## What This Error Means
-
-The `trap` command registers signal handlers that execute code when signals are received (EXIT, INT, TERM, ERR, etc.). Errors happen when the trap command itself has syntax issues or the handler function fails.
+This error occurs when bash trap statements are not set up correctly, leading to unexpected behavior on signals.
 
 ## Common Causes
 
-- Trap command syntax error (missing signal name)
-- Handler function not defined before trap
-- Recursive trap (handler triggering itself)
-- Trap in subshell doesn't affect parent
-- Missing quotes around handler code
+- Trap function not handling the signal argument correctly
+- Missing trap for EXIT signal in cleanup-heavy scripts
+- Trap overriding previous traps without chaining
+- Using trap in subshells where it has no effect
 
 ## How to Fix
 
-### 1. Define handler before trap
+### Set up proper cleanup traps
 
 ```bash
-# WRONG: function not yet defined
-trap cleanup EXIT
-cleanup() { rm -f /tmp/lockfile; }
+# WRONG: no cleanup on exit
+temp_file=$(mktemp)
+do_work "$temp_file"
 
-# RIGHT: define function first
-cleanup() { rm -f /tmp/lockfile; }
-trap cleanup EXIT
+# CORRECT: trap EXIT for cleanup
+temp_file=$(mktemp)
+trap 'rm -f "$temp_file"' EXIT
+do_work "$temp_file"
 ```
 
-### 2. Use proper trap syntax
+### Chain traps correctly
 
 ```bash
-# WRONG: missing signal
-trap 'echo "cleaning"'
-
-# RIGHT: with signal
-trap 'echo "cleaning"' EXIT
+original_trap=$(trap -p INT)
+trap 'cleanup; eval "$original_trap"' INT
 ```
 
-### 3. Prevent recursive traps
+## Examples
 
 ```bash
-# WRONG: handler might trigger ERR recursively
-trap 'echo "Error on line $LINENO"' ERR
-
-# RIGHT: disable trap inside handler
-trap_handler() {
-    trap - ERR  # Temporarily disable
-    echo "Error occurred"
-    # cleanup code
+#!/bin/bash
+cleanup() {
+    echo "Cleaning up..."
+    rm -f "$TEMP_DIR"/*
+    rmdir "$TEMP_DIR" 2>/dev/null
 }
-trap trap_handler ERR
+
+trap cleanup EXIT INT TERM
+
+TEMP_DIR=$(mktemp -d)
+echo "Working in $TEMP_DIR"
 ```
-
-### 4. Handle EXIT trap in subshells
-
-```bash
-# Subshell trap doesn't affect parent
-( trap 'echo "done"' EXIT; sleep 1 )
-# Parent doesn't see this trap
-```
-
-## Related Errors
-
-- [Signal Trap](signal-trap) — signal handling behavior
-- [Return Code](return-code) — exit status handling

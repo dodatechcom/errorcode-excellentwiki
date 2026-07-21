@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Service Usage Error — enable disable quota consumer errors"
+title: "[Solution] GCP Service Usage Error -- enable disable quota consumer errors"
 description: "Fix GCP Service Usage errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

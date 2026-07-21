@@ -1,24 +1,46 @@
 ---
 title: "[Solution] ClickHouse Map Error"
-description: "How to fix ClickHouse Map type errors"
+description: "Fix ClickHouse Map type errors when working with Map column operations"
 tools: ["clickhouse"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
+# ClickHouse Map Error
+
+Map errors occur when ClickHouse Map type operations encounter invalid keys or values.
+
 ## Common Causes
-- Map key type wrong
-- Map value type mismatch
-- Map too large
+
+- Map key type mismatch
+- Accessing non-existent map key
+- Map value type not supported for aggregation
+- Nullable map key causing issues
 
 ## How to Fix
 
+Check map structure:
+
 ```sql
-SELECT map('key1', 1, 'key2', 2);
+SELECT name, type FROM system.columns WHERE table = 'my_table' AND type LIKE 'Map%';
+```
+
+Access map values safely:
+
+```sql
+SELECT mapContains(properties, 'key1') AS has_key,
+       properties['key1'] AS value
+FROM my_table;
+```
+
+Extract map to arrays:
+
+```sql
+SELECT mapKeys(properties) AS keys, mapValues(properties) AS values FROM my_table;
 ```
 
 ## Examples
 
 ```sql
-SELECT mapKeys(map('a', 1, 'b', 2)), mapValues(map('a', 1, 'b', 2));
+CREATE TABLE t (properties Map(String, String)) ENGINE = MergeTree() ORDER BY tuple();
 ```

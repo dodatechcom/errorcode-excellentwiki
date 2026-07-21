@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Form Error — How to Fix"
+title: "[Solution] Fiber Form Error -- How to Fix"
 description: "Fix Fiber form parsing errors. Resolve multipart, URL-encoded, and file form issues."
 frameworks: ["fiber"]
 error-types: ["validation-error"]

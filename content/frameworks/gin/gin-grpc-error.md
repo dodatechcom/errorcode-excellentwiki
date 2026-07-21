@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin gRPC Error — How to Fix"
+title: "[Solution] Gin gRPC Error -- How to Fix"
 description: "Fix Gin gRPC integration errors. Resolve connection, service discovery, and request routing issues."
 frameworks: ["gin"]
 error-types: ["integration-error"]

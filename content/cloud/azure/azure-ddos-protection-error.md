@@ -1,73 +1,65 @@
 ---
-title: "[Solution] Azure DDoS Protection Error — policy, metrics, and alert failures"
-description: "Fix Azure DDoS Protection error. Actionable solutions with Azure CLI commands."
-error-types: ["api-error"]
+title: "[Solution] Azure DDoS Protection Error"
+description: "Fix Azure DDoS protection configuration errors that leave resources vulnerable to attacks."
+cloud: ["azure"]
+error-types: ["cloud-error"]
 severities: ["error"]
-weight: 108
+weight: 1
 ---
 
-DDoS Protection errors involve protection not activating during attacks, false positive alerts, or metric monitoring gaps that leave resources unprotected.
+DDoS protection errors occur when the protection plan is not properly configured or is not mitigating attacks. This exposes resources to volumetric and protocol attacks.
 
 ## Common Causes
-- DDoS protection plan not associated with the VNet
-- Alert rules using incorrect thresholds for normal traffic patterns
-- Protected public IP not included in DDoS protection policy
-- Metric logs not routed to Log Analytics for analysis
-- Auto-tuned mitigation thresholds too aggressive for legitimate traffic
+
+- DDoS protection plan is not associated with the VNet
+- Alert thresholds are set too high and attacks go undetected
+- DDoS telemetry is not being sent to Log Analytics workspace
+- Protection plan is in a different region than the protected VNet
 
 ## How to Fix
-### Check DDoS plan association
+
+### Check DDoS protection status
+
 ```bash
 az network vnet show \
-  --resource-group myResourceGroup \
   --name myVNet \
-  --query "ddosProtectionPlan"
+  --resource-group myRG \
+  --query "enableDdosProtection"
 ```
 
-### Associate VNet with DDoS plan
+### Enable DDoS protection
+
 ```bash
 az network vnet update \
-  --resource-group myResourceGroup \
   --name myVNet \
-  --ddos-protection-plan myDdosPlan
+  --resource-group myRG \
+  --set enableDdosProtection=true \
+  --set DdosProtectionPlan.id="/subscriptions/xxx/resourceGroups/myRG/providers/Microsoft.Network/ddosProtectionPlans/myDDoSPlan"
 ```
 
-### Create alert rule for DDoS mitigation
+### Create a DDoS protection plan
+
 ```bash
-az monitor metrics alert create \
-  --name "DDoSMitigationAlert" \
-  --resource-group myResourceGroup \
-  --scopes /subscriptions/xxx/resourceGroups/myRG/providers/Microsoft.Network/publicIPAddresses/myPublicIP \
-  --condition "avg DDoSAttackTraffic > 1000" \
-  --action myActionGroup
+az network ddos-protection create \
+  --name myDDoSPlan \
+  --resource-group myRG
 ```
 
-### Enable DDoS telemetry to Log Analytics
+### Monitor DDoS telemetry
+
 ```bash
-az network watcher flow-log create \
-  --resource-group myResourceGroup \
-  --nsg myNSG \
-  --name myFlowLog \
-  --storage-account myStorageAccount \
-  --workspace myLogAnalytics \
-  --enabled true
+az monitor log-analytics query \
+  --workspace myWorkspaceId \
+  --analytics-query "AzureDiagnostics | where Category == 'DDoSDosAttackMetrics' | take 100"
 ```
 
 ## Examples
-### View DDoS protection metrics
-```bash
-az monitor metrics list \
-  --resource /subscriptions/xxx/resourceGroups/myRG/providers/Microsoft.Network/publicIPAddresses/myPublicIP \
-  --metric "UnderDDoSAttack,AttackMitigationAction"
-```
 
-### List DDoS protection plans
-```bash
-az network ddos-protection list \
-  --resource-group myResourceGroup
-```
+- VNet does not show DDoS protection as enabled even though the plan is associated
+- DDoS mitigation does not activate during an attack because the plan is in a different subscription
+- Telemetry shows attack but no mitigation because the VNet is not protected
 
 ## Related Errors
-- {{< relref "/cloud/azure/nsg-error" >}}
-- {{< relref "/cloud/azure/azure-firewall-error" >}}
-- {{< relref "/cloud/azure/azure-monitor-error" >}}
+
+- [Azure DDoS Protection Error]({{< relref "/cloud/azure/azure-ddos-protection-error" >}}) -- General DDoS errors.
+- [Azure VNet Error]({{< relref "/cloud/azure/azure-vnet-error" >}}) -- VNet configuration.

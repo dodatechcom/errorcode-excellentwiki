@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix CORS Error — How to Fix"
+title: "[Solution] Actix CORS Error -- How to Fix"
 description: "Fix Actix CORS errors. Resolve cross-origin request blocked, missing headers, and preflight issues."
 frameworks: ["actix"]
 error-types: ["security-error"]

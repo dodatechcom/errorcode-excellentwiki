@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Redis Error — How to Fix"
+title: "[Solution] FastAPI Redis Error -- How to Fix"
 description: "Fix FastAPI Redis errors. Resolve connection failures, timeout issues, and cache problems."
 frameworks: ["fastapi"]
 error-types: ["database-error"]

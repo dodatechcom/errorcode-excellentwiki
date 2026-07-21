@@ -1,41 +1,85 @@
 ---
-title: "[Solution] Coprocess Error in Bash"
-description: "Fix coprocess (|&) errors in Bash."
+title: "[Solution] Bash Coprocess Error"
+description: "Fix Bash coprocess errors when background coprocess communication fails or becomes unresponsive."
 tools: ["bash"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
-# [Solution] Coprocess Error in Bash
+# Bash Coprocess Error
 
-The coprocess syntax `|&` or `coproc` failed.
+Bash coprocess communication fails or the coprocess becomes unresponsive.
 
-### Common Causes
-- Using `|&` in Bash < 4.0.
-- `coproc` syntax errors.
-- Process not running in background properly.
-
-### How to Fix
-```bash
-# |& pipes both stdout and stderr (Bash 4.0+)
-command1 |& command2
-# equivalent to
-command1 2>&1 | command2
-
-# Coprocess (Bash 4.0+)
-coproc myproc { command; }
-echo "data" >&${myproc[1]}
-read -r output <&${myproc[0]}
-
-# Fallback for older Bash
-command1 2>&1 | command2
+```
+bash: write error: Broken pipe
 ```
 
-### Example
-```bash
-# Broken (Bash 3.x)
-ls |& grep error
+## Common Causes
 
-# Fixed (Bash 3.x)
-ls 2>&1 | grep error
+- Coprocess process terminated unexpectedly
+- Pipe buffer full due to slow reader
+- Coprocess not reading from stdin
+- File descriptor leak
+- Coprocess defined in subshell and lost
+
+## How to Fix
+
+### Proper Coprocess Definition
+
+```bash
+# Define coprocess at the same shell level
+coproc MY_COPROC { cat; }
+echo "Hello" >&"${MY_COPROC[1]}"
+read -r line <&"${MY_COPROC[0]}"
+echo "$line"
+```
+
+### Handle Broken Pipe
+
+```bash
+# Check if coprocess is still alive
+if kill -0 "${MY_COPROC_PID}" 2>/dev/null; then
+    echo "data" >&"${MY_COPROC[1]}"
+else
+    echo "Coprocess died, restarting..."
+    coproc MY_COPROC { cat; }
+fi
+```
+
+### Use Timeout for Reads
+
+```bash
+coproc MY_COPROC { sleep 10; echo "output"; }
+
+# Read with timeout
+if read -t 5 -r line <&"${MY_COPROC[0]}"; then
+    echo "Got: $line"
+else
+    echo "Read timed out"
+    kill "${MY_COPROC_PID}" 2>/dev/null
+fi
+```
+
+### Clean Up Coprocess
+
+```bash
+coproc MY_COPROC { some_command; }
+
+# Always clean up on exit
+trap 'kill "${MY_COPROC_PID}" 2>/dev/null' EXIT
+```
+
+## Examples
+
+```bash
+# Coprocess for parallel processing
+coproc WORKER { while read -r cmd; do eval "$cmd"; done; }
+
+echo "ls -la" >&"${WORKER[1]}"
+read -r result <&"${WORKER[0]}"
+echo "$result"
+
+# Signal completion
+echo "exit" >&"${WORKER[1]}"
+wait "${WORKER_PID}"
 ```

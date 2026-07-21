@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Database Error — How to Fix"
+title: "[Solution] Gin Database Error -- How to Fix"
 description: "Fix Gin database errors. Resolve SQL connection, query, and transaction issues with GORM."
 frameworks: ["gin"]
 error-types: ["database-error"]

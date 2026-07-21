@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Form Error — How to Fix"
+title: "[Solution] FastAPI Form Error -- How to Fix"
 description: "Fix FastAPI form data errors. Resolve form parsing, validation, and encoding issues."
 frameworks: ["fastapi"]
 error-types: ["validation-error"]

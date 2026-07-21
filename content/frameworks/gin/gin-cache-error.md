@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Cache Error — How to Fix"
+title: "[Solution] Gin Cache Error -- How to Fix"
 description: "Fix Gin caching errors. Resolve Redis, in-memory, and HTTP cache issues."
 frameworks: ["gin"]
 error-types: ["cache-error"]

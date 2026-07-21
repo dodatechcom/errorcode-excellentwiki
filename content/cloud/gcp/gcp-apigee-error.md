@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Apigee Error — API proxy env target quota errors"
+title: "[Solution] GCP Apigee Error -- API proxy env target quota errors"
 description: "Fix GCP Apigee errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

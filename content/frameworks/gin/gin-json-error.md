@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin JSON Error — How to Fix"
+title: "[Solution] Gin JSON Error -- How to Fix"
 description: "Fix Gin JSON serialization errors. Resolve JSON encoding, decoding, and response formatting issues."
 frameworks: ["gin"]
 error-types: ["response-error"]

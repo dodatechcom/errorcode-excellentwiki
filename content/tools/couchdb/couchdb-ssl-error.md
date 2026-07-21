@@ -1,6 +1,6 @@
 ---
 title: "[Solution] CouchDB SSL Error — How to Fix"
-description: "Fix CouchDB SSL/TLS errors by generating valid certificates, configuring HTTPS, and resolving certificate chain issues"
+description: "Fix CouchDB SSL errors by resolving TLS connection failures, fixing certificate problems, and handling SSL configuration issues"
 tools: ["couchdb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,119 +10,99 @@ comments: true
 
 # CouchDB SSL Error
 
-CouchDB SSL errors occur when TLS/HTTPS connections fail due to invalid certificates, misconfigured SSL settings, or protocol mismatches.
+CouchDB SSL errors occur when TLS/SSL connections fail due to certificate issues, protocol mismatches, or configuration problems.
 
 ## Why It Happens
 
-- Self-signed certificate is not trusted by the client
-- Certificate has expired or is not yet valid
-- SSL certificate does not match the server hostname
-- Wrong port configured for HTTPS (6984 instead of 5984)
-- TLS version mismatch between client and server
-- Private key does not match the certificate
+- SSL certificate is expired or invalid
+- SSL certificate chain is incomplete
+- Client does not trust the certificate authority
+- SSL protocol version mismatch
+- SSL cipher suite not supported
+- SSL private key does not match certificate
 
 ## Common Error Messages
 
 ```
-{ "error": "ssl_error", "reason": "certificate verify failed" }
+ERROR: SSL handshake failed
 ```
 
 ```
-SSL: CERTIFICATE_VERIFY_FAILED
+{ "error": "internal_server_error", "reason": "SSL certificate invalid" }
 ```
 
 ```
-{ "error": "ssl_error", "reason": "no suitable peer certificate" }
+{ "error": "internal_server_error", "reason": "SSL protocol error" }
 ```
 
 ```
-{ "error": "econnrefused", "reason": "Connection refused - connect(2) for port 6984" }
+{ "error": "internal_server_error", "reason": "Certificate not trusted" }
 ```
 
 ## How to Fix It
 
-### 1. Generate SSL Certificate
+### 1. Check SSL Certificate
 
 ```bash
-# Generate self-signed certificate for testing
-openssl req -x509 -newkey rsa:4096 \
-  -keyout /opt/couchdb/etc/ssl/server.key \
-  -out /opt/couchdb/etc/ssl/server.crt \
-  -days 365 -nodes \
-  -subj "/C=US/ST=State/L=City/O=Org/CN=couch.example.com"
+# Check certificate validity
+openssl x509 -in /opt/couchdb/etc/ssl/server.crt -noout -dates
 
-# Set correct permissions
-chmod 600 /opt/couchdb/etc/ssl/server.key
-chmod 644 /opt/couchdb/etc/ssl/server.crt
-chown couchdb:couchdb /opt/couchdb/etc/ssl/server.*
+# Check certificate chain
+openssl verify -CAfile /opt/couchdb/etc/ssl/ca.crt /opt/couchdb/etc/ssl/server.crt
+
+# Check certificate matches key
+openssl x509 -noout -modulus -in server.crt | openssl md5
+openssl rsa -noout -modulus -in server.key | openssl md5
 ```
 
-### 2. Configure CouchDB for HTTPS
+### 2. Fix SSL Configuration
 
 ```ini
 ; In local.ini
-[daemons]
-; Enable HTTPS
-{chttpd, start_link, [
-  {ip, "0.0.0.0"},
-  {port, 6984},
-  {ssl, true},
-  {certfile, "/opt/couchdb/etc/ssl/server.crt"},
-  {keyfile, "/opt/couchdb/etc/ssl/server.key"}
-]}
+[ssl]
+enabled = true
+cert_file = /opt/couchdb/etc/ssl/server.crt
+key_file = /opt/couchdb/etc/ssl/server.key
+ca_file = /opt/couchdb/etc/ssl/ca.crt
 ```
 
-```bash
-# Restart CouchDB after SSL configuration
-sudo systemctl restart couchdb
+### 3. Generate New Certificate
 
-# Test HTTPS connection
-curl -k https://localhost:6984/
+```bash
+# Generate self-signed certificate
+openssl req -x509 -newkey rsa:2048 -keyout server.key -out server.crt \
+  -days 365 -nodes -subj "/C=US/ST=State/L=City/O=Org/CN=localhost"
+
+# Or use Let's Encrypt
+certbot certonly --standalone -d couchdb.example.com
 ```
 
-### 3. Fix Certificate Chain Issues
+### 4. Fix SSL Protocol
 
-```bash
-# Verify certificate
-openssl x509 -in /opt/couchdb/etc/ssl/server.crt -text -noout
-
-# Check certificate expiration
-openssl x509 -in /opt/couchdb/etc/ssl/server.crt -enddate -noout
-
-# Verify key matches certificate
-openssl x509 -noout -modulus -in server.crt | md5sum
-openssl rsa -noout -modulus -in server.key | md5sum
-# Both should output the same hash
-```
-
-### 4. Configure Client to Trust Self-Signed Cert
-
-```bash
-# Add certificate to system trust store (Ubuntu/Debian)
-sudo cp server.crt /usr/local/share/ca-certificates/couchdb.crt
-sudo update-ca-certificates
-
-# Or use curl with --cacert
-curl --cacert /opt/couchdb/etc/ssl/server.crt https://localhost:6984/
-
-# Or skip verification (testing only)
-curl -k https://localhost:6984/
+```ini
+; In local.ini
+[ssl]
+enabled = true
+cert_file = /opt/couchdb/etc/ssl/server.crt
+key_file = /opt/couchdb/etc/ssl/server.key
+; Only allow TLS 1.2 and 1.3
+ssl_versions = tlsv1.2,tlsv1.3
 ```
 
 ## Common Scenarios
 
-- **Self-signed cert rejected by client**: Add the cert to the client's trust store or use `--cacert`.
-- **Certificate expired**: Regenerate with a new validity period.
-- **Mixed HTTP/HTTPS**: Ensure all nodes use the same protocol in the cluster.
+- **Certificate expired**: Renew the SSL certificate.
+- **Handshake fails**: Check that the certificate is trusted and the private key matches.
+- **Protocol error**: Ensure both client and server support the same SSL/TLS version.
 
 ## Prevent It
 
-- Use Let's Encrypt for production certificates with auto-renewal
 - Monitor certificate expiration dates
-- Configure proper certificate chain including intermediate certificates
+- Use valid certificates from trusted CAs
+- Configure SSL protocols correctly
 
 ## Related Pages
 
-- [CouchDB Connection Error](/tools/couchdb/couchdb-connection-error)
-- [CouchDB Auth Error](/tools/couchdb/couchdb-auth-error)
+- [CouchDB Security Error](/tools/couchdb/couchdb-security-error)
 - [CouchDB HTTP Error](/tools/couchdb/couchdb-http-error)
+- [CouchDB Connection Error](/tools/couchdb/couchdb-connection-error)

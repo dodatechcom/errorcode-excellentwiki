@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI CORS Error — How to Fix"
+title: "[Solution] FastAPI CORS Error -- How to Fix"
 description: "Fix FastAPI CORS errors. Resolve cross-origin resource sharing and preflight request issues."
 frameworks: ["fastapi"]
 error-types: ["security-error"]

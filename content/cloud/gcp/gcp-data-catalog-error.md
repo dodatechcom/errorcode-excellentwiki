@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Data Catalog Error — tag template entry policy errors"
+title: "[Solution] GCP Data Catalog Error -- tag template entry policy errors"
 description: "Fix GCP Data Catalog errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

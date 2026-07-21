@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Security Configuration Error — How to Fix"
+title: "[Solution] Spring Security Configuration Error -- How to Fix"
 description: "Fix Spring Security configuration errors. Resolve authentication, authorization, and security filter issues."
 frameworks: ["spring"]
 error-types: ["security-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Static File Error — How to Fix"
+title: "[Solution] Actix Static File Error -- How to Fix"
 description: "Fix Actix static file serving errors. Resolve static file not found, MIME types, and asset loading issues."
 frameworks: ["actix"]
 error-types: ["file-error"]

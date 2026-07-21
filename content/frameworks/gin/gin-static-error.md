@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Static File Error — How to Fix"
+title: "[Solution] Gin Static File Error -- How to Fix"
 description: "Fix Gin static file serving errors. Resolve static file not found, MIME types, and asset loading issues."
 frameworks: ["gin"]
 error-types: ["file-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Logging Error — log-bucket router sink exclusion errors"
+title: "[Solution] GCP Cloud Logging Error -- log-bucket router sink exclusion errors"
 description: "Fix GCP Cloud Logging errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

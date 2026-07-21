@@ -1,61 +1,57 @@
 ---
-title: "[Solution] Elixir TaskAsyncError - Brief Description"
-description: "Fix Elixir Task.async and Task.await errors."
+title: "[Solution] Elixir Task Async Error -- Unhandled Task Exceptions"
+description: "Fix Elixir task async errors when tasks started with Task.async raise exceptions."
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-weight: 1014
 ---
 
-A Task.async/await error occurs when the spawned task crashes or times out.
+# Elixir Task Async Error
+
+This error occurs when tasks started with `Task.async/1` crash and the calling process does not handle the error.
 
 ## Common Causes
 
-- Task crashing without returning a value
-- `Task.await` timeout exceeded
-- Not linking tasks to a parent process
+- Not calling Task.await to collect results
+- Exceptions in async tasks not being caught
+- Using Task.async for fire-and-forget instead of Task.start
+- Multiple Task.async calls without awaiting all
 
 ## How to Fix
 
-Use `Task.Supervisor` for fault-tolerant tasks:
+### Always await async tasks
 
 ```elixir
-{:ok, pid} = Task.Supervisor.start_child(MyApp.TaskSupervisor, fn ->
-  risky_operation()
-end)
+# WRONG: fire-and-forget with async
+Task.async(fn -> risky_operation() end)
+
+# CORRECT: await the result
+task = Task.async(fn -> risky_operation() end)
+result = Task.await(task)
 ```
 
-Set appropriate timeouts:
+### Use Task.Supervisor for fault tolerance
 
 ```elixir
-task = Task.async(fn -> long_running_job() end)
-result = Task.await(task, 30_000)
-```
+def fetch_all(urls) do
+  tasks = Enum.map(urls, fn url ->
+    Task.Supervisor.async_nolink(MySupervisor, fn ->
+      HTTPClient.get(url)
+    end)
+  end)
 
-Handle task failures:
-
-```elixir
-case Task.yield(task, 5000) || Task.shutdown(task) do
-  {:ok, result} -> handle_result(result)
-  nil -> handle_timeout()
+  Enum.map(tasks, fn task ->
+    Task.yield(task) || Task.shutdown(task, :brutal_kill)
+  end)
 end
 ```
 
 ## Examples
 
 ```elixir
-defmodule Parallel do
-  def map_with_supervisor(items, fun) do
-    items
-    |> Enum.map(fn item ->
-      Task.Supervisor.async(MyApp.TaskSupervisor, fn -> fun.(item) end)
-    end)
-    |> Enum.map(&Task.await/1)
-  end
+def process_concurrently(items) do
+  items
+  |> Task.async_stream(&process_item/1)
+  |> Enum.to_list()
 end
 ```
-
-## Related Errors
-
-- [TaskError](/languages/elixir/elixir-task-error)
-- [SupervisorError](/languages/elixir/elixir-supervisor-error)

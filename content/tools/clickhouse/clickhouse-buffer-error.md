@@ -1,105 +1,45 @@
 ---
-title: "[Solution] ClickHouse Buffer Engine Error — How to Fix"
-description: "Fix ClickHouse Buffer table errors including flush failures, memory overflow, and buffer-to-target synchronization issues"
+title: "[Solution] ClickHouse Buffer Engine Error"
+description: "Fix ClickHouse Buffer table engine errors when buffer overflow or flush fails"
 tools: ["clickhouse"]
-error-types: ["database-error"]
+error-types: ["tool-error"]
 severities: ["error"]
-weight: 5
-comments: true
 ---
 
 # ClickHouse Buffer Engine Error
 
-Buffer engine errors in ClickHouse occur when the in-memory buffer table fails to flush data to the target table. Buffer tables act as write buffers for high-throughput inserts.
+Buffer engine errors occur when the Buffer table cannot flush data to the target table.
 
-## Why It Happens
+## Common Causes
 
-- The buffer is full and the target table cannot accept writes
-- The flush threshold is not met and the buffer fills up
-- The target table is readonly or locked
-- Memory limit is exceeded while buffering inserts
-- The buffer table and target table have incompatible schemas
-- The flush operation encounters a merge conflict on the target
+- Buffer full and cannot flush to destination
+- Target table schema changed after buffer creation
+- Concurrent flush causing race conditions
+- Memory limit exceeded during buffer flush
 
-## Common Error Messages
+## How to Fix
 
-```
-Code: 241. DB::Exception: Memory limit exceeded for buffer table
-```
-
-```
-Code: 252. DB::Exception: Too many parts in target table
-```
-
-```
-Code: 225. DB::Exception: Failed to flush buffer to target table
-```
-
-```
-Code: 243. DB::Exception: Target table is readonly
-```
-
-## How to Fix It
-
-### 1. Check Buffer Configuration
+Check buffer status:
 
 ```sql
--- Create buffer table with proper settings
-CREATE TABLE events_buffer AS events
-ENGINE = Buffer(default, events,
-  16,    -- num_layers
-  10,    -- min_seconds
-  100,   -- max_rows
-  10000, -- min_rows
-  10000000, -- max_bytes
-  10000, -- min_bytes
-  100000 -- max_sleep_time_ms
-);
+SELECT name, engine, total_bytes, total_rows FROM system.tables WHERE engine = 'Buffer';
 ```
 
-### 2. Fix Flush Thresholds
+Force flush:
 
 ```sql
--- Adjust flush thresholds
-ALTER TABLE events_buffer MODIFY SETTING
-  max_rows = 100000,
-  max_bytes = 100000000,
-  min_seconds = 5;
+SYSTEM FLUSH BUFFER my_buffer;
 ```
 
-### 3. Force Manual Flush
+Check buffer settings:
 
 ```sql
--- Force flush from buffer to target
-OPTIMIZE TABLE events_buffer;
-
--- Or restart ClickHouse to flush all buffers
-sudo systemctl restart clickhouse-server
+SHOW CREATE TABLE my_buffer;
 ```
 
-### 4. Monitor Buffer Health
+## Examples
 
 ```sql
--- Check buffer size
-SELECT database, table, formatReadableSize(bytes_on_disk) AS size
-FROM system.parts
-WHERE table LIKE '%buffer%' AND active = 1;
+CREATE TABLE buffer_table AS target_table
+ENGINE = Buffer(default, target_table, 16, 10, 100, 10000, 100000, 1000000, 10000000);
 ```
-
-## Common Scenarios
-
-- **Buffer fills up during peak traffic**: Increase max_rows and max_bytes thresholds.
-- **Flush fails because target table has too many parts**: Force merge on target table first.
-- **Buffer data lost on restart**: Buffer tables are not persistent. Use `LOG` engine for durability.
-
-## Prevent It
-
-- Monitor buffer table size and flush rates
-- Use Buffer engine with appropriate thresholds for your write patterns
-- Consider using `LOG` engine instead of `Buffer` for write-ahead logging
-
-## Related Pages
-
-- [ClickHouse Table Error](/tools/clickhouse/clickhouse-table-error)
-- [ClickHouse Merge Error](/tools/clickhouse/clickhouse-merge-error)
-- [ClickHouse Memory Error](/tools/clickhouse/clickhouse-memory-error)

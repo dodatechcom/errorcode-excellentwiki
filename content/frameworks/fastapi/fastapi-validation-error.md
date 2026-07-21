@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Validation Error — How to Fix"
+title: "[Solution] FastAPI Validation Error -- How to Fix"
 description: "Fix FastAPI validation errors. Resolve Pydantic validation failures and request data validation issues."
 frameworks: ["fastapi"]
 error-types: ["validation-error"]

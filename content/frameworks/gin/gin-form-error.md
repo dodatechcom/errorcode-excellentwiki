@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Form Error — How to Fix"
+title: "[Solution] Gin Form Error -- How to Fix"
 description: "Fix Gin form parsing errors. Resolve multipart, URL-encoded, and file form issues."
 frameworks: ["gin"]
 error-types: ["validation-error"]

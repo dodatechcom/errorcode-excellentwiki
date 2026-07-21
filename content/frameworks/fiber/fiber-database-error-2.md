@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Database Error — How to Fix"
+title: "[Solution] Fiber Database Error -- How to Fix"
 description: "Fix Fiber database errors. Resolve SQL connection, query, and transaction issues."
 frameworks: ["fiber"]
 error-types: ["database-error"]

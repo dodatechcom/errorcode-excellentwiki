@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Extractor Error — How to Fix"
+title: "[Solution] Fiber Extractor Error -- How to Fix"
 description: "Fix Fiber parameter extraction errors. Resolve path, query, and header extraction failures."
 frameworks: ["fiber"]
 error-types: ["validation-error"]

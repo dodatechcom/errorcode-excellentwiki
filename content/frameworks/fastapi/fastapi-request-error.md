@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Request Error — How to Fix"
+title: "[Solution] FastAPI Request Error -- How to Fix"
 description: "Fix FastAPI request errors. Resolve request parsing, body reading, and content type issues."
 frameworks: ["fastapi"]
 error-types: ["api-error"]

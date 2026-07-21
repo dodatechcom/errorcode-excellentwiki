@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix JSON Error — How to Fix"
+title: "[Solution] Actix JSON Error -- How to Fix"
 description: "Fix Actix JSON serialization errors. Resolve JSON encoding, decoding, and response formatting issues."
 frameworks: ["actix"]
 error-types: ["response-error"]

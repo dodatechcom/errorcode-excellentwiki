@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP IAP Error — Identity-Aware Proxy OAuth access verification errors"
+title: "[Solution] GCP IAP Error -- Identity-Aware Proxy OAuth access verification errors"
 description: "Fix GCP IAP errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

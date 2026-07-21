@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Middleware Error — How to Fix"
+title: "[Solution] Fiber Middleware Error -- How to Fix"
 description: "Fix Fiber middleware errors. Resolve middleware execution order, context issues, and handler failures."
 frameworks: ["fiber"]
 error-types: ["middleware-error"]

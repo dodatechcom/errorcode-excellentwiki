@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Header Error — How to Fix"
+title: "[Solution] FastAPI Header Error -- How to Fix"
 description: "Fix FastAPI header errors. Resolve missing headers, custom header parsing, and header validation issues."
 frameworks: ["fastapi"]
 error-types: ["validation-error"]

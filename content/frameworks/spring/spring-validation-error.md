@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Bean Validation Error — How to Fix"
+title: "[Solution] Spring Bean Validation Error -- How to Fix"
 description: "Fix Spring bean validation errors. Resolve @Valid, constraint violations, and custom validator issues."
 frameworks: ["spring"]
 error-types: ["validation-error"]

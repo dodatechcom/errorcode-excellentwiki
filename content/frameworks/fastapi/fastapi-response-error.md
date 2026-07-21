@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Response Error — How to Fix"
+title: "[Solution] FastAPI Response Error -- How to Fix"
 description: "Fix FastAPI response errors. Resolve response model issues, status code problems, and serialization failures."
 frameworks: ["fastapi"]
 error-types: ["api-error"]

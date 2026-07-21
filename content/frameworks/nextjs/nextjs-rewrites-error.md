@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Rewrites or Redirects Error — How to Fix"
+title: "[Solution] Next.js Rewrites or Redirects Error -- How to Fix"
 description: "Fix Next.js rewrites and redirects errors. Resolve URL rewriting, redirect loops, and path configuration issues."
 frameworks: ["nextjs"]
 error-types: ["configuration-error"]

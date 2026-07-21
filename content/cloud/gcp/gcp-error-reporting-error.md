@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Error Reporting Error — group notification stats errors"
+title: "[Solution] GCP Error Reporting Error -- group notification stats errors"
 description: "Fix GCP Error Reporting errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

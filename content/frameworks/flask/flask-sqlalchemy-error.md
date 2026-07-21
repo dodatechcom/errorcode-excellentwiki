@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask SQLAlchemy Session Error — How to Fix"
+title: "[Solution] Flask SQLAlchemy Session Error -- How to Fix"
 description: "Fix Flask SQLAlchemy session errors. Resolve database session management, connection, and query issues."
 frameworks: ["flask"]
 error-types: ["runtime-error"]

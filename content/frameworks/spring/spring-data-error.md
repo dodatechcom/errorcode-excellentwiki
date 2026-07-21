@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Data Repository Error — How to Fix"
+title: "[Solution] Spring Data Repository Error -- How to Fix"
 description: "Fix Spring Data repository errors. Resolve repository bean creation, query derivation, and JPA issues."
 frameworks: ["spring"]
 error-types: ["runtime-error"]

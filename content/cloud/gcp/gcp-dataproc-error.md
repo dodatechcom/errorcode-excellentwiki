@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Dataproc Error — cluster job initialization component errors"
+title: "[Solution] GCP Dataproc Error -- cluster job initialization component errors"
 description: "Fix GCP Dataproc errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

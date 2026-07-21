@@ -1,6 +1,6 @@
 ---
 title: "[Solution] CouchDB Update Handler Error — How to Fix"
-description: "Fix CouchDB update handler errors by correcting HTTP method usage, validating request body parsing, and fixing document creation logic"
+description: "Fix CouchDB update handler errors by resolving update function failures, fixing document update issues, and handling update handler compilation errors"
 tools: ["couchdb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,126 +10,101 @@ comments: true
 
 # CouchDB Update Handler Error
 
-CouchDB update handler errors occur when design document update handlers fail to create or modify documents. Update handlers provide a REST-like API for document mutations.
+CouchDB update handler errors occur when update functions in design documents fail to compile or execute properly.
 
 ## Why It Happens
 
-- Update handler function throws a JavaScript error
-- Request body is not properly parsed as JSON
-- Handler tries to create a document with an existing _id without _rev
-- Missing or invalid `send()` response
-- Handler does not return the correct response format
-- Database read/write permissions are insufficient
+- Update function contains JavaScript syntax errors
+- Update function tries to read document that does not exist
+- Update function returns invalid document
+- Update function throws an exception
+- Update function is not idempotent
+- Update function exceeds execution time limit
 
 ## Common Error Messages
 
 ```
-{ "error": "not_found", "reason": "missing_named_update" }
+{ "error": "compilation_error", "reason": "SyntaxError: ..." }
 ```
 
 ```
-{ "error": "internal_server_error", "reason": "update handler error" }
+{ "error": "not_found", "reason": "Update handler not found" }
 ```
 
 ```
-{ "error": "conflict", "reason": "Document update conflict." }
+{ "error": "internal_server_error", "reason": "Update function failed" }
 ```
 
 ```
-{ "error": "bad_request", "reason": "invalid request body" }
+{ "error": "bad_request", "reason": "Invalid document returned by update handler" }
 ```
 
 ## How to Fix It
 
-### 1. Create Valid Update Handler
+### 1. Fix Update Function
 
 ```bash
+# Define correct update function
 curl -X PUT http://localhost:5984/mydb/_design/app \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "_design/app",
-    "language": "javascript",
     "updates": {
-      "create_user": "function(doc, req) { if (!doc) { var newDoc = JSON.parse(req.body); newDoc._id = req.uuid; return [newDoc, JSON.stringify({ok: true, id: newDoc._id})]; } return [doc, \"exists\"]; }",
-      "increment_counter": "function(doc, req) { if (!doc) { return [null, JSON.stringify({error: \"not_found\"})]; } doc.count = (doc.count || 0) + 1; return [doc, JSON.stringify({ok: true, count: doc.count})]; }"
+      "increment": "function(doc, req) { if (!doc) { return [null, {\"error\": \"not found\"}]; } doc.counter = (doc.counter || 0) + 1; return [doc, {\"ok\": true}]; }"
     }
   }'
 ```
 
-### 2. Handle Request Body Correctly
-
-```javascript
-// Update handler that creates a document
-function(doc, req) {
-  if (!doc) {
-    // New document creation
-    try {
-      var body = JSON.parse(req.body);
-      var newDoc = {
-        _id: req.uuid,
-        name: body.name || "Untitled",
-        type: body.type || "default",
-        created_at: new Date().toISOString()
-      };
-      return [newDoc, JSON.stringify({ok: true, id: newDoc._id})];
-    } catch (e) {
-      return [null, JSON.stringify({error: "invalid_json", reason: e.message})];
-    }
-  }
-  return [doc, JSON.stringify({error: "already_exists"})];
-}
-```
-
-### 3. Use Correct HTTP Method
+### 2. Test Update Function
 
 ```bash
-# Update handlers are accessed via PUT
-curl -X PUT http://localhost:5984/mydb/_design/app/_update/create_user \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Alice", "type": "admin"}'
+# Test update function
+curl -X PUT http://localhost:5984/mydb/_design/app/_update/increment/doc123
 
-# GET to read current state
-curl http://localhost:5984/mydb/_design/app/_update/increment_counter/counter1
+# Post data to update function
+curl -X POST http://localhost:5984/mydb/_design/app/_update/increment/doc123 \
+  -H "Content-Type: application/json" \
+  -d '{"value": 10}'
 ```
 
-### 4. Return Proper Response Format
+### 3. Handle Missing Document
 
-```javascript
-// Update handler response format
-function(doc, req) {
-  if (!doc) {
-    // Create new document: [newDoc, responseString]
-    var newDoc = JSON.parse(req.body);
-    newDoc._id = req.uuid;
-    return [newDoc, JSON.stringify({ok: true, id: newDoc._id})];
-  }
+```bash
+# Update function that handles missing doc
+curl -X PUT http://localhost:5984/mydb/_design/app \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "_design/app",
+    "updates": {
+      "safe_update": "function(doc, req) { if (!doc) { return [null, {\"error\": \"not found\"}]; } doc.updated = new Date().toISOString(); return [doc, {\"ok\": true}]; }"
+    }
+  }'
+```
 
-  // Update existing document
-  doc.updated = true;
-  doc.updated_at = new Date().toISOString();
+### 4. Debug Update Function
 
-  // Return [modifiedDoc, responseString]
-  return [doc, JSON.stringify({ok: true, rev: doc._rev})];
+```bash
+# Enable debugging
+curl -X POST http://localhost:5984/mydb/_design/app/_update/increment/doc123?debug=true
 
-  // Or return null to not save: [null, responseString]
-  // return [null, JSON.stringify({error: "no_update_needed"})];
-}
+# Check update function info
+curl http://localhost:5984/mydb/_design/app/_info
 ```
 
 ## Common Scenarios
 
-- **Update handler creates duplicate documents**: Use `req.uuid` for unique IDs or check for existing docs.
-- **Request body is null**: Ensure `Content-Type: application/json` header is set.
-- **Handler does not save changes**: Return `[doc, response]` not just the response.
+- **Update function syntax error**: Fix JavaScript syntax in the update function.
+- **Document not found**: Add null check at the beginning of the update function.
+- **Update function slow**: Optimize the JavaScript code in the update function.
 
 ## Prevent It
 
-- Always validate request body before parsing
-- Use `req.uuid` for generating unique document IDs
-- Return proper `[doc, response]` tuple from all update handlers
+- Test update functions with various document states
+- Handle null document case in all update functions
+- Keep update functions simple and focused
 
 ## Related Pages
 
-- [CouchDB Document Error](/tools/couchdb/couchdb-document-error)
 - [CouchDB Design Doc Error](/tools/couchdb/couchdb-design-doc-error)
-- [CouchDB Show Error](/tools/couchdb/couchdb-show-error)
+- [CouchDB JavaScript Error](/tools/couchdb/couchdb-javascript-error)
+- [CouchDB Document Error](/tools/couchdb/couchdb-document-error)

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Parameter Error — How to Fix"
+title: "[Solution] FastAPI Parameter Error -- How to Fix"
 description: "Fix FastAPI parameter errors. Resolve path parameter, query parameter, and parameter validation issues."
 frameworks: ["fastapi"]
 error-types: ["validation-error"]

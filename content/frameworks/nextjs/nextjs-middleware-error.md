@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Middleware Execution Error — How to Fix"
+title: "[Solution] Next.js Middleware Execution Error -- How to Fix"
 description: "Fix Next.js middleware errors. Resolve middleware execution, edge runtime, and middleware configuration issues."
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
@@ -139,7 +139,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    // Verify token expiry (basic check — use proper JWT library)
+    // Verify token expiry (basic check -- use proper JWT library)
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));

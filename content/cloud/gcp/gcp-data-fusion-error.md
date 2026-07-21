@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Data Fusion Error — instance pipeline namespace errors"
+title: "[Solution] GCP Data Fusion Error -- instance pipeline namespace errors"
 description: "Fix GCP Data Fusion errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

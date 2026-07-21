@@ -36,7 +36,7 @@ app = Flask(__name__, template_folder="custom_templates")
 Check the path you pass to `render_template`:
 
 ```python
-# Wrong — file is in templates/admin/
+# Wrong -- file is in templates/admin/
 render_template("dashboard.html")
 
 # Correct

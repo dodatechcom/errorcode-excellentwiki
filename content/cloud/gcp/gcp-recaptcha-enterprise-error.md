@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP reCAPTCHA Enterprise Error — key assessment site errors"
+title: "[Solution] GCP reCAPTCHA Enterprise Error -- key assessment site errors"
 description: "Fix GCP reCAPTCHA Enterprise errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

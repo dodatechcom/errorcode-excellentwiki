@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Exception Handler Error — How to Fix"
+title: "[Solution] FastAPI Exception Handler Error -- How to Fix"
 description: "Fix FastAPI exception handler errors. Resolve error handling, middleware conflicts, and response issues."
 frameworks: ["fastapi"]
 error-types: ["application-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Timeout Error — How to Fix"
+title: "[Solution] Fiber Timeout Error -- How to Fix"
 description: "Fix Fiber request timeout errors. Resolve handler timeouts, context cancellation, and slow request issues."
 frameworks: ["fiber"]
 error-types: ["timeout-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Extractor Error — How to Fix"
+title: "[Solution] Actix Extractor Error -- How to Fix"
 description: "Fix Actix extractor errors. Resolve path, query, and JSON extraction failures."
 frameworks: ["actix"]
 error-types: ["validation-error"]

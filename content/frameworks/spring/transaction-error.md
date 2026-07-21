@@ -21,18 +21,18 @@ This error occurs when a Spring-managed transaction fails to commit, rolls back 
 1. Do not catch exceptions in `@Transactional` methods:
 
 ```java
-// WRONG — prevents rollback
+// WRONG -- prevents rollback
 @Transactional
 public void transferMoney(Long from, Long to, BigDecimal amount) {
     try {
         debit(from, amount);
         credit(to, amount);
     } catch (Exception e) {
-        log.error("Transfer failed", e); // exception swallowed — no rollback
+        log.error("Transfer failed", e); // exception swallowed -- no rollback
     }
 }
 
-// CORRECT — let exceptions propagate
+// CORRECT -- let exceptions propagate
 @Transactional
 public void transferMoney(Long from, Long to, BigDecimal amount) {
     debit(from, amount);
@@ -54,7 +54,7 @@ public void createLog(LogEntry entry) {
 }
 ```
 
-3. Avoid self-invocation — inject the proxy or use AopContext:
+3. Avoid self-invocation -- inject the proxy or use AopContext:
 
 ```java
 @Service
@@ -63,10 +63,10 @@ public class UserService {
     private UserRepository userRepository;
 
     public void createUserWithProfile(UserDto dto) {
-        // WRONG — no transaction
+        // WRONG -- no transaction
         // this.saveUser(dto);
 
-        // CORRECT — call through the proxy
+        // CORRECT -- call through the proxy
         AopContext.currentProxy();
     }
 }

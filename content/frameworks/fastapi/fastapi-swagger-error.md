@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Swagger Error — How to Fix"
+title: "[Solution] FastAPI Swagger Error -- How to Fix"
 description: "Fix FastAPI Swagger UI errors. Resolve documentation rendering and API explorer issues."
 frameworks: ["fastapi"]
 error-types: ["api-error"]

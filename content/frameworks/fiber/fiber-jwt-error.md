@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber JWT Error — How to Fix"
+title: "[Solution] Fiber JWT Error -- How to Fix"
 description: "Fix Fiber JWT authentication errors. Resolve token parsing, validation, and expiration issues."
 frameworks: ["fiber"]
 error-types: ["auth-error"]

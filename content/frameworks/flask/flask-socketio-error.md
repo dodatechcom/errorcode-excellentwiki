@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask SocketIO Connection Error — How to Fix"
+title: "[Solution] Flask SocketIO Connection Error -- How to Fix"
 description: "Fix Flask SocketIO connection errors. Resolve WebSocket connection failures and event handling issues."
 frameworks: ["flask"]
 error-types: ["connection-error"]

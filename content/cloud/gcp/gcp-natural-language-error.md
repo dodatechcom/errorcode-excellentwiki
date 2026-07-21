@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Natural Language Error — entity sentiment classification errors"
+title: "[Solution] GCP Natural Language Error -- entity sentiment classification errors"
 description: "Fix GCP Natural Language API errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

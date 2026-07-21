@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Bean Creation or Injection Failed Error — How to Fix"
+title: "[Solution] Spring Bean Creation or Injection Failed Error -- How to Fix"
 description: "Fix Spring bean creation errors. Resolve bean injection failures, circular dependencies, and Spring context issues."
 frameworks: ["spring"]
 error-types: ["configuration-error"]

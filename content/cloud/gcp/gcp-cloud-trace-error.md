@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Trace Error — span trace sampling export errors"
+title: "[Solution] GCP Cloud Trace Error -- span trace sampling export errors"
 description: "Fix GCP Cloud Trace errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

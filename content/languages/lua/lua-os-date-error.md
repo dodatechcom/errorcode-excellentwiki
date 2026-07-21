@@ -1,109 +1,54 @@
 ---
-title: "[Solution] Lua os.date Format Error Fix"
-description: "Fix Lua os.date formatting errors when working with dates and times."
+title: "[Solution] Lua Os Date Error"
+description: "Fix Lua os.date errors when formatting dates."
 languages: ["lua"]
 error-types: ["runtime-error"]
 severities: ["error"]
-weight: 1129
 ---
 
-## What This Error Means
-
-An os.date error occurs when formatting date/time strings or converting timestamps. Common issues include invalid format strings, wrong argument types, or confusion about os.date vs os.time.
+Os date errors occur when os.date format string is incorrect.
 
 ## Common Causes
 
-- Invalid format specifiers in the format string
-- Passing a timestamp that is out of range
-- Confusing os.date (formats) with os.time (creates timestamps)
-- Not handling nil returns for non-existent dates
-- Timezone and locale differences
+- Invalid format specifier
+- Wrong argument order
+- Missing time argument
+- Format string error
 
 ## How to Fix
 
-```lua
--- WRONG: Invalid format specifier
-print(os.date("%x %Y-%m-%d %H:%M:%S"))  -- %x is a valid specifier
-print(os.date("%Y-%m-%d %H:%M:%S"))     -- Full format
+### 1. Use correct format codes
 
--- CORRECT: Use valid format specifiers
-print(os.date("%Y-%m-%d"))               -- 2024-01-15
-print(os.date("%H:%M:%S"))               -- 14:30:00
-print(os.date("%a, %d %b %Y"))           -- Mon, 15 Jan 2024
+```lua
+local now = os.date("%Y-%m-%d %H:%M:%S")
+print(now)
 ```
 
-```lua
--- WRONG: Passing a string instead of a number
-local timestamp = os.time()
-print(os.date("%Y", "now"))  -- Error: bad argument #2
-
--- CORRECT: Pass numeric timestamp or nothing
-print(os.date("%Y"))              -- Current year
-print(os.date("%Y", timestamp))   -- Same
-print(os.date("%Y", os.time()))   -- Same
-```
+### 2. Use table format
 
 ```lua
--- WRONG: os.time returns a table, not a formatted string
-local t = os.time()
-print(t)  -- Unix timestamp (number)
-
--- os.date returns a table when no format is given
-local t = os.date("*t")
-print(t.year)    -- 2024
-print(t.month)   -- 1
-print(t.day)     -- 15
-```
-
-```lua
--- WRONG: Non-existent date
-local t = os.time({ year = 2024, month = 2, day = 30 })  -- Feb 30 doesn't exist
-print(t)  -- nil
-
--- CORRECT: Check if date is valid
-local function valid_date(year, month, day)
-    local t = os.time({ year = year, month = month, day = day })
-    return t ~= nil
-end
-
-print(valid_date(2024, 2, 29))  -- true (leap year)
-print(valid_date(2023, 2, 29))  -- false
-```
-
-```lua
--- Date arithmetic
-local function add_days(timestamp, days)
-    return timestamp + (days * 86400)  -- 24 * 60 * 60
-end
-
-local today = os.time()
-local tomorrow = add_days(today, 1)
-print(os.date("%Y-%m-%d", today))     -- Today
-print(os.date("%Y-%m-%d", tomorrow))  -- Tomorrow
+local date = os.date("*t")
+print(date.year, date.month, date.day)
 ```
 
 ## Examples
 
 ```lua
-local function format_timestamp(ts)
-    if not ts then ts = os.time() end
-    return os.date("%Y-%m-%d %H:%M:%S", ts)
-end
+-- Common formats
+local formats = {
+  iso = os.date("%Y-%m-%dT%H:%M:%S"),
+  us = os.date("%m/%d/%Y"),
+  eu = os.date("%d/%m/%Y"),
+  time = os.date("%H:%M:%S")
+}
 
-local function parse_date(str)
-    local y, m, d = str:match("(%d+)-(%d+)-(%d+)")
-    if y and m and d then
-        return os.time({ year = y, month = m, day = d })
-    end
-    return nil
+for name, fmt in pairs(formats) do
+  print(name .. ":", fmt)
 end
-
-print("Now:", format_timestamp())
-print("Parsed:", format_timestamp(parse_date("2024-12-25")))
 ```
 
 ## Related Errors
 
-- [Lua runtime error](lua-runtime-error) - runtime issue
-- [Lua type error](lua-type-error) - type issue
-- [Lua nil error](lua-nil-error) - nil error
+- [Runtime error](/languages/lua/lua-runtime-error)
+- [String format error](/languages/lua/lua-string-format-error)
+- [Bad argument error](/languages/lua/lua-bad-argument-error)

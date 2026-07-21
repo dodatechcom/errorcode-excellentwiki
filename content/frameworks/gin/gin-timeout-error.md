@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Timeout Error — How to Fix"
+title: "[Solution] Gin Timeout Error -- How to Fix"
 description: "Fix Gin request timeout errors. Resolve handler timeouts, context cancellation, and slow request issues."
 frameworks: ["gin"]
 error-types: ["timeout-error"]

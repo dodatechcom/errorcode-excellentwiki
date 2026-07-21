@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Web Request Handling Error — How to Fix"
+title: "[Solution] Spring Web Request Handling Error -- How to Fix"
 description: "Fix Spring web request errors. Resolve request mapping, controller, and HTTP handling issues in Spring."
 frameworks: ["spring"]
 error-types: ["runtime-error"]

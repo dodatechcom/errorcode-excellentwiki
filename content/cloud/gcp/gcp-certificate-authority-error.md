@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Certificate Authority Error — pool cert revoke errors"
+title: "[Solution] GCP Certificate Authority Error -- pool cert revoke errors"
 description: "Fix GCP Certificate Authority errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

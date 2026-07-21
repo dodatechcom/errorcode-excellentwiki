@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Template Error — How to Fix"
+title: "[Solution] FastAPI Template Error -- How to Fix"
 description: "Fix FastAPI template errors. Resolve Jinja2 template rendering and missing variable issues."
 frameworks: ["fastapi"]
 error-types: ["template-error"]

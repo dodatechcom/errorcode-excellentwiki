@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Binary Authorization Error — policy attestation errors"
+title: "[Solution] GCP Binary Authorization Error -- policy attestation errors"
 description: "Fix GCP Binary Authorization errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

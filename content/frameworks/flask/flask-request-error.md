@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask Request Parsing Error — How to Fix"
+title: "[Solution] Flask Request Parsing Error -- How to Fix"
 description: "Fix Flask request parsing errors. Resolve request data access, content type, and form parsing issues in Flask."
 frameworks: ["flask"]
 error-types: ["runtime-error"]

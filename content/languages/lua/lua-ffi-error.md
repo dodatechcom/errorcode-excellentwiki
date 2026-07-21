@@ -1,75 +1,64 @@
 ---
-title: "[Solution] Lua FFI Error Fix"
-description: "Fix LuaJIT FFI errors. Learn why FFI calls fail and how to use FFI safely."
+title: "[Solution] Lua Ffi Error"
+description: "Fix LuaJIT FFI errors."
 languages: ["lua"]
-severities: ["error"]
 error-types: ["runtime-error"]
-weight: 5
+severities: ["error"]
 ---
 
-## What This Error Means
-
-A LuaJIT FFI error occurs when Foreign Function Interface calls fail. FFI allows calling C functions from Lua but can cause crashes if used incorrectly.
+FFI errors occur when using the LuaJIT FFI library incorrectly.
 
 ## Common Causes
 
-- Wrong FFI cdef declaration
-- Invalid pointer access
-- Wrong argument types
-- Memory access violations
+- Missing ffi library
+- Wrong C type
+- Invalid pointer
+- Memory error
 
 ## How to Fix
 
-```lua
--- WRONG: Wrong cdef
-ffi.cdef[[
-    int strlen(char *s);
-]]
-ffi.C.strlen(123)  -- Wrong type
+### 1. Load ffi correctly
 
--- CORRECT: Correct types
-ffi.cdef[[
-    int strlen(const char *s);
-]]
-ffi.C.strlen("hello")
+```lua
+local ffi = require("ffi")
 ```
 
-```lua
--- WRONG: Invalid pointer
-local ptr = ffi.cast("int*", nil)
-print(ptr[0])  -- Crash
+### 2. Handle ffi errors
 
--- CORRECT: Allocate properly
-local arr = ffi.new("int[10]")
-arr[0] = 42
-print(arr[0])
+```lua
+local function safeFfiCall(fn, ...)
+  local ok, result = pcall(fn, ...)
+  if ok then
+    return result
+  else
+    return nil, result
+  end
+end
 ```
 
 ## Examples
 
 ```lua
--- Example 1: Basic FFI usage
+-- FFI example
 local ffi = require("ffi")
-ffi.cdef[[
-    int printf(const char *fmt, ...);
-]]
-ffi.C.printf("Hello, %s!\n", "World")
 
--- Example 2: Struct access
 ffi.cdef[[
-    typedef struct { int x, y; } Point;
+  int printf(const char *fmt, ...);
 ]]
-local p = ffi.new("Point", 10, 20)
-print(p.x, p.y)
 
--- Example 3: Memory allocation
-local buf = ffi.new("char[256]")
-ffi.copy(buf, "Hello, FFI!")
-print(ffi.string(buf))
+ffi.C.printf("Hello from FFI! %d\n", 42)
+
+-- String manipulation
+ffi.cdef[[
+  size_t strlen(const char *s);
+]]
+
+local len = ffi.C.strlen("Hello")
+print("Length:", tonumber(len))
 ```
 
 ## Related Errors
 
-- [Lua C API error](lua-capi-error) - C API issue
-- [Lua userdata error](lua-userdata-error) - userdata issue
-- [Lua memory error](lua-memory-error) - memory allocation
+- [Runtime error](/languages/lua/lua-runtime-error)
+- [Type error](/languages/lua/lua-type-error)
+- [Memory error](/languages/lua/lua-memory-limit)

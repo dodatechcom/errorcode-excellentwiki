@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Vertex AI Error — dataset model pipeline endpoint errors"
+title: "[Solution] GCP Vertex AI Error -- dataset model pipeline endpoint errors"
 description: "Fix GCP Vertex AI errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Retail API Error — product event serving-config errors"
+title: "[Solution] GCP Retail API Error -- product event serving-config errors"
 description: "Fix GCP Retail API errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

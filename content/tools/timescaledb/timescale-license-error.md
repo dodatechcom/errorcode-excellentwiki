@@ -1,6 +1,6 @@
 ---
 title: "[Solution] TimescaleDB License Error — How to Fix"
-description: "Fix TimescaleDB license errors by activating trial licenses, resolving community edition limitations, and fixing expired license issues"
+description: "Fix TimescaleDB license errors by resolving license key validation failures, fixing community edition limitations, and handling enterprise license issues"
 tools: ["timescaledb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,102 +10,102 @@ comments: true
 
 # TimescaleDB License Error
 
-TimescaleDB license errors occur when attempting to use features restricted to specific license tiers (Community, Standard, Enterprise).
+TimescaleDB license errors occur when the license key is invalid, expired, or when enterprise features are used without a valid license.
 
 ## Why It Happens
 
-- Using Enterprise features without an Enterprise license
+- License key format is incorrect
 - License has expired
-- License server is unreachable for validation
-- Community edition limitations are exceeded
-- License is tied to a different host
-- Multi-node features require paid license
+- Enterprise feature is used on community edition
+- License is tied to a different machine or cluster
+- License file was not loaded during startup
+- Multiple license keys conflict
 
 ## Common Error Messages
 
 ```
-ERROR: function is only available on Timescale Cloud or with a Timescale License
+ERROR: invalid license key format
 ```
 
 ```
-ERROR: license expired
+ERROR: license has expired
 ```
 
 ```
-ERROR: feature not available in community edition
+ERROR: feature requires TimescaleDB License
 ```
 
 ```
-ERROR: license validation failed
+WARNING: running without a license
 ```
 
 ## How to Fix It
 
-### 1. Check Current License
+### 1. Check License Status
 
 ```sql
--- Check TimescaleDB license
+-- Check current license
+SELECT * FROM timescaledb_information.license;
+
+-- Check available features
 SHOW timescaledb.license;
 
--- Check extension version
-SELECT * FROM pg_extension WHERE extname = 'timescaledb';
+-- Check license expiry
+SELECT
+  license_key,
+  license_type,
+  expiry_time
+FROM _timescaledb_config.bgw_job;
 ```
 
-### 2. Activate License
+### 2. Apply License Key
 
 ```sql
--- Set license key (Enterprise/Standard)
-ALTER SYSTEM SET timescaledb.license = 'enterprise';
+-- Set the license key
+ALTER SYSTEM SET timescaledb.license_key = 'YOUR_LICENSE_KEY';
 SELECT pg_reload_conf();
 
--- For community edition (Apache 2.0)
+-- Verify
+SHOW timescaledb.license;
+```
+
+### 3. Switch Between Editions
+
+```sql
+-- Use community edition (Apache-2.0)
 ALTER SYSTEM SET timescaledb.license = 'community';
 SELECT pg_reload_conf();
+
+-- Use timescale license (Timescale License)
+ALTER SYSTEM SET timescaledb.license = 'timescale';
+SELECT pg_reload_conf();
 ```
 
-### 3. Use Community Features
-
-```sql
--- Community edition supports:
--- Single-node hypertables
--- Compression
--- Continuous aggregates (basic)
--- Data retention policies
-
--- Enterprise features NOT in community:
--- Multi-node (distributed hypertables)
--- Data node management
--- Advanced compression
--- Continuous aggregates (advanced)
-```
-
-### 4. Fix License Validation
+### 4. Fix License Key Format
 
 ```bash
-# If license server is unreachable, check network
-curl -I https://license.timescale.com
+# License key format: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
+# Ensure no extra spaces or characters
+echo "YOUR_LICENSE_KEY" | tr -d '[:space:]'
 
-# For air-gapped environments, contact Timescale support
-# for offline license activation
-
-# Check license file location
-ls -la /etc/timescaledb/license*
+# Check license in configuration
+grep license_key /etc/timescaledb/timescaledb.conf
 ```
 
 ## Common Scenarios
 
-- **Trial license expired**: Request extension from Timescale or upgrade to paid.
-- **Multi-node not available**: Requires Enterprise license.
-- **Feature not found**: Check if feature requires paid license.
+- **Feature requires license**: Upgrade from community to enterprise or timescale license.
+- **License expired**: Renew the license and apply the new key.
+- **Running without license**: Apply a valid license key to enable all features.
 
 ## Prevent It
 
-- Understand license tier requirements before deploying features
-- Set up license expiration monitoring
-- Use community edition features only for open-source deployments
+- Store license keys securely and track expiration dates
+- Test license application in staging before production
+- Monitor license status as part of regular maintenance
 
 ## Related Pages
 
 - [TimescaleDB Config Error](/tools/timescaledb/timescale-config-error)
-- [TimescaleDB Multinode Error](/tools/timescaledb/timescale-multinode-error)
+- [TimescaleDB Extension Error](/tools/timescaledb/timescale-extension-error)
 - [TimescaleDB Upgrade Error](/tools/timescaledb/timescale-upgrade-error)

@@ -1,46 +1,55 @@
 ---
-title: "[Solution] Elixir EnumReduceError - Brief Description"
-description: "Fix Elixir Enum.reduce errors."
+title: "[Solution] Elixir Enum Reduce Error -- Missing Initial Accumulator"
+description: "Fix Elixir enum reduce errors when Enum.reduce is called without an initial accumulator value."
 languages: ["elixir"]
 error-types: ["runtime-error"]
 severities: ["error"]
-weight: 1030
 ---
 
-An `Enum.reduce` error occurs when accumulator types are incompatible or the enumerable is empty.
+# Elixir Enum Reduce Error
+
+This error occurs when `Enum.reduce/2` is called on an empty enumerable without an initial accumulator value.
 
 ## Common Causes
 
-- Empty enumerable with no default accumulator
-- Reducer returning wrong type
-- Reducer function raising an exception
+- Using `Enum.reduce/2` which requires at least one element
+- Empty list with no accumulator value
+- Accumulator type mismatch across iterations
+- Reducer function throwing on first iteration
 
 ## How to Fix
 
-Always provide a default accumulator:
+### Use Enum.reduce/3 with initial value
 
 ```elixir
-Enum.reduce([], 0, fn x, acc -> acc + x end)
+# WRONG: crashes on empty list
+result = Enum.reduce([], fn x, acc -> acc + x end)
+
+# CORRECT: provide initial accumulator
+result = Enum.reduce([], 0, fn x, acc -> acc + x end)
 ```
 
-Use `Enum.reduce_while` for early termination:
+### Use Enum.map_reduce for map+reduce
 
 ```elixir
-Enum.reduce_while(1..100, 0, fn x, acc ->
-  if acc + x > 50, do: {:halt, acc}, else: {:cont, acc + x}
+{mapped, final} = Enum.map_reduce([1, 2, 3], 0, fn x, acc ->
+  {x * 2, acc + x}
 end)
+# mapped = [2, 4, 6], final = 6
 ```
 
 ## Examples
 
 ```elixir
-words = ~w(apple banana apple cherry banana apple)
-Enum.reduce(words, %{}, fn word, acc ->
-  Map.update(acc, word, 1, &(&1 + 1))
-end)
+def sum_squares(numbers) do
+  numbers
+  |> Enum.reduce(0, fn n, acc -> acc + n * n end)
+end
+
+def build_map(keys) do
+  keys
+  |> Enum.reduce(%{}, fn key, map ->
+    Map.put(map, key, length(Map.keys(map)))
+  end)
+end
 ```
-
-## Related Errors
-
-- [EnumEmptyError](/languages/elixir/elixir-enum-empty)
-- [EnumerableError](/languages/elixir/elixir-enumerable-error)

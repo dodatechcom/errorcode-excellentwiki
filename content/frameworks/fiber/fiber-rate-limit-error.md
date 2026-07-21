@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Rate Limit Error — How to Fix"
+title: "[Solution] Fiber Rate Limit Error -- How to Fix"
 description: "Fix Fiber rate limiting errors. Resolve request throttling, too many requests, and rate limit exceeded issues."
 frameworks: ["fiber"]
 error-types: ["security-error"]

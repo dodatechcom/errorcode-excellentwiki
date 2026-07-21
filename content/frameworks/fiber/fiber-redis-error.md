@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Redis Error — How to Fix"
+title: "[Solution] Fiber Redis Error -- How to Fix"
 description: "Fix Fiber Redis errors. Resolve connection failures, timeout, and cache operation issues."
 frameworks: ["fiber"]
 error-types: ["database-error"]

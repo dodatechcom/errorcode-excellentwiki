@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI JWT Error — How to Fix"
+title: "[Solution] FastAPI JWT Error -- How to Fix"
 description: "Fix FastAPI JWT errors. Resolve token encoding, decoding, expiration, and signature verification issues."
 frameworks: ["fastapi"]
 error-types: ["authentication-error"]

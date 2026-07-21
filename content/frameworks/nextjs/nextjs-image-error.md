@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Image Optimization Error — How to Fix"
+title: "[Solution] Next.js Image Optimization Error -- How to Fix"
 description: "Fix Next.js Image component errors. Resolve image optimization, loading, and configuration issues in Next.js."
 frameworks: ["nextjs"]
 error-types: ["configuration-error"]
@@ -132,7 +132,7 @@ function ProductImage({ src, alt }: { src: string; alt: string }) {
 Use proper attributes for different scenarios:
 
 ```tsx
-// Above the fold — use priority
+// Above the fold -- use priority
 <Image
     src="/hero.jpg"
     alt="Hero"
@@ -141,7 +141,7 @@ Use proper attributes for different scenarios:
     priority
 />
 
-// Below the fold — default lazy loading
+// Below the fold -- default lazy loading
 <Image
     src="/content.jpg"
     alt="Content"

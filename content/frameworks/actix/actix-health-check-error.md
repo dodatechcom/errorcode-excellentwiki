@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Health Check Error — How to Fix"
+title: "[Solution] Actix Health Check Error -- How to Fix"
 description: "Fix Actix health check errors. Resolve readiness and liveness probe failures."
 frameworks: ["actix"]
 error-types: ["monitoring-error"]

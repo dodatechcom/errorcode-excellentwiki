@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Recommendation AI Error — catalog event predict errors"
+title: "[Solution] GCP Recommendation AI Error -- catalog event predict errors"
 description: "Fix GCP Recommendation AI errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

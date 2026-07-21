@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Logging Error — How to Fix"
+title: "[Solution] Gin Logging Error -- How to Fix"
 description: "Fix Gin logging errors. Resolve log configuration, output, and structured logging issues."
 frameworks: ["gin"]
 error-types: ["logging-error"]

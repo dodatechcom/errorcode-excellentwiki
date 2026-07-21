@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Route Not Found Error — How to Fix"
+title: "[Solution] Actix Route Not Found Error -- How to Fix"
 description: "Fix Actix 404 route not found errors. Resolve missing routes, incorrect HTTP methods, and routing issues."
 frameworks: ["actix"]
 error-types: ["routing-error"]

@@ -1,49 +1,49 @@
 ---
-title: "FSharp PartialApplicationError"
-description: "Fix partial application errors in F#."
-languages: [F#]
-error-types: ["Runtime", "Compile-time"]
-severities: [Warning, Error]
-weight: 1098
+title: "[Solution] F# Partial Application Error -- Incomplete Function Application"
+description: "Fix F# partial application errors when functions are not fully applied and produce unexpected types."
+languages: ["fsharp"]
+error-types: ["compile-time"]
+severities: ["error"]
 ---
 
-A partial application error occurs when too few arguments are provided to a function.
+# F# Partial Application Error
+
+This error occurs when a multi-argument function is partially applied, resulting in a function type instead of the expected value.
 
 ## Common Causes
 
-- Function returns another function instead of value
-- Type inference issues with partial application
-- Wrong argument order for partial application
+- Forgetting that currying produces intermediate functions
+- Passing a partially applied function where a value is expected
+- Misunderstanding tupled vs. curried function signatures
+- Using a multi-argument lambda without proper application
 
 ## How to Fix
 
-Provide correct number of arguments:
+### Fully apply when needed
 
 ```fsharp
-let add x y = x + y
-let result = add 3 4  // 7, not a function
-let add3 = add 3     // function, type: int -> int
+// WRONG: partial application returns a function
+let add a b = a + b
+let result = add 5  // result is int -> int, not int
+
+// CORRECT: provide all arguments
+let result = add 5 3  // result is int
 ```
 
-Use underscore for placeholders:
+### Use tupled functions for multi-arg needs
 
 ```fsharp
-let add = (+)
-let add3 = add 3 _
+let add (a, b) = a + b
+let result = add (5, 3)  // explicit tupled call
+
+// Or partially apply intentionally
+let addFive = add (5, _)
 ```
 
 ## Examples
 
 ```fsharp
-let log level msg = printfn "[%s] %s" level msg
-let logError = log "ERROR"
-logError "Something went wrong"
-
-let filterBy = List.filter
-let filterEvens = filterBy (fun x -> x % 2 = 0)
+let format name age = sprintf "%s is %d" name age
+let formatAlice = format "Alice"
+let result = formatAlice 30  // "Alice is 30"
 ```
-
-## Related Errors
-
-- [F# FunctionCurrying](/languages/fsharp/fsharp-function-currying-error)
-- [F# FunctionComposition](/languages/fsharp/fsharp-function-composition-error)

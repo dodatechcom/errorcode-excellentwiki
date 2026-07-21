@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Static File Error — How to Fix"
+title: "[Solution] FastAPI Static File Error -- How to Fix"
 description: "Fix FastAPI static file errors. Resolve file serving, directory configuration, and path issues."
 frameworks: ["fastapi"]
 error-types: ["file-error"]

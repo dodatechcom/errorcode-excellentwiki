@@ -1,43 +1,93 @@
 ---
-title: "[Solution] Process Substitution Error"
-description: "Fix process substitution <() >() errors in Bash."
+title: "[Solution] Bash Process Substitution Error"
+description: "Fix Bash process substitution errors when <() or >() syntax fails or produces unexpected results."
 tools: ["bash"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
-# [Solution] Process Substitution Error
+# Bash Process Substitution Error
 
-Process substitution `<()` or `>()` failed or is not supported.
+Bash process substitution `<()` or `>()` fails to create the expected file descriptor.
 
-### Common Causes
-- Using process substitution in `sh` instead of `bash`.
-- `/dev/fd` not available on the system.
-- Too many open file descriptors.
-
-### How to Fix
-```bash
-# Ensure bash shebang
-#!/bin/bash
-
-# Check /dev/fd availability
-ls /dev/fd
-
-# Use process substitution for diff
-diff <(sort file1) <(sort file2)
-
-# Fallback: use temp files
-sort file1 > /tmp/sorted1
-sort file2 > /tmp/sorted2
-diff /tmp/sorted1 /tmp/sorted2
+```
+bash: /dev/fd/63: No such file or directory
 ```
 
-### Example
-```bash
-# Broken (in sh)
-diff <(ls) <(ls -a)    # sh doesn't support <()
+## Common Causes
 
-# Fixed
+- Shell does not support process substitution
+- /dev/fd not mounted or not available
+- Process terminates before file descriptor is read
+- Too many open file descriptors
+- Trying to use in POSIX sh mode
+
+## How to Fix
+
+### Ensure Bash Is Used
+
+```bash
 #!/bin/bash
-diff <(ls) <(ls -a)
+# Process substitution requires bash, not sh
+
+# Compare files
+diff <(sort file1.txt) <(sort file2.txt)
+
+# Feed command output to while loop
+while IFS= read -r line; do
+    echo "$line"
+done < <(find /var/log -name "*.log")
+```
+
+### Handle Missing /dev/fd
+
+```bash
+# Check if process substitution is available
+if echo test > >(cat) 2>/dev/null; then
+    echo "Process substitution available"
+else
+    echo "Not available, using temp files"
+fi
+```
+
+### Use Named Pipes as Fallback
+
+```bash
+FIFO=$(mktemp -u)
+mkfifo "$FIFO"
+
+sort big_file.txt > "$FIFO" &
+diff other_file.txt "$FIFO"
+
+rm "$FIFO"
+```
+
+### Limit Open File Descriptors
+
+```bash
+# Close unused descriptors
+exec 3>&- 4>&- 5>&-
+
+# Use process substitution sparingly
+while IFS= read -r line; do
+    process "$line"
+done < <(generate_data)
+```
+
+## Examples
+
+```bash
+#!/bin/bash
+# Process substitution patterns
+
+# Merge sorted streams
+sort <(head -n 1000 file1.txt) <(head -n 1000 file2.txt)
+
+# Parallel processing
+while IFS= read -r line; do
+    echo "Processing: $line"
+done < <(command1 | command2 | command3)
+
+# Compare command outputs
+diff <(ssh server1 "cat /etc/config") <(ssh server2 "cat /etc/config")
 ```

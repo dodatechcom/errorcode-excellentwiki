@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Rate Limit Error — How to Fix"
+title: "[Solution] Actix Rate Limit Error -- How to Fix"
 description: "Fix Actix rate limiting errors. Resolve request throttling and rate limit exceeded issues."
 frameworks: ["actix"]
 error-types: ["security-error"]

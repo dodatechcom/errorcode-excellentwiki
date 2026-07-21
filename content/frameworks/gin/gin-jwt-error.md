@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin JWT Error — How to Fix"
+title: "[Solution] Gin JWT Error -- How to Fix"
 description: "Fix Gin JWT authentication errors. Resolve token parsing, validation, and expiration issues."
 frameworks: ["gin"]
 error-types: ["auth-error"]

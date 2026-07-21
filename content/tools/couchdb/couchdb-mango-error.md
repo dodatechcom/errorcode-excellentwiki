@@ -1,6 +1,6 @@
 ---
-title: "[Solution] CouchDB Mango Query Error — How to Fix"
-description: "Fix CouchDB Mango errors by correcting selector syntax, creating proper indexes, and resolving no_usable_index failures"
+title: "[Solution] CouchDB Mango Error — How to Fix"
+description: "Fix CouchDB Mango errors by resolving Mango query failures, fixing selector syntax issues, and handling Mango index problems"
 tools: ["couchdb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -8,157 +8,131 @@ weight: 5
 comments: true
 ---
 
-# CouchDB Mango Query Error
+# CouchDB Mango Error
 
-CouchDB Mango query errors occur when using the `_find` API with incorrect selector syntax, missing indexes, or unsupported operators. Mango provides a MongoDB-like query interface.
+CouchDB Mango errors occur when Mango (JSON Query Language) queries fail due to invalid selector syntax, missing indexes, or query execution issues.
 
 ## Why It Happens
 
-- Selector references fields without an appropriate index
-- Operator syntax is incorrect (e.g., `$gt` instead of `$gt`)
-- Mango index definition conflicts with existing indexes
-- Query returns more results than allowed
-- Selector uses unsupported operators
-- Database does not have any Mango indexes
+- Selector syntax is invalid
+- Query references fields without an index
+- Query is too complex for available indexes
+- Mango query server is not responding
+- Query exceeds execution time limit
+- Sort fields are not indexed
 
 ## Common Error Messages
 
 ```
-{ "error": "no_usable_index", "reason": "no matching index found" }
+{ "error": "bad_request", "reason": "Invalid selector" }
 ```
 
 ```
-{ "error": "bad_request", "reason": "invalid selector" }
+{ "error": "internal_server_error", "reason": "No index found" }
 ```
 
 ```
-{ "error": "bad_request", "reason": "too_many_results" }
+{ "error": "not_found", "reason": "Mango query server not found" }
 ```
 
 ```
-{ "error": "not_found", "reason": "missing" }
+{ "error": "bad_request", "reason": "Sort cannot be used with range queries on different index fields" }
 ```
 
 ## How to Fix It
 
-### 1. Create Proper Mango Index
+### 1. Fix Selector Syntax
 
 ```bash
-# Create a single-field index
+# Invalid selector - missing operator
+curl -X POST http://localhost:5984/mydb/_find \
+  -H "Content-Type: application/json" \
+  -d '{"selector": {"name": "John"}}'
+
+# Valid selector
+curl -X POST http://localhost:5984/mydb/_find \
+  -H "Content-Type: application/json" \
+  -d '{"selector": {"name": {"$eq": "John"}}}'
+```
+
+### 2. Create Appropriate Index
+
+```bash
+# Create index for your query
 curl -X POST http://localhost:5984/mydb/_index \
   -H "Content-Type: application/json" \
   -d '{
-    "index": {"fields": ["type"]},
-    "name": "type-index",
+    "index": {
+      "fields": ["name", "age"]
+    },
+    "name": "by-name-age",
     "type": "json"
   }'
 
-# Create a compound index
-curl -X POST http://localhost:5984/mydb/_index \
+# Query using the index
+curl -X POST http://localhost:5984/mydb/_find \
   -H "Content-Type: application/json" \
   -d '{
-    "index": {"fields": ["type", "status", "created_at"]},
-    "name": "type-status-date",
-    "type": "json"
-  }'
-
-# Create a text index
-curl -X POST http://localhost:5984/mydb/_index \
-  -H "Content-Type: application/json" \
-  -d '{
-    "index": {"fields": ["name"]},
-    "name": "name-text",
-    "type": "text",
-    "analyzer": "english"
+    "selector": {"name": {"$eq": "John"}, "age": {"$gt": 25}},
+    "sort": [{"name": "asc"}],
+    "use_index": "by-name-age"
   }'
 ```
 
-### 2. Write Correct Selector Queries
+### 3. Fix Complex Queries
 
 ```bash
-# Simple equality
-curl -X POST http://localhost:5984/mydb/_find \
-  -H "Content-Type: application/json" \
-  -d '{"selector": {"type": "user"}}'
-
-# Comparison operators
-curl -X POST http://localhost:5984/mydb/_find \
-  -H "Content-Type: application/json" \
-  -d '{
-    "selector": {
-      "age": {"$gte": 18, "$lte": 65},
-      "status": "active"
-    }
-  }'
-
-# Multiple conditions
+# Use $and for multiple conditions on different fields
 curl -X POST http://localhost:5984/mydb/_find \
   -H "Content-Type: application/json" \
   -d '{
     "selector": {
       "$and": [
-        {"type": "order"},
-        {"amount": {"$gt": 100}},
-        {"status": {"$in": ["pending", "processing"]}}
+        {"type": {"$eq": "event"}},
+        {"timestamp": {"$gte": "2024-01-01"}}
+      ]
+    }
+  }'
+
+# Use $or with indexed fields
+curl -X POST http://localhost:5984/mydb/_find \
+  -H "Content-Type: application/json" \
+  -d '{
+    "selector": {
+      "$or": [
+        {"status": {"$eq": "active"}},
+        {"status": {"$eq": "pending"}}
       ]
     }
   }'
 ```
 
-### 3. Fix Selector Syntax
-
-```javascript
-// Correct Mango operators
-const validSelectors = {
-  // Equality
-  equality: { type: "user" },
-
-  // Comparison
-  comparison: { age: { "$gt": 18, "$lt": 65 } },
-
-  // Logical
-  logical: { "$and": [{ type: "user" }, { active: true }] },
-
-  // Array
-  array: { tags: { "$elemMatch": { "$eq": "important" } } },
-
-  // Existence
-  existence: { email: { "$exists": true } },
-
-  // Regex
-  regex: { name: { "$regex": "^admin", "$options": "i" } }
-};
-```
-
-### 4. Use Index Hints
+### 4. Debug Mango Query
 
 ```bash
-# Force index usage
-curl -X POST http://localhost:5984/mydb/_find \
+# Explain query plan
+curl -X POST http://localhost:5984/mydb/_explain \
   -H "Content-Type: application/json" \
-  -d '{
-    "selector": {"type": "user", "status": "active"},
-    "use_index": "_design/type-status"
-  }'
+  -d '{"selector": {"type": "event"}, "sort": [{"timestamp": "asc"}]}'
 
-# List available indexes
-curl http://localhost:5984/mydb/_index | jq '.indexes[] | {name, def}'
+# Check available indexes
+curl http://localhost:5984/mydb/_index
 ```
 
 ## Common Scenarios
 
-- **Full scan warning**: Create an index for frequently queried fields.
-- **Sort fails without index**: The sort field must be included in the index.
-- **Large result set OOM**: Use `limit` and pagination with `bookmark`.
+- **No index found**: Create an index for the fields used in your selector.
+- **Invalid selector**: Check Mango selector syntax documentation.
+- **Slow query**: Create a composite index matching your query pattern.
 
 ## Prevent It
 
-- Create compound indexes for multi-field queries
-- Use `explain` to verify index usage: `curl -X POST db/_explain -d '{...}'`
-- Monitor slow queries with `bookmark` and pagination
+- Create indexes for frequently queried fields
+- Use `_explain` to verify query plans
+- Keep selectors simple when possible
 
 ## Related Pages
 
-- [CouchDB Find Error](/tools/couchdb/couchdb-find-error)
 - [CouchDB Index Error](/tools/couchdb/couchdb-index-error)
 - [CouchDB Query Error](/tools/couchdb/couchdb-query-error)
+- [CouchDB View Error](/tools/couchdb/couchdb-view-error)

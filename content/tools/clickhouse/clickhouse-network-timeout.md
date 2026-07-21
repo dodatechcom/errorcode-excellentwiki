@@ -1,34 +1,44 @@
 ---
 title: "[Solution] ClickHouse Network Timeout Error"
-description: "How to fix ClickHouse network timeout errors"
+description: "Fix ClickHouse network timeout errors when distributed queries lose connectivity"
 tools: ["clickhouse"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
+# ClickHouse Network Timeout Error
+
+Network timeout errors occur when ClickHouse distributed queries timeout waiting for remote shard responses.
+
 ## Common Causes
 
-- Network latency between client and server
-- Server under heavy load
-- Connection pool exhausted
-- Firewall dropping idle connections
+- Remote shard unreachable
+- Network latency between ClickHouse nodes
+- Query timeout too short for distributed operations
+- DNS resolution slow for shard hostnames
 
 ## How to Fix
 
-Increase timeout:
-
-```bash
-clickhouse-client --connect_timeout=30 --receive_timeout=300
-```
-
-Check server load:
+Check distributed table connections:
 
 ```sql
-SELECT * FROM system.processes;
+SELECT * FROM system.clusters;
+```
+
+Increase network timeout:
+
+```sql
+SET receive_timeout = 120, send_timeout = 120;
+```
+
+Test shard connectivity:
+
+```bash
+clickhouse-client -h shard2 --query "SELECT 1"
 ```
 
 ## Examples
 
-```bash
-clickhouse-client --connect_timeout=60 --send_timeout=60 --receive_timeout=60
+```sql
+SELECT * FROM system.clusters WHERE cluster = 'my_cluster';
 ```

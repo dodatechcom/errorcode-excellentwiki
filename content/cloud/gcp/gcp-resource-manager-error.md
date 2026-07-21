@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Resource Manager Error — folder project org-policy errors"
+title: "[Solution] GCP Resource Manager Error -- folder project org-policy errors"
 description: "Fix GCP Resource Manager errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

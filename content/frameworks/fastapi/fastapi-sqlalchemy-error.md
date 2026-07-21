@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI SQLAlchemy Error — How to Fix"
+title: "[Solution] FastAPI SQLAlchemy Error -- How to Fix"
 description: "Fix FastAPI SQLAlchemy errors. Resolve ORM mapping issues, relationship errors, and query building problems."
 frameworks: ["fastapi"]
 error-types: ["database-error"]

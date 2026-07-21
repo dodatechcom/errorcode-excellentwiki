@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Dataform Error — repository workflow compilation errors"
+title: "[Solution] GCP Dataform Error -- repository workflow compilation errors"
 description: "Fix GCP Dataform errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

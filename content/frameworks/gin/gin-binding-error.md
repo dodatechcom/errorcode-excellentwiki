@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Binding Error — How to Fix"
+title: "[Solution] Gin Binding Error -- How to Fix"
 description: "Fix Gin request binding errors. Resolve JSON, form, and query parameter binding failures."
 frameworks: ["gin"]
 error-types: ["validation-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber CORS Error — How to Fix"
+title: "[Solution] Fiber CORS Error -- How to Fix"
 description: "Fix Fiber CORS errors. Resolve cross-origin request blocked, missing headers, and preflight issues."
 frameworks: ["fiber"]
 error-types: ["security-error"]

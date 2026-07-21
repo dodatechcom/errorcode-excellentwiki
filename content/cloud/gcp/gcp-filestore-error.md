@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Filestore Error — instance mount backup performance errors"
+title: "[Solution] GCP Filestore Error -- instance mount backup performance errors"
 description: "Fix GCP Filestore errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

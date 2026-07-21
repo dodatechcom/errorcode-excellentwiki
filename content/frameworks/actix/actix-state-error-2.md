@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix State Error — How to Fix"
+title: "[Solution] Actix State Error -- How to Fix"
 description: "Fix Actix application state errors. Resolve shared state access, database pool, and configuration issues."
 frameworks: ["actix"]
 error-types: ["state-error"]

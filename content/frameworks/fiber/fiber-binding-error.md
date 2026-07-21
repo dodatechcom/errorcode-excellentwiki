@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Binding Error — How to Fix"
+title: "[Solution] Fiber Binding Error -- How to Fix"
 description: "Fix Fiber request body parsing errors. Resolve JSON, form, and query parameter binding failures."
 frameworks: ["fiber"]
 error-types: ["validation-error"]

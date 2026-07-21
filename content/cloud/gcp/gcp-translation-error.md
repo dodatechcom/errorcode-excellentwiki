@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Translation API Error — language glossary adaptive errors"
+title: "[Solution] GCP Translation API Error -- language glossary adaptive errors"
 description: "Fix GCP Translation API errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

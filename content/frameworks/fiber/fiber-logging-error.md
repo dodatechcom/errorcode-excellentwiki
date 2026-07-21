@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Logging Error — How to Fix"
+title: "[Solution] Fiber Logging Error -- How to Fix"
 description: "Fix Fiber logging errors. Resolve log configuration, output, and structured logging issues."
 frameworks: ["fiber"]
 error-types: ["logging-error"]

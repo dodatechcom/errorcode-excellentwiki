@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask Blueprint Registration Error — How to Fix"
+title: "[Solution] Flask Blueprint Registration Error -- How to Fix"
 description: "Fix Flask Blueprint registration errors. Resolve Blueprint naming, URL prefix, and module import issues."
 frameworks: ["flask"]
 error-types: ["configuration-error"]
@@ -89,7 +89,7 @@ from flask import Blueprint
 
 api_bp = Blueprint('api', __name__)
 
-# Lazy import — avoids circular imports
+# Lazy import -- avoids circular imports
 def init_routes():
     from . import routes  # noqa: F401
 ```

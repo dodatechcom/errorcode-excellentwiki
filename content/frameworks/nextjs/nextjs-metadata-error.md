@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Metadata or SEO Error — How to Fix"
+title: "[Solution] Next.js Metadata or SEO Error -- How to Fix"
 description: "Fix Next.js metadata and SEO errors. Resolve meta tags, Open Graph, and structured data issues in Next.js."
 frameworks: ["nextjs"]
 error-types: ["configuration-error"]

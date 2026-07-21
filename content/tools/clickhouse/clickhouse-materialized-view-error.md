@@ -1,30 +1,47 @@
 ---
 title: "[Solution] ClickHouse Materialized View Error"
-description: "How to fix ClickHouse materialized view errors"
+description: "Fix ClickHouse materialized view errors when view insertion or query fails"
 tools: ["clickhouse"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
+# ClickHouse Materialized View Error
+
+Materialized view errors occur when data insertion into a materialized view target table fails.
+
 ## Common Causes
 
-- MV target table does not exist
-- MV SELECT query changed after creation
-- Data format mismatch between source and target
-- MV dependencies creating circular reference
+- Target table does not exist
+- Column mismatch between source and target
+- Materialized view query referencing dropped column
+- Insert block size exceeding target table limits
 
 ## How to Fix
 
-Create MV with target table:
+Check materialized views:
 
 ```sql
-CREATE TABLE mv_target (date Date, count UInt64) ENGINE = SummingMergeTree() ORDER BY date;
-CREATE MATERIALIZED VIEW mv TO mv_target AS SELECT toDate(event_date) AS date, count() AS count FROM events GROUP BY date;
+SELECT database, name, target_table FROM system.tables WHERE engine = 'MaterializedView';
+```
+
+Verify target table structure:
+
+```sql
+DESCRIBE TABLE target_table;
+```
+
+Recreate materialized view:
+
+```sql
+DROP TABLE IF EXISTS my_mv;
+CREATE MATERIALIZED VIEW my_mv TO target_table AS
+SELECT * FROM source_table WHERE status = 'active';
 ```
 
 ## Examples
 
 ```sql
-SELECT * FROM system.tables WHERE engine = 'MaterializedView';
-SELECT * FROM system.dependencies WHERE target_database = currentDatabase();
+SELECT name, target_table, select_query FROM system.tables
+WHERE engine = 'MaterializedView';
 ```

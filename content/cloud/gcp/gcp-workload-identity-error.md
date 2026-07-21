@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Workload Identity Error — federation pool provider errors"
+title: "[Solution] GCP Workload Identity Error -- federation pool provider errors"
 description: "Fix GCP Workload Identity errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

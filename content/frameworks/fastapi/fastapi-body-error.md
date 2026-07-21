@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Body Error — How to Fix"
+title: "[Solution] FastAPI Body Error -- How to Fix"
 description: "Fix FastAPI request body errors. Resolve body parsing, validation, and serialization issues."
 frameworks: ["fastapi"]
 error-types: ["validation-error"]

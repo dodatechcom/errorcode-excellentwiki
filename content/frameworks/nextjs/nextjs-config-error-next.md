@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js next.config.js Misconfiguration Error — How to Fix"
+title: "[Solution] Next.js next.config.js Misconfiguration Error -- How to Fix"
 description: "Fix Next.js configuration errors. Resolve next.config.js misconfiguration, build options, and plugin issues."
 frameworks: ["nextjs"]
 error-types: ["configuration-error"]

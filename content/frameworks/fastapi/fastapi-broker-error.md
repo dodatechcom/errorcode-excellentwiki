@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Broker Error — How to Fix"
+title: "[Solution] FastAPI Broker Error -- How to Fix"
 description: "Fix FastAPI message broker errors. Resolve Redis/RabbitMQ connection and message handling issues."
 frameworks: ["fastapi"]
 error-types: ["infrastructure-error"]

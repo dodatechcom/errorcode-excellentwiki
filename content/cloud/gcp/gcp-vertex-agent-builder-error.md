@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Vertex AI Agent Builder Error — search conversation errors"
+title: "[Solution] GCP Vertex AI Agent Builder Error -- search conversation errors"
 description: "Fix GCP Vertex AI Agent Builder errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

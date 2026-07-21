@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI File Upload Error — How to Fix"
+title: "[Solution] FastAPI File Upload Error -- How to Fix"
 description: "Fix FastAPI file upload errors. Resolve upload failures, size limits, and file handling issues."
 frameworks: ["fastapi"]
 error-types: ["validation-error"]

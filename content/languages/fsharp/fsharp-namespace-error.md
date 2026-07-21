@@ -1,52 +1,61 @@
 ---
-title: "FSharp NamespaceError"
-description: "Fix namespace errors in F#."
-languages: [F#]
-error-types: ["Runtime", "Compile-time"]
-severities: [Warning, Error]
-weight: 1099
+title: "[Solution] F# Namespace Error -- Invalid Module Structure"
+description: "Fix F# namespace errors when module and namespace declarations are incorrect or conflicting."
+languages: ["fsharp"]
+error-types: ["compile-time"]
+severities: ["error"]
 ---
 
-A namespace error occurs when F# namespaces are used incorrectly.
+# F# Namespace Error
+
+This error occurs when namespace and module declarations conflict or are structured incorrectly in F# source files.
 
 ## Common Causes
 
-- Duplicate namespace declarations
-- Missing namespace qualification
-- Circular namespace references
+- Declaring a module and namespace with conflicting names in the same file
+- Using `module` declaration at the top of a file that already has a namespace
+- Mismatched namespace hierarchy between files
+- Missing required namespace declarations for type providers
 
 ## How to Fix
 
-Declare namespaces correctly:
+### Use correct file structure
 
 ```fsharp
-namespace MyApp.Models
+// WRONG: module after namespace
+namespace MyApp.Utilities
+module MyApp.Utilities.StringHelper =  // error: redefining namespace
 
-type Person = { Name: string; Age: int }
-```
-
-Use module within namespace:
-
-```fsharp
-namespace MyApp.Utils
+// CORRECT: single namespace with module inside
+namespace MyApp.Utilities
 
 module StringHelper =
     let capitalize (s: string) =
         s.[0].ToString().ToUpper() + s.[1..]
 ```
 
+### Separate files with namespaces
+
+```fsharp
+// File1.fs
+namespace MyApp.Models
+type User = { Name: string; Age: int }
+
+// File2.fs
+namespace MyApp.Services
+open MyApp.Models
+let greet (user: User) = sprintf "Hello %s" user.Name
+```
+
 ## Examples
 
 ```fsharp
-namespace MyApp.Services
+namespace MyApp.Core
 
-open MyApp.Models
-
-type UserService() =
-    member _.GetUser id = { Name = "Alice"; Age = 30 }
+[<AutoOpen>]
+module Utilities =
+    let inline clamp min max value =
+        if value < min then min
+        elif value > max then max
+        else value
 ```
-
-## Related Errors
-
-- [F# Open](/languages/fsharp/fsharp-open-error)
-- [F# AccessControl](/languages/fsharp/fsharp-access-control-error)

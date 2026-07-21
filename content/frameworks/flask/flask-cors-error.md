@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask CORS Preflight Failed Error — How to Fix"
+title: "[Solution] Flask CORS Preflight Failed Error -- How to Fix"
 description: "Fix Flask CORS preflight errors. Resolve Cross-Origin Resource Sharing configuration and header issues."
 frameworks: ["flask"]
 error-types: ["security-error"]

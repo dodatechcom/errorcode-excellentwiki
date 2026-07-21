@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Dataplex Error — lake zone asset scan errors"
+title: "[Solution] GCP Dataplex Error -- lake zone asset scan errors"
 description: "Fix GCP Dataplex errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

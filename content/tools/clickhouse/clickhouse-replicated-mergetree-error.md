@@ -1,30 +1,46 @@
 ---
-title: "[Solution] ClickHouse ReplicatedMergeTree Error"
-description: "How to fix ClickHouse ReplicatedMergeTree errors"
+title: "[Solution] ClickHouse Replicated MergeTree Error"
+description: "Fix ClickHouse ReplicatedMergeTree errors when replicated table operations fail"
 tools: ["clickhouse"]
 error-types: ["tool-error"]
 severities: ["error"]
 ---
 
+# ClickHouse Replicated MergeTree Error
+
+Replicated MergeTree errors occur when ReplicatedMergeTree engine cannot synchronize across replicas.
+
 ## Common Causes
 
-- ZooKeeper not reachable
-- Replication path wrong
-- Replica ID conflict
-- Replication lag too high
+- ZooKeeper node missing for table
+- Replication path conflict between tables
+- Replica ID mismatch in cluster config
+- Table creation without proper ZooKeeper path
 
 ## How to Fix
 
+Check replication path:
+
 ```sql
-CREATE TABLE my_table (
-  id UInt32
-) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/my_table', '{replica}')
-ORDER BY id;
+SELECT name, engine, metadata_path FROM system.tables WHERE engine = 'ReplicatedMergeTree';
+```
+
+Verify ZooKeeper path exists:
+
+```sql
+SELECT * FROM system.zookeeper WHERE path = '/clickhouse/tables/{cluster}/my_table';
+```
+
+Reset replication:
+
+```sql
+SYSTEM RESTART REPLICA my_table;
 ```
 
 ## Examples
 
 ```sql
-SELECT * FROM system.replicas WHERE table = 'my_table';
-SELECT is_readonly, future_parts, parts_to_check FROM system.replicas WHERE table = 'my_table';
+CREATE TABLE my_table (id UInt64, name String)
+ENGINE = ReplicatedMergeTree('/clickhouse/tables/{cluster}/my_table/replica', '{replica}')
+ORDER BY id;
 ```

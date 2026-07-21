@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Layout Nesting or Hydration Error — How to Fix"
+title: "[Solution] Next.js Layout Nesting or Hydration Error -- How to Fix"
 description: "Fix Next.js layout errors. Resolve layout nesting, hydration, and server-client component issues in Next.js."
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 Understand the server/client boundary:
 
 ```typescript
-// app/layout.tsx — Server Component (default)
+// app/layout.tsx -- Server Component (default)
 export default function RootLayout({ children }) {
     return (
         <html>
@@ -71,7 +71,7 @@ export default function RootLayout({ children }) {
     );
 }
 
-// app/providers.tsx — Client Component
+// app/providers.tsx -- Client Component
 'use client';
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
@@ -153,7 +153,7 @@ Layouts re-render only when their segment changes. Use React context or URL sear
 
 ## Prevent It
 
-1. **Keep layouts simple** — avoid complex state management in layout components.
+1. **Keep layouts simple** -- avoid complex state management in layout components.
 
 2. **Mark client components with `'use client'`** when they use hooks or browser APIs.
 

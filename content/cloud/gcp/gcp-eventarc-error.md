@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Eventarc Error — trigger channel transport errors"
+title: "[Solution] GCP Eventarc Error -- trigger channel transport errors"
 description: "Fix GCP Eventarc errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

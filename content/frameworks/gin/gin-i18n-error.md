@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Internationalization Error — How to Fix"
+title: "[Solution] Gin Internationalization Error -- How to Fix"
 description: "Fix Gin i18n errors. Resolve language detection, translation loading, and locale issues."
 frameworks: ["gin"]
 error-types: ["i18n-error"]

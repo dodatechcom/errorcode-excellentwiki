@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix WebSocket Error — How to Fix"
+title: "[Solution] Actix WebSocket Error -- How to Fix"
 description: "Fix Actix WebSocket errors. Resolve WebSocket connection, upgrade, and message handling issues."
 frameworks: ["actix"]
 error-types: ["websocket-error"]

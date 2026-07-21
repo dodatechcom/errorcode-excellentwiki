@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Deployment Manager Error — deployment resource template errors"
+title: "[Solution] GCP Deployment Manager Error -- deployment resource template errors"
 description: "Fix GCP Deployment Manager errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

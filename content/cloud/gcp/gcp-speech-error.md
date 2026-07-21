@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Speech Error — Speech-to-Text Text-to-Speech recognition synthesis errors"
+title: "[Solution] GCP Speech Error -- Speech-to-Text Text-to-Speech recognition synthesis errors"
 description: "Fix GCP Speech API errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

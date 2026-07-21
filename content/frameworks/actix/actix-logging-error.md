@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Logging Error — How to Fix"
+title: "[Solution] Actix Logging Error -- How to Fix"
 description: "Fix Actix logging errors. Resolve log configuration, output, and structured logging issues."
 frameworks: ["actix"]
 error-types: ["logging-error"]

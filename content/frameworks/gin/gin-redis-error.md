@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Redis Error — How to Fix"
+title: "[Solution] Gin Redis Error -- How to Fix"
 description: "Fix Gin Redis errors. Resolve connection failures, timeout, and cache operation issues."
 frameworks: ["gin"]
 error-types: ["database-error"]

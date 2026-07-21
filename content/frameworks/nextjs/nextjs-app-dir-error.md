@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js App Router Directory Error — How to Fix"
+title: "[Solution] Next.js App Router Directory Error -- How to Fix"
 description: "Fix Next.js App Router errors. Resolve directory structure, file conventions, and App Router migration issues."
 frameworks: ["nextjs"]
 error-types: ["configuration-error"]
@@ -134,7 +134,7 @@ Global CSS must be imported in `layout.tsx`, not in `page.tsx`. Component-level 
 
 ## Prevent It
 
-1. **Use a consistent naming convention** — always `page.tsx`, `layout.tsx`, `loading.tsx`.
+1. **Use a consistent naming convention** -- always `page.tsx`, `layout.tsx`, `loading.tsx`.
 
 2. **Don't mix `app/` and `pages/` directories.** Choose one routing approach.
 

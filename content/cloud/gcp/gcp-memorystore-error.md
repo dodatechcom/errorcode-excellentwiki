@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Memorystore Error — Redis Memcached connection failover errors"
+title: "[Solution] GCP Memorystore Error -- Redis Memcached connection failover errors"
 description: "Fix GCP Memorystore errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

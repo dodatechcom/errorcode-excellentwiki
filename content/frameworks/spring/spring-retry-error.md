@@ -38,7 +38,7 @@ public void callExternalService(String request) {
 @Recover
 public void callExternalServiceFallback(ResourceAccessException ex, String request) {
     log.warn("External service unavailable, using fallback for: {}", request);
-    // Fallback logic — cache the request for later retry
+    // Fallback logic -- cache the request for later retry
 }
 ```
 

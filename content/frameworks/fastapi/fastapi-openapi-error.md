@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI OpenAPI Error — How to Fix"
+title: "[Solution] FastAPI OpenAPI Error -- How to Fix"
 description: "Fix FastAPI OpenAPI errors. Resolve schema generation, documentation, and specification issues."
 frameworks: ["fastapi"]
 error-types: ["api-error"]

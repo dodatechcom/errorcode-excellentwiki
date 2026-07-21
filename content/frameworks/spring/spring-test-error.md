@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Test Context or Mock Error — How to Fix"
+title: "[Solution] Spring Test Context or Mock Error -- How to Fix"
 description: "Fix Spring test errors. Resolve test context, mock configuration, and test slicing issues in Spring."
 frameworks: ["spring"]
 error-types: ["runtime-error"]
@@ -39,7 +39,7 @@ java.lang.IllegalStateException: Cached ApplicationContext has been closed
 Choose the right test annotation:
 
 ```java
-// Unit test — only loads controllers, skips services/repos
+// Unit test -- only loads controllers, skips services/repos
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
@@ -59,7 +59,7 @@ class UserControllerTest {
     }
 }
 
-// Repository test — loads repos, uses embedded DB
+// Repository test -- loads repos, uses embedded DB
 @DataJpaTest
 class UserRepositoryTest {
 

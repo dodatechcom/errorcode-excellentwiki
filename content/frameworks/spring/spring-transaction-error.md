@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Transaction Management Error — How to Fix"
+title: "[Solution] Spring Transaction Management Error -- How to Fix"
 description: "Fix Spring transaction management errors. Resolve transaction rollback, propagation, and isolation issues in Spring."
 frameworks: ["spring"]
 error-types: ["runtime-error"]
@@ -51,11 +51,11 @@ public class OrderService {
         return order;
     }
 
-    // Wrong: private method — proxy won't intercept
+    // Wrong: private method -- proxy won't intercept
     @Transactional
     private void internalMethod() { }
 
-    // Wrong: self-invocation — bypasses proxy
+    // Wrong: self-invocation -- bypasses proxy
     public void outerMethod() {
         this.createOrder(new CreateOrderRequest());  // No transaction!
     }
@@ -93,7 +93,7 @@ public class PaymentService {
             validate(data);
         } catch (ValidationException e) {
             log.warn("Validation failed: {}", e.getMessage());
-            // Continue — don't rollback
+            // Continue -- don't rollback
         }
         dataRepository.save(data);
     }

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Vision API Error — image label OCR object detection errors"
+title: "[Solution] GCP Vision API Error -- image label OCR object detection errors"
 description: "Fix GCP Vision API errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

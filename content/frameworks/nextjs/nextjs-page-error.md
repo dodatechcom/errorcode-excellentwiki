@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Page Component Error — How to Fix"
+title: "[Solution] Next.js Page Component Error -- How to Fix"
 description: "Fix Next.js page component errors. Resolve page rendering, data fetching, and routing issues in Next.js."
 frameworks: ["nextjs"]
 error-types: ["runtime-error"]
@@ -39,7 +39,7 @@ Error: A component is suspended while responding to synchronous input
 Every page must have a default export:
 
 ```typescript
-// app/page.tsx — Root page
+// app/page.tsx -- Root page
 export default function HomePage() {
     return <h1>Welcome</h1>;
 }
@@ -49,7 +49,7 @@ export default function AboutPage() {
     return <h1>About Us</h1>;
 }
 
-// app/blog/[slug]/page.tsx — Dynamic page
+// app/blog/[slug]/page.tsx -- Dynamic page
 export default async function BlogPost({ params }: { params: { slug: string } }) {
     const post = await getPost(params.slug);
 

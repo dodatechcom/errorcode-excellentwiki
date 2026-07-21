@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Timeout Error — How to Fix"
+title: "[Solution] Actix Timeout Error -- How to Fix"
 description: "Fix Actix request timeout errors. Resolve handler timeouts, context cancellation, and slow request issues."
 frameworks: ["actix"]
 error-types: ["timeout-error"]

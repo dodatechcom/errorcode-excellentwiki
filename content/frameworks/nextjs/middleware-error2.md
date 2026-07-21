@@ -39,13 +39,13 @@ export function middleware(request: NextRequest) {
 2. Use Edge-compatible imports:
 
 ```typescript
-// CORRECT — uses Web API
+// CORRECT -- uses Web API
 export function middleware(request: NextRequest) {
   const ip = request.ip || request.headers.get('x-forwarded-for');
   return NextResponse.next();
 }
 
-// WRONG — Node.js module
+// WRONG -- Node.js module
 import fs from 'fs'; // Not available in Edge Runtime
 ```
 
@@ -66,7 +66,7 @@ import { NextResponse } from 'next/server';
 export function middleware(request) {
   // Forgot to return a response
   if (request.nextUrl.pathname === '/admin') {
-    // No return statement — error
+    // No return statement -- error
   }
 }
 ```

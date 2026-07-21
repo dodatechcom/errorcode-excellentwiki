@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Database Error — How to Fix"
+title: "[Solution] Actix Database Error -- How to Fix"
 description: "Fix Actix database errors. Resolve SQL connection, query, and transaction issues."
 frameworks: ["actix"]
 error-types: ["database-error"]

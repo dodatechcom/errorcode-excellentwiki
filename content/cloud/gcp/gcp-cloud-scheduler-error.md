@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Scheduler Error — job target retry auth errors"
+title: "[Solution] GCP Cloud Scheduler Error -- job target retry auth errors"
 description: "Fix GCP Cloud Scheduler errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

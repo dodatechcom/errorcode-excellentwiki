@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask-Migrate Error — How to Fix"
+title: "[Solution] Flask-Migrate Error -- How to Fix"
 description: "Fix Flask-Migrate errors. Resolve Alembic migration failures, database version, and migration conflicts."
 frameworks: ["flask"]
 error-types: ["runtime-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Profiler Error — agent profile collection errors"
+title: "[Solution] GCP Cloud Profiler Error -- agent profile collection errors"
 description: "Fix GCP Cloud Profiler errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

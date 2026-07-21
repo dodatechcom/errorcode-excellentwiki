@@ -1,6 +1,6 @@
 ---
-title: "[Solution] Neo4j Page Cache Error — How to Fix"
-description: "Fix Neo4j page cache errors including cache misses, memory configuration, and page cache performance issues"
+title: "[Solution] Neo4j Page Cache Error"
+description: "Fix Neo4j page cache errors when memory-mapped page cache encounters IO failures"
 tools: ["neo4j"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,107 +10,44 @@ comments: true
 
 # Neo4j Page Cache Error
 
-Page cache errors in Neo4j occur when the page cache is misconfigured, too small, or experiencing performance issues. The page cache is used to cache database files in memory.
+Page cache errors occur when Neo4j cannot memory-map database files due to OS limitations.
 
-## Why It Happens
+## Common Causes
 
-- The page cache size is too small for the database
-- The page cache is competing with the JVM heap for memory
-- Memory-mapped files are not supported on the file system
-- The page cache is fragmented due to frequent evictions
-- Multiple databases share a page cache that is too small
+- Page cache size smaller than database
+- Filesystem does not support memory mapping
+- Too many open file descriptors
+- Disk IO errors preventing page reads
 
 ## Common Error Messages
 
 ```
-Neo.TransientError.Resource.Exhausted:
-Cannot allocate memory for page cache
-```
-
-```
-Neo4j Page cache hit ratio is below 90%
-```
-
-```
-ERROR: Page cache eviction rate is too high
-```
-
-```
-WARNING: Page cache is using more than 80% of available memory
+Neo.TransientError.General.OutOfMemoryError: There is not enough memory
 ```
 
 ## How to Fix It
 
-### 1. Configure Page Cache Size
+### 1. Increase Page Cache
+
+```properties
+# neo4j.conf
+server.memory.pagecache.size=4g
+```
+
+### 2. Check File Descriptor Limit
 
 ```bash
-# In neo4j.conf
-dbms.memory.pagecache.size=16G
-
-# For multiple databases
-dbms.memory.pagecache.size=16G
-
-# Calculate appropriate size (1.2x the total database size)
-du -sh /var/lib/neo4j/data/databases/
+cat /proc/$(pgrep -f neo4j)/limits | grep "open files"
 ```
 
-### 2. Monitor Page Cache Performance
-
-```cypher
-// Check page cache hit ratio
-CALL dbms.listMetrics()
-YIELD name, value
-WHERE name CONTAINS 'page_cache'
-RETURN name, value;
-
-// Check page cache usage
-CALL dbms.debug.refreshPageCacheStats();
-```
-
-### 3. Fix Page Cache Configuration
+### 3. Increase File Descriptor Limit
 
 ```bash
-# Ensure page cache has enough memory
-# Total RAM = JVM heap + Page cache + OS + other services
-# Example: 32GB server
-# JVM heap: 8G
-# Page cache: 16G
-# OS and other: 8G
-
-# In neo4j.conf
-dbms.memory.heap.initial_size=4G
-dbms.memory.heap.max_size=8G
-dbms.memory.pagecache.size=16G
+ulimit -n 65535
 ```
 
-### 4. Fix File System Issues
+## Examples
 
 ```bash
-# Ensure file system supports memory mapping
-# Use ext4 or XFS (not NFS or CIFS)
-
-# Check mount options
-mount | grep /var/lib/neo4j
-
-# Ensure noatime for better performance
-# In /etc/fstab
-# /dev/sda1 /var/lib/neo4j ext4 noatime 0 2
+grep -r "pagecache" /var/log/neo4j/
 ```
-
-## Common Scenarios
-
-- **Page cache hit ratio is low**: Increase `dbms.memory.pagecache.size`.
-- **Page cache competes with heap**: Reduce heap size and increase page cache.
-- **Slow I/O after page cache miss**: Ensure page cache is large enough for the working set.
-
-## Prevent It
-
-- Set page cache size to at least 1.2x the total database size
-- Monitor page cache hit ratio and adjust size accordingly
-- Use fast SSD storage for the database directory
-
-## Related Pages
-
-- [Neo4j Memory Error](/tools/neo4j/neo4j-memory-error)
-- [Neo4j Kernel Error](/tools/neo4j/neo4j-kernel-error)
-- [Neo4j Query Error](/tools/neo4j/neo4j-query-error)

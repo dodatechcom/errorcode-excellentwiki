@@ -1,6 +1,6 @@
 ---
 title: "[Solution] CouchDB Index Error — How to Fix"
-description: "Fix CouchDB index errors by rebuilding mango indexes, correcting index definitions, and resolving index fragmentation issues"
+description: "Fix CouchDB index errors by resolving index creation failures, fixing Mango index issues, and handling secondary index problems"
 tools: ["couchdb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,130 +10,124 @@ comments: true
 
 # CouchDB Index Error
 
-CouchDB index errors occur when creating or querying Mango indexes or custom views that serve as indexes. Index corruption or incorrect definitions can cause query failures.
+CouchDB index errors occur when creating or querying secondary (Mango) indexes due to invalid index definitions, resource constraints, or corruption.
 
 ## Why It Happens
 
-- Mango index definition references fields not present in documents
-- Index building fails due to insufficient disk space or memory
-- Index file corruption after unclean shutdown
-- Duplicate index definitions with conflicting options
-- Index exceeds the maximum number of fields
-- Using unsupported operators in index selector
+- Index definition references non-existent fields
+- Index is being built while database is under heavy write load
+- Disk space is insufficient for index storage
+- Index definition is invalid JSON
+- Index name conflicts with existing index
+- Database is corrupted
 
 ## Common Error Messages
 
 ```
-{ "error": "bad_request", "reason": "invalid_url" }
+{ "error": "bad_request", "reason": "Invalid index definition" }
 ```
 
 ```
-{ "error": "error", "reason": "no_usable_index" }
+{ "error": "conflict", "reason": "Index already exists" }
 ```
 
 ```
-{ "error": "not_found", "reason": "missing" }
+{ "error": "internal_server_error", "reason": "Index build failed" }
 ```
 
 ```
-{ "error": "invalid_index_def", "reason": "too_many_index_fields" }
+{ "error": "not_found", "reason": "Index not found" }
 ```
 
 ## How to Fix It
 
-### 1. Create Correct Mango Index
+### 1. Create Mango Index
 
 ```bash
-# Create a single-field index
+# Create index on a single field
 curl -X POST http://localhost:5984/mydb/_index \
   -H "Content-Type: application/json" \
   -d '{
     "index": {
-      "fields": ["email"]
+      "fields": ["timestamp"]
     },
-    "name": "email-index",
+    "name": "by-timestamp",
     "type": "json"
   }'
 
-# Create a compound index
+# Create compound index
 curl -X POST http://localhost:5984/mydb/_index \
   -H "Content-Type: application/json" \
   -d '{
     "index": {
-      "fields": ["type", "created_at"]
+      "fields": ["type", "timestamp"]
     },
-    "name": "type-date-index",
+    "name": "by-type-and-time",
     "type": "json"
   }'
 ```
 
-### 2. Verify Index Exists and Use It
+### 2. Query Using Index
+
+```bash
+# Query with Mango selector
+curl -X POST http://localhost:5984/mydb/_find \
+  -H "Content-Type: application/json" \
+  -d '{
+    "selector": {
+      "type": "event",
+      "timestamp": {"$gt": "2024-01-01"}
+    },
+    "sort": [{"timestamp": "asc"}],
+    "use_index": "by-type-and-time"
+  }'
+
+# Check which index is used
+curl -X POST http://localhost:5984/mydb/_explain \
+  -H "Content-Type: application/json" \
+  -d '{"selector": {"type": "event"}}'
+```
+
+### 3. Fix Index Build Failure
+
+```bash
+# Check disk space
+df -h /opt/couchdb/data
+
+# Reduce write load during index build
+# Wait for index to complete
+curl http://localhost:5984/mydb/_index | jq '.indexes[] | {name, ready}'
+```
+
+### 4. Remove and Recreate Index
 
 ```bash
 # List all indexes
 curl http://localhost:5984/mydb/_index
 
-# Query with index hint
-curl -X POST http://localhost:5984/mydb/_find \
-  -H "Content-Type: application/json" \
-  -d '{
-    "selector": {
-      "email": "user@example.com"
-    },
-    "use_index": "_design/email-index"
-  }'
-```
+# Delete design document containing index
+curl -X DELETE http://localhost:5984/mydb/_design/myindex?rev=1-abc
 
-### 3. Rebuild Broken Index
-
-```bash
-# Delete and recreate the index
-curl -X DELETE http://localhost:5984/mydb/_index/design-doc/index-name
-
-# Rebuild by recreating
+# Recreate index
 curl -X POST http://localhost:5984/mydb/_index \
   -H "Content-Type: application/json" \
-  -d '{
-    "index": {"fields": ["email"]},
-    "name": "email-index",
-    "type": "json"
-  }'
-
-# Force index build by running a query
-curl -X POST http://localhost:5984/mydb/_find \
-  -H "Content-Type: application/json" \
-  -d '{"selector": {"email": {"$gt": null}}}'
-```
-
-### 4. Fix Index Definition Issues
-
-```bash
-# Check index metadata
-curl http://localhost:5984/mydb/_design/app
-
-# Compact the database to clean up index files
-curl -X POST http://localhost:5984/mydb/_compact
-
-# Force full compaction including views
-curl -X POST http://localhost:5984/mydb/_view_compact \
-  -H "Content-Type: application/json" \
-  -d '{"stale": false}'
+  -d '{"index": {"fields": ["name"]}, "name": "by-name", "type": "json"}'
 ```
 
 ## Common Scenarios
 
-- **Mango query falls back to full scan**: Create an appropriate index for the selector fields.
-- **Index build fails with OOM**: Reduce batch size or increase available memory.
-- **Stale index returns old data**: Use `stale=false` in queries to ensure up-to-date results.
+- **Index build fails**: Check disk space and reduce write load.
+- **Invalid index definition**: Ensure all fields exist in your documents.
+- **Index conflict**: Use a different index name.
 
 ## Prevent It
 
-- Always specify `use_index` in `_find` queries to force index usage
-- Monitor index size with `_index` endpoint
-- Clean up unused indexes to reduce storage overhead
+- Create indexes before heavy query workloads
+- Monitor disk space for index storage
+- Use `explain` to verify index usage
 
 ## Related Pages
 
+- [CouchDB Query Error](/tools/couchdb/couchdb-query-error)
 - [CouchDB Mango Error](/tools/couchdb/couchdb-mango-error)
-- [CouchDB Find Error](/tools/couchdb/couchdb-find-error)
 - [CouchDB View Error](/tools/couchdb/couchdb-view-error)

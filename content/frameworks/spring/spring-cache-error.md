@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Cache Abstraction Error — How to Fix"
+title: "[Solution] Spring Cache Abstraction Error -- How to Fix"
 description: "Fix Spring cache abstraction errors. Resolve cache configuration, eviction, and provider issues in Spring."
 frameworks: ["spring"]
 error-types: ["configuration-error"]
@@ -173,10 +173,10 @@ class UserServiceTest {
         when(userRepository.findByEmail("test@example.com"))
             .thenReturn(Optional.of(new User("test@example.com")));
 
-        // First call — hits database
+        // First call -- hits database
         User user1 = userService.findByEmail("test@example.com");
 
-        // Second call — should hit cache
+        // Second call -- should hit cache
         User user2 = userService.findByEmail("test@example.com");
 
         verify(userRepository, times(1)).findByEmail("test@example.com");

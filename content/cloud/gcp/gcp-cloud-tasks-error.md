@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Tasks Error — queue task handler deadline errors"
+title: "[Solution] GCP Cloud Tasks Error -- queue task handler deadline errors"
 description: "Fix GCP Cloud Tasks errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud HSM Error — key partition quota errors"
+title: "[Solution] GCP Cloud HSM Error -- key partition quota errors"
 description: "Fix GCP Cloud HSM errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

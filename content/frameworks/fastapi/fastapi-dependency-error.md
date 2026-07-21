@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Dependency Error — How to Fix"
+title: "[Solution] FastAPI Dependency Error -- How to Fix"
 description: "Fix FastAPI dependency injection errors. Resolve dependency resolution failures and circular dependency issues."
 frameworks: ["fastapi"]
 error-types: ["application-error"]

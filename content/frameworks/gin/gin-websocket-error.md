@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin WebSocket Error — How to Fix"
+title: "[Solution] Gin WebSocket Error -- How to Fix"
 description: "Fix Gin WebSocket errors. Resolve WebSocket connection, upgrade, and message handling issues."
 frameworks: ["gin"]
 error-types: ["websocket-error"]

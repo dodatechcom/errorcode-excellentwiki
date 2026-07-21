@@ -1,87 +1,61 @@
 ---
-title: "[Solution] Bash Associative Array Error Fix"
-description: "Fix bash associative array errors. Learn how associative arrays work in bash 4+."
+title: "[Solution] Bash Associative Array Error -- Bash 4+ Feature Issues"
+description: "Fix bash associative array errors when using bash 4+ features on older bash versions."
 languages: ["bash"]
 error-types: ["runtime-error"]
 severities: ["error"]
-weight: 5
 ---
 
-# Bash Associative Array Error Fix
+# Bash Associative Array Error
 
-A bash associative array error occurs when you use associative arrays incorrectly, such as missing the `declare -A` declaration or accessing keys that don't exist.
-
-## What This Error Means
-
-Bash 4.0+ supports associative arrays (key-value pairs) declared with `declare -A`. Without the `-A` flag, bash treats the variable as a regular indexed array, causing unexpected behavior or errors.
+This error occurs when associative arrays are used on bash versions before 4.0, or with incorrect syntax.
 
 ## Common Causes
 
-- Forgetting `declare -A` before assignment
-- Using indexed array syntax with associative arrays
-- Accessing unset keys
-- Trying to use associative arrays in bash < 4.0
+- Using `declare -A` on bash 3.x or earlier
+- Accessing associative array with numeric index instead of key
+- Missing `-A` flag in declare statement
+- Accessing non-existent keys without default
 
 ## How to Fix
 
-### 1. Always declare with -A
+### Check bash version
 
 ```bash
-# WRONG: Not declaring as associative
-config[host]="localhost"  # Treated as indexed array
+# Check version
+bash --version
 
-# CORRECT: Declare first
-declare -A config
-config[host]="localhost"
-config[port]="3306"
-echo "${config[host]}"
-```
-
-### 2. Initialize with key=value pairs
-
-```bash
-# CORRECT: Initialize inline
-declare -A colors=(
-    [red]="#FF0000"
-    [green]="#00FF00"
-    [blue]="#0000FF"
-)
-echo "${colors[red]}"
-```
-
-### 3. Check if key exists before access
-
-```bash
-declare -A config
-config[host]="localhost"
-
-# WRONG: Accessing unset key
-echo "${config[missing]}"  # Empty, may cause issues
-
-# CORRECT: Check first
-if [[ -v "config[missing]" ]]; then
-    echo "${config[missing]}"
-else
-    echo "Key not found"
+# Require bash 4+
+if ((BASH_VERSINFO[0] < 4)); then
+    echo "Associative arrays require bash 4+"
+    exit 1
 fi
+
+declare -A map
+map[key]="value"
 ```
 
-### 4. Iterate over keys
+### Use safe key access
 
 ```bash
-declare -A config=(
-    [host]="localhost"
-    [port]="3306"
-)
+declare -A config
+config[host]="localhost"
+config[port]="42"
 
-# CORRECT: Iterate keys
-for key in "${!config[@]}"; do
-    echo "$key = ${config[$key]}"
+echo "${config[host]:-not set}"
+echo "${config[port]:-8080}"
+```
+
+## Examples
+
+```bash
+#!/bin/bash
+declare -A colors
+colors[red]="#FF0000"
+colors[green]="#00FF00"
+colors[blue]="#0000FF"
+
+for key in "${!colors[@]}"; do
+    echo "$key = ${colors[$key]}"
 done
 ```
-
-## Related Errors
-
-- [Bash Array Error](bash-array-error) — indexed array issues
-- [Unbound Variable](unbound-variable) — unset variables
-- [Bash Syntax Error](bash-syntax-error) — general syntax errors

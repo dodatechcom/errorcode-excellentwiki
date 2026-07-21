@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Testing Error — How to Fix"
+title: "[Solution] Actix Testing Error -- How to Fix"
 description: "Fix Actix unit test errors. Resolve test setup, HTTP request simulation, and assertion failures."
 frameworks: ["actix"]
 error-types: ["testing-error"]

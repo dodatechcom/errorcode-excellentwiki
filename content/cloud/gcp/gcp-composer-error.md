@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Composer Error — Cloud Composer environment dag airflow worker errors"
+title: "[Solution] GCP Composer Error -- Cloud Composer environment dag airflow worker errors"
 description: "Fix GCP Composer errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Font Loading Error — How to Fix"
+title: "[Solution] Next.js Font Loading Error -- How to Fix"
 description: "Fix Next.js font loading errors. Resolve custom font, font display, and font optimization issues in Next.js."
 frameworks: ["nextjs"]
 error-types: ["configuration-error"]

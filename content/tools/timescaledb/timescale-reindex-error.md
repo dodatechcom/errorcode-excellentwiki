@@ -1,6 +1,6 @@
 ---
 title: "[Solution] TimescaleDB Reindex Error — How to Fix"
-description: "Fix TimescaleDB reindex errors by resolving index rebuild failures, fixing concurrent reindex issues, and handling index bloat"
+description: "Fix TimescaleDB reindex errors by resolving reindex failures on hypertables, fixing chunk index corruption, and handling concurrent reindex issues"
 tools: ["timescaledb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,111 +10,109 @@ comments: true
 
 # TimescaleDB Reindex Error
 
-TimescaleDB reindex errors occur when rebuilding indexes on hypertables fails. Reindexing is needed to fix index bloat, corruption, or performance degradation.
+TimescaleDB reindex errors occur when reindexing hypertables or chunks fails due to lock conflicts, size constraints, or corrupted index metadata.
 
 ## Why It Happens
 
-- Reindex locks the table and blocks concurrent writes
-- Index is too large to rebuild in available memory
-- Concurrent reindex is not supported for hypertables
-- Disk space is insufficient for index rebuild
-- Index corruption requires offline rebuild
-- Reindex times out on large tables
+- Reindex acquires exclusive lock that blocks queries
+- Index is too large to reindex in available memory
+- Concurrent DML operations conflict with reindex
+- Index metadata is corrupted after crash
+- Reindex on compressed chunks is not supported
+- Statement timeout expires during reindex of large tables
 
 ## Common Error Messages
 
 ```
-ERROR: concurrent reindex is not supported for hypertables
+ERROR: reindex failed due to lock conflict
 ```
 
 ```
-ERROR: out of memory
-```
-
-```
-ERROR: disk full during reindex
+ERROR: out of memory during reindex
 ```
 
 ```
 ERROR: index is corrupted
 ```
 
+```
+ERROR: statement timeout during reindex
+```
+
 ## How to Fix It
 
-### 1. Reindex Regular Table
+### 1. Reindex with CONCURRENTLY
 
 ```sql
--- Reindex specific index
-REINDEX INDEX idx_sensor_time;
+-- Reindex without blocking reads and writes
+REINDEX TABLE CONCURRENTLY sensor_data;
 
--- Reindex entire table (locks table)
-REINDEX TABLE sensor_data;
-
--- Concurrent reindex (non-hypertable only)
+-- Reindex specific index concurrently
 REINDEX INDEX CONCURRENTLY idx_sensor_time;
 ```
 
-### 2. Reindex Hypertable Chunks
+### 2. Reindex During Maintenance Window
 
 ```sql
--- Reindex individual chunks
-DO $$
-DECLARE
-  chunk_rec RECORD;
-BEGIN
-  FOR chunk_rec IN
-    SELECT chunk_schema, chunk_name
-    FROM timescaledb_information.chunks
-    WHERE hypertable_name = 'sensor_data'
-  LOOP
-    EXECUTE format('REINDEX TABLE %I.%I',
-      chunk_rec.chunk_schema, chunk_rec.chunk_name);
-  END LOOP;
-END $$;
+-- Increase statement timeout for large reindex
+SET statement_timeout = '3600s';
+
+-- Reindex all indexes on the table
+REINDEX TABLE sensor_data;
+
+-- Reset timeout
+RESET statement_timeout;
 ```
 
-### 3. Fix Index Bloat
+### 3. Reindex Compressed Chunks
 
 ```sql
--- Check index bloat
-SELECT indexname, pg_size_pretty(pg_relation_size(indexname::regclass))
-FROM pg_indexes
-WHERE tablename = 'sensor_data';
+-- Decompress first
+SELECT decompress_chunk(c.chunk_name)
+FROM timescaledb_information.chunks c
+WHERE c.hypertable_name = 'sensor_data'
+  AND c.is_compressed;
 
--- Create new index and swap
-CREATE INDEX CONCURRENTLY idx_sensor_time_new ON sensor_data (time DESC);
-DROP INDEX idx_sensor_time;
-ALTER INDEX idx_sensor_time_new RENAME TO idx_sensor_time;
+-- Reindex
+REINDEX TABLE sensor_data;
+
+-- Recompress
+SELECT compress_chunk(c.chunk_name)
+FROM timescaledb_information.chunks c
+WHERE c.hypertable_name = 'sensor_data'
+  AND NOT c.is_compressed;
 ```
 
-### 4. Monitor Index Health
+### 4. Monitor Reindex Progress
 
 ```sql
--- Check index usage statistics
-SELECT indexrelname, idx_scan, idx_tup_read, idx_tup_fetch
-FROM pg_stat_user_indexes
-WHERE relname = 'sensor_data';
+-- Check reindex progress
+SELECT
+  pid,
+  query,
+  state,
+  query_start
+FROM pg_stat_activity
+WHERE query LIKE '%REINDEX%';
 
--- Check for unused indexes
-SELECT indexrelname, idx_scan
-FROM pg_stat_user_indexes
-WHERE relname = 'sensor_data' AND idx_scan = 0;
+-- Cancel long-running reindex if needed
+SELECT pg_cancel_backend(<pid>);
 ```
 
 ## Common Scenarios
 
-- **Reindex locks table too long**: Use `CONCURRENTLY` option for non-hypertable indexes.
-- **Index bloat causes slow queries**: Reindex during maintenance window.
-- **Corrupted index after crash**: Drop and recreate the index.
+- **Reindex blocks all queries**: Use CONCURRENTLY to avoid blocking.
+- **Reindex times out**: Increase statement_timeout or reindex indexes individually.
+- **Index corruption after crash**: Run REINDEX INDEX to rebuild the corrupted index.
 
 ## Prevent It
 
-- Monitor index bloat regularly with `pg_indexes` view
-- Schedule regular reindexing during maintenance windows
-- Use `CONCURRENTLY` for indexes on non-hypertable tables
+- Use CONCURRENTLY for reindex on production systems
+- Schedule regular reindex during maintenance windows
+- Monitor index bloat to determine when reindex is needed
 
 ## Related Pages
 
+- [TimescaleDB Index Error](/tools/timescaledb/timescale-index-error)
 - [TimescaleDB Chunk Error](/tools/timescaledb/timescale-chunk-error)
-- [TimescaleDB Query Error](/tools/timescaledb/timescale-query-error)
-- [TimescaleDB Config Error](/tools/timescaledb/timescale-config-error)
+- [TimescaleDB Compression Error](/tools/timescaledb/timescale-compression-error)

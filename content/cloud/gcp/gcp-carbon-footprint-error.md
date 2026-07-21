@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Carbon Footprint Error — data scope export errors"
+title: "[Solution] GCP Carbon Footprint Error -- data scope export errors"
 description: "Fix GCP Carbon Footprint errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

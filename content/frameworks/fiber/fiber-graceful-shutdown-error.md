@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Fiber Graceful Shutdown Error — How to Fix"
+title: "[Solution] Fiber Graceful Shutdown Error -- How to Fix"
 description: "Fix Fiber graceful shutdown errors. Resolve server shutdown, connection draining, and signal handling issues."
 frameworks: ["fiber"]
 error-types: ["server-error"]

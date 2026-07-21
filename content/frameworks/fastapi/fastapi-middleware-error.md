@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Middleware Error — How to Fix"
+title: "[Solution] FastAPI Middleware Error -- How to Fix"
 description: "Fix FastAPI middleware errors. Resolve middleware configuration, execution order, and error handling issues."
 frameworks: ["fastapi"]
 error-types: ["application-error"]

@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI WebSocket Error — How to Fix"
+title: "[Solution] FastAPI WebSocket Error -- How to Fix"
 description: "Fix FastAPI WebSocket errors. Resolve connection failures, handshake issues, and protocol errors."
 frameworks: ["fastapi"]
 error-types: ["websocket-error"]

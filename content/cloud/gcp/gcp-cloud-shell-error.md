@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Shell Error — session disk connection errors"
+title: "[Solution] GCP Cloud Shell Error -- session disk connection errors"
 description: "Fix GCP Cloud Shell errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

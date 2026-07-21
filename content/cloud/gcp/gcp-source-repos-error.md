@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Source Repositories Error — repo push pull errors"
+title: "[Solution] GCP Source Repositories Error -- repo push pull errors"
 description: "Fix GCP Cloud Source Repositories errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

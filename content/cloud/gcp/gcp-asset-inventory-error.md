@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Asset Inventory Error — feed export search errors"
+title: "[Solution] GCP Asset Inventory Error -- feed export search errors"
 description: "Fix GCP Asset Inventory errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

@@ -53,13 +53,13 @@ export async function getServerSideProps(context) {
 3. Never use browser APIs in `getServerSideProps`:
 
 ```typescript
-// WRONG — window is not defined on server
+// WRONG -- window is not defined on server
 export async function getServerSideProps() {
   const width = window.innerWidth; // Error
   return { props: { width } };
 }
 
-// CORRECT — use context or query params instead
+// CORRECT -- use context or query params instead
 export async function getServerSideProps(context) {
   const width = context.req.headers['viewport-width'] || 1024;
   return { props: { width } };

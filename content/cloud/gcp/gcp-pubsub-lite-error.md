@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Pub/Sub Lite Error — topic subscription capacity errors"
+title: "[Solution] GCP Pub/Sub Lite Error -- topic subscription capacity errors"
 description: "Fix GCP Pub/Sub Lite errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

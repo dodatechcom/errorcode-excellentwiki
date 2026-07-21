@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Batch Job Processing Error — How to Fix"
+title: "[Solution] Spring Batch Job Processing Error -- How to Fix"
 description: "Fix Spring Batch errors. Resolve job configuration, step execution, and batch processing issues in Spring."
 frameworks: ["spring"]
 error-types: ["runtime-error"]

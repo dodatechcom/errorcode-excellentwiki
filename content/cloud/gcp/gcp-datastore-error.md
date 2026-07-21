@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Datastore Error — entity query index consistency errors"
+title: "[Solution] GCP Datastore Error -- entity query index consistency errors"
 description: "Fix GCP Datastore errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

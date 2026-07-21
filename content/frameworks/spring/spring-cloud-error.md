@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Spring Cloud Service Discovery Error — How to Fix"
+title: "[Solution] Spring Cloud Service Discovery Error -- How to Fix"
 description: "Fix Spring Cloud service discovery errors. Resolve Eureka, Consul, and service registration issues in Spring."
 frameworks: ["spring"]
 error-types: ["connection-error"]

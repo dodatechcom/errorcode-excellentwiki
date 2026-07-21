@@ -1,5 +1,5 @@
 ---
-title: "[Solution] FastAPI Celery Error — How to Fix"
+title: "[Solution] FastAPI Celery Error -- How to Fix"
 description: "Fix FastAPI Celery errors. Resolve worker failures, task serialization issues, and broker connection problems."
 frameworks: ["fastapi"]
 error-types: ["background-error"]

@@ -1,6 +1,6 @@
 ---
-title: "[Solution] Neo4j Label Error — How to Fix"
-description: "Fix Neo4j label errors including invalid label names, label management issues, and performance problems with label queries"
+title: "[Solution] Neo4j Label Error"
+description: "Fix Neo4j label errors when node labels are invalid or cause query failures"
 tools: ["neo4j"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,107 +10,48 @@ comments: true
 
 # Neo4j Label Error
 
-Label errors in Neo4j occur when using invalid label names, managing labels incorrectly, or when label-based queries have performance issues.
+Label errors occur when node labels contain invalid characters or violate naming conventions.
 
-## Why It Happens
+## Common Causes
 
-- The label name starts with a number or contains spaces without backticks
-- Too many labels on a single node slow down queries
-- The label does not exist when queried
-- Label operations are performed inside transactions that time out
-- The label name conflicts with Cypher reserved words
+- Label containing spaces or special characters
+- Label name too long for index creation
+- Label colliding with Cypher reserved words
+- Using numeric-only label name
 
 ## Common Error Messages
 
 ```
-Neo.ClientError.Statement.SyntaxError: Invalid label name '123invalid'
-```
-
-```
-Neo.ClientError.Statement.SyntaxError: Label name contains reserved word
-```
-
-```
-Neo.ClientError.Statement.ExecutionFailed:
-Label 'OldLabel' does not exist in the database
-```
-
-```
-Neo.TransientError.Resource.Exhausted:
-Too many labels on node
+Neo.ClientError.Statement.SyntaxError: Invalid label 'My Label'
 ```
 
 ## How to Fix It
 
-### 1. Fix Invalid Label Names
+### 1. Use CamelCase Labels
 
 ```cypher
-// BAD: label starts with number
-MATCH (n:123Person) RETURN n;
-
-// GOOD: use backticks
-MATCH (n:`123Person`) RETURN n;
-
-// Better: use a valid name
-MATCH (n:Person123) RETURN n;
+// BAD: contains space
+CREATE (n:My Label {name: 'test'});
+// GOOD: CamelCase
+CREATE (n:MyLabel {name: 'test'});
 ```
 
-### 2. Manage Labels Properly
+### 2. Escape Reserved Words
 
 ```cypher
-// Add label
-MATCH (n:Person {name: 'John'}) SET n:Employee;
-
-// Remove label
-MATCH (n:Employee) WHERE n.name = 'John' REMOVE n:Employee;
-
-// Count nodes with a specific label
-MATCH (n:Person) RETURN count(n);
-
-// Check all labels in the database
-CALL db.labels();
+CREATE (n:`User` {name: 'test'});
 ```
 
-### 3. Fix Label Performance Issues
+### 3. Rename Labels
 
 ```cypher
-// BAD: querying without specific label (full scan)
-MATCH (n) WHERE n.name = 'John' RETURN n;
-
-// GOOD: use specific label with index
-MATCH (n:Person) WHERE n.name = 'John' RETURN n;
-
-// Create index for the label
-CREATE INDEX FOR (n:Person) ON (n.name);
+MATCH (n:OldLabel)
+SET n:NewLabel
+REMOVE n:OldLabel;
 ```
 
-### 4. Handle Reserved Word Labels
+## Examples
 
 ```cypher
-// BAD: reserved word as label
-MATCH (n:Match) RETURN n;  // 'Match' is a Cypher keyword
-
-// GOOD: use backticks
-MATCH (n:`Match`) RETURN n;
-
-// Better: choose a non-reserved name
-MATCH (n:MatchResult) RETURN n;
+CALL db.labels() YIELD label RETURN label ORDER BY label;
 ```
-
-## Common Scenarios
-
-- **Label name is a reserved word**: Use backticks or choose a different name.
-- **Label does not exist in query**: The label was removed. Use a different label or add it back.
-- **Too many labels slow down queries**: Reduce labels or use more specific label combinations.
-
-## Prevent It
-
-- Avoid using Cypher reserved words as label names
-- Use indexes on frequently queried labels
-- Limit the number of labels per node to 3-5
-
-## Related Pages
-
-- [Neo4j Node Error](/tools/neo4j/neo4j-node-error)
-- [Neo4j Index Error](/tools/neo4j/neo4j-index-error)
-- [Neo4j Query Error](/tools/neo4j/neo4j-query-error)

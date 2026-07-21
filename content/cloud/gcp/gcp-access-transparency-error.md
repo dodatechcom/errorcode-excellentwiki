@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Access Transparency Error — log approval errors"
+title: "[Solution] GCP Access Transparency Error -- log approval errors"
 description: "Fix GCP Access Transparency errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

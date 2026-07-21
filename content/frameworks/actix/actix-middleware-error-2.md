@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Actix Middleware Error — How to Fix"
+title: "[Solution] Actix Middleware Error -- How to Fix"
 description: "Fix Actix middleware errors. Resolve middleware execution order, context issues, and handler failures."
 frameworks: ["actix"]
 error-types: ["middleware-error"]

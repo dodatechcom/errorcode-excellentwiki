@@ -18,7 +18,7 @@ This error occurs during `next build` (or in development mode) when Next.js cann
 
 ## How to Fix
 
-Read the full error message above "Failed to compile" — it will point to the exact file and line number. Common fixes:
+Read the full error message above "Failed to compile" -- it will point to the exact file and line number. Common fixes:
 
 ```bash
 # Reinstall node_modules if the error is about missing packages

@@ -1,6 +1,6 @@
 ---
 title: "[Solution] TimescaleDB Drop Chunk Error — How to Fix"
-description: "Fix TimescaleDB drop chunk errors by resolving chunk deletion failures, fixing retention policies, and handling compressed chunk drops"
+description: "Fix TimescaleDB drop chunk errors by resolving chunk drop failures, fixing retention policy issues, and handling cascading chunk deletion"
 tools: ["timescaledb"]
 error-types: ["database-error"]
 severities: ["error"]
@@ -10,114 +10,109 @@ comments: true
 
 # TimescaleDB Drop Chunk Error
 
-TimescaleDB drop chunk errors occur when attempting to drop data chunks manually or via retention policies fails. Dropping old data is essential for managing storage.
+TimescaleDB drop chunk errors occur when attempting to drop chunks manually or through retention policies fails due to locks, dependencies, or configuration issues.
 
 ## Why It Happens
 
-- Chunk is referenced by a continuous aggregate
-- Chunk is compressed and requires decompression first
-- Retention policy interval is too aggressive
-- Chunk does not exist in the specified time range
+- Chunk is locked by an active query or background worker
 - Foreign key references prevent chunk deletion
-- Concurrent drop operations conflict
+- Retention policy interval is smaller than the chunk interval
+- Chunk drop conflicts with compression operations
+- Permission is denied for the user executing drop_chunks
+- Cascading deletes fail on distributed hypertables
 
 ## Common Error Messages
 
 ```
-ERROR: cannot drop chunk referenced by continuous aggregate
+ERROR: could not drop chunk due to lock
 ```
 
 ```
-ERROR: chunk not found for given time range
+ERROR: foreign key constraint prevents chunk drop
 ```
 
 ```
-ERROR: cannot drop compressed chunk without decompressing
+ERROR: drop_chunks interval too small
 ```
 
 ```
-ERROR: update or delete on table violates foreign key constraint
+ERROR: permission denied for function drop_chunks
 ```
 
 ## How to Fix It
 
-### 1. Drop Chunks Manually
+### 1. Drop Chunks Correctly
 
 ```sql
--- Drop chunks older than a specific time
-SELECT drop_chunks('sensor_data', older_than => INTERVAL '30 days');
+-- Drop chunks older than a specific interval
+SELECT drop_chunks('sensor_data', older_than => INTERVAL '90 days');
 
--- Drop chunks by specific time range
+-- Drop chunks older than a specific timestamp
 SELECT drop_chunks('sensor_data',
-  older_than => '2024-01-01'::timestamptz);
+  older_than => '2024-01-01'::TIMESTAMPTZ
+);
 
--- Drop chunks older than a specific date
-SELECT drop_chunks('sensor_data', older_than => '2024-06-01');
+-- Drop chunks for a specific device
+SELECT drop_chunks('sensor_data',
+  older_than => INTERVAL '90 days',
+  device_id => 1
+);
 ```
 
-### 2. Fix Retention Policy
+### 2. Fix Lock Conflicts
 
 ```sql
--- Add retention policy
-SELECT add_retention_policy('sensor_data', INTERVAL '30 days');
+-- Check for active queries on chunks
+SELECT pid, query, state
+FROM pg_stat_activity
+WHERE query LIKE '%sensor_data%';
 
--- Check retention policy
-SELECT * FROM timescaledb_information.jobs
-WHERE proc_name = 'drop_chunks';
+-- Cancel blocking queries
+SELECT pg_cancel_backend(<pid>);
 
--- Remove retention policy
-SELECT remove_retention_policy('sensor_data');
-
--- Temporarily disable policy
-SELECT delete_job(<job_id>);
+-- Retry drop_chunks
+SELECT drop_chunks('sensor_data', older_than => INTERVAL '90 days');
 ```
 
-### 3. Handle Compressed Chunks
+### 3. Fix Foreign Key Issues
 
 ```sql
--- Decompress before dropping
-SELECT decompress_chunk('sensor_data', '2024-01-01'::timestamptz, '2024-01-02'::timestamptz);
+-- Check for foreign keys referencing the hypertable
+SELECT conname, contype
+FROM pg_constraint
+WHERE conrelid = 'sensor_data'::regclass;
 
--- Then drop
-SELECT drop_chunks('sensor_data', older_than => '2024-01-01'::timestamptz);
-
--- Or drop with cascade for compressed chunks
-SELECT drop_chunks('sensor_data',
-  older_than => INTERVAL '30 days',
-  cascade_to_materializations => TRUE);
+-- Drop foreign key if not needed
+ALTER TABLE sensor_data
+  DROP CONSTRAINT sensor_data_device_id_fkey;
 ```
 
-### 4. Handle Continuous Aggregate References
+### 4. Fix Permission Issues
 
 ```sql
--- Check if chunks are referenced
-SELECT * FROM timescaledb_information.continuous_aggregates
-WHERE hypertable_name = 'sensor_data';
+-- Grant permission to use drop_chunks
+GRANT EXECUTE ON FUNCTION drop_chunks TO admin_user;
 
--- Drop with cascade to materializations
-SELECT drop_chunks('sensor_data',
-  older_than => INTERVAL '30 days',
-  cascade_to_materializations => TRUE);
-
--- Or drop the continuous aggregate first
-DROP MATERIALIZED VIEW daily_summary;
-SELECT drop_chunks('sensor_data', older_than => INTERVAL '30 days');
+-- Check function permissions
+SELECT proname, proacl
+FROM pg_proc
+WHERE proname = 'drop_chunks';
 ```
 
 ## Common Scenarios
 
-- **Retention policy deletes too much data**: Adjust the interval or use time-based conditions.
-- **Cannot drop compressed chunk**: Decompress first or use `cascade_to_materializations`.
-- **Foreign key prevents drop**: Drop dependent tables first or remove foreign key constraints.
+- **drop_chunks fails with lock error**: Cancel blocking queries and retry.
+- **Chunks not dropped by retention policy**: Check if the retention interval is larger than the chunk interval.
+- **Permission denied**: Grant EXECUTE on drop_chunks to the appropriate role.
 
 ## Prevent It
 
-- Set up retention policies early to manage data lifecycle
-- Use `cascade_to_materializations` when dropping chunks referenced by aggregates
-- Monitor disk usage and adjust retention policies accordingly
+- Use retention policies for automatic chunk cleanup
+- Ensure retention interval is at least 2x the chunk interval
+- Monitor chunk counts and disk usage
 
 ## Related Pages
 
 - [TimescaleDB Chunk Error](/tools/timescaledb/timescale-chunk-error)
+- [TimescaleDB Retention Error](/tools/timescaledb/timescaledb-retention-error)
 - [TimescaleDB Policy Error](/tools/timescaledb/timescale-policy-error)
-- [TimescaleDB Compression Error](/tools/timescaledb/timescale-compression-error)

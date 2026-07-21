@@ -1,57 +1,87 @@
 ---
 title: "[Solution] Vagrant WinRM Error"
-description: "Fix Vagrant winrm errors. Learn why this happens and how to resolve it quickly."
+description: "Fix Vagrant WinRM connection errors when Windows VMs cannot be managed via WinRM."
 tools: ["vagrant"]
 error-types: ["tool-error"]
 severities: ["error"]
-weight: 5
 ---
 
 # Vagrant WinRM Error
 
-Vagrant WinRM errors occur when Windows Remote Management connections fail.
+Vagrant fails to connect to Windows VM via WinRM.
 
-## Why This Happens
-
-- Connection refused
-- Authentication failed
-- WinRM not configured
-- Port conflict
-
-## Common Error Messages
-
-- `winrm_connection_error`
-- `winrm_auth_error`
-- `winrm_config_error`
-- `winrm_port_error`
-
-## How to Fix It
-
-### Solution 1: Check WinRM status
-
-Verify WinRM is configured on the VM.
-
-### Solution 2: Fix authentication
-
-Configure WinRM credentials:
-
-```ruby
-config.winrm.username = "Administrator"
-config.winrm.password = "password"
+```
+Unable to connect to WinRM, retrying...
 ```
 
-### Solution 3: Check port
+## Common Causes
 
-Verify WinRM port 5985/5986 is not in use.
+- WinRM not enabled in Windows VM
+- Firewall blocking WinRM port
+- HTTPS certificate not trusted
+- Credentials incorrect
+- WinRM service not running
 
+## How to Fix
 
-## Common Scenarios
+### Enable WinRM in Windows
 
-- **Connection refused:** Enable WinRM on the VM.
-- **Auth failed:** Verify WinRM credentials.
+```powershell
+# Inside Windows VM
+Enable-PSRemoting -Force
+winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+winrm set winrm/config/service/auth '@{Basic="true"}'
+```
 
-## Prevent It
+### Configure WinRM in Vagrantfile
 
-- Configure WinRM properly
-- Test connection
-- Monitor WinRM status
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.communicator = "winrm"
+  config.winrm.username = "vagrant"
+  config.winrm.password = "vagrant"
+  config.winrm.transport = :plaintext
+  config.winrm.basic_auth_only = true
+end
+```
+
+### Open Firewall Port
+
+```powershell
+# Inside Windows VM
+New-NetFirewallRule -DisplayName "WinRM" -Direction Inbound -LocalPort 5985,5986 -Protocol TCP -Action Allow
+```
+
+### Check WinRM Service
+
+```powershell
+# Inside Windows VM
+Get-Service winrm
+Start-Service winrm
+```
+
+### Use WinRM with HTTPS
+
+```ruby
+config.winrm.transport = :ssl
+config.winrm.port = 5986
+```
+
+## Examples
+
+```ruby
+# Full WinRM configuration
+Vagrant.configure("2") do |config|
+  config.vm.box = "gusztavvargadr/windows-server-2022-standard"
+  config.vm.communicator = "winrm"
+  
+  config.winrm.username = "vagrant"
+  config.winrm.password = "vagrant"
+  config.winrm.transport = :plaintext
+  config.winrm.basic_auth_only = true
+  
+  config.vm.provision "shell", inline: <<-SHELL
+    Write-Host "Provisioning..."
+  SHELL
+end
+```

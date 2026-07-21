@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Next.js Deployment Failed Error — How to Fix"
+title: "[Solution] Next.js Deployment Failed Error -- How to Fix"
 description: "Fix Next.js deployment errors. Resolve build failures, Vercel deployment, and production issues in Next.js."
 frameworks: ["nextjs"]
 error-types: ["configuration-error"]
@@ -54,7 +54,7 @@ npm run build
 ```
 
 ```javascript
-// next.config.js — check for deprecated options
+// next.config.js -- check for deprecated options
 const nextConfig = {
     // Ensure compatible options
     reactStrictMode: true,

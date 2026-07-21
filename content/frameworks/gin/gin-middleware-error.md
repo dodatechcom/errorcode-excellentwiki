@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Middleware Error — How to Fix"
+title: "[Solution] Gin Middleware Error -- How to Fix"
 description: "Fix Gin middleware errors. Resolve middleware execution order, context issues, and authorization failures."
 frameworks: ["gin"]
 error-types: ["middleware-error"]

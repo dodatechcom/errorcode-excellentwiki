@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Unused Reservation Error — reservation in-use consume errors"
+title: "[Solution] GCP Unused Reservation Error -- reservation in-use consume errors"
 description: "Fix GCP Unused Reservation errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

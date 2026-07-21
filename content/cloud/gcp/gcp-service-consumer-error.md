@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Service Consumer Error — policy tenant-proj errors"
+title: "[Solution] GCP Service Consumer Error -- policy tenant-proj errors"
 description: "Fix GCP Service Consumer errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

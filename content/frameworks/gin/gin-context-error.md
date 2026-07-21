@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Gin Context Error — How to Fix"
+title: "[Solution] Gin Context Error -- How to Fix"
 description: "Fix Gin context errors. Resolve context handling, goroutine context passing, and request lifecycle issues."
 frameworks: ["gin"]
 error-types: ["context-error"]

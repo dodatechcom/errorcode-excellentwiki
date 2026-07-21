@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask WTForms Rendering Error — How to Fix"
+title: "[Solution] Flask WTForms Rendering Error -- How to Fix"
 description: "Fix Flask WTForms rendering errors. Resolve form field rendering, validation, and template issues in Flask."
 frameworks: ["flask"]
 error-types: ["runtime-error"]

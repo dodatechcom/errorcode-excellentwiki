@@ -1,5 +1,5 @@
 ---
-title: "[Solution] GCP Cloud Debugger Error — snapshot logpoint source errors"
+title: "[Solution] GCP Cloud Debugger Error -- snapshot logpoint source errors"
 description: "Fix GCP Cloud Debugger errors. Actionable solutions with gcloud CLI commands."
 error-types: ["api-error"]
 severities: ["error"]

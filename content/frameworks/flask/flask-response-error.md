@@ -1,5 +1,5 @@
 ---
-title: "[Solution] Flask Response Creation Error — How to Fix"
+title: "[Solution] Flask Response Creation Error -- How to Fix"
 description: "Fix Flask response creation errors. Resolve response building, return type, and header issues in Flask."
 frameworks: ["flask"]
 error-types: ["runtime-error"]
@@ -170,6 +170,6 @@ def unicode_response():
 
 1. **Use `jsonify()` for all API responses.** It handles content type, encoding, and serialization automatically.
 
-2. **Return status codes explicitly.** Don't rely on Flask's default 200 — use tuples to specify the correct status.
+2. **Return status codes explicitly.** Don't rely on Flask's default 200 -- use tuples to specify the correct status.
 
 3. **Test response types in unit tests.** Verify content type headers and status codes for all endpoints.
